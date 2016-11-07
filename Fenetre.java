@@ -1,5 +1,6 @@
 import java.awt.event.*;
 import javax.swing.*;
+import java.sql.*;
 
 public class Fenetre extends JFrame implements ActionListener {
 
@@ -16,6 +17,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		input1 = new JTextField();
 		input1.setBounds(30, 40, 300, 20);
 		this.add(input1);
+		input1.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
 
 		JLabel label2 = new JLabel("Utilisateur :");
 		label2.setBounds(30,100,200,20);
@@ -54,16 +56,29 @@ public class Fenetre extends JFrame implements ActionListener {
 			url = input1.getText();
 			user = input2.getText();
 			passwd = input3.getText();
-			
-			System.out.println(url);
-			System.out.println(user);
-			System.out.println(passwd);
+
+
+			try {
+				Class.forName("oracle.jdbc.OracleDriver");
+				System.out.println("Driver OK");
+				
+				Connection conn = DriverManager.getConnection(url, user, passwd);
+				System.out.println("Connexion effective !");         
+				conn.close();
+
+			} 
+			catch (Exception ex) {
+				ex.printStackTrace();
+			} 
 		}
 
 	}
 
 	public static void main(String[] args) {
 		Fenetre fen = new Fenetre();
+
+
+
 	}
 }
 
