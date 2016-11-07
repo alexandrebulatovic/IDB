@@ -61,12 +61,26 @@ public class Fenetre extends JFrame implements ActionListener {
 			try {
 				Class.forName("oracle.jdbc.OracleDriver");
 				System.out.println("Driver OK");
-				
-				Connection conn = DriverManager.getConnection(url, user, passwd);
-				System.out.println("Connexion effective !");         
-				conn.close();
 
-			} 
+				Connection conn = DriverManager.getConnection(url, user, passwd);
+				System.out.println("Connexion effective !");
+
+				Statement stat = conn.createStatement();
+				stat.executeUpdate("CREATE TABLE people (id int, prenom varchar(255))");
+				stat.executeUpdate("INSERT INTO people(id,prenom) VALUES (1,'a')");
+				stat.executeUpdate("INSERT INTO people(id,prenom) VALUES (2,'b')");
+				stat.executeUpdate("INSERT INTO people(id,prenom) VALUES (3,'c')");
+
+				/* ON VERIFIE QUE LES DONNEES AIENT ETE INSEREES */
+				ResultSet rs = stat.executeQuery("SELECT * FROM people");  
+				
+				while(rs.next()) {
+					System.out.println(rs.getInt(1)+"  "+rs.getString(2));  	
+				}
+
+				stat.executeUpdate("DROP TABLE people");
+				conn.close();
+			}
 			catch (Exception ex) {
 				ex.printStackTrace();
 			} 
@@ -76,7 +90,6 @@ public class Fenetre extends JFrame implements ActionListener {
 
 	public static void main(String[] args) {
 		Fenetre fen = new Fenetre();
-
 
 
 	}
