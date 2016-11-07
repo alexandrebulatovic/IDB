@@ -35,7 +35,7 @@ public class Fenetre extends JFrame implements ActionListener {
 		this.add(valider);
 		
 		this.setTitle(" Connexion "); //Définit un titre pour notre fenêtre
-		this.setSize(350, 350); //Définit sa taille : 400 pixels de large et 100 pixels de haut
+		this.setSize(350, 350); //Définit sa taille : 350 pixels de large et 350 pixels de haut
 		this.setLocationRelativeTo(null); //Nous demandons maintenant à notre objet de se positionner au centre
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   //Termine le processus lorsqu'on clique sur la croix rouge      
 		this.setVisible(true); // la rendre visible     
