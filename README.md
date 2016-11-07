@@ -1,3 +1,4 @@
-# IDB
-Interface de base de données
-Coucou
+------IDB------
+
+Logiciel pour gérer graphiquement une base de données oracle, programmé en java sous la direction de M. Xavier Palleja.
+
