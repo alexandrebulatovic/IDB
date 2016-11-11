@@ -9,7 +9,7 @@ public class ConnectionController
 	/**
 	 * IHM pour se connecter à un SGBD.
 	 */
-	private ConnectionView view;
+	private ConnectionView ihm;
 	
 	/**
 	 * Objet pour se connecter à un SGBD.
@@ -23,7 +23,7 @@ public class ConnectionController
 	 */
 	public ConnectionController ()
 	{
-		this.view = new ConnectionView(this);
+		this.ihm = new ConnectionView(this);
 		this.connector = new ConnectionManager();
 	}
 	
@@ -41,6 +41,21 @@ public class ConnectionController
 	 */
 	public ConnectionResponse connect(String url, String user, String pswd)
 	{
-		return connector.connect(url, user, pswd);
+		ConnectionResponse result;
+		this.talk("Tentative de connexion...");
+		result = this.connector.connect(url, user, pswd);
+		this.talk(result.toString());
+		return result;
+	}
+	
+	
+	/**
+	 * Communique avec l'utilisateur en lui affichant $msg.
+	 * 
+	 * @param msg : un message à transmettre à l'utilisateur.
+	 */
+	public void talk(String msg)
+	{
+		this.ihm.talk(msg);
 	}
 }

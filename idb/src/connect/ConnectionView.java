@@ -159,6 +159,17 @@ implements ActionListener
 	}
 	
 	
+	/**
+	 * Communique avec l'utilisateur en affichant $msg.
+	 * 
+	 * @param msg : un message à transmettre à l'utilisateur.
+	 */
+	public void talk(String msg)
+	{
+		this.messageLabel.setText(msg);
+	}
+	
+	
 	//Privates
 	/**
 	 * 
@@ -342,24 +353,11 @@ implements ActionListener
 		}
 		else {
 			ConnectionResponse response;
-			StringBuilder msg = new StringBuilder();
-			this.talk("Tentative de connexion...");
 			response = this.control.connect(
 					this.urlField.getText(), 
 					this.userField.getText(), 
 					this.passwordField.getText());
-			this.talk(response.toString());
 		}
 	}
 	
-	
-	/**
-	 * Communique avec l'utilisateur en affichant $msg.
-	 * 
-	 * @param msg : un message à transmettre à l'utilisateur.
-	 */
-	private void talk(String msg)
-	{
-		this.messageLabel.setText(msg);
-	}
 }
