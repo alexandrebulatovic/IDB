@@ -1,5 +1,8 @@
 package connect;
 
+/**
+ * Fournit plusieurs informations sur une tentative de connection.
+ */
 public class ConnectionResponse 
 {
 	//Attributes
@@ -9,7 +12,7 @@ public class ConnectionResponse
 	private boolean response;
 	
 	/**
-	 * Message associé à la connexion
+	 * Message associé à la tentative de connexion.
 	 */
 	private String msg;
 	
@@ -45,4 +48,18 @@ public class ConnectionResponse
 	 * @return String
 	 */
 	public String message(){return this.msg;}
+	
+	
+	/**
+	 * Retourne une chaîne de caractères qui décrit $this.
+	 */
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append(this.success() 
+				? ""
+				: "Erreur : ");
+		result.append(this.message());
+		return result.toString();
+	}
 }

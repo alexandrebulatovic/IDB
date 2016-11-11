@@ -3,6 +3,9 @@ package connect;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+/**
+ * Gère la connection à un SGBD.
+ */
 public class ConnectionManager 
 {
 	//Attributes
@@ -11,12 +14,28 @@ public class ConnectionManager
 	 */
 	private Connection connection;
 	
+	/**
+	 * Adresse du SGBD connté avec succès.
+	 */
+	private String url;
+	
+	/**
+	 * Nom d'utilisateur connecté au SGBD avec succès.
+	 */
+	private String user;
+	
 	
 	//Constructeur
+	/**
+	 * Constructeur commun.
+	 */
 	public ConnectionManager()
 	{
 		this.connection = null;
+		this.url = null;
+		this.user = null;
 	}
+	
 	
 	//Methods
 	/**
@@ -52,9 +71,35 @@ public class ConnectionManager
 	
 	
 	/**
-	 * Retourne vrai si et seulement si $this est connecté à un SGBD.
+	 * Retourne vrai si et seulement si $this est connecté à un SGBD,
+	 * faux sinon.
 	 * 
 	 * @return boolean
 	 */
 	public boolean isConnected() {return this.connection != null;}
+	
+	
+	/**
+	 * Retourne le SGBD avec lequel est connecté $this.
+	 * 
+	 * @return Connection
+	 */
+	public Connection sgbd() {return this.connection;}
+	
+	
+	/**
+	 * Retourne une chaîne de caractères qui décrit $this.
+	 */
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder ();
+		result.append(this.isConnected() 
+				? "Connecté à l'adresse : " 
+				: "Non connecté.\n");
+		if (this.isConnected()) {
+			result.append(this.url + "\n");
+			result.append("Nom d'utilisateur : " + this.user + "\n");
+		}
+		return result.toString();
+	}
 }

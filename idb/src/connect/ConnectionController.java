@@ -1,5 +1,8 @@
 package connect;
 
+/**
+ * Gère le dialogue entre l'IHM et le connecteur au SGBD.
+ */
 public class ConnectionController 
 {
 	//Attributes
@@ -21,6 +24,7 @@ public class ConnectionController
 	public ConnectionController ()
 	{
 		this.view = new ConnectionView(this);
+		this.connector = new ConnectionManager();
 	}
 	
 	
@@ -37,7 +41,6 @@ public class ConnectionController
 	 */
 	public ConnectionResponse connect(String url, String user, String pswd)
 	{
-		this.connector = new ConnectionManager();
 		return connector.connect(url, user, pswd);
 	}
 }

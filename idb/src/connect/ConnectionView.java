@@ -4,7 +4,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /**
- * Gère la vue pour se connecter à un SGBD.
+ * Gère l'IHM pour se connecter à un SGBD.
  */
 public class ConnectionView 
 extends JFrame 
@@ -160,6 +160,9 @@ implements ActionListener
 	
 	
 	//Privates
+	/**
+	 * 
+	 */
 	private void setDimension()
 	{
 		this.elementWidth = (int) (0.7 * this.width);
@@ -174,7 +177,7 @@ implements ActionListener
 		this.fields = new JTextField [this.fieldNumber];
 		this.fields[0] = this.urlField = new JTextField();
 		this.fields[1] = this.userField = new JTextField();
-		this.fields[2] = this.passwordField = new JTextField(); 	
+		this.fields[2] = this.passwordField = new JPasswordField(); 	
 	}
 	
 	
@@ -345,8 +348,7 @@ implements ActionListener
 					this.urlField.getText(), 
 					this.userField.getText(), 
 					this.passwordField.getText());
-			if (! response.success()) msg.append("Erreur : ");
-			this.talk(msg.toString() + response.message());
+			this.talk(response.toString());
 		}
 	}
 	
