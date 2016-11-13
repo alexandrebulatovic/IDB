@@ -17,7 +17,7 @@ public class ConnectionResponse
 	private String msg;
 	
 	
-	//Constructeurs
+	//Constructors
 	/**
 	 * Constructeur commun.
 	 * 
@@ -47,7 +47,9 @@ public class ConnectionResponse
 	 * 
 	 * @return String
 	 */
-	public String message(){return this.msg;}
+	public String message(){
+		return this.msg;
+		}
 	
 	
 	/**

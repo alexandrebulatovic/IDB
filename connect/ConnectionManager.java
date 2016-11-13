@@ -55,7 +55,7 @@ public class ConnectionManager
 			Class.forName("oracle.jdbc.OracleDriver");
 		}
 		catch(Exception e1){
-			return new ConnectionResponse(false, "problème de pilôte Oracle.");
+			return new ConnectionResponse(false, "problème de pilote Oracle.");
 		}
 		
 		try {
