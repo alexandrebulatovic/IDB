@@ -339,7 +339,8 @@ implements ActionListener
 	private void setDefaultValues()
 	{
 		//TO DO : extraire les valeurs par défaut depuis quelque part.
-		this.urlField.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
+//		this.urlField.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
+		this.urlField.setText("162.38.222.149");
 	}
 	
 	
