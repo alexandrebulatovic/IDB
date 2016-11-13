@@ -25,6 +25,7 @@ public class ConnectionManager
 	private String user;
 	
 	
+	
 	//Constructeur
 	/**
 	 * Constructeur commun.
