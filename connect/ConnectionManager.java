@@ -15,7 +15,7 @@ public class ConnectionManager
 	private Connection connection;
 	
 	/**
-	 * Adresse du SGBD connté avec succès.
+	 * Adresse du SGBD connecté avec succès.
 	 */
 	private String url;
 	
@@ -90,6 +90,8 @@ public class ConnectionManager
 	
 	/**
 	 * Retourne une chaîne de caractères qui décrit $this.
+	 *
+	 *@return String
 	 */
 	public String toString()
 	{
