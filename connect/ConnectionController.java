@@ -39,13 +39,12 @@ public class ConnectionController
 	 * @param pswd : mot de passe de l'utilisateur.
 	 * @return ConnectionResponse
 	 */
-	public ConnectionResponse connect(String url, String user, String pswd)
+	public void connect(String url, String user, String pswd)
 	{
 		ConnectionResponse result;
 		this.talk("Tentative de connexion...");
 		result = this.connector.connect(url, user, pswd);
 		this.talk(result.toString());
-		return result;
 	}
 	
 	

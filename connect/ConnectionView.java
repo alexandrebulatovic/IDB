@@ -1,5 +1,7 @@
 package connect;
 
+import interf.IDBFrame;
+
 import java.awt.event.*;
 import javax.swing.*;
 
@@ -8,7 +10,7 @@ import javax.swing.*;
  */
 public class ConnectionView 
 extends JFrame 
-implements ActionListener
+implements ActionListener, IDBFrame
 {
 	//Attributes
 	/**
@@ -145,24 +147,19 @@ implements ActionListener
 	
 	
 	/**
-	 * Retourne vrai si et seulement si l'une des boîtes de saisie
-	 * de $this est vide, faux sinon.
-	 * 
-	 * @return boolean
+	 * {@inheritDoc}
 	 */
-	public boolean hasEmptyField()
+	public boolean isComplete()
 	{
 		for (JTextField jtf : this.fields) {
-			if (jtf.getText().equals("")) return true;
+			if (jtf.getText().equals("")) return false;
 		}
-		return false;
+		return true;
 	}
 	
 	
 	/**
-	 * Communique avec l'utilisateur en affichant $msg.
-	 * 
-	 * @param msg : un message à transmettre à l'utilisateur.
+	 * {@inheritDoc}
 	 */
 	public void talk(String msg)
 	{
@@ -338,7 +335,7 @@ implements ActionListener
 	 */
 	private void setDefaultValues()
 	{
-		//TO DO : extraire les valeurs par défaut depuis quelque part.
+		//TODO : extraire les valeurs par défaut depuis quelque part.
 		this.urlField.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
 	}
 	
@@ -348,12 +345,11 @@ implements ActionListener
 	 */
 	private void okButtonAction()
 	{
-		if (this.hasEmptyField()) {
+		if (! this.isComplete()) {
 			this.talk("Erreur : les champs doivent être remplis.");
 		}
 		else {
-			ConnectionResponse response;
-			response = this.control.connect(
+			this.control.connect(
 					this.urlField.getText(), 
 					this.userField.getText(), 
 					this.passwordField.getText());
