@@ -1,7 +1,10 @@
 package launch;
 
 import connect.*;
+
 import main.*;
+
+
 
 public class Launcher {
 
@@ -11,8 +14,10 @@ public class Launcher {
 	 */
 	public static void main(String[] args) 
 	{
+
 		ConnectionController home = new ConnectionController ();
 		System.out.println("FIN du programme.");
+
 	}
 
 }
