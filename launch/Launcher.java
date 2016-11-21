@@ -12,7 +12,7 @@ public class Launcher {
 	public static void main(String[] args) 
 	{
 		ConnectionController home = new ConnectionController ();
-		System.out.println("FIN");
+		System.out.println("FIN du programme");
 	}
 
 }
