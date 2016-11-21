@@ -45,16 +45,12 @@ public class ConnectionController
 	{
 		ConnectionResponse response;
 		this.talk("Tentative de connexion...");
-
-
 		response = this.connector.connect(url, user, pswd);
 		this.talk(response.toString());
 		if (response.success()) {
 			this.ihm.dispose();
-			MainController mc = new MainController(this.connector);
+			new MainController(this.connector);
 		}
-
-
 	}
 	
 	

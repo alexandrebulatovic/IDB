@@ -67,6 +67,7 @@ public class ConnectionManager
 		}
 		
 		this.connection = conn;
+		this.user = user;
 		return new ConnectionResponse(true, "Connexion réussie.");
 	}
 	
@@ -85,7 +86,15 @@ public class ConnectionManager
 	 * 
 	 * @return Connection
 	 */
-	public Connection sgbd() {return this.connection;}
+	public Connection dbms() {return this.connection;}
+	
+	
+	/**
+	 * Retourne le nom de l'utilisateur connecté.
+	 * 
+	 * @return String
+	 */
+	public String user(){return this.user;}
 	
 	
 	/**

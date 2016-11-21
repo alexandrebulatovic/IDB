@@ -26,5 +26,6 @@ public class MainController
 	{
 		this.connector = connector;
 		this.mhi = new MainView();
+		this.mhi.talk("Bienvenue " + this.connector.user());
 	}
 }
