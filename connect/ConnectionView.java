@@ -1,7 +1,6 @@
 package connect;
 
 import interf.IDBFrame;
-
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -380,7 +379,6 @@ implements ActionListener, IDBFrame
 	 */
 	private void setProperties()
 	{
-		//this.setTitle(" Connexion "); 
 		this.setSize(this.width, this.height);
 		this.setLocationRelativeTo(null); 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  

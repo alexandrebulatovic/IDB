@@ -1,5 +1,7 @@
 package connect;
 
+import main.MainController;
+
 /**
  * Gère le dialogue entre l'IHM et le connecteur au SGBD.
  */
@@ -41,10 +43,14 @@ public class ConnectionController
 	 */
 	public void connect(String url, String user, String pswd)
 	{
-		ConnectionResponse result;
+		ConnectionResponse response;
 		this.talk("Tentative de connexion...");
-		result = this.connector.connect(url, user, pswd);
-		this.talk(result.toString());
+		response = this.connector.connect(url, user, pswd);
+		this.talk(response.toString());
+		if (response.success()) {
+			this.ihm.dispose();
+			MainController mc = new MainController(this.connector);
+		}
 	}
 	
 	
