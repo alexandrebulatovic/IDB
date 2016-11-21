@@ -52,7 +52,7 @@ public class ConnectionController
 			MainController mc = new MainController(this.connector);
 		}
 	}
-	
+	 
 	
 	/**
 	 * Communique avec l'utilisateur en lui affichant $msg.
