@@ -1,6 +1,7 @@
 package connect;
 
 import interf.IDBFrame;
+
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -10,7 +11,7 @@ import javax.swing.*;
  */
 public class ConnectionView 
 extends JFrame 
-implements ActionListener, IDBFrame
+implements ActionListener,ItemListener, IDBFrame
 {
 	//Attributes
 	/**
@@ -26,7 +27,7 @@ implements ActionListener, IDBFrame
 	/**
 	 * Largeur de l'IHM.
 	 */
-	private final int width = 400;
+	private final int width = 500;
 	
 	/**
 	 * Hauteur des éléments.
@@ -179,16 +180,38 @@ implements ActionListener, IDBFrame
 	/**
 	 * Gestionnaire d'évènements.
 	 * 
-	 * @param e : un évènement attrapé par l'IHM.
+	 * @param e : un événement attrapé par l'IHM.
 	 */
 	public void actionPerformed(ActionEvent e)
-	{
+	{	
 		if (e.getSource() == this.okButton) {
 			this.okButtonAction();
 		}
 	}
 	
 	
+	/**
+	 * 
+	 * @param e : événement
+	 */
+	public void itemStateChanged(ItemEvent e){
+		if(e.getStateChange()==1){//le nouvel item
+			if (e.getItem().toString().equals("Oracle")){
+				this.setValuesOracle();
+				
+			}
+			
+		}
+
+		
+		
+	}
+	
+	
+	
+
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -226,17 +249,19 @@ implements ActionListener, IDBFrame
 	private void createCombos()
 	{
 		this.combos = new JComboBox[this.comboNumber];
-		String values[]={"Oracle"};
-		this.combos[0] = this.driverCombo = new JComboBox<String>(values);
+		this.combos[0] = this.driverCombo = new JComboBox<String>();
+		this.driverCombo.addItem("Oracle");
 	}
 	
 	private void bindCombos(){
 		driverCombo.setBounds(this.margin, this.elementHeight, this.elementWidth, this.elementHeight);
 		
+		
 	}
 	
 	private void addCombos(){
 		for (JComboBox<String> c : this.combos){
+			c.addItemListener(this);
 			this.add(c);
 		}			
 	}
@@ -356,8 +381,6 @@ implements ActionListener, IDBFrame
 	 */
 	private void bindButtons()
 	{
-		//Math.round(a)
-		System.out.println((int)(0.75*this.height));
 		this.okButton.setBounds(this.margin, (int)(0.75*this.height)+20, this.elementWidth, 30);
 	}
 	
@@ -438,7 +461,15 @@ implements ActionListener, IDBFrame
 	private void setDefaultValues()
 	{
 		//TODO : extraire les valeurs par défaut depuis quelque part.
-		this.urlField.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
+		//this.urlField.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
+		this.setValuesOracle();
+	}
+	
+	private void setValuesOracle() {
+		// TODO Auto-generated method stub
+		this.urlField.setText("162.38.222.149");
+		this.portField.setText("1521");
+		this.baseNameField.setText("IUT");
 	}
 	
 	
