@@ -3,6 +3,7 @@ package connect;
 import interf.IDBFrame;
 
 import java.awt.event.*;
+
 import javax.swing.*;
 
 /**
@@ -21,17 +22,18 @@ implements ActionListener, IDBFrame
 	/**
 	 * Hauteur de l'IHM.
 	 */
-	private final int height = 500;
+	private final int height = 400;
 	
 	/**
 	 * Largeur de l'IHM.
 	 */
-	private final int width = 500;
+	private final int width = 400;
 	
 	/**
 	 * Hauteur des éléments.
 	 */
 	private final int elementHeight = 20;
+	
 	
 	/**
 	 * Largeur des éléments.
@@ -41,10 +43,10 @@ implements ActionListener, IDBFrame
 	/**
 	 * Marge à gauche des éléments.
 	 */
-	private final int margin = 30;
+	private int margin = 30;
 	
 	/**
-	 * Bouton 'Valider'.
+	 * Bouton 'Connexion'.
 	 */
 	private JButton okButton;
 	
@@ -59,7 +61,23 @@ implements ActionListener, IDBFrame
 	private final int buttonNumber = 1;
 	
 	/**
+	 * La JComboBox de choix des drivers
+	 */
+	private JComboBox driverCombo;
+	
+	/**
+	 * Contiens toutes les JComboBox
+	 */
+	private JComboBox[]combos;
+	
+	/**
+	 * nombre de JComboBox
+	 */
+	private final int comboNumber = 1;
+	
+	/**
 	 * Boîte de saisie de l'adresse du SGBD.
+	 * Valeur Hôte/ip
 	 */
 	private JTextField urlField;
 	
@@ -74,6 +92,16 @@ implements ActionListener, IDBFrame
 	private JTextField passwordField;
 	
 	/**
+	 * Le nom de la BDD
+	 */
+	private JTextField baseNameField;
+	
+	/**
+	 * Le numéro de port
+	 */
+	private JTextField portField;
+	
+	/**
 	 * Contient toutes les boîtes de saisie.
 	 */
 	private JTextField [] fields;
@@ -81,7 +109,12 @@ implements ActionListener, IDBFrame
 	/**
 	 * Nombre de boîtes de saisie.
 	 */
-	private final int fieldNumber = 3;
+	private final int fieldNumber = 5;
+	
+	/**
+	 * Etiquette du label de choix des drivers;
+	 */
+	private JLabel driverLabel;
 	
 	/**
 	 * Etiquette pour l'adresse du SGBD.
@@ -99,6 +132,16 @@ implements ActionListener, IDBFrame
 	private JLabel passwordLabel;
 	
 	/**
+	 * Eiquette pour le nom de la base
+	 */
+	private JLabel baseLabel;
+	
+	/**
+	 * Etiquette pour le port
+	 */
+	private JLabel portLabel;
+	
+	/**
 	 * Etiquette pour communiquer.
 	 */
 	private JLabel messageLabel;
@@ -111,7 +154,7 @@ implements ActionListener, IDBFrame
 	/**
 	 * Nombre d'étiquettes.
 	 */
-	private final int labelNumber = 4;
+	private final int labelNumber = 7;
 	
 	
 	//Constructeurs
@@ -124,6 +167,7 @@ implements ActionListener, IDBFrame
 		this.control = cc;
 		this.setLayout(null);
 		this.setDimension();
+		this.handleCombos();
 		this.handleFields();
 		this.handleLabels();
 		this.handleButtons();
@@ -174,8 +218,29 @@ implements ActionListener, IDBFrame
 	private void setDimension()
 	{
 		this.elementWidth = (int) (0.7 * this.width);
+		this.margin = (int)((0.3*this.width)/2);
 	}
 	
+	/**
+	 * Instancie les combobox
+	 */
+	private void createCombos()
+	{
+		this.combos = new JComboBox[this.comboNumber];
+		String values[]={"Oracle"};
+		this.combos[0] = this.driverCombo = new JComboBox<String>(values);
+	}
+	
+	private void bindCombos(){
+		driverCombo.setBounds(this.margin, this.elementHeight, this.elementWidth, this.elementHeight);
+		
+	}
+	
+	private void addCombos(){
+		for (JComboBox<String> c : this.combos){
+			this.add(c);
+		}			
+	}
 	
 	/**
 	 * Instancie les boîtes de saisies.
@@ -185,7 +250,9 @@ implements ActionListener, IDBFrame
 		this.fields = new JTextField [this.fieldNumber];
 		this.fields[0] = this.urlField = new JTextField();
 		this.fields[1] = this.userField = new JTextField();
-		this.fields[2] = this.passwordField = new JPasswordField(); 	
+		this.fields[2] = this.passwordField = new JPasswordField(); 
+		this.fields[3] = this.baseNameField = new JTextField();
+		this.fields[4] = this.portField = new JTextField();
 	}
 	
 	
@@ -194,9 +261,21 @@ implements ActionListener, IDBFrame
 	 */
 	private void bindFields()
 	{
-		this.urlField		.setBounds(this.margin, 40, this.elementWidth, this.elementHeight);
-		this.userField		.setBounds(this.margin, 120, this.elementWidth, this.elementHeight);
+		int foot = (int)(0.25*this.fieldNumber*this.elementHeight);
+		foot*=2;//on ajoute la taille des labels
+		int jump = this.elementHeight*4;//et ici le textBox
+		
+		for(final JTextField field : this.fields){
+			field.setBounds(this.margin, jump-10, this.elementWidth, this.elementHeight);
+			jump+=foot;				
+		}
+		/*Les méthodes statiques seront gardés en cas de rollback
+		this.urlField		.setBounds(this.margin, jump, this.elementWidth, this.elementHeight);
+		this.userField		.setBounds(this.margin, jump, this.elementWidth, this.elementHeight);
 		this.passwordField	.setBounds(this.margin, 200, this.elementWidth, this.elementHeight);
+		this.baseNameField  .setBounds(this.margin, 260, this.elementWidth, this.elementHeight);
+		this.portField		.setBounds(this.margin, 310, this.elementWidth, this.elementHeight);
+		*/
 	}
 	
 	
@@ -217,10 +296,13 @@ implements ActionListener, IDBFrame
 	private void createLabels()
 	{
 		this.labels = new JLabel [this.labelNumber];
-		this.labels[0] = this.urlLabel = new JLabel("URL du serveur : ");
-		this.labels[1] = this.userLabel = new JLabel("Utilisateur : ");
-		this.labels[2] = this.passwordLabel = new JLabel("Mot de passe : ");
-		this.labels[3] = this.messageLabel = new JLabel("");
+		this.labels[0] = this.driverLabel = new JLabel("Pilote :");
+		this.labels[1] = this.urlLabel = new JLabel("URL du serveur :");
+		this.labels[2] = this.userLabel = new JLabel("Utilisateur :");
+		this.labels[3] = this.passwordLabel = new JLabel("Mot de passe :");
+		this.labels[4] = this.baseLabel = new JLabel("Nom de la Base de Données :");
+		this.labels[5] = this.portLabel = new JLabel("Port du Serveur :");
+		this.labels[6] = this.messageLabel = new JLabel("");
 	}
 	
 	
@@ -229,10 +311,22 @@ implements ActionListener, IDBFrame
 	 */
 	private void bindLabels()
 	{
+		int foot = (int)(0.25*this.fieldNumber*this.elementHeight);
+		foot*=2;
+		int jump = 0;//et ici le textBox
+		
+		for(final JLabel label : this.labels){
+			label.setBounds(this.margin, jump, this.elementWidth, this.elementHeight);
+			jump+=foot;				
+		}
+		/*
 		this.urlLabel.setBounds(this.margin, 20, this.elementWidth, this.elementHeight);
 		this.userLabel.setBounds(this.margin, 100, this.elementWidth, this.elementHeight);
 		this.passwordLabel.setBounds(this.margin, 180, this.elementWidth, this.elementHeight);
 		this.messageLabel.setBounds(this.margin, 300, this.elementWidth, this.elementHeight);
+		this.baseLabel.setBounds(this.margin, 300+60, elementWidth, elementHeight);
+		this.portLabel.setBounds(this.margin, 300+60+60, elementWidth, elementHeight);
+		*/
 	}
 	
 	
@@ -263,7 +357,9 @@ implements ActionListener, IDBFrame
 	 */
 	private void bindButtons()
 	{
-		this.okButton.setBounds(this.margin, 250, this.elementWidth, 30);
+		//Math.round(a)
+		System.out.println((int)(0.75*this.height));
+		this.okButton.setBounds(this.margin, (int)(0.75*this.height)+20, this.elementWidth, 30);
 	}
 	
 	
@@ -285,11 +381,19 @@ implements ActionListener, IDBFrame
 	private void setProperties()
 	{
 		//this.setTitle(" Connexion "); 
-		this.setSize(400, 400);
+		this.setSize(this.width, this.height);
 		this.setLocationRelativeTo(null); 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
 		this.setVisible(true);    
 		this.setResizable(false);
+	}
+	
+	private void handleCombos()
+	{
+		
+		this.createCombos();
+		this.bindCombos();
+		this.addCombos();
 	}
 	
 	
