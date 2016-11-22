@@ -67,12 +67,17 @@ public class ConnectionController
 	
 	
 	//Privates
+	/**
+	 * Enregistre les informations de connexion par défaut.
+	 * 
+	 * @param url : url valide du SGBD.
+	 * @param user : nom d'utilisateur valide.
+	 */
 	private void saveDefaultValue(String url, String user)
 	{
 		DefaultValueManager dvm = new DefaultValueManager();
 		dvm.setUrl(url);
 		dvm.setUser(user);
-		System.out.println(dvm);
 		dvm.save();
 	}
 }
