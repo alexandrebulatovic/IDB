@@ -3,7 +3,9 @@ package launch;
 import connect.*;
 
 import main.*;
-
+import java.io.File;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
 
 public class Launcher {
@@ -14,10 +16,8 @@ public class Launcher {
 	 */
 	public static void main(String[] args) 
 	{
-
 		ConnectionController home = new ConnectionController ();
 		System.out.println("FIN du programme.");
-
 	}
 
 }

@@ -437,8 +437,11 @@ implements ActionListener, IDBFrame
 	 */
 	private void setDefaultValues()
 	{
-		//TODO : extraire les valeurs par défaut depuis quelque part.
-		this.urlField.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
+		DefaultValueManager dvm = new DefaultValueManager();
+		this.urlField.setText(dvm.getUrl());
+		this.userField.setText(dvm.getUser());
+		this.baseNameField.setText(dvm.getDataBase());
+		this.portField.setText(dvm.getPort());
 	}
 	
 	

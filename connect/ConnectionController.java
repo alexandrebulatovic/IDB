@@ -48,6 +48,7 @@ public class ConnectionController
 		response = this.connector.connect(url, user, pswd);
 		this.talk(response.toString());
 		if (response.success()) {
+			this.saveDefaultValue(url, user);
 			this.ihm.dispose();
 			new MainController(this.connector);
 		}
@@ -63,4 +64,16 @@ public class ConnectionController
 	{
 		this.ihm.talk(msg);
 	}
+	
+	
+	//Privates
+	private void saveDefaultValue(String url, String user)
+	{
+		DefaultValueManager dvm = new DefaultValueManager();
+		dvm.setUrl(url);
+		dvm.setUser(user);
+		System.out.println(dvm);
+		dvm.save();
+	}
 }
+
