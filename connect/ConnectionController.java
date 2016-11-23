@@ -36,24 +36,27 @@ public class ConnectionController
 	 * avec son mot de passe $pswd.
 	 * Retourne un objet qui décrit grossièrement la tentative de connexion.
 	 * 
+	 * @param driver : le type de drivers
 	 * @param url : url du SGBD.
 	 * @param user : nom d'utilisateur souhaitant se connecter.
 	 * @param pswd : mot de passe de l'utilisateur.
+	 * @param baseName : ne nom de la base de données 
+	 * @param port : le port du serveur 
 	 * @return ConnectionResponse
 	 */
-	public void connect(String url, String user, String pswd)
+	public void connect(String driver, String url, String user, String pswd, String baseName, int port)
 	{
 		ConnectionResponse response;
 		this.talk("Tentative de connexion...");
-		response = this.connector.connect(url, user, pswd);
+		response = this.connector.connect(driver, url, user, pswd, baseName, port);
 		this.talk(response.toString());
 		if (response.success()) {
-			this.saveDefaultValue(url, user);
+			//this.saveDefaultValue(url, user);
 			this.ihm.dispose();
 			new MainController(this.connector);
 		}
 	}
-	
+	 
 	
 	/**
 	 * Communique avec l'utilisateur en lui affichant $msg.
@@ -73,12 +76,12 @@ public class ConnectionController
 	 * @param url : url valide du SGBD.
 	 * @param user : nom d'utilisateur valide.
 	 */
-	private void saveDefaultValue(String url, String user)
-	{
-		DefaultValueManager dvm = new DefaultValueManager();
-		dvm.setUrl(url);
-		dvm.setUser(user);
-		dvm.save();
-	}
+//	private void saveDefaultValue(String url, String user)
+//	{
+//		DefaultValueManager dvm = new DefaultValueManager();
+//		dvm.setUrl(url);
+//		dvm.setUser(user);
+//		dvm.save();
+//	}
 }
 

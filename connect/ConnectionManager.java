@@ -10,6 +10,28 @@ public class ConnectionManager
 {
 	//Attributes
 	/**
+	 * Mot de passe d'utilisateur de la Base de Données.
+	 */
+	private String pswd;
+	
+	/**
+	 * driver utilisé pour la base de données
+	 */
+	Class<?> driver;
+
+	
+	/**
+	 * indentificateur
+	 */
+	private String baseName;
+	
+	/**
+	 * Le port nécessaire à la connexion
+	 */
+	private int port;
+	
+	
+	/**
 	 * Un objet qui représente la connexion à un SGBD.
 	 */
 	private Connection connection;
@@ -49,29 +71,54 @@ public class ConnectionManager
 	 * @param pswd : mot de passe de l'utilisateur.
 	 * @return ConnectionResponse
 	 */
-	public ConnectionResponse connect(String url, String user, String pswd)
+	public ConnectionResponse connect(String driver, String url, String user, String pswd, String baseName, int port)
 	{
 		Connection conn;
 		try{
-			Class.forName("oracle.jdbc.OracleDriver");
+			if (driver.equals("Oracle")){
+				this.driver = Class.forName("oracle.jdbc.OracleDriver");
+			}
+			
 		}
 		catch(Exception e1){
-			return new ConnectionResponse(false, "problème de pilote Oracle.");
+			return new ConnectionResponse(false, "problème de pilote.");
 		}
 		
+		
+		 String entireUrl = this.getEntireUrl(url,port,baseName);
 		try {
-			conn = DriverManager.getConnection(url, user, pswd);
+			conn = DriverManager.getConnection(entireUrl, user, pswd);
 		}
 		catch(Exception e2){
+			System.out.println("impossible de se connecter au SGBD.");
+			System.out.println("Connexion : " + entireUrl);
 			return new ConnectionResponse(false, "impossible de se connecter au SGBD.");
 		}
 		
 		this.connection = conn;
 		this.user = user;
+		this.port=port;
+		this.baseName=baseName;
+		this.url=url;
 		return new ConnectionResponse(true, "Connexion réussie.");
 	}
 	
 	
+	/**
+	 * retourne une chaine de charactère permettant de se connecter à jdbc d'après
+	 * toutes les informations disponibles dans les attributs de la classe
+	 * @param baseName 
+	 * @param port 
+	 * @param url 
+	 * @return String
+	 */
+	private String getEntireUrl(String url, int port, String baseName){	
+		String stringReturn = "jdbc:";
+		stringReturn +=":thin:@" + url + ":" + String.valueOf(port) +":" + baseName;
+		return stringReturn;
+}
+
+
 	/**
 	 * Retourne vrai si et seulement si $this est connecté à un SGBD,
 	 * faux sinon.
