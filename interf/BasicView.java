@@ -24,7 +24,7 @@ implements IDBFrame
 	/**
 	 * Marge de l'IHM.
 	 */
-	private int margin;
+	private int elementLeft;
 	
 	/**
 	 * Hauteur des éléments.
@@ -37,6 +37,11 @@ implements IDBFrame
 	private int elementWidth;
 	
 	/**
+	 * Incrément pour positionner les éléments sur la hauteur.
+	 */
+	private int elementTop;
+	
+	/**
 	 * Etiquette pour dialoguer avec l'utilisateur.
 	 */
 	private JLabel messageLabel;
@@ -46,13 +51,8 @@ implements IDBFrame
 	 */
 	protected ArrayList <JComponent> components;
 	
-	/**
-	 * Incrément pour positionner les éléments sur la hauteur.
-	 */
-	protected int topElement;
 	
-	
-	//Protected
+	//Constructeur
 	protected BasicView(String name, String title, LayoutManager lm,int width, int height)
 	{
 		super(name);
@@ -66,6 +66,7 @@ implements IDBFrame
 	}
 	
 	
+	//Protected
 	/**
 	 * Associe tous les composants de $this à $this.
 	 */
@@ -78,15 +79,6 @@ implements IDBFrame
 	
 	
 	/**
-	 * {@inheritDoc}
-	 */
-	public void talk(String msg)
-	{
-		this.messageLabel.setText(msg);
-	}
-	
-	
-	/**
 	 * Dimensionne et positionne $element.
 	 * Détermine l'emplacement du prochain élément.
 	 * 
@@ -94,8 +86,8 @@ implements IDBFrame
 	 */
 	protected void bindElements(JComponent element)
 	{
-		element.setBounds(this.margin, this.topElement, this.elementWidth, this.elementHeight);
-		this.increaseTopElement(this.elementHeight);
+		element.setBounds(this.elementLeft, this.elementTop, this.elementWidth, this.elementHeight);
+		this.increaseTop(this.elementHeight);
 	}
 	
 	
@@ -108,11 +100,39 @@ implements IDBFrame
 	 */
 	protected void bindElements(JComponent element, int height)
 	{
-		element.setBounds(this.margin, this.topElement, this.elementWidth, height);
-		this.increaseTopElement(height);
+		element.setBounds(this.elementLeft, this.elementTop, this.elementWidth, height);
+		this.increaseTop(height);
 	}
 	
 
+	/**
+	 * Dimensionne et positionne $element, avec une largeur $nb fois 
+	 * petite que par défaut.
+	 * Si $alignNext est vrai, le prochain élément sera placé à droite de $element,
+	 * sinon en bas.
+	 * Lorsque cette méthode est appellée avec $alignNext vrai, il faut impérativement
+	 * la réutiliser en série jusqu'à passer un faux.
+	 * 
+	 * @param element : un objet JComponenet
+	 * @param nb : un entier naturel > 0
+	 * @param alignNext : vrai pour aligner le prochain élément à droite,
+	 * faux pour l'aligner en bas.
+	 */
+	protected void bindElements(JComponent element, int nb, boolean alignNext)
+	{
+		int width = (int) (this.elementWidth/nb);
+		element.setBounds(
+				this.elementLeft, this.elementTop, width, this.elementHeight);
+		if (alignNext) {
+			this.increaseLeft(width);
+		}
+		else{
+			this.increaseTop(this.elementHeight);
+			this.elementLeft = (int) (0.05 * this.width);
+		}
+	}
+	
+	
 	/**
 	 * Définit certaines propriétés de l'IHM.
 	 */
@@ -125,26 +145,50 @@ implements IDBFrame
 		this.setResizable(false);
 	}
 	
+	//Méthode
+	/**
+	 * {@inheritDoc}
+	 */
+	public void talk(String msg)
+	{
+		this.messageLabel.setText(msg);
+	}
 	
+	
+	//Privates
 	/**
 	 * Dimensionne l'IHM.
 	 */
 	private void setDimension()
 	{
-		this.topElement = 0;
-		this.margin = (int) (0.05 * this.width);
+		this.elementTop = 0;
+		this.elementLeft = (int) (0.05 * this.width);
 		this.elementWidth = (int) (0.9 * this.width);
 	}
 	
 	
 	/**
-	 * Incrémente la position du prochain élément de $add pixels.
+	 * Incrémente la position du prochain élément 
+	 * d'un peu plus de $add pixels en ordonnée.
 	 * 
 	 * @param add : un entier naturel > 0 et < la hauteur de $this.
 	 */
-	private void increaseTopElement(int add)
+	private void increaseTop(int add)
 	{
 		//TODO : Supprimer le +10 car risque d'erreur
-		this.topElement += add + 10;
+		this.elementTop += add + 10;
+	}
+	
+	
+	/**
+	 * Incrémente la position du prochain élément 
+	 * d'un peu plus de $add pixels en abscisse.
+	 * 
+	 * @param add
+	 */
+	private void increaseLeft(int add)
+	{
+		//TODO : sSécuriser pour ne pas dépasser
+		this.elementLeft += add +5;
 	}
 }
