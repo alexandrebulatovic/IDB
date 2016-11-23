@@ -114,36 +114,43 @@ implements ActionListener,ItemListener, IDBFrame
 	/**
 	 * Etiquette du label de choix des drivers;
 	 */
+	@SuppressWarnings("unused")
 	private JLabel driverLabel;
 	
 	/**
 	 * Etiquette pour l'adresse du SGBD.
 	 */
+	@SuppressWarnings("unused")
 	private JLabel urlLabel;
 	
 	/**
 	 * Etiquette pour le nom d'utilisateur.
 	 */
+	@SuppressWarnings("unused")
 	private JLabel userLabel;
 	
 	/**
 	 * Etiquette pour le mot de passe.
 	 */
+	@SuppressWarnings("unused")
 	private JLabel passwordLabel;
 	
 	/**
 	 * Eiquette pour le nom de la base
 	 */
+	@SuppressWarnings("unused")
 	private JLabel baseLabel;
 	
 	/**
 	 * Etiquette pour le port
 	 */
+	@SuppressWarnings("unused")
 	private JLabel portLabel;
 	
 	/**
 	 * Etiquette pour communiquer.
 	 */
+	@SuppressWarnings("unused")
 	private JLabel messageLabel;
 	
 	/**
@@ -218,7 +225,7 @@ implements ActionListener,ItemListener, IDBFrame
 	public boolean isComplete()
 	{
 		for (JTextField jtf : this.fields) {
-			if (jtf.getText().equals("")) return false;
+			if (jtf.getText().equals("") && jtf !=this.passwordField) return false;
 		}
 		return true;
 	}
@@ -482,10 +489,15 @@ implements ActionListener,ItemListener, IDBFrame
 			this.talk("Erreur : les champs doivent être remplis.");
 		}
 		else {
+			int port = Integer.parseInt(this.portField.getText());
 			this.control.connect(
+					this.driverCombo.getSelectedItem().toString(),
 					this.urlField.getText(), 
 					this.userField.getText(), 
-					this.passwordField.getText());
+					this.passwordField.getText(),
+					this.baseNameField.getText(),
+					port
+					);
 		}
 	}
 	

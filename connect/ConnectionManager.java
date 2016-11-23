@@ -49,7 +49,7 @@ public class ConnectionManager
 	 * @param pswd : mot de passe de l'utilisateur.
 	 * @return ConnectionResponse
 	 */
-	public ConnectionResponse connect(String url, String user, String pswd)
+	public ConnectionResponse connect(String driver, String url, String user, String pswd, String baseName, int port)
 	{
 		Connection conn;
 		try{
