@@ -28,7 +28,7 @@ public class ConnectionManager
 	/**
 	 * Le port nécessaire à la connexion
 	 */
-	private int port;
+	private String port;
 	
 	
 	/**
@@ -71,7 +71,7 @@ public class ConnectionManager
 	 * @param pswd : mot de passe de l'utilisateur.
 	 * @return ConnectionResponse
 	 */
-	public ConnectionResponse connect(String driver, String url, String user, String pswd, String baseName, int port)
+	public ConnectionResponse connect(String driver, String url, String user, String pswd, String baseName, String port)
 	{
 		Connection conn;
 		try{
@@ -112,9 +112,9 @@ public class ConnectionManager
 	 * @param url 
 	 * @return String
 	 */
-	private String getEntireUrl(String url, int port, String baseName){	
+	private String getEntireUrl(String url, String port, String baseName){	
 		String stringReturn = "jdbc:";
-		stringReturn +=":thin:@" + url + ":" + String.valueOf(port) +":" + baseName;
+		stringReturn +=":thin:@" + url + ":" + port +":" + baseName;
 		return stringReturn;
 }
 

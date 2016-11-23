@@ -467,15 +467,15 @@ implements ActionListener,ItemListener, IDBFrame
 	 */
 	private void setDefaultValues()
 	{
-//		DefaultValueManager dvm = new DefaultValueManager();
-//		this.urlField.setText(dvm.getUrl());
-//		this.userField.setText(dvm.getUser());
-//		this.baseNameField.setText(dvm.getDataBase());
-//		this.portField.setText(dvm.getPort());
+		DefaultValueManager dvm = new DefaultValueManager();
+		this.urlField.setText(dvm.getUrl());
+		this.userField.setText(dvm.getUser());
+		this.baseNameField.setText(dvm.getDataBase());
+		this.portField.setText(dvm.getPort());
 		//TODO : extraire les valeurs par défaut depuis quelque part.
 		//this.urlField.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
 		
-		this.setValuesOracle();
+		
 	}
 	
 	private void setValuesOracle() {
@@ -491,18 +491,17 @@ implements ActionListener,ItemListener, IDBFrame
 	 */
 	private void okButtonAction()
 	{
-		if (! this.isComplete()) {
-			this.talk("Erreur : les champs doivent être remplis.");
+		if (!this.isComplete()) {
+			this.talk("Erreur : les champs doivent être remplis et juste.");
 		}
 		else {
-			int port = Integer.parseInt(this.portField.getText());
 			this.control.connect(
 					this.driverCombo.getSelectedItem().toString(),
 					this.urlField.getText(), 
 					this.userField.getText(), 
 					this.passwordField.getText(),
 					this.baseNameField.getText(),
-					port
+					this.portField.getText()
 					);
 		}
 	}

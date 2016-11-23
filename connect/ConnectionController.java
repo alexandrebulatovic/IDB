@@ -44,14 +44,14 @@ public class ConnectionController
 	 * @param port : le port du serveur 
 	 * @return ConnectionResponse
 	 */
-	public void connect(String driver, String url, String user, String pswd, String baseName, int port)
+	public void connect(String driver, String url, String user, String pswd, String baseName, String port)
 	{
 		ConnectionResponse response;
 		this.talk("Tentative de connexion...");
 		response = this.connector.connect(driver, url, user, pswd, baseName, port);
 		this.talk(response.toString());
 		if (response.success()) {
-			//this.saveDefaultValue(url, user);
+			this.saveDefaultValue(url, user,port,baseName);
 			this.ihm.dispose();
 			new MainController(this.connector);
 		}
@@ -76,12 +76,14 @@ public class ConnectionController
 	 * @param url : url valide du SGBD.
 	 * @param user : nom d'utilisateur valide.
 	 */
-//	private void saveDefaultValue(String url, String user)
-//	{
-//		DefaultValueManager dvm = new DefaultValueManager();
-//		dvm.setUrl(url);
-//		dvm.setUser(user);
-//		dvm.save();
-//	}
+	private void saveDefaultValue(String url, String user,String port,String baseName)
+	{
+		DefaultValueManager dvm = new DefaultValueManager();
+		dvm.setUrl(url);
+		dvm.setUser(user);
+		dvm.setPort(port);
+		dvm.setDataBase(baseName);
+		dvm.save();
+	}
 }
 
