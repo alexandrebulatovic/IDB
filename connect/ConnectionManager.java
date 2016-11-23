@@ -2,6 +2,7 @@ package connect;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * Gère la connection à un SGBD.
@@ -89,12 +90,12 @@ public class ConnectionManager
 		try {
 			conn = DriverManager.getConnection(entireUrl, user, pswd);
 		}
-		catch(Exception e2){
-			System.out.println("impossible de se connecter au SGBD.");
-			System.out.println("Connexion : " + entireUrl);
-			return new ConnectionResponse(false, "impossible de se connecter au SGBD.");
+		catch(SQLException e){
+			return new ConnectionResponse(false, "SQLException");
 		}
-		
+		catch(Exception e2){
+			return new ConnectionResponse(false, "Exception");
+		}
 		this.connection = conn;
 		this.user = user;
 		this.port=port;

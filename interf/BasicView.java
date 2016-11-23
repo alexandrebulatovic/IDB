@@ -14,12 +14,12 @@ implements IDBFrame
 	/**
 	 * Hauteur de l'IHM.
 	 */
-	private final int height;
+	private int height;
 	
 	/**
 	 * Largeur de l'IHM.
 	 */
-	private final int width;
+	private int width;
 	
 	/**
 	 * Marge de l'IHM.
@@ -29,7 +29,7 @@ implements IDBFrame
 	/**
 	 * Hauteur des éléments.
 	 */
-	private final int elementHeight = 40;
+	private int elementHeight;
 	
 	/**
 	 * Largeur des éléments.
@@ -53,14 +53,12 @@ implements IDBFrame
 	
 	
 	//Constructeur
-	protected BasicView(String name, String title, LayoutManager lm,int width, int height)
+	protected BasicView(String name, LayoutManager lm, int width, int height, int elementHeight)
 	{
 		super(name);
 		this.setLayout(lm);
 		this.components = new ArrayList<JComponent>();
-		this.width = width;
-		this.height = height;
-		this.setDimension();
+		this.setDimension(width, height, elementHeight);
 		this.components.add(this.messageLabel = new JLabel());
 		this.bindElements(this.messageLabel);
 	}
@@ -79,7 +77,7 @@ implements IDBFrame
 	
 	
 	/**
-	 * Dimensionne et positionne $element.
+	 * Dimensionne et positionne $element selon les attributs de $this.
 	 * Détermine l'emplacement du prochain élément.
 	 * 
 	 * @param element : un objet JComponent
@@ -92,7 +90,8 @@ implements IDBFrame
 	
 	
 	/**
-	 * Dimensionne et positionne $element, avec une hauteur de $height pixels.
+	 * Dimensionne et positionne $element selon les attributs de $this,
+	 * sauf pour la hauteur qui est déterminé sur $height pixels.
 	 * Détermine l'emplacement du prochain élément.
 	 * 
 	 * @param element : un objet JComponent
@@ -107,7 +106,7 @@ implements IDBFrame
 
 	/**
 	 * Dimensionne et positionne $element, avec une largeur $nb fois 
-	 * petite que par défaut.
+	 * petite que celle définit par les attributs de $this.
 	 * Si $alignNext est vrai, le prochain élément sera placé à droite de $element,
 	 * sinon en bas.
 	 * Lorsque cette méthode est appellée avec $alignNext vrai, il faut impérativement
@@ -130,6 +129,12 @@ implements IDBFrame
 			this.increaseTop(this.elementHeight);
 			this.elementLeft = (int) (0.05 * this.width);
 		}
+	}
+	
+	
+	private void addAndBind(JComponent element, int left, int top, int width, int height)
+	{
+		
 	}
 	
 	
@@ -159,8 +164,11 @@ implements IDBFrame
 	/**
 	 * Dimensionne l'IHM.
 	 */
-	private void setDimension()
+	private void setDimension(int width, int height, int elementHeight)
 	{
+		this.width = width;
+		this.height = height;
+		this.elementHeight = elementHeight;
 		this.elementTop = 0;
 		this.elementLeft = (int) (0.05 * this.width);
 		this.elementWidth = (int) (0.9 * this.width);

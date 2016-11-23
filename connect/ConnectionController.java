@@ -34,7 +34,7 @@ public class ConnectionController
 	/**
 	 * Etablit une connexion vers le SGBD $url, pour l'utilisateur $user,
 	 * avec son mot de passe $pswd.
-	 * Retourne un objet qui décrit grossièrement la tentative de connexion.
+	 * Ouvre la fenêtre principale si la connexion réussit.
 	 * 
 	 * @param driver : le type de drivers
 	 * @param url : url du SGBD.

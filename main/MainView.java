@@ -27,7 +27,7 @@ implements ActionListener
 	 */
 	public MainView()
 	{
-		super("Menu principal", "Bienvenue sur IDB.", null, 400, 200);
+		super("Menu principal", null, 400, 200, 40);
 		this.handleButtons();
 		this.addComponents();
 		this.setProperties();
