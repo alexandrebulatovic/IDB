@@ -29,7 +29,6 @@ implements ActionListener
 	{
 		super("Menu principal", null, 400, 200, 40);
 		this.handleButtons();
-		this.addComponents();
 		this.setProperties();
 	}
 	

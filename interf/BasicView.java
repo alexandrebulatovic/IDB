@@ -73,17 +73,6 @@ implements IDBFrame
 	
 	//Protected
 	/**
-	 * Associe tous les composants de $this à $this.
-	 */
-	protected void addComponents()
-	{
-		for (JComponent jc : this.components) {
-			this.add(jc);
-		}
-	}
-	
-	
-	/**
 	 * Dimensionne et positionne $element selon les attributs de $this.
 	 * Associe $element à $this.
 	 * Détermine l'emplacement du prochain élément.
