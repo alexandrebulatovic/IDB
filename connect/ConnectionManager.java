@@ -7,135 +7,83 @@ import java.sql.SQLException;
 /**
  * Gère la connection à un SGBD.
  */
-public class ConnectionManager 
+public abstract class ConnectionManager 
 {
 	//Attributes
 	/**
-	 * Mot de passe d'utilisateur de la Base de Données.
+	 * Nom du driver java pour utiliser la base de données.
 	 */
-	private String pswd;
-	
-	/**
-	 * driver utilisé pour la base de données
-	 */
-	Class<?> driver;
-
-	
-	/**
-	 * indentificateur
-	 */
-	private String baseName;
-	
-	/**
-	 * Le port nécessaire à la connexion
-	 */
-	private String port;
+	protected final String driverName;
 	
 	
 	/**
-	 * Un objet qui représente la connexion à un SGBD.
+	 * Driver java utiliser pour la base de données.
 	 */
-	private Connection connection;
+	protected Class<?> driver;
 	
 	/**
 	 * Adresse du SGBD connecté avec succès.
 	 */
-	private String url;
+	protected String url;
 	
 	/**
 	 * Nom d'utilisateur connecté au SGBD avec succès.
 	 */
-	private String user;
+	protected String user;
 	
-	
-	
-	//Constructeur
 	/**
-	 * Constructeur commun.
+	 * Mot de passe d'utilisateur de la Base de Données.
 	 */
-	public ConnectionManager()
+	protected String pswd;
+	
+	/**
+	 * indentificateur
+	 */
+	protected String baseName;
+	
+	/**
+	 * Le port nécessaire à la connexion
+	 */
+	protected String port;
+	
+	/**
+	 * Un objet qui représente la connexion à un SGBD.
+	 */
+	protected Connection dbms;
+	
+	
+	//Constructor
+	/**
+	 * Constructeur commun
+	 * 
+	 * @param driverName : Nom du driver java pour utiliser la base de données.
+	 */
+	protected ConnectionManager(String driverName)
 	{
-		this.connection = null;
-		this.url = null;
-		this.user = null;
+		this.driverName = driverName;
 	}
 	
 	
 	//Methods
 	/**
-	 * Etablit une connexion vers le SGBD $url, pour l'utilisateur $user,
-	 * avec son mot de passe $pswd.
-	 * Retourne un objet qui décrit grossièrement la tentative de connexion.
+	 * Tente d'établir une connexion vers un SGBD en fonction
+	 * des informations de connexions de $parameters.
+	 * Retourne un objet qui décrit la tentative de connexion.
 	 * 
-	 * @param url : url du SGBD.
-	 * @param user : nom d'utilisateur souhaitant se connecter.
-	 * @param pswd : mot de passe de l'utilisateur.
+	 * @param parameters : un objet ConnectionStrings
 	 * @return ConnectionResponse
 	 */
-	public ConnectionResponse connect(String driver, String url, String user, String pswd, String baseName, String port)
+	public ConnectionResponse connect(ConnectionStrings param)
 	{
-		Connection conn;
-		try{
-			if (driver.equals("Oracle")){
-				this.driver = Class.forName("oracle.jdbc.OracleDriver");
-			}
-			
+		ConnectionResponse result;
+		if (! this.loadDriver()) {
+			result = new ConnectionResponse(false, "problème de pilote.");
+		}		
+		else{
+			result = this.reachConnection(param);
 		}
-		catch(Exception e1){
-			return new ConnectionResponse(false, "problème de pilote.");
-		}
-		
-		
-		 String entireUrl = this.getEntireUrl(url,port,baseName);
-		try {
-			conn = DriverManager.getConnection(entireUrl, user, pswd);
-		}
-		catch(SQLException e){
-			return new ConnectionResponse(false, "lors de la connexion à la base de Données");//message recu par un utilisateur non initié
-			//return new ConnectionResponse(false, "SQLException");
-		}
-		catch(Exception e2){
-			return new ConnectionResponse(false, "Exception");
-		}
-		this.connection = conn;
-		this.user = user;
-		this.port=port;
-		this.baseName=baseName;
-		this.url=url;
-		return new ConnectionResponse(true, "Connexion réussie.");
+		return result;
 	}
-	
-	
-	/**
-	 * retourne une chaine de charactère permettant de se connecter à jdbc d'après
-	 * toutes les informations disponibles dans les attributs de la classe
-	 * @param baseName 
-	 * @param port 
-	 * @param url 
-	 * @return String
-	 */
-	private String getEntireUrl(String url, String port, String baseName){	
-		String stringReturn = "jdbc:";
-		stringReturn +=":thin:@" + url + ":" + port +":" + baseName;
-		return stringReturn;
-}
-
-
-	/**
-	 * Retourne vrai si et seulement si $this est connecté à un SGBD,
-	 * faux sinon.
-	 * 
-	 * @return boolean
-	 */
-	public boolean isConnected() {return this.connection != null;}
-	
-	
-	/**
-	 * Retourne le SGBD avec lequel est connecté $this.
-	 * 
-	 * @return Connection
-	 */
-	public Connection dbms() {return this.connection;}
 	
 	
 	/**
@@ -144,12 +92,27 @@ public class ConnectionManager
 	 * @return String
 	 */
 	public String user(){return this.user;}
+
+
+	/**
+	 * Retourne le SGBD avec lequel est connecté $this.
+	 * 
+	 * @return Connection
+	 */
+	public Connection dbms() {return this.dbms;}
 	
 	
 	/**
-	 * Retourne une chaîne de caractères qui décrit $this.
-	 *
-	 *@return String
+	 * Retourne vrai si et seulement si $this est connecté à un SGBD,
+	 * faux sinon.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isConnected() {return this.dbms != null;}
+
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public String toString()
 	{
@@ -158,9 +121,101 @@ public class ConnectionManager
 				? "Connecté à l'adresse : " 
 				: "Non connecté.\n");
 		if (this.isConnected()) {
+			result.append("Pilote : " + this.driver.toString());
 			result.append(this.url + "\n");
 			result.append("Nom d'utilisateur : " + this.user + "\n");
+			result.append("Port : " + this.port);
 		}
 		return result.toString();
 	}
+	
+	
+	//Protected
+	/**
+	 * Enregistre les informations de connexions en fonction
+	 * de $dbms et $param.
+	 * Cette méthode ne doit être appelée que si la connexion
+	 * avec un SGBD est effective.
+	 * 
+	 * @param dbms : un objet Connection
+	 * @param param : un objet ConnectionStrings
+	 */
+	protected void set(Connection dbms, ConnectionStrings param)
+	{
+		this.url = param.url;
+		this.user = param.user;
+		this.pswd = param.password;
+		this.baseName = param.baseName;
+		this.port = param.port;
+		this.dbms = dbms;
+	}
+	
+	
+	/**
+	 * Charge le pilôte pour se connecter au SGBD correspondant.
+	 * Retourne vrai si et seulement si le pilôte est correctement chargé,
+	 * faux sinon.
+	 * 
+	 * @return boolean
+	 */
+	protected boolean loadDriver()
+	{
+		boolean result;
+		try{
+			this.driver = Class.forName("oracle.jdbc.OracleDriver");
+			result = true;
+		}
+		catch(Exception e1){
+			result = false;
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Tente d'établir une connexion vers un SGBD en fonction
+	 * des informations de connexions de $param.
+	 * Retourne un objet qui décrit la tentative de connexion.
+	 * 
+	 * @return ConnectionResponse
+	 */
+	protected ConnectionResponse reachConnection(ConnectionStrings param)
+	{
+		Connection dbms;
+		ConnectionResponse result;
+		try {
+			dbms = DriverManager.getConnection(
+					this.entireUrl(param), 
+					param.user, 
+					param.password);
+			this.set(dbms, param);
+			result = new ConnectionResponse(true,  "Connexion réussie.");
+		}
+		catch(SQLException e){
+			result = new ConnectionResponse(false, this.errorMessage(e));
+		}
+		catch(Exception e){
+			result =  new ConnectionResponse(false, "inconnue.");
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Retourne un message d'erreur plus lisible 
+	 * que celui retourné par le SGBD après une tentative de connexion.
+	 * 
+	 * @return String
+	 */
+	protected abstract String errorMessage(SQLException e);
+	
+	
+	/**
+	 * Retourne l'adresse complète pour se connecter à un SGBD,
+	 * en fonction des informations de $param.
+	 * 
+	 * @param param : un objet ConnectionStrings
+	 * @return String
+	 */
+	protected abstract String entireUrl(ConnectionStrings param);
 }

@@ -26,32 +26,24 @@ public class ConnectionController
 	public ConnectionController ()
 	{
 		this.ihm = new ConnectionView(this);
-		this.connector = new ConnectionManager();
 	}
 	
 	
 	//Methods
 	/**
-	 * Etablit une connexion vers le SGBD $url, pour l'utilisateur $user,
-	 * avec son mot de passe $pswd.
-	 * Ouvre la fenêtre principale si la connexion réussit.
+	 * Tente d'établir une connexion vers un SGBD
+	 * en utilisant les informations de connexion de $parameters.
 	 * 
-	 * @param driver : le type de drivers
-	 * @param url : url du SGBD.
-	 * @param user : nom d'utilisateur souhaitant se connecter.
-	 * @param pswd : mot de passe de l'utilisateur.
-	 * @param baseName : ne nom de la base de données 
-	 * @param port : le port du serveur 
-	 * @return ConnectionResponse
+	 * @param parameters : un objet ConnectionStrings
 	 */
-	public void connect(String driver, String url, String user, String pswd, String baseName, String port)
+	public void connect(ConnectionStrings parameters)
 	{
-		ConnectionResponse response;
+		this.connector = this.chooseManager(parameters.driver);
 		this.talk("Tentative de connexion...");
-		response = this.connector.connect(driver, url, user, pswd, baseName, port);
+		ConnectionResponse response = this.connector.connect(parameters);
 		this.talk(response.toString());
 		if (response.success()) {
-			this.saveDefaultValue(url, user,port,baseName);
+			this.saveDefaultValue(parameters);
 			this.ihm.dispose();
 			new MainController(this.connector);
 		}
@@ -71,18 +63,36 @@ public class ConnectionController
 	
 	//Privates
 	/**
-	 * Enregistre les informations de connexion par défaut.
+	 * Retourne un objet pour se connecter vers un SGBD
+	 * en fonction du nom de $driver passé en paramètre.
 	 * 
-	 * @param url : url valide du SGBD.
-	 * @param user : nom d'utilisateur valide.
+	 * @param driver : le nom grossier du pilote, parmi
+	 * "Oracle"
+	 * @return ConnectionManager
 	 */
-	private void saveDefaultValue(String url, String user,String port,String baseName)
+	private ConnectionManager chooseManager(String driver)
+	{
+		switch (driver){
+		case "Oracle" : return new OracleConnectionManager();
+		default : return null;
+		}
+	}
+	
+	
+	/**
+	 * Enregistre certaines informations de connexion de $parameters
+	 * dans un fichier xml  situé dans le répertoire courant.
+	 * Le fichier est créé s'il n'existe pas.
+	 * 
+	 * @param param : un objet ConnectionStrings
+	 */
+	private void saveDefaultValue(ConnectionStrings param)
 	{
 		DefaultValueManager dvm = new DefaultValueManager();
-		dvm.setUrl(url);
-		dvm.setUser(user);
-		dvm.setPort(port);
-		dvm.setDataBase(baseName);
+		dvm.setUrl(param.url);
+		dvm.setUser(param.user);
+		dvm.setPort(param.port);
+		dvm.setDataBase(param.baseName);
 		dvm.save();
 	}
 }

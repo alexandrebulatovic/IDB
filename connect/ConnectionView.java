@@ -205,19 +205,10 @@ implements ActionListener,ItemListener, IDBFrame
 		if(e.getStateChange()==1){//le nouvel item
 			if (e.getItem().toString().equals("Oracle")){
 				this.setValuesOracle();
-				
 			}
-			
-		}
-
-		
-		
+		}	
 	}
 	
-	
-	
-
-
 
 	/**
 	 * {@inheritDoc}
@@ -225,7 +216,8 @@ implements ActionListener,ItemListener, IDBFrame
 	public boolean isComplete()
 	{
 		for (JTextField jtf : this.fields) {
-			if (jtf.getText().equals("") && jtf !=this.passwordField) return false;
+			if (jtf.getText().equals("") 
+				&& ! jtf.equals(this.passwordField)) return false;
 		}
 		return true;
 	}
@@ -505,8 +497,6 @@ implements ActionListener,ItemListener, IDBFrame
 		this.portField.setText(dvm.getPort());
 		//TODO : extraire les valeurs par défaut depuis quelque part.
 		//this.urlField.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
-		
-		
 	}
 	
 	private void setValuesOracle() {
@@ -522,18 +512,18 @@ implements ActionListener,ItemListener, IDBFrame
 	 */
 	private void okButtonAction()
 	{
-		if (!this.isValidField()) {
-			this.talk("Erreur : les champs doivent être remplis et juste.");
+		if (!this.isComplete()) {
+			this.talk("Erreur : les champs doivent être remplis.");
 		}
 		else {
-			this.control.connect(
-					this.driverCombo.getSelectedItem().toString(),
-					this.urlField.getText(), 
+			ConnectionStrings parameters = new ConnectionStrings
+					(this.driverCombo.getSelectedItem().toString(),
+					this.urlField.getText(),
 					this.userField.getText(), 
-					this.passwordField.getText(),
-					this.baseNameField.getText(),
-					this.portField.getText()
-					);
+					this.passwordField.getText(), 
+					this.baseNameField.getText(), 
+					this.portField.getText());
+			this.control.connect(parameters);
 		}
 	}
 	
