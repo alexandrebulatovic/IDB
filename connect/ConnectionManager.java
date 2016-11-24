@@ -91,7 +91,8 @@ public class ConnectionManager
 			conn = DriverManager.getConnection(entireUrl, user, pswd);
 		}
 		catch(SQLException e){
-			return new ConnectionResponse(false, "SQLException");
+			return new ConnectionResponse(false, "lors de la connexion à la base de Données");//message recu par un utilisateur non initié
+			//return new ConnectionResponse(false, "SQLException");
 		}
 		catch(Exception e2){
 			return new ConnectionResponse(false, "Exception");

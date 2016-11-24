@@ -230,6 +230,37 @@ implements ActionListener,ItemListener, IDBFrame
 		return true;
 	}
 	
+	public boolean isValidField(){
+		boolean flag = true;
+		if (!isComplete()){
+			flag=false;
+		}
+		else{
+			for (JTextField jtf : this.fields){
+				String p = jtf.getText();
+				if (jtf==this.passwordField){
+					if (p.length()>0){
+						if (p.length()>99 || p.charAt(0)==' ' || p.charAt(p.length()-1)==' ')
+							flag=false;
+					}
+				}
+				else{
+					if (p.length()==0 || p.length()>99 || p.charAt(0)==' ' || p.charAt(p.length()-1)==' ')
+						flag=false;
+				}
+
+
+			}
+		}
+		
+		
+		
+		
+		
+
+		return flag;
+	}
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -491,7 +522,7 @@ implements ActionListener,ItemListener, IDBFrame
 	 */
 	private void okButtonAction()
 	{
-		if (!this.isComplete()) {
+		if (!this.isValidField()) {
 			this.talk("Erreur : les champs doivent être remplis et juste.");
 		}
 		else {
