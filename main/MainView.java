@@ -74,9 +74,9 @@ implements ActionListener
 	 */
 	private void createButtons()
 	{
-		this.components.add(this.sqlButton = new JButton("Mode SQL"));
+		this.sqlButton = new JButton("Mode SQL");
 		this.sqlButton.setActionCommand("sql_mode");
-		this.components.add(this.mhiButton = new JButton("Mode graphique"));
+		this.mhiButton = new JButton("Mode graphique");
 		this.mhiButton.setActionCommand("graphic_mode");
 	}
 	
