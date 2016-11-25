@@ -162,7 +162,7 @@ public abstract class ConnectionManager
 	{
 		boolean result;
 		try{
-			this.driver = Class.forName("oracle.jdbc.OracleDriver");
+			this.driver = Class.forName(this.driverName);
 			result = true;
 		}
 		catch(Exception e1){
