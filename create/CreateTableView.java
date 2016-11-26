@@ -3,6 +3,7 @@ package create;
 import interf.IDBFrame;
 
 import java.awt.BorderLayout;
+import java.awt.ItemSelectable;
 import java.awt.event.*;
 import java.awt.Font;
 
@@ -11,7 +12,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
 public class CreateTableView
-extends JFrame implements ActionListener{
+extends JFrame implements ActionListener,ItemListener {
 	private final int elementHeight = 20;
 
 	private final int margin = 20;
@@ -20,6 +21,7 @@ extends JFrame implements ActionListener{
 
 	private int width = 900;
 
+	private String errorAttribute = "ERREUR : \n";
 
 	private AttributesAbstractTableModel [] models;
 
@@ -52,8 +54,10 @@ extends JFrame implements ActionListener{
 	private JLabel attributeLabel;
 
 	private JLabel [] labels;
+	
+	private JLabel errorAttributesLabel;
 
-	private final int labelNumber = 3;
+	private final int labelNumber = 4;
 
 
 	private JButton attributeButton;
@@ -166,6 +170,8 @@ extends JFrame implements ActionListener{
 		this.tableNameField.setBounds((int)((1.35*this.margin)+115), (int)(0.09*height), 100, (int)(1.5*this.elementHeight));	
 		this.attributeNameField.setBounds((int)(1.35*this.margin), (int)(0.28*height), 100, (int)(1.5*this.elementHeight));	
 		this.attributeSizeField.setBounds((int)((1.35*this.margin)+210), (int)(0.28*height), 50, (int)(1.5*this.elementHeight));	
+		this.attributeNameField.setText("nomAttribut");
+		this.attributeSizeField.setText("Taille");
 	}
 
 
@@ -191,6 +197,7 @@ extends JFrame implements ActionListener{
 		this.labels[0] = this.tableLabel = new JLabel("Table :");
 		this.labels[1] = this.attributeLabel = new JLabel("Attribut :");
 		this.labels[2] = this.tableNameLabel= new JLabel("Nom de la table :");
+		this.labels[3] = this.errorAttributesLabel= new JLabel("");
 	}
 
 
@@ -202,6 +209,8 @@ extends JFrame implements ActionListener{
 		this.attributeLabel.setFont(new Font("TimesRoman", Font.BOLD, 18));
 		this.tableNameLabel.setBounds((int)(1.35*this.margin), (int)(0.09*height), 105, (int)(1.5*this.elementHeight));
 		this.tableNameLabel.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 14));
+		this.errorAttributesLabel.setBounds(300,(int)(0.37*height), 600, (int)(1.5*this.elementHeight));
+		this.errorAttributesLabel.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 14));
 	}
 
 
@@ -311,6 +320,7 @@ extends JFrame implements ActionListener{
 		this.notNullCheck.setBounds((int)((1.35*this.margin)+265), (int)(0.28*height), 85, (int)(1.5*this.elementHeight));	
 		this.uniqueCheck.setBounds((int)((1.35*this.margin)+355), (int)(0.28*height), 70, (int)(1.5*this.elementHeight));	
 		this.pkCheck.setBounds((int)((1.35*this.margin)+432), (int)(0.28*height), 105, (int)(1.5*this.elementHeight));	
+		this.pkCheck.addItemListener(this);
 		this.fkCheck.setBounds((int)((1.35*this.margin)+545), (int)(0.28*height), 105, (int)(1.5*this.elementHeight));	
 	}
 
@@ -337,7 +347,69 @@ extends JFrame implements ActionListener{
 		this.setVisible(true);    
 		this.setResizable(false);
 	}
+	
+	private void clearAttribute(){
+		this.attributeNameField.setText("");
+		this.attributeSizeField.setText("");
+		this.notNullCheck.setSelected(false);
+		this.uniqueCheck.setSelected(false);
+		this.fkCheck.setSelected(false);
+		this.pkCheck.setSelected(false);
+	}
 
+	public boolean isInteger(String i){
+		try {
+		    Integer.parseInt(i);
+		    return true;
+		} catch (NumberFormatException nfe) {
+		    return false;
+		}
+	}
+	
+	public boolean isCompleteAttribute(){
+		if(this.attributeNameField.getText().equals((String)"") || this.attributeSizeField.getText().equals((String)"")){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	public boolean isGoodSizeValue(int size){
+		if(size<=64 && size>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public boolean isGoodSize(String size){
+		if(isInteger(size)){
+			if(isGoodSizeValue(Integer.parseInt(size))){
+				return true;				
+			}else{
+				this.errorAttribute=this.errorAttribute + "La taille de l'attribut doit être un entier compris entre 0 et 64.";
+				return false;
+			}
+		}else{
+			this.errorAttribute=this.errorAttribute + "La taille de l'attribut doit être un entier.";
+			return false;
+		}
+	}
+	
+	public Boolean isValidateAttributes(){
+		this.errorAttribute = "ERREUR : \n";
+		if(isCompleteAttribute()){
+			if(isGoodSize(attributeSizeField.getText())){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			this.errorAttribute=this.errorAttribute + "Les Champs nomAttribut et/ou Taille ne sont pas renseigné(s).";
+			return false;
+		}
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == this.attributeButton) {
@@ -346,10 +418,37 @@ extends JFrame implements ActionListener{
 
 	}
 	
+	public void itemStateChanged(ItemEvent item) {
+		Object obj = item.getItem();
+		int status = item.getStateChange();
+		if((JCheckBox)obj==this.pkCheck){
+			if (status == ItemEvent.SELECTED){
+				this.notNullCheck.setSelected(true);
+				this.notNullCheck.setEnabled(false);
+				this.uniqueCheck.setSelected(true);
+				this.uniqueCheck.setEnabled(false);
+			}else if(status == ItemEvent.DESELECTED){
+				this.notNullCheck.setSelected(false);
+				this.notNullCheck.setEnabled(true);
+				this.uniqueCheck.setSelected(false);
+				this.uniqueCheck.setEnabled(true);
+			}
+		}
+	}
+	
+	
 	
 	private void addAttributeButtonAction()
 	{
+		if(isValidateAttributes()){
+		this.errorAttributesLabel.setText("");
+		this.errorAttributesLabel.setText("SUCCES : Attribut ajouté.");
 		this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected()," "," "));
+		this.clearAttribute();
+		}else{
+			this.errorAttributesLabel.setText("");
+			this.errorAttributesLabel.setText(errorAttribute);
+		}
 	}
 }
 

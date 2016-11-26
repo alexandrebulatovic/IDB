@@ -1,12 +1,13 @@
 package launch;
 
 import connect.*;
-
 import main.*;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 
+import create.*;
 import sql.SQLView;
 
 
@@ -18,8 +19,9 @@ public class Launcher {
 	 */
 	public static void main(String[] args) 
 	{
-		ConnectionController home = new ConnectionController ();
-		System.out.println("FIN du programme.");
+		//ConnectionController home = new ConnectionController ();
+		//System.out.println("FIN du programme.");
+		CreateTableView t = new CreateTableView ();
 	}
 
 }
