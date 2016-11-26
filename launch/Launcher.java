@@ -19,9 +19,8 @@ public class Launcher {
 	 */
 	public static void main(String[] args) 
 	{
-		//ConnectionController home = new ConnectionController ();
-		//System.out.println("FIN du programme.");
-		CreateTableView t = new CreateTableView ();
+		ConnectionController home = new ConnectionController ();
+		System.out.println("FIN du programme.");
 	}
 
 }
