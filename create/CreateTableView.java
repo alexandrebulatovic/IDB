@@ -3,68 +3,110 @@ package create;
 import interf.IDBFrame;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.*;
+import java.awt.Font;
 
 import javax.swing.*;
-
-import connect.ConnectionController;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 
 public class CreateTableView
 extends JFrame implements ActionListener{
 	private final int elementHeight = 20;
-	
-	private int elementWidth=150;
-	
-	private final int margin = 30;
-	
-	
+
+	private final int margin = 20;
+
+	private int height = 600;
+
+	private int width = 900;
+
+
+	private AttributesAbstractTableModel [] models;
+
+
+	private JTable table;
+
+	private JTable [] tables;
+
+
+	private JScrollPane scrollPane;
+
+	private JScrollPane [] scrollPanes;
+
+
 	private JTextField tableNameField;
-	
+
+	private JTextField attributeNameField;
+
+	private JTextField attributeSizeField;
+
 	private JTextField [] fields;
-	
-	private final int fieldNumber = 0;
-	
-	
-	
+
+	private final int fieldNumber = 3;
+
+
 	private JLabel tableNameLabel;
-	
+
+	private JLabel tableLabel;
+
+	private JLabel attributeLabel;
+
 	private JLabel [] labels;
-	
-	private final int labelNumber = 0;
-	
-	
-	
-	private JButton attributButton;
-	
+
+	private final int labelNumber = 3;
+
+
+	private JButton attributeButton;
+
+	private JButton createTableButton;
+
 	private JButton buttons[];
-	
-	private final int buttonNumber = 0;
-	
-	
-	private AttributesPanel attributesPanel;
-	
-	private TableNamePanel tableNamePanel;
-	
+
+	private final int buttonNumber = 2;
+
+
+	private JPanel panelAttributes;
+
 	private JPanel [] panels;
-	
-	private final int panelNumber = 2;
-	
-	
+
+	private final int panelNumber = 1;
+
+
 	private JComboBox attributeTypeComboBox;
-	
+
+	private JComboBox tableFKComboBox;
+
+	private JComboBox attributeFKComboBox;
+
 	private JComboBox [] comboBox;
-	
-	private final int comboBoxNumber = 0;
-	
 
-	
+	private final int comboBoxNumber = 3;
 
+
+	private JCheckBox notNullCheck;
+
+	private JCheckBox uniqueCheck;
+
+	private JCheckBox pkCheck;
+
+	private JCheckBox fkCheck;
+
+	private JCheckBox [] checkBoxs;
+
+	private final int checkBoxNumber = 4;
+
+
+
+	private Object[] types = new Object[]{"VARCHAR", "INT", "DATE", "CHAR"};
 	
+	private Object[] tablesFK = new Object[]{"Clients", "Produits", "Commande"};
 	
+	private Object[] attributesFK = new Object[]{"code", "nom"};
+
+
 	public CreateTableView()
 	{
-		this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.LINE_AXIS));
+		this.setLayout(null);
 		this.handlePanels();
 		this.handleComboBox();
 		this.handleFields();
@@ -72,27 +114,25 @@ extends JFrame implements ActionListener{
 		this.handleButtons();
 		this.handleCheckBox();
 		this.setProperties();
-		
 	}
-	
-	
+
+
 	// ==========================BUTTONS========================
 	private void createButtons()
 	{
 		this.buttons = new JButton [this.buttonNumber];
-		
+		this.buttons[0] = this.attributeButton = new JButton("Ajouter l'attribut") ;
+		this.buttons[1] = this.createTableButton = new JButton("Cr�er la Table") ;
 	}
-	
-	/**
-	 * Positionne et dimensionne les boutons.
-	 */
+
+
 	private void bindButtons()
 	{
+		this.attributeButton.setBounds((int)(1.35*this.margin), (int)(0.37*height), 150, (int)(1.5*this.elementHeight));
+		this.createTableButton.setBounds((int)(1.35*this.margin), (int)(0.87*height), 150, (int)(1.5*this.elementHeight));
 	}
-	
-	/**
-	 * Associe les boutons à this.
-	 */
+
+
 	private void addButtons()
 	{
 		for (JButton jb : this.buttons) {
@@ -100,182 +140,198 @@ extends JFrame implements ActionListener{
 			this.add(jb);
 		}
 	}
-	
+
 	private void handleButtons()
 	{
 		this.createButtons();
 		this.bindButtons();
 		this.addButtons();
 	}
-	
 
-	
+
+
 	// ==========================FIELDS========================
 	private void createFields()
 	{	
 		this.fields = new JTextField [this.fieldNumber];
-			
+		this.fields[0] = this.attributeNameField = new JTextField();
+		this.fields[1] = this.attributeSizeField = new JTextField();
+		this.fields[2] = this.tableNameField = new JTextField();
 	}
-	
-	
-	/**
-	 * Positionne et dimensionne les boîtes de saisie.
-	 */
+
+
+
 	private void bindFields()
 	{
-		
+		this.tableNameField.setBounds((int)((1.35*this.margin)+115), (int)(0.09*height), 100, (int)(1.5*this.elementHeight));	
+		this.attributeNameField.setBounds((int)(1.35*this.margin), (int)(0.28*height), 100, (int)(1.5*this.elementHeight));	
+		this.attributeSizeField.setBounds((int)((1.35*this.margin)+210), (int)(0.28*height), 50, (int)(1.5*this.elementHeight));	
 	}
-	
-	
-	/**
-	 * Associe les boîtes de saisie à l'IHM.
-	 */
+
+
 	private void addFields()
 	{
 		for (JTextField jtf : this.fields) {
 			this.add(jtf);
 		}
 	}
-	
-	
+
+
 	private void handleFields()
 	{
 		this.createFields();
 		this.bindFields();
 		this.addFields();
 	}
-	
+
 	// ==========================LABEL========================
 	private void createLabels()
 	{
 		this.labels = new JLabel [this.labelNumber];
-		
+		this.labels[0] = this.tableLabel = new JLabel("Table :");
+		this.labels[1] = this.attributeLabel = new JLabel("Attribut :");
+		this.labels[2] = this.tableNameLabel= new JLabel("Nom de la table :");
 	}
-	
-	
+
+
 	private void bindLabels()
 	{
-		
+		this.tableLabel.setBounds(this.margin, (int)(0.03*height), 75, (int)(1.5*this.elementHeight));
+		this.tableLabel.setFont(new Font("TimesRoman", Font.BOLD, 18));
+		this.attributeLabel.setBounds(this.margin, (int)(0.20*height), 75, (int)(1.5*this.elementHeight));
+		this.attributeLabel.setFont(new Font("TimesRoman", Font.BOLD, 18));
+		this.tableNameLabel.setBounds((int)(1.35*this.margin), (int)(0.09*height), 105, (int)(1.5*this.elementHeight));
+		this.tableNameLabel.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 14));
 	}
-	
-	
+
+
 	private void addLabels()
 	{
 		for (JLabel jl : this.labels) {
 			this.add(jl);
 		}
 	}
-	/**
-	 * Instancie, positionne, dimensionne et associe
-	 * les étiquettes.
-	 */
+
 	private void handleLabels()
 	{
 		this.createLabels();
 		this.bindLabels();
 		this.addLabels();
 	}
-	
+
 	// ==========================PANELS========================
 	private void createPanels()
 	{
 		this.panels = new JPanel[this.panelNumber];
-		this.panels[0] = this.tableNamePanel = new TableNamePanel();
-		this.panels[1] = this.attributesPanel = new AttributesPanel();
-		
+		this.panels[0] = this.panelAttributes = new JPanel(new BorderLayout());
+		this.tables = new JTable[1];
+		this.models = new AttributesAbstractTableModel[1];
+		this.models[0] = new AttributesAbstractTableModel();
+		this.tables[0] = new JTable(this.models[0]){
+			public boolean isCellEditable(int row, int col) {
+				return false;
+			}
+		};
+		this.scrollPanes = new JScrollPane[1];
+		this.scrollPanes[0] = new JScrollPane(this.tables[0]);
 	}
-	
-	
+
+
 	private void bindPanels()
 	{
-		
-		
+		this.panels[0].setBounds(0, (int)(0.5*height), width-5,  (int)(0.5*height)-100);
+		this.tables[0].setFillsViewportHeight(true);
+		this.scrollPanes[0].setVisible(true);
+		this.panels[0].add( this.scrollPanes[0]);
+
 	}
-	
-	
+
+
 	private void addPanels()
 	{
 		for (JPanel jl : this.panels) {
 			this.add(jl);
 		}
 	}
-	/**
-	 * Instancie, positionne, dimensionne et associe
-	 * les étiquettes.
-	 */
+
 	private void handlePanels()
 	{
 		this.createPanels();
 		this.bindPanels();
 		this.addPanels();
 	}
-	
+
 	// ==========================COMBOBOX========================
 	private void createComboBox()
 	{
 		this.comboBox = new JComboBox [this.comboBoxNumber];
-		
+		this.comboBox[0] = this.attributeTypeComboBox = new JComboBox(types);
+		this.comboBox[1] = this.tableFKComboBox = new JComboBox(tablesFK);
+		this.comboBox[2] = this.attributeFKComboBox = new JComboBox(attributesFK);
 	}
-	
-	
+
+
 	private void bindComboBox()
 	{
-		
+		this.attributeTypeComboBox.setBounds((int)((1.35*this.margin)+110), (int)(0.28*height), 85, (int)(1.5*this.elementHeight));
+		this.tableFKComboBox.setBounds((int)((1.35*this.margin)+655), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));	
+		this.attributeFKComboBox.setBounds((int)((1.35*this.margin)+745), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));
 	}
-	
-	
+
+
 	private void addComboBox()
 	{
 		for (JComboBox jc : this.comboBox) {
 			this.add(jc);
 		}
 	}
-	/**
-	 * Instancie, positionne, dimensionne et associe
-	 * les étiquettes.
-	 */
+
+
 	private void handleComboBox()
 	{
 		this.createComboBox();
 		this.bindComboBox();
 		this.addComboBox();
 	}
-	
+
 	// ==========================CHECKBOX========================
-	
+
 	private void createCheckBox()
 	{
-		this.labels = new JLabel [this.labelNumber];
-		
+		this.checkBoxs = new JCheckBox [this.checkBoxNumber];
+		this.checkBoxs[0] = this.notNullCheck = new JCheckBox("NOT NULL");
+		this.checkBoxs[1] = this.uniqueCheck = new JCheckBox("UNIQUE");
+		this.checkBoxs[2] = this.pkCheck = new JCheckBox("PRIMARY KEY");
+		this.checkBoxs[3] = this.fkCheck = new JCheckBox("FOREIGN KEY");
 	}
-	
-	
+
+
 	private void bindCheckBox()
 	{
-		
+		this.notNullCheck.setBounds((int)((1.35*this.margin)+265), (int)(0.28*height), 85, (int)(1.5*this.elementHeight));	
+		this.uniqueCheck.setBounds((int)((1.35*this.margin)+355), (int)(0.28*height), 70, (int)(1.5*this.elementHeight));	
+		this.pkCheck.setBounds((int)((1.35*this.margin)+432), (int)(0.28*height), 105, (int)(1.5*this.elementHeight));	
+		this.fkCheck.setBounds((int)((1.35*this.margin)+545), (int)(0.28*height), 105, (int)(1.5*this.elementHeight));	
 	}
-	
-	
+
+
 	private void addCheckBox()
 	{
-		for (JLabel jl : this.labels) {
+		for (JCheckBox jl : this.checkBoxs) {
 			this.add(jl);
 		}
 	}
-	/**
-	 * Instancie, positionne, dimensionne et associe
-	 * les étiquettes.
-	 */
+
 	private void handleCheckBox()
 	{
-		this.createComboBox();
-		this.bindComboBox();
-		this.addComboBox();
+		this.createCheckBox();
+		this.bindCheckBox();
+		this.addCheckBox();
 	}
 
 	private void setProperties()
 	{
-		this.setSize(500, 500);
+		this.setSize(width, height);
 		this.setLocationRelativeTo(null); 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
 		this.setVisible(true);    
@@ -284,7 +340,16 @@ extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (e.getSource() == this.attributeButton) {
+			this.addAttributeButtonAction();
+		}
+
+	}
+	
+	
+	private void addAttributeButtonAction()
+	{
+		this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected()," "," "));
 	}
 }
+
