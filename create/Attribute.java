@@ -141,10 +141,10 @@ public class Attribute {
 	{
 		StringBuilder result = new StringBuilder();
 		result.append(this.sqlAttribute());
-		result.append(this.sqlNotNull());
-		result.append(this.sqlUnique());
-		result.append(this.sqlPrimaryKey());
-		result.append(this.sqlForeignKey());
+		if (this.notNull) 		result.append(this.sqlNotNull());
+		if (this.unique) 		result.append(this.sqlUnique());
+		if (this.primaryKey) 	result.append(this.sqlPrimaryKey());
+		if (this.foreignKey) 	result.append(this.sqlForeignKey());
 		return result.toString();
 	}
 	
@@ -154,7 +154,7 @@ public class Attribute {
 	 * Retourne une chaîne de caractères qui correspond à une
 	 * déclaration d'attribut pour $this.
 	 * 
-	 * @return 
+	 * @return String
 	 */
 	private String sqlAttribute()
 	{
@@ -168,7 +168,7 @@ public class Attribute {
 	 * 
 	 * @return StringBuilder
 	 */
-	private StringBuilder sqlNotNull()
+	private String sqlNotNull()
 	{
 		return this.concatSqlConstraint("nn", "CHECK", "IS NOT NULL");
 	}
@@ -180,7 +180,7 @@ public class Attribute {
 	 * 
 	 * @return StringBuilder
 	 */
-	private StringBuilder sqlUnique()
+	private String sqlUnique()
 	{
 		return this.concatSqlConstraint("un", "UNIQUE", "");
 	}
@@ -192,7 +192,7 @@ public class Attribute {
 	 * 
 	 * @return StringBuilder
 	 */
-	private StringBuilder sqlPrimaryKey()
+	private String sqlPrimaryKey()
 	{
 		return this.concatSqlConstraint("pk", "PRIMARY KEY", "");
 	}
@@ -204,7 +204,7 @@ public class Attribute {
 	 * 
 	 * @return StringBuilder
 	 */
-	private StringBuilder sqlForeignKey()
+	private String sqlForeignKey()
 	{
 		return this.concatSqlConstraint("fk", "FOREIGN KEY", "");
 	}
@@ -214,12 +214,12 @@ public class Attribute {
 	 * Retourne un ensemble ordonné de caractères qui représentent
 	 * une clause SQL CONSTRAINT.
 	 * 
-	 * @param constraintNamePrefix : préfix du nom de la contrainte (pk, fk, nn, un, ck)
+	 * @param constraintNamePrefix : préfixe du nom de la contrainte (pk, fk, nn, un, ck etc.)
 	 * @param constraintType : mot-clef de contrainte (UNIQUE, PRIMARY KEY etc.)
 	 * @param condition : à remplir si $constraintType est CHECK
 	 * @return StringBuilder
 	 */
-	private StringBuilder concatSqlConstraint(
+	private String concatSqlConstraint(
 			String constraintNamePrefix, String constraintType,
 			String condition)
 	{
@@ -234,8 +234,6 @@ public class Attribute {
 						+ this.fkAttribute 
 						+ ")");
 		}
-		return result;
+		return result.toString();
 	}
-	
-	
 }
