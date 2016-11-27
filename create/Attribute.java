@@ -5,19 +5,24 @@ package create;
  *
  */
 public class Attribute {
+	/**
+	 * Mot-clef pour déclarer une contrainte sql.
+	 */
+	private static final String CST = ",\nCONSTRAINT ";
+	
 	private String name;
 
 	private String type;
 
 	private int size;
 
-	private Boolean notNull;
+	private boolean notNull;
 
-	private Boolean unique;
+	private boolean unique;
 
-	private Boolean primaryKey;
+	private boolean primaryKey;
 
-	private Boolean foreignKey;
+	private boolean foreignKey;
 
 	private String fkTable;
 
@@ -25,7 +30,9 @@ public class Attribute {
 
 	private String fkAttribute;
 
-	public Attribute(String name,String type,int size,Boolean notNull,Boolean unique,Boolean pk,Boolean fk,String fkTable,String fkAttribute ){
+	public Attribute(String name, String type, int size, boolean notNull, 
+			boolean unique, boolean pk, boolean fk, 
+			String fkTable, String fkAttribute ){
 		this.name=name;
 		this.type=type;
 		this.size=size;
@@ -35,12 +42,11 @@ public class Attribute {
 		this.foreignKey=fk;
 		this.fkTable=fkTable;
 		this.fkAttribute=fkAttribute;
-
 	}
 
 
 
-
+	//Accesseurs, mutateurs
 	public String getName() {
 		return name;
 	}
@@ -112,4 +118,124 @@ public class Attribute {
 	public void setFkAttribute(String fkA) {
 		this.fkAttribute = fkA;
 	}
+	
+	
+	//Méthodes
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean equals(Object o)
+	{
+		Attribute a = (Attribute) o;
+		return this.name.equals(a.name);
+	}
+	
+	
+	/**
+	 * Retourne une chaîne de caractères qui synthétise
+	 * $this en morceau de requête SQL.
+	 * 
+	 * @return String
+	 */
+	public String toSQL()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append(this.sqlAttribute());
+		result.append(this.sqlNotNull());
+		result.append(this.sqlUnique());
+		result.append(this.sqlPrimaryKey());
+		result.append(this.sqlForeignKey());
+		return result.toString();
+	}
+	
+	
+	//Privées
+	/**
+	 * Retourne une chaîne de caractères qui correspond à une
+	 * déclaration d'attribut pour $this.
+	 * 
+	 * @return 
+	 */
+	private String sqlAttribute()
+	{
+		return this.name + " " + this.type + "(" + this.size + ")";
+	}
+	
+	
+	/**
+	 * Retourne un ensemble ordonné de caractères qui correspond à
+	 * une déclaration de contrainte NOT NULL pour $this.
+	 * 
+	 * @return StringBuilder
+	 */
+	private StringBuilder sqlNotNull()
+	{
+		return this.concatSqlConstraint("nn", "CHECK", "IS NOT NULL");
+	}
+	
+	
+	/**
+	 * Retourne un ensemble ordonné de caractères qui correspond à
+	 * une déclaration de contrainte UNIQUE pour $this.
+	 * 
+	 * @return StringBuilder
+	 */
+	private StringBuilder sqlUnique()
+	{
+		return this.concatSqlConstraint("un", "UNIQUE", "");
+	}
+	
+	
+	/**
+	 * Retourne un ensemble ordonné de caractères qui correspond à
+	 * une déclaration de contrainte PRIMARY KEY pour $this.
+	 * 
+	 * @return StringBuilder
+	 */
+	private StringBuilder sqlPrimaryKey()
+	{
+		return this.concatSqlConstraint("pk", "PRIMARY KEY", "");
+	}
+	
+	
+	/**
+	 * Retourne un ensemble ordonné de caractères qui correspond à
+	 * une déclaration de contrainte FOREIGN KEY pour $this.
+	 * 
+	 * @return StringBuilder
+	 */
+	private StringBuilder sqlForeignKey()
+	{
+		return this.concatSqlConstraint("fk", "FOREIGN KEY", "");
+	}
+	
+	
+	/**
+	 * Retourne un ensemble ordonné de caractères qui représentent
+	 * une clause SQL CONSTRAINT.
+	 * 
+	 * @param constraintNamePrefix : préfix du nom de la contrainte (pk, fk, nn, un, ck)
+	 * @param constraintType : mot-clef de contrainte (UNIQUE, PRIMARY KEY etc.)
+	 * @param condition : à remplir si $constraintType est CHECK
+	 * @return StringBuilder
+	 */
+	private StringBuilder concatSqlConstraint(
+			String constraintNamePrefix, String constraintType,
+			String condition)
+	{
+		StringBuilder result = new StringBuilder();
+		result.append(CST + constraintNamePrefix + "_" + this.name + " ");
+		result.append(constraintType + " (" + this.name + " ");
+		result.append(condition + ")");
+		if (constraintType.equals("FOREIGN KEY")) {
+			result.append(" REFERENCES " 
+						+ this.fkTable 
+						+ "(" 
+						+ this.fkAttribute 
+						+ ")");
+		}
+		return result;
+	}
+	
+	
 }
