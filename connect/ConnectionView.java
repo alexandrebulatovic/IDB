@@ -185,6 +185,39 @@ implements ActionListener,ItemListener, IDBFrame
 	
 	//Publics
 	/**
+	 * Gestionnaire appui touche ENTREE
+	 */
+	KeyListener keylistener = new KeyListener(){
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        	}
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        	if (e.getKeyCode()==10){ // correspond au code de la touche ENTREE
+        		okButtonAction();
+        	}
+        }
+	};
+	
+	/**
+	 * Associe le KEYLISTENER aux textfields
+	 */
+	private void bindKeyListeners()
+	{
+		for (JTextField jtf : this.fields) {
+			jtf.addKeyListener(keylistener);
+		}
+	}
+	
+	
+	
+	/**
 	 * Gestionnaire d'évènements.
 	 * 
 	 * @param e : un événement attrapé par l'IHM.
@@ -312,6 +345,8 @@ implements ActionListener,ItemListener, IDBFrame
 			field.setBounds(this.margin, jump-10, this.elementWidth, this.elementHeight);
 			jump+=foot;				
 		}
+		
+		
 		/*Les méthodes statiques seront gardés en cas de rollback
 		this.urlField		.setBounds(this.margin, jump, this.elementWidth, this.elementHeight);
 		this.userField		.setBounds(this.margin, jump, this.elementWidth, this.elementHeight);
@@ -439,13 +474,14 @@ implements ActionListener,ItemListener, IDBFrame
 	
 	/**
 	 * Instancie, positionne, dimensionne et associe
-	 * les boîtes de saisie.
+	 * les boîtes de saisie et le KeyListener
 	 */
 	private void handleFields()
 	{
 		this.createFields();
 		this.bindFields();
 		this.addFields();
+		this.bindKeyListeners();
 	}
 	
 	
