@@ -22,7 +22,7 @@ extends ConnectionManager
 		case 0 		: return "nom de base de données incorrect.";
 		case 1017 	: return "utilisateur ou mot de passe incorrect.";
 		case 17002	: return "adresse IP ou port incorrect.";
-		case 17443 	: return "utilisateur ou mot de passe incorrect.";
+		case 17443 	: return "un mot de passe est nécessaire.";
 		default : return "2 inconnue.";
 		}
 	}

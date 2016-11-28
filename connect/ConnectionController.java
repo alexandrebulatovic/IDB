@@ -40,7 +40,7 @@ public class ConnectionController
 	{
 		this.connector = this.chooseManager(parameters.driver);
 		this.talk("Tentative de connexion...");
-		ConnectionResponse response = this.connector.connect(parameters);
+		CustomizedResponse response = this.connector.connect(parameters);
 		this.talk(response.toString());
 		if (response.success()) {
 			this.saveDefaultValue(parameters);

@@ -1,6 +1,7 @@
 package create;
 
 import connect.ConnectionManager;
+import connect.CustomizedResponse;
 
 public class CreateTableController 
 {
@@ -11,8 +12,10 @@ public class CreateTableController
 	private CreateTableView mhi;
 	
 	/**
-	 * TODO : créer une classe CreateTableManager
+	 * Objet pour gérer la communication avec un SGBD
+	 * dans l'optique de créer des tables.
 	 */
+	private CreateTableManager creator;
 	
 	
 	//Contructeur
@@ -24,8 +27,18 @@ public class CreateTableController
 	public CreateTableController(ConnectionManager cm)
 	{
 		this.mhi = new CreateTableView(this);
+		this.creator = new CreateTableManager(cm);
 	}
 	
 	
-	
+	/**
+	 * Envoie la requête SQL $sqlQuery au SGBD.
+	 * 
+	 * @param sqlQuery : une requête SQL de LDD pour créer une table.
+	 */
+	public void createTable(String sqlQuery)
+	{
+		//TODO : implémenter une méthode talk().
+		this.creator.createTable(sqlQuery);
+	}
 }

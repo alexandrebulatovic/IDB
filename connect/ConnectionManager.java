@@ -51,6 +51,11 @@ public abstract class ConnectionManager
 	 */
 	protected Connection dbms;
 	
+	/**
+	 * Contient tous les paramètres d'une connexion réussie.
+	 */
+	protected ConnectionStrings parameters;
+	
 	
 	//Constructor
 	/**
@@ -73,16 +78,33 @@ public abstract class ConnectionManager
 	 * @param parameters : un objet ConnectionStrings
 	 * @return ConnectionResponse
 	 */
-	public ConnectionResponse connect(ConnectionStrings param)
+	public CustomizedResponse connect(ConnectionStrings param)
 	{
-		ConnectionResponse result;
+		CustomizedResponse result;
 		if (! this.loadDriver()) {
-			result = new ConnectionResponse(false, "problème de pilote.");
+			result = new CustomizedResponse(false, "problème de pilote.");
 		}		
 		else{
 			result = this.reachConnection(param);
 		}
 		return result;
+	}
+	
+	
+	/**
+	 * Tente de re-établir une connexion vers le SGBD précédement
+	 * atteint avec succès, et dont les paramètres de connexions 
+	 * sont toujours enregistrés.
+	 * Retourne un objet qui décrit la tentative de connexion.
+	 * 
+	 * Ne doit être utilisé que si $this s'est déjà connecté avec succès
+	 * au cours de l'exécution de l'application.
+	 * 
+	 * @return CustomizedResponse
+	 */
+	public CustomizedResponse connect()
+	{
+		return this.connect(this.parameters);
 	}
 	
 	
@@ -148,6 +170,7 @@ public abstract class ConnectionManager
 		this.baseName = param.baseName;
 		this.port = param.port;
 		this.dbms = dbms;
+		this.parameters = param;
 	}
 	
 	
@@ -179,10 +202,10 @@ public abstract class ConnectionManager
 	 * 
 	 * @return ConnectionResponse
 	 */
-	protected ConnectionResponse reachConnection(ConnectionStrings param)
+	protected CustomizedResponse reachConnection(ConnectionStrings param)
 	{
 		Connection dbms;
-		ConnectionResponse result;
+		CustomizedResponse result;
 		String entireUrl =this.entireUrl(param);
 		try {
 			dbms = DriverManager.getConnection(
@@ -190,14 +213,13 @@ public abstract class ConnectionManager
 					param.user, 
 					param.password);
 			this.set(dbms, param);
-			result = new ConnectionResponse(true,  "Connexion réussie.");
+			result = new CustomizedResponse(true,  "Connexion réussie.");
 		}
 		catch(SQLException e){
-			System.out.println("format : "+ entireUrl);
-			result = new ConnectionResponse(false, this.errorMessage(e));
+			result = new CustomizedResponse(false, this.errorMessage(e));
 		}
 		catch(Exception e){
-			result =  new ConnectionResponse(false, "inconnue.");
+			result =  new CustomizedResponse(false, "inconnue.");
 		}
 		return result;
 	}

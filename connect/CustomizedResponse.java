@@ -1,18 +1,19 @@
 package connect;
 
 /**
- * Fournit plusieurs informations sur une tentative de connection.
+ * Fournit plusieurs informations sur une tentative de connexion
+ * ou de requête sur le SGBD.
  */
-public class ConnectionResponse 
+public class CustomizedResponse 
 {
 	//Attributes
 	/**
-	 * Vrai si la connexion a eu lieu, faux sinon.
+	 * Vrai si la tentative a réussie, faux sinon.
 	 */
 	private boolean response;
 	
 	/**
-	 * Message associé à la tentative de connexion.
+	 * Message associé à la tentative.
 	 */
 	private String msg;
 	
@@ -21,10 +22,10 @@ public class ConnectionResponse
 	/**
 	 * Constructeur commun.
 	 * 
-	 * @param response : vrai si la connexion a eu lieu, faux sinon.
-	 * @param msg : message associé à la connexion.
+	 * @param response : vrai si la tentative a réussie, faux sinon.
+	 * @param msg : message associé à la tentative.
 	 */
-	public ConnectionResponse(boolean response, String msg)
+	public CustomizedResponse(boolean response, String msg)
 	{
 		this.response = response;
 		this.msg = msg;
@@ -33,7 +34,7 @@ public class ConnectionResponse
 	
 	//Methods
 	/**
-	 * Retourne vrai si et seulement si la tentative de connexion 
+	 * Retourne vrai si et seulement si la tentative
 	 * a réussie, faux sinon.
 	 * 
 	 * @return boolean
@@ -43,13 +44,11 @@ public class ConnectionResponse
 	
 	/**
 	 * Retourne un message décrivant grossièrement le succès ou
-	 * l'échec de la tentative de connexion.
+	 * l'échec de la tentative.
 	 * 
 	 * @return String
 	 */
-	public String message(){
-		return this.msg;
-		}
+	public String message(){return this.msg;}
 	
 	
 	/**
