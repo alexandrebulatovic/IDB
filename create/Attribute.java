@@ -45,7 +45,6 @@ public class Attribute {
 	}
 
 
-
 	//Accesseurs, mutateurs
 	public String getName() {
 		return name;
@@ -163,7 +162,7 @@ public class Attribute {
 	
 	
 	/**
-	 * Retourne un ensemble ordonné de caractères qui correspond à
+	 * Retourne une chaîne de caractères qui correspond à
 	 * une déclaration de contrainte NOT NULL pour $this.
 	 * 
 	 * @return StringBuilder
@@ -175,7 +174,7 @@ public class Attribute {
 	
 	
 	/**
-	 * Retourne un ensemble ordonné de caractères qui correspond à
+	 * Retourne une chaîne de caractères qui correspond à
 	 * une déclaration de contrainte UNIQUE pour $this.
 	 * 
 	 * @return StringBuilder
@@ -187,7 +186,7 @@ public class Attribute {
 	
 	
 	/**
-	 * Retourne un ensemble ordonné de caractères qui correspond à
+	 * Retourne une chaîne de caractères qui correspond à
 	 * une déclaration de contrainte PRIMARY KEY pour $this.
 	 * 
 	 * @return StringBuilder
@@ -199,7 +198,7 @@ public class Attribute {
 	
 	
 	/**
-	 * Retourne un ensemble ordonné de caractères qui correspond à
+	 * Retourne une chaîne de caractères qui correspond à
 	 * une déclaration de contrainte FOREIGN KEY pour $this.
 	 * 
 	 * @return StringBuilder
@@ -211,7 +210,7 @@ public class Attribute {
 	
 	
 	/**
-	 * Retourne un ensemble ordonné de caractères qui représentent
+	 * Retourne une chaîne de caractères qui représentent
 	 * une clause SQL CONSTRAINT.
 	 * 
 	 * @param constraintNamePrefix : préfixe du nom de la contrainte (pk, fk, nn, un, ck etc.)

@@ -12,7 +12,14 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
 public class CreateTableView
-extends JFrame implements ActionListener,ItemListener {
+extends JFrame 
+implements ActionListener,ItemListener {
+	/**
+	 * Controleur liÃ© Ã  l'IHM.
+	 */
+	private CreateTableController control;
+	
+	
 	private final int elementHeight = 20;
 
 	private final int margin = 20;
@@ -108,8 +115,9 @@ extends JFrame implements ActionListener,ItemListener {
 	private Object[] attributesFK = new Object[]{"code", "nom"};
 
 
-	public CreateTableView()
+	public CreateTableView(CreateTableController cm)
 	{
+		this.control = cm;
 		this.setLayout(null);
 		this.handlePanels();
 		this.handleComboBox();
@@ -126,7 +134,7 @@ extends JFrame implements ActionListener,ItemListener {
 	{
 		this.buttons = new JButton [this.buttonNumber];
 		this.buttons[0] = this.attributeButton = new JButton("Ajouter l'attribut") ;
-		this.buttons[1] = this.createTableButton = new JButton("Créer la Table") ;
+		this.buttons[1] = this.createTableButton = new JButton("Crï¿½er la Table") ;
 	}
 
 
@@ -383,15 +391,19 @@ extends JFrame implements ActionListener,ItemListener {
 	}
 	
 	public boolean isGoodSize(String size){
+		/*
+		 *TODO : Non, dans le cas des NUMBERS, la taille peut Ãªtre dÃ©cimale.
+		 *par exemple, 10,2 veut dire "dix chiffres avant la virgule et deux aprÃ¨s"
+		 */
 		if(isInteger(size)){
 			if(isGoodSizeValue(Integer.parseInt(size))){
 				return true;				
 			}else{
-				this.errorAttribute=this.errorAttribute + "La taille de l'attribut doit être un entier compris entre 0 et 64.";
+				this.errorAttribute=this.errorAttribute + "La taille de l'attribut doit ï¿½tre un entier compris entre 0 et 64.";
 				return false;
 			}
 		}else{
-			this.errorAttribute=this.errorAttribute + "La taille de l'attribut doit être un entier.";
+			this.errorAttribute=this.errorAttribute + "La taille de l'attribut doit ï¿½tre un entier.";
 			return false;
 		}
 	}
@@ -405,7 +417,7 @@ extends JFrame implements ActionListener,ItemListener {
 				return false;
 			}
 		}else{
-			this.errorAttribute=this.errorAttribute + "Les Champs nomAttribut et/ou Taille ne sont pas renseigné(s).";
+			this.errorAttribute=this.errorAttribute + "Les Champs nomAttribut et/ou Taille ne sont pas renseignï¿½(s).";
 			return false;
 		}
 	}
@@ -442,7 +454,7 @@ extends JFrame implements ActionListener,ItemListener {
 	{
 		if(isValidateAttributes()){
 		this.errorAttributesLabel.setText("");
-		this.errorAttributesLabel.setText("SUCCES : Attribut ajouté.");
+		this.errorAttributesLabel.setText("SUCCES : Attribut ajoutï¿½.");
 		this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected()," "," "));
 		this.clearAttribute();
 		}else{

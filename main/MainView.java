@@ -11,6 +11,11 @@ implements ActionListener
 {
 	//Attributes
 	/**
+	 * COntroleur de l'IHM.
+	 */
+	private MainController control;
+	
+	/**
 	 * Bouton pour se rendre vers l'IHM de code SQL.
 	 */
 	private JButton sqlButton;
@@ -25,9 +30,10 @@ implements ActionListener
 	/**
 	 * Constructeur commun.
 	 */
-	public MainView()
+	public MainView(MainController control)
 	{
 		super("Menu principal", null, 400, 200, 40);
+		this.control = control;
 		this.handleButtons();
 		this.setProperties();
 	}
@@ -75,8 +81,11 @@ implements ActionListener
 	{
 		this.sqlButton = new JButton("Mode SQL");
 		this.sqlButton.setActionCommand("sql_mode");
+		this.sqlButton.addActionListener(this);
+		
 		this.mhiButton = new JButton("Mode graphique");
 		this.mhiButton.setActionCommand("graphic_mode");
+		this.mhiButton.addActionListener(this);
 	}
 	
 	
@@ -104,6 +113,6 @@ implements ActionListener
 	 */
 	private void ihmButtonAction()
 	{
-		//TODO : Ecrire une action dans le controleur.
+		this.control.openMhiMode();
 	}
 }
