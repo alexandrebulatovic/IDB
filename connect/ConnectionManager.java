@@ -183,15 +183,17 @@ public abstract class ConnectionManager
 	{
 		Connection dbms;
 		ConnectionResponse result;
+		String entireUrl =this.entireUrl(param);
 		try {
 			dbms = DriverManager.getConnection(
-					this.entireUrl(param), 
+					entireUrl, 
 					param.user, 
 					param.password);
 			this.set(dbms, param);
 			result = new ConnectionResponse(true,  "Connexion réussie.");
 		}
 		catch(SQLException e){
+			System.out.println("format : "+ entireUrl);
 			result = new ConnectionResponse(false, this.errorMessage(e));
 		}
 		catch(Exception e){
