@@ -193,7 +193,6 @@ public abstract class ConnectionManager
 			result = new ConnectionResponse(true,  "Connexion réussie.");
 		}
 		catch(SQLException e){
-			System.out.println("format : "+ entireUrl);
 			result = new ConnectionResponse(false, this.errorMessage(e));
 		}
 		catch(Exception e){
