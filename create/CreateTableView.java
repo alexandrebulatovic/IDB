@@ -19,6 +19,7 @@ implements ActionListener,ItemListener {
 	 */
 	private CreateTableController control;
 	
+	private Table t;
 	
 	private final int elementHeight = 20;
 
@@ -48,10 +49,14 @@ implements ActionListener,ItemListener {
 	private JTextField attributeNameField;
 
 	private JTextField attributeSizeField;
+	
+	private JTextField fkTableNameField;
+	
+	private JTextField fkAttributeNameField;
 
 	private JTextField [] fields;
 
-	private final int fieldNumber = 3;
+	private final int fieldNumber = 5;
 
 
 	private JLabel tableNameLabel;
@@ -91,7 +96,7 @@ implements ActionListener,ItemListener {
 
 	private JComboBox [] comboBox;
 
-	private final int comboBoxNumber = 3;
+	private final int comboBoxNumber = 1;
 
 
 	private JCheckBox notNullCheck;
@@ -108,7 +113,7 @@ implements ActionListener,ItemListener {
 
 
 
-	private Object[] types = new Object[]{"VARCHAR", "INT", "DATE", "CHAR"};
+	private Object[] types = new Object[]{"VARCHAR", "NUMBER", "DATE", "CHAR"};
 	
 	private Object[] tablesFK = new Object[]{"Clients", "Produits", "Commande"};
 	
@@ -169,6 +174,8 @@ implements ActionListener,ItemListener {
 		this.fields[0] = this.attributeNameField = new JTextField();
 		this.fields[1] = this.attributeSizeField = new JTextField();
 		this.fields[2] = this.tableNameField = new JTextField();
+		this.fields[3] = this.fkTableNameField = new JTextField();
+		this.fields[4] = this.fkAttributeNameField = new JTextField();
 	}
 
 
@@ -178,8 +185,29 @@ implements ActionListener,ItemListener {
 		this.tableNameField.setBounds((int)((1.35*this.margin)+140), (int)(0.09*height), 100, (int)(1.5*this.elementHeight));	
 		this.attributeNameField.setBounds((int)(1.35*this.margin), (int)(0.28*height), 100, (int)(1.5*this.elementHeight));	
 		this.attributeSizeField.setBounds((int)((1.35*this.margin)+210), (int)(0.28*height), 50, (int)(1.5*this.elementHeight));	
+		this.fkTableNameField.setBounds((int)((1.35*this.margin)+675), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));	
+		this.fkAttributeNameField.setBounds((int)((1.35*this.margin)+765), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));
+		
+		
+		MaxLengthTextDocument maxLengthNameTable = new MaxLengthTextDocument();
+		maxLengthNameTable.setMaxChars(30);
+		this.tableNameField.setDocument(maxLengthNameTable);
+		
+		MaxLengthTextDocument maxLengthNameAtt = new MaxLengthTextDocument();
+		maxLengthNameAtt.setMaxChars(64);
+		this.attributeNameField.setDocument(maxLengthNameAtt);
 		this.attributeNameField.setText("nomAttribut");
+		
+		
+		MaxLengthTextDocument maxLengthSize = new MaxLengthTextDocument();
+		maxLengthSize.setMaxChars(6);
+		this.attributeSizeField.setDocument(maxLengthSize);
 		this.attributeSizeField.setText("Taille");
+		this.fkTableNameField.setText("nomTable");
+		this.fkAttributeNameField.setText("nomAttribut");
+		this.fkTableNameField.setEnabled(false);
+		this.fkAttributeNameField.setEnabled(false);
+		
 	}
 
 
@@ -258,6 +286,7 @@ implements ActionListener,ItemListener {
 	{
 		this.panels[0].setBounds(0, (int)(0.5*height), width-5,  (int)(0.5*height)-100);
 		this.tables[0].setFillsViewportHeight(true);
+		this.tables[0].setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.scrollPanes[0].setVisible(true);
 		this.panels[0].add( this.scrollPanes[0]);
 
@@ -283,16 +312,16 @@ implements ActionListener,ItemListener {
 	{
 		this.comboBox = new JComboBox [this.comboBoxNumber];
 		this.comboBox[0] = this.attributeTypeComboBox = new JComboBox(types);
-		this.comboBox[1] = this.tableFKComboBox = new JComboBox(tablesFK);
-		this.comboBox[2] = this.attributeFKComboBox = new JComboBox(attributesFK);
+		//this.comboBox[1] = this.tableFKComboBox = new JComboBox(tablesFK);
+		//this.comboBox[2] = this.attributeFKComboBox = new JComboBox(attributesFK);
 	}
 
 
 	private void bindComboBox()
 	{
 		this.attributeTypeComboBox.setBounds((int)((1.35*this.margin)+110), (int)(0.28*height), 85, (int)(1.5*this.elementHeight));
-		this.tableFKComboBox.setBounds((int)((1.35*this.margin)+675), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));	
-		this.attributeFKComboBox.setBounds((int)((1.35*this.margin)+765), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));
+		//this.tableFKComboBox.setBounds((int)((1.35*this.margin)+675), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));	
+		//this.attributeFKComboBox.setBounds((int)((1.35*this.margin)+765), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));
 	}
 
 
@@ -330,6 +359,7 @@ implements ActionListener,ItemListener {
 		this.pkCheck.setBounds((int)((1.35*this.margin)+442), (int)(0.28*height), 115, (int)(1.5*this.elementHeight));	
 		this.pkCheck.addItemListener(this);
 		this.fkCheck.setBounds((int)((1.35*this.margin)+555), (int)(0.28*height), 115, (int)(1.5*this.elementHeight));	
+		this.fkCheck.addItemListener(this);
 	}
 
 
@@ -383,7 +413,7 @@ implements ActionListener,ItemListener {
 	}
 	
 	public boolean isGoodSizeValue(int size){
-		if(size<=64 && size>0){
+		if(size<=4000 && size>0){
 			return true;
 		}else{
 			return false;
@@ -399,7 +429,7 @@ implements ActionListener,ItemListener {
 			if(isGoodSizeValue(Integer.parseInt(size))){
 				return true;				
 			}else{
-				this.errorAttribute=this.errorAttribute + "La taille de l'attribut doit �tre un entier compris entre 0 et 64.";
+				this.errorAttribute=this.errorAttribute + "La taille de l'attribut doit �tre un entier compris entre 0 et 4000.";
 				return false;
 			}
 		}else{
@@ -427,6 +457,9 @@ implements ActionListener,ItemListener {
 		if (e.getSource() == this.attributeButton) {
 			this.addAttributeButtonAction();
 		}
+		if (e.getSource() == this.createTableButton) {
+			this.t = new Table(this.models[0].getAttributes(),this.tableNameField.getText());
+		}
 
 	}
 	
@@ -446,6 +479,17 @@ implements ActionListener,ItemListener {
 				this.uniqueCheck.setEnabled(true);
 			}
 		}
+		if((JCheckBox)obj==this.fkCheck){
+			if (status == ItemEvent.SELECTED){
+				this.fkTableNameField.setEnabled(true);
+				this.fkAttributeNameField.setEnabled(true);
+			}else if(status == ItemEvent.DESELECTED){
+				this.fkTableNameField.setEnabled(false);
+				this.fkAttributeNameField.setEnabled(false);
+				this.fkTableNameField.setText("nomTable");
+				this.fkAttributeNameField.setText("nomAttribut");
+			}
+			}
 	}
 	
 	
@@ -453,9 +497,15 @@ implements ActionListener,ItemListener {
 	private void addAttributeButtonAction()
 	{
 		if(isValidateAttributes()){
+				if(fkCheck.isSelected()){
+		this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText()));
+				}else{
+					this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A"));	
+				}
+		
 		this.errorAttributesLabel.setText("");
 		this.errorAttributesLabel.setText("SUCCES : Attribut ajout�.");
-		this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected()," "," "));
+		
 		this.clearAttribute();
 		}else{
 			this.errorAttributesLabel.setText("");

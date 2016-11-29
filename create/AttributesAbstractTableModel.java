@@ -51,17 +51,32 @@ extends AbstractTableModel {
 			return null; 
 		}
 	}
+	public boolean isDuplicateAttributeName(Attribute a){
+		boolean res = false;
+		for(Attribute object: attributes){
+			if(object.equals(a)){
+				res=true;
+			}	
+		}
+		return res;
+	}
 
 	public void addAttribute(Attribute atrribute) {
+		if(!(isDuplicateAttributeName(atrribute))){
 		attributes.add(atrribute);
-		System.out.println("ok");
 		fireTableRowsInserted(attributes.size()-1, attributes.size()-1);
-		System.out.println("ok2");
+		}
 	}
+	
+	
 
 	public void removeAttributes(int rowIndex) {
 		attributes.remove(rowIndex);
 
 		fireTableRowsDeleted(rowIndex, rowIndex);
+	}
+	
+	public ArrayList<Attribute> getAttributes(){
+		return this.attributes;
 	}
 }
