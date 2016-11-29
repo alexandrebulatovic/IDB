@@ -59,9 +59,7 @@ public class Table {
 		}
 		result.deleteCharAt(result.length()-1);
 		result.deleteCharAt(result.length()-1);
-
 		result.append("\n)");
-		System.out.println(result.toString());
 		return result.toString();
 	}
 	
