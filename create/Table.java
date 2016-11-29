@@ -11,5 +11,13 @@ public class Table {
 		this.listAttributes=list;
 		this.tableName=name;		
 	}
+	
+	public  ArrayList<Attribute> getListAttributes(){
+		return this.listAttributes;
+	}
+	
+	public  String getTableName(){
+		return this.tableName;
+	}
 
 }

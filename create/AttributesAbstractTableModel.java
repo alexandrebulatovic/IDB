@@ -61,10 +61,13 @@ extends AbstractTableModel {
 		return res;
 	}
 
-	public void addAttribute(Attribute atrribute) {
+	public int addAttribute(Attribute atrribute) {
 		if(!(isDuplicateAttributeName(atrribute))){
 		attributes.add(atrribute);
 		fireTableRowsInserted(attributes.size()-1, attributes.size()-1);
+			return 1;
+		}else{
+			return 0;
 		}
 	}
 	
@@ -78,5 +81,14 @@ extends AbstractTableModel {
 	
 	public ArrayList<Attribute> getAttributes(){
 		return this.attributes;
+	}
+	
+	public boolean isEmpty(){
+		if(attributes.size() == 0){
+			return true;
+		}else{
+			return false;
+		}
+		
 	}
 }

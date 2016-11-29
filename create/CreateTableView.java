@@ -29,7 +29,9 @@ implements ActionListener,ItemListener {
 
 	private int width = 900;
 
-	private String errorAttribute = "ERREUR : \n";
+	private String errorAttribute = "ERREUR : ";
+	
+	private String succesAttribute = "SUCCES : ";
 
 	private AttributesAbstractTableModel [] models;
 
@@ -139,7 +141,7 @@ implements ActionListener,ItemListener {
 	{
 		this.buttons = new JButton [this.buttonNumber];
 		this.buttons[0] = this.attributeButton = new JButton("Ajouter l'attribut") ;
-		this.buttons[1] = this.createTableButton = new JButton("Crï¿½er la Table") ;
+		this.buttons[1] = this.createTableButton = new JButton("Créer la Table") ;
 	}
 
 
@@ -206,8 +208,7 @@ implements ActionListener,ItemListener {
 		this.fkTableNameField.setText("nomTable");
 		this.fkAttributeNameField.setText("nomAttribut");
 		this.fkTableNameField.setEnabled(false);
-		this.fkAttributeNameField.setEnabled(false);
-		
+		this.fkAttributeNameField.setEnabled(false);	
 	}
 
 
@@ -289,7 +290,6 @@ implements ActionListener,ItemListener {
 		this.tables[0].setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.scrollPanes[0].setVisible(true);
 		this.panels[0].add( this.scrollPanes[0]);
-
 	}
 
 
@@ -311,17 +311,12 @@ implements ActionListener,ItemListener {
 	private void createComboBox()
 	{
 		this.comboBox = new JComboBox [this.comboBoxNumber];
-		this.comboBox[0] = this.attributeTypeComboBox = new JComboBox(types);
-		//this.comboBox[1] = this.tableFKComboBox = new JComboBox(tablesFK);
-		//this.comboBox[2] = this.attributeFKComboBox = new JComboBox(attributesFK);
 	}
 
 
 	private void bindComboBox()
 	{
 		this.attributeTypeComboBox.setBounds((int)((1.35*this.margin)+110), (int)(0.28*height), 85, (int)(1.5*this.elementHeight));
-		//this.tableFKComboBox.setBounds((int)((1.35*this.margin)+675), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));	
-		//this.attributeFKComboBox.setBounds((int)((1.35*this.margin)+765), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));
 	}
 
 
@@ -429,17 +424,16 @@ implements ActionListener,ItemListener {
 			if(isGoodSizeValue(Integer.parseInt(size))){
 				return true;				
 			}else{
-				this.errorAttribute=this.errorAttribute + "La taille de l'attribut doit ï¿½tre un entier compris entre 0 et 4000.";
+				this.talk(errorAttribute + "La taille de l'attribut doit être un entier compris entre 0 et 4000.");
 				return false;
 			}
 		}else{
-			this.errorAttribute=this.errorAttribute + "La taille de l'attribut doit ï¿½tre un entier.";
+			this.talk(errorAttribute + "La taille de l'attribut doit être un entier.");
 			return false;
 		}
 	}
 	
 	public Boolean isValidateAttributes(){
-		this.errorAttribute = "ERREUR : \n";
 		if(isCompleteAttribute()){
 			if(isGoodSize(attributeSizeField.getText())){
 				return true;
@@ -447,9 +441,14 @@ implements ActionListener,ItemListener {
 				return false;
 			}
 		}else{
-			this.errorAttribute=this.errorAttribute + "Les Champs nomAttribut et/ou Taille ne sont pas renseignï¿½(s).";
+			this.talk(errorAttribute + "Les Champs nomAttribut et/ou Taille ne sont pas renseigné(s).");
 			return false;
 		}
+	}
+	
+	public void talk(String message){
+		this.errorAttributesLabel.setText("");
+		this.errorAttributesLabel.setText(message);
 	}
 	
 	@Override
@@ -498,19 +497,24 @@ implements ActionListener,ItemListener {
 	{
 		if(isValidateAttributes()){
 				if(fkCheck.isSelected()){
-		this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText()));
+					int i = this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText()));
+					if( i == 0){
+						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
+					}else{
+						this.talk(succesAttribute +"Attribut ajouté.");
+						this.clearAttribute();
+					}
 				}else{
-					this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A"));	
+					int i = this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A"));	
+					if( i == 0){
+						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
+					}else{
+						this.talk(succesAttribute +"Attribut ajouté.");
+						this.clearAttribute();
+					}
 				}
+		}		
 		
-		this.errorAttributesLabel.setText("");
-		this.errorAttributesLabel.setText("SUCCES : Attribut ajoutï¿½.");
-		
-		this.clearAttribute();
-		}else{
-			this.errorAttributesLabel.setText("");
-			this.errorAttributesLabel.setText(errorAttribute);
-		}
 	}
 }
 
