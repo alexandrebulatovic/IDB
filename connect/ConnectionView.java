@@ -222,6 +222,13 @@ implements ActionListener,ItemListener, IDBFrame
 		return true;
 	}
 	
+	private boolean isTooLongField(){
+		for (JTextField jtf : this.fields) {
+			if (jtf.getText().length()>30) return true;
+		}
+		return false;
+	}
+	
 	public boolean isValidField(){
 		
 		boolean flag = true;
