@@ -205,14 +205,13 @@ implements ActionListener,ItemListener, IDBFrame
         }
 	};
 	
-	/**
-	 * Associe le KEYLISTENER aux textfields
-	 */
+	/** Associe le KEYLISTENER aux textfields et a la combo */
 	private void bindKeyListeners()
 	{
 		for (JTextField jtf : this.fields) {
 			jtf.addKeyListener(keylistener);
 		}
+		this.driverCombo.addKeyListener(keylistener);
 	}
 	
 	
