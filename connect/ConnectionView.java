@@ -199,7 +199,7 @@ implements ActionListener,ItemListener, IDBFrame
 
         @Override
         public void keyPressed(KeyEvent e) {
-        	if (e.getKeyCode()==10){ // correspond au code de la touche ENTREE
+        	if (e.getKeyCode()== KeyEvent.VK_ENTER){ // correspond au code de la touche ENTREE
         		okButtonAction();
         	}
         }
