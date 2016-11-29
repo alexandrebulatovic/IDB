@@ -70,35 +70,35 @@ public class Attribute {
 		this.size = s;
 	}
 
-	public Boolean isNotNull() {
+	public boolean isNotNull() {
 		return notNull;
 	}
 
-	public void setNotNull(Boolean nn) {
+	public void setNotNull(boolean nn) {
 		this.notNull = nn;
 	}
 
-	public Boolean isUnique() {
+	public boolean isUnique() {
 		return unique;
 	}
 
-	public void setUnique(Boolean u) {
+	public void setUnique(boolean u) {
 		this.unique = u;
 	}
 
-	public Boolean isPrimaryKey() {
+	public boolean isPrimaryKey() {
 		return primaryKey;
 	}
 
-	public void setPrimaryKey(Boolean pk) {
+	public void setPrimaryKey(boolean pk) {
 		this.primaryKey = pk;
 	}
 
-	public Boolean isForeignKey() {
+	public boolean isForeignKey() {
 		return foreignKey;
 	}
 
-	public void setForeignKey(Boolean fk) {
+	public void setForeignKey(boolean fk) {
 		this.foreignKey = fk;
 	}
 

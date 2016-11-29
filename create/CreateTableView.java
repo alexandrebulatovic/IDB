@@ -140,7 +140,7 @@ implements ActionListener,ItemListener {
 
 	private void bindButtons()
 	{
-		this.attributeButton.setBounds((int)(1.35*this.margin), (int)(0.37*height), 150, (int)(1.5*this.elementHeight));
+		this.attributeButton.setBounds((int)(1.35*this.margin), (int)(0.37*height), 165, (int)(1.5*this.elementHeight));
 		this.createTableButton.setBounds((int)(1.35*this.margin), (int)(0.87*height), 150, (int)(1.5*this.elementHeight));
 	}
 
@@ -175,7 +175,7 @@ implements ActionListener,ItemListener {
 
 	private void bindFields()
 	{
-		this.tableNameField.setBounds((int)((1.35*this.margin)+115), (int)(0.09*height), 100, (int)(1.5*this.elementHeight));	
+		this.tableNameField.setBounds((int)((1.35*this.margin)+140), (int)(0.09*height), 100, (int)(1.5*this.elementHeight));	
 		this.attributeNameField.setBounds((int)(1.35*this.margin), (int)(0.28*height), 100, (int)(1.5*this.elementHeight));	
 		this.attributeSizeField.setBounds((int)((1.35*this.margin)+210), (int)(0.28*height), 50, (int)(1.5*this.elementHeight));	
 		this.attributeNameField.setText("nomAttribut");
@@ -211,11 +211,11 @@ implements ActionListener,ItemListener {
 
 	private void bindLabels()
 	{
-		this.tableLabel.setBounds(this.margin, (int)(0.03*height), 75, (int)(1.5*this.elementHeight));
+		this.tableLabel.setBounds(this.margin, (int)(0.03*height), 100, (int)(1.5*this.elementHeight));
 		this.tableLabel.setFont(new Font("TimesRoman", Font.BOLD, 18));
-		this.attributeLabel.setBounds(this.margin, (int)(0.20*height), 75, (int)(1.5*this.elementHeight));
+		this.attributeLabel.setBounds(this.margin, (int)(0.20*height), 100, (int)(1.5*this.elementHeight));
 		this.attributeLabel.setFont(new Font("TimesRoman", Font.BOLD, 18));
-		this.tableNameLabel.setBounds((int)(1.35*this.margin), (int)(0.09*height), 105, (int)(1.5*this.elementHeight));
+		this.tableNameLabel.setBounds((int)(1.35*this.margin), (int)(0.09*height), 140, (int)(1.5*this.elementHeight));
 		this.tableNameLabel.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 14));
 		this.errorAttributesLabel.setBounds(300,(int)(0.37*height), 600, (int)(1.5*this.elementHeight));
 		this.errorAttributesLabel.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 14));
@@ -291,8 +291,8 @@ implements ActionListener,ItemListener {
 	private void bindComboBox()
 	{
 		this.attributeTypeComboBox.setBounds((int)((1.35*this.margin)+110), (int)(0.28*height), 85, (int)(1.5*this.elementHeight));
-		this.tableFKComboBox.setBounds((int)((1.35*this.margin)+655), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));	
-		this.attributeFKComboBox.setBounds((int)((1.35*this.margin)+745), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));
+		this.tableFKComboBox.setBounds((int)((1.35*this.margin)+675), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));	
+		this.attributeFKComboBox.setBounds((int)((1.35*this.margin)+765), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));
 	}
 
 
@@ -325,11 +325,11 @@ implements ActionListener,ItemListener {
 
 	private void bindCheckBox()
 	{
-		this.notNullCheck.setBounds((int)((1.35*this.margin)+265), (int)(0.28*height), 85, (int)(1.5*this.elementHeight));	
-		this.uniqueCheck.setBounds((int)((1.35*this.margin)+355), (int)(0.28*height), 70, (int)(1.5*this.elementHeight));	
-		this.pkCheck.setBounds((int)((1.35*this.margin)+432), (int)(0.28*height), 105, (int)(1.5*this.elementHeight));	
+		this.notNullCheck.setBounds((int)((1.35*this.margin)+265), (int)(0.28*height), 100, (int)(1.5*this.elementHeight));	
+		this.uniqueCheck.setBounds((int)((1.35*this.margin)+365), (int)(0.28*height), 80, (int)(1.5*this.elementHeight));	
+		this.pkCheck.setBounds((int)((1.35*this.margin)+442), (int)(0.28*height), 115, (int)(1.5*this.elementHeight));	
 		this.pkCheck.addItemListener(this);
-		this.fkCheck.setBounds((int)((1.35*this.margin)+545), (int)(0.28*height), 105, (int)(1.5*this.elementHeight));	
+		this.fkCheck.setBounds((int)((1.35*this.margin)+555), (int)(0.28*height), 115, (int)(1.5*this.elementHeight));	
 	}
 
 
@@ -435,9 +435,9 @@ implements ActionListener,ItemListener {
 		int status = item.getStateChange();
 		if((JCheckBox)obj==this.pkCheck){
 			if (status == ItemEvent.SELECTED){
-				this.notNullCheck.setSelected(true);
+				this.notNullCheck.setSelected(false);
 				this.notNullCheck.setEnabled(false);
-				this.uniqueCheck.setSelected(true);
+				this.uniqueCheck.setSelected(false);
 				this.uniqueCheck.setEnabled(false);
 			}else if(status == ItemEvent.DESELECTED){
 				this.notNullCheck.setSelected(false);
