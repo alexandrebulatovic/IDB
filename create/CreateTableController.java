@@ -36,10 +36,9 @@ public class CreateTableController
 	 * 
 	 * @param sqlQuery : une requête SQL de LDD pour créer une table.
 	 */
-	public void createTable(String sqlQuery)
+	public void createTable(Table table)
 	{
-		//TODO : implémenter une méthode talk().
-		CustomizedResponse response = this.creator.createTable(sqlQuery);
+		CustomizedResponse response = this.creator.createTable(table.toSQL());
 		if (response.success()) {
 			this.talk("Table créée.");
 		}

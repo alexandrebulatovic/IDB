@@ -33,6 +33,14 @@ public class CreateTableManager
 	
 	
 	//Méthodes
+	/**
+	 * Tente de créer une table dans la base de données
+	 * connecté à $this, à partir de la requête $sqlQuery.
+	 * Retourne une réponse personnalisée qui décrit la tentative.
+	 * 
+	 * @param sqlQuery : une requête SQL de LDD pour créer une table.
+	 * @return CustomizedResponse
+	 */
 	public CustomizedResponse createTable(String sqlQuery)
 	{	
 		//TODO : améliorer les messages d'erreurs.

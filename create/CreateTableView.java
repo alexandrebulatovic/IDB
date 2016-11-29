@@ -462,9 +462,9 @@ implements ActionListener,ItemListener {
 			this.addAttributeButtonAction();
 		}
 		if (e.getSource() == this.createTableButton) {
-			this.t = new Table(this.models[0].getAttributes(),this.tableNameField.getText());
-			this.control.createTable(t.toSQL());
-			System.out.println(t.toSQL());
+			this.control.createTable(new Table(
+					this.models[0].getAttributes(),
+					this.tableNameField.getText()));
 		}
 
 	}

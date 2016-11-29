@@ -55,10 +55,13 @@ public class Table {
 		result.append("CREATE TABLE " + this.tableName + "\n(");
 		for (Attribute a : this.listAttributes) {
 			result.append(a.toSQL());
-			result.append(",");
+			result.append(",\n");
 		}
 		result.deleteCharAt(result.length()-1);
+		result.deleteCharAt(result.length()-1);
+
 		result.append("\n)");
+		System.out.println(result.toString());
 		return result.toString();
 	}
 	
