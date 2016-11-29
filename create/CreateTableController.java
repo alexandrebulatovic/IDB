@@ -39,6 +39,24 @@ public class CreateTableController
 	public void createTable(String sqlQuery)
 	{
 		//TODO : implémenter une méthode talk().
-		this.creator.createTable(sqlQuery);
+		CustomizedResponse response = this.creator.createTable(sqlQuery);
+		if (response.success()) {
+			this.talk("Table créée.");
+		}
+		else {
+			this.talk(response.message());
+		}
+	}
+	
+	
+	//Privées
+	/**
+	 * Communique avec l'utilisateur en affichant $msg.
+	 * 
+	 * @param msg : un message à transmettre à l'utilisateur.
+	 */
+	public void talk(String msg)
+	{
+		this.mhi.talk(msg);
 	}
 }

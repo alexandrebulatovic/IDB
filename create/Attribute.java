@@ -131,6 +131,26 @@ public class Attribute {
 	
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append(this.name + " : ");
+		result.append(this.type + ", ");
+		result.append(this.size + ", ");
+		if (this.unique) result.append("unique, ");
+		if (this.primaryKey) result.append("clef primaire, ");
+		if (this.foreignKey) {
+			result.append("clef étrangère : ");
+			result.append(this.fkTable + "(");
+			result.append(this.fkAttribute + ")");
+		}
+		return result.toString();
+	}
+	
+	
+	/**
 	 * Retourne une chaîne de caractères qui synthétise
 	 * $this en morceau de requête SQL.
 	 * 
