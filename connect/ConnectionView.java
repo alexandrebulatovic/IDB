@@ -1,5 +1,7 @@
 package connect;
 
+import create.MaxLengthTextDocument;
+
 import interf.IDBFrame;
 
 import java.awt.event.*;
@@ -227,7 +229,7 @@ implements ActionListener,ItemListener, IDBFrame
 			this.okButtonAction();
 		}
 	}
-	
+
 	
 	/**
 	 * 
@@ -254,7 +256,9 @@ implements ActionListener,ItemListener, IDBFrame
 		return true;
 	}
 	
-	public boolean isValidField(){
+
+	
+	public boolean isValidPasswordField(){
 		
 		boolean flag = true;
 		
@@ -283,8 +287,13 @@ implements ActionListener,ItemListener, IDBFrame
 		this.messageLabel.setText(msg);
 	}
 	
+	public JTextField getUrlField(){
+		return this.urlField;
+	}
+	
 	
 	//Privates
+	
 	/**
 	 * 
 	 */
@@ -317,6 +326,8 @@ implements ActionListener,ItemListener, IDBFrame
 		}			
 	}
 	
+	
+	
 	/**
 	 * Instancie les boîtes de saisies.
 	 */
@@ -328,6 +339,52 @@ implements ActionListener,ItemListener, IDBFrame
 		this.fields[2] = this.passwordField = new JPasswordField(); 
 		this.fields[3] = this.baseNameField = new JTextField();
 		this.fields[4] = this.portField = new JTextField();
+		
+		//évite de confondre le point avec la virgule (bloque l'appuis de la virgule)
+		this.urlField.addKeyListener(
+				new java.awt.event.KeyAdapter() {
+			        public void keyTyped(KeyEvent evt) {
+			        	char c = evt.getKeyChar();
+			        	if (c==',') evt.consume();
+			        }
+				}
+			);
+		
+		this.portField.addKeyListener(
+				new java.awt.event.KeyAdapter() {
+			        public void keyTyped(KeyEvent evt) {
+			        	char c = evt.getKeyChar();
+			        	if (c==',') evt.consume();
+			        	//évite de confondre le point avec la virgule (bloque l'appuis de la virgule)
+			        	if(c<'0' || c>'9'){
+			        		evt.consume();
+			        	}
+			        }
+				}
+			);
+		
+		MaxLengthTextDocument maxLengthUrlField = new MaxLengthTextDocument();
+		maxLengthUrlField.setMaxChars(15);
+		this.urlField.setDocument(maxLengthUrlField);
+		
+		MaxLengthTextDocument maxLengthUserField = new MaxLengthTextDocument();
+		maxLengthUserField.setMaxChars(32);
+		this.userField.setDocument(maxLengthUserField);
+		
+		MaxLengthTextDocument maxLengthBaseNameField = new MaxLengthTextDocument();
+		maxLengthBaseNameField.setMaxChars(50);
+		this.baseNameField.setDocument(maxLengthBaseNameField);
+		
+		MaxLengthTextDocument maxLengthPasswordField = new MaxLengthTextDocument();
+		maxLengthPasswordField.setMaxChars(50);
+		this.passwordField.setDocument(maxLengthPasswordField);
+		
+		MaxLengthTextDocument maxLengthPortField = new MaxLengthTextDocument();
+		maxLengthPortField.setMaxChars(5);
+		this.portField.setDocument(maxLengthPortField);
+		
+		
+
 	}
 	
 	
@@ -519,6 +576,17 @@ implements ActionListener,ItemListener, IDBFrame
 		this.userField.setText(dvm.getUser());
 		this.baseNameField.setText(dvm.getDataBase());
 		this.portField.setText(dvm.getPort());
+		
+		if (this.urlField.getText().isEmpty() && 
+				this.userField.getText().isEmpty() && 
+				this.baseNameField.getText().isEmpty() && 
+				this.portField.getText().isEmpty()){
+			if (this.driverCombo.getSelectedItem().toString().equals("Oracle"))
+				this.setValuesOracle();
+		}
+			
+		
+		
 		//TODO : extraire les valeurs par défaut depuis quelque part.
 		//this.urlField.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
 	}
@@ -539,7 +607,7 @@ implements ActionListener,ItemListener, IDBFrame
 		if (!this.isComplete()) {
 			this.talk("Erreur : les champs doivent être remplis.");
 		}
-		else if(!this.isValidField()){
+		else if(!this.isValidPasswordField()){
 			this.talk("Erreur : le mot de passe est invalide");
 		}
 		else {
