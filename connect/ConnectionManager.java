@@ -217,6 +217,7 @@ public abstract class ConnectionManager
 		}
 		catch(SQLException e){
 			result = new CustomizedResponse(false, this.errorMessage(e));
+
 		}
 		catch(Exception e){
 			result =  new CustomizedResponse(false, "inconnue.");
