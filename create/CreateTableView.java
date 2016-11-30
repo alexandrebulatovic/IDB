@@ -13,7 +13,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class CreateTableView
 extends JFrame 
-implements ActionListener,ItemListener {
+implements ActionListener, ItemListener {
+	private static final String FONT = null;
 	/**
 	 * Controleur lié à l'IHM.
 	 */
@@ -124,6 +125,7 @@ implements ActionListener,ItemListener {
 
 	public CreateTableView(CreateTableController cm)
 	{
+		super("Création de table");
 		this.control = cm;
 		this.setLayout(null);
 		this.handlePanels();
@@ -141,7 +143,7 @@ implements ActionListener,ItemListener {
 	{
 		this.buttons = new JButton [this.buttonNumber];
 		this.buttons[0] = this.attributeButton = new JButton("Ajouter l'attribut") ;
-		this.buttons[1] = this.createTableButton = new JButton("Cr�er la Table") ;
+		this.buttons[1] = this.createTableButton = new JButton("Créer la Table") ;
 	}
 
 
@@ -241,13 +243,13 @@ implements ActionListener,ItemListener {
 	private void bindLabels()
 	{
 		this.tableLabel.setBounds(this.margin, (int)(0.03*height), 100, (int)(1.5*this.elementHeight));
-		this.tableLabel.setFont(new Font("TimesRoman", Font.BOLD, 18));
+		this.tableLabel.setFont(new Font(FONT, Font.BOLD, 18));
 		this.attributeLabel.setBounds(this.margin, (int)(0.20*height), 100, (int)(1.5*this.elementHeight));
-		this.attributeLabel.setFont(new Font("TimesRoman", Font.BOLD, 18));
+		this.attributeLabel.setFont(new Font(FONT, Font.BOLD, 18));
 		this.tableNameLabel.setBounds((int)(1.35*this.margin), (int)(0.09*height), 140, (int)(1.5*this.elementHeight));
-		this.tableNameLabel.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 14));
+		this.tableNameLabel.setFont(new Font(FONT, Font.CENTER_BASELINE, 14));
 		this.errorAttributesLabel.setBounds(300,(int)(0.37*height), 600, (int)(1.5*this.elementHeight));
-		this.errorAttributesLabel.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 14));
+		this.errorAttributesLabel.setFont(new Font(FONT, Font.CENTER_BASELINE, 14));
 	}
 
 
@@ -429,11 +431,11 @@ implements ActionListener,ItemListener {
 			if(isGoodSizeValue(Integer.parseInt(size))){
 				return true;				
 			}else{
-				this.talk(errorAttribute + "La taille de l'attribut doit �tre un entier compris entre 0 et 4000.");
+				this.talk(errorAttribute + "La taille de l'attribut doit être un entier compris entre 0 et 4000.");
 				return false;
 			}
 		}else{
-			this.talk(errorAttribute + "La taille de l'attribut doit �tre un entier.");
+			this.talk(errorAttribute + "La taille de l'attribut doit être un entier.");
 			return false;
 		}
 	}
@@ -446,7 +448,7 @@ implements ActionListener,ItemListener {
 				return false;
 			}
 		}else{
-			this.talk(errorAttribute + "Les Champs nomAttribut et/ou Taille ne sont pas renseign�(s).");
+			this.talk(errorAttribute + "Les Champs nomAttribut et/ou Taille ne sont pas renseigné(s).");
 			return false;
 		}
 	}
@@ -506,17 +508,17 @@ implements ActionListener,ItemListener {
 				if(fkCheck.isSelected()){
 					int i = this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText()));
 					if( i == 0){
-						this.talk(errorAttribute +"Un attribut existant a d�ja le m�me nom.");
+						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
 					}else{
-						this.talk(succesAttribute +"Attribut ajout�.");
+						this.talk(succesAttribute +"Attribut ajouté.");
 						this.clearAttribute();
 					}
 				}else{
 					int i = this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A"));	
 					if( i == 0){
-						this.talk(errorAttribute +"Un attribut existant a d�ja le m�me nom.");
+						this.talk(errorAttribute +"Un attribut existant a déjà le même nom.");
 					}else{
-						this.talk(succesAttribute +"Attribut ajout�.");
+						this.talk(succesAttribute +"Attribut ajouté.");
 						this.clearAttribute();
 					}
 				}
