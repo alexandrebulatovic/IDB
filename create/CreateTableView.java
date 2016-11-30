@@ -13,7 +13,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class CreateTableView
 extends JFrame 
-implements ActionListener,ItemListener {
+implements ActionListener, ItemListener {
+	private static final String FONT = null;
 	/**
 	 * Controleur lié à l'IHM.
 	 */
@@ -128,6 +129,7 @@ implements ActionListener,ItemListener {
 
 	public CreateTableView(CreateTableController cm)
 	{
+		super("Création de table");
 		this.control = cm;
 		this.setLayout(null);
 		this.handlePanels();
@@ -148,6 +150,7 @@ implements ActionListener,ItemListener {
 		this.buttons[1] = this.createTableButton = new JButton("Créer la Table") ;
 		this.buttons[2] = this.deleteAttributeButton = new JButton("Supprimer attribut") ;
 		this.buttons[3] = this.updateAttributeButton = new JButton("Mofifier attribut") ;
+
 	}
 
 
@@ -252,13 +255,13 @@ implements ActionListener,ItemListener {
 	private void bindLabels()
 	{
 		this.tableLabel.setBounds(this.margin, (int)(0.03*height), 100, (int)(1.5*this.elementHeight));
-		this.tableLabel.setFont(new Font("TimesRoman", Font.BOLD, 18));
+		this.tableLabel.setFont(new Font(FONT, Font.BOLD, 18));
 		this.attributeLabel.setBounds(this.margin, (int)(0.20*height), 100, (int)(1.5*this.elementHeight));
-		this.attributeLabel.setFont(new Font("TimesRoman", Font.BOLD, 18));
+		this.attributeLabel.setFont(new Font(FONT, Font.BOLD, 18));
 		this.tableNameLabel.setBounds((int)(1.35*this.margin), (int)(0.09*height), 140, (int)(1.5*this.elementHeight));
-		this.tableNameLabel.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 14));
+		this.tableNameLabel.setFont(new Font(FONT, Font.CENTER_BASELINE, 14));
 		this.errorAttributesLabel.setBounds(300,(int)(0.37*height), 600, (int)(1.5*this.elementHeight));
-		this.errorAttributesLabel.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 14));
+		this.errorAttributesLabel.setFont(new Font(FONT, Font.CENTER_BASELINE, 14));
 	}
 
 
