@@ -53,12 +53,18 @@ public class Table {
 		StringBuilder result = new StringBuilder();
 		
 		result.append("CREATE TABLE " + this.tableName + "\n(\n");
+		int i = 0;
 		for (Attribute a : this.listAttributes) {
 			result.append(a.toSQL());
+			if(i<this.listAttributes.size()){
 			result.append(",\n");
+			}else{
+				result.append("\n");
+			}
 		}
 		result.append(this.sqlPrimaryKeys());
 		result.append(")");
+		System.out.println(result.toString());
 		return result.toString();
 	}
 	

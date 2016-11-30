@@ -185,7 +185,7 @@ public class Attribute {
 	}
 	
 	public int checkAttributes(){
-		if(this.type.equals("VHARCHAR")){
+		if(this.type.equals("VARCHAR")){
 			if(this.size == 0 || this.size > 2000){
 				return -1;
 			}else{
