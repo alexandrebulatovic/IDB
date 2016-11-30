@@ -195,7 +195,7 @@ implements ActionListener,ItemListener, IDBFrame
 			this.okButtonAction();
 		}
 	}
-	
+
 	
 	/**
 	 * 
@@ -258,6 +258,10 @@ implements ActionListener,ItemListener, IDBFrame
 		this.messageLabel.setText(msg);
 	}
 	
+	public JTextField getUrlField(){
+		return this.urlField;
+	}
+	
 	
 	//Privates
 	/**
@@ -292,6 +296,8 @@ implements ActionListener,ItemListener, IDBFrame
 		}			
 	}
 	
+	
+	
 	/**
 	 * Instancie les boîtes de saisies.
 	 */
@@ -303,6 +309,21 @@ implements ActionListener,ItemListener, IDBFrame
 		this.fields[2] = this.passwordField = new JPasswordField(); 
 		this.fields[3] = this.baseNameField = new JTextField();
 		this.fields[4] = this.portField = new JTextField();
+		
+		//évite de confondre le point avec la virgule (bloque l'appuis de la virgule)
+		this.urlField.addKeyListener(
+				new java.awt.event.KeyAdapter() {
+			        public void keyTyped(KeyEvent evt) {
+			        	char c = evt.getKeyChar();
+			        	if (c==',') evt.consume();
+			        }
+				}
+			);
+		
+		MaxLengthTextDocument maxLengthNameTable = new MaxLengthTextDocument();
+		maxLengthNameTable.setMaxChars(30);
+		this.tableNameField.setDocument(maxLengthNameTable);
+
 	}
 	
 	
