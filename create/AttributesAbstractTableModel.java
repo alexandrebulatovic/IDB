@@ -78,6 +78,11 @@ extends AbstractTableModel {
 		}
 	}
 	
+	public void removeAll(){
+		 for(int i = this.attributes.size() - 1; i >= 0; i--){
+			 removeAttributes(i);
+         }
+	}
 	
 
 	public void removeAttributes(int rowIndex) {

@@ -74,7 +74,8 @@ implements ActionListener, ItemListener {
 
 	private final int labelNumber = 4;
 
-
+	private JButton resetButton;
+	
 	private JButton attributeButton;
 
 	private JButton createTableButton;
@@ -85,7 +86,7 @@ implements ActionListener, ItemListener {
 
 	private JButton buttons[];
 
-	private final int buttonNumber = 4;
+	private final int buttonNumber = 5;
 
 
 	private JPanel panelAttributes;
@@ -150,6 +151,7 @@ implements ActionListener, ItemListener {
 		this.buttons[1] = this.createTableButton = new JButton("Créer la Table") ;
 		this.buttons[2] = this.deleteAttributeButton = new JButton("Supprimer attribut") ;
 		this.buttons[3] = this.updateAttributeButton = new JButton("Mofifier attribut") ;
+		this.buttons[4] = this.resetButton = new JButton("Reset") ;
 
 	}
 
@@ -160,6 +162,7 @@ implements ActionListener, ItemListener {
 		this.createTableButton.setBounds((int)(1.35*this.margin), (int)(0.87*height), 150, (int)(1.5*this.elementHeight));
 		this.deleteAttributeButton.setBounds((int)(1.35*this.margin), (int)(0.80*height), 150, (int)(1.5*this.elementHeight));
 		this.updateAttributeButton.setBounds((int)(1.35*this.margin)+ 160, (int)(0.80*height), 150, (int)(1.5*this.elementHeight));
+		this.resetButton.setBounds(800, (int)(0.80*height), 80, (int)(1.5*this.elementHeight));
 		this.deleteAttributeButton.setEnabled(false);
 		this.updateAttributeButton.setEnabled(false);
 		
@@ -194,7 +197,25 @@ implements ActionListener, ItemListener {
 		this.fields[4] = this.fkAttributeNameField = new JTextField();
 	}
 
-
+	java.awt.event.KeyAdapter intKey = new java.awt.event.KeyAdapter() {
+        public void keyTyped(KeyEvent evt) {
+            char c = evt.getKeyChar();
+            if (c >= '0' && c <= '9') {
+            } else {
+                evt.consume();
+            }
+        }
+    };
+    
+    java.awt.event.KeyAdapter stringKey = new java.awt.event.KeyAdapter() {
+        public void keyTyped(KeyEvent evt) {
+            char c = evt.getKeyChar();
+            if ((c >= 'A' && c <= 'Z')||(c >= 'a' && c <= 'z')||(c == '_')||(c >= '0' && c <= '9')) {
+            } else {
+                evt.consume();
+            }
+        }
+    };
 
 	private void bindFields()
 	{
@@ -203,8 +224,11 @@ implements ActionListener, ItemListener {
 		this.attributeSizeField.setBounds((int)((1.35*this.margin)+210), (int)(0.28*height), 50, (int)(1.5*this.elementHeight));	
 		this.fkTableNameField.setBounds((int)((1.35*this.margin)+675), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));	
 		this.fkAttributeNameField.setBounds((int)((1.35*this.margin)+765), (int)(0.28*height), 75, (int)(1.5*this.elementHeight));
-		
-		
+		this.attributeSizeField.addKeyListener(intKey);
+		this.tableNameField.addKeyListener(stringKey);
+		this.attributeNameField.addKeyListener(stringKey);
+		this.fkTableNameField.addKeyListener(stringKey);
+		this.fkAttributeNameField.addKeyListener(stringKey);
 		MaxLengthTextDocument maxLengthNameTable = new MaxLengthTextDocument();
 		maxLengthNameTable.setMaxChars(30);
 		this.tableNameField.setDocument(maxLengthNameTable);
@@ -409,6 +433,12 @@ implements ActionListener, ItemListener {
 		this.fkCheck.setSelected(false);
 		this.pkCheck.setSelected(false);
 	}
+	
+	public void resetView(){
+		this.setValues("nomAttribut", "VARCHAR", "Taille", false, false, false, false, "nomTable", "nomAttribut");
+		this.tableNameField.setText("");
+		this.models[0].removeAll();
+	}
 
 	public boolean isInteger(String i){
 		try {
@@ -421,6 +451,15 @@ implements ActionListener, ItemListener {
 	
 	public boolean isCompleteAttribute(){
 		if(this.attributeNameField.getText().equals((String)"") || this.attributeSizeField.getText().equals((String)"")){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	public boolean isCompleteTable(){
+		if(this.models[0].getRowCount()==0 || this.tableNameField.getText().equals("")){
+			this.talk(errorAttribute+"Il n'y a pas d'Attribut OU Il manque le nom de la Table");
 			return false;
 		}else{
 			return true;
@@ -476,12 +515,12 @@ implements ActionListener, ItemListener {
 		this.errorAttributesLabel.setText(message);
 	}
 	
-	public void setValues(String name, String type, int size, boolean notNull, 
+	public void setValues(String name, String type, String size, boolean notNull, 
 			boolean unique, boolean pk, boolean fk, 
 			String fkTable, String fkAttribute){
 		this.attributeNameField.setText(name);
 		this.attributeTypeComboBox.setSelectedIndex(getIndexAttributeTypeComboBox(type));
-		this.attributeSizeField.setText(Integer.toString(size));
+		this.attributeSizeField.setText(size);
 		this.notNullCheck.setSelected(notNull);
 		this.uniqueCheck.setSelected(unique);
 		this.pkCheck.setSelected(pk);
@@ -508,15 +547,20 @@ implements ActionListener, ItemListener {
 			this.addAttributeButtonAction();
 		}
 		if (e.getSource() == this.createTableButton) {
+			if(this.isCompleteTable()){
 			this.control.createTable(new Table(
 					this.models[0].getAttributes(),
 					this.tableNameField.getText()));
+			}
 		}
 		if (e.getSource() == this.deleteAttributeButton) {
 			this.deleteAttributeButtonAction();
 		}
 		if (e.getSource() == this.updateAttributeButton) {
 			updateAttributeButtonAction();
+		}
+		if (e.getSource() == this.resetButton) {
+			this.resetView();
 		}
 	}
 	
@@ -553,7 +597,7 @@ implements ActionListener, ItemListener {
 		this.talk("");
 		int rowIndex = this.tables[0].getSelectedRow();
 		Attribute a = this.models[0].getAttributeAt(rowIndex);
-		this.setValues(a.getName(), a.getType(), a.getSize(), a.isNotNull(), a.isUnique(), a.isPrimaryKey(), a.isForeignKey(), a.getFkTable(), a.getFkAttribute());
+		this.setValues(a.getName(), a.getType(), Integer.toString(a.getSize()), a.isNotNull(), a.isUnique(), a.isPrimaryKey(), a.isForeignKey(), a.getFkTable(), a.getFkAttribute());
 		this.models[0].removeAttributes(this.tables[0].getSelectedRow());
 		this.setEnableButtonUpdateDelete(false);
 	}
