@@ -107,7 +107,6 @@ public abstract class ConnectionManager
 		return this.connect(this.parameters);
 	}
 	
-	
 	/**
 	 * Retourne le nom de l'utilisateur connecté.
 	 * 

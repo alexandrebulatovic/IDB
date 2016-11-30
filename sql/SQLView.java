@@ -65,6 +65,7 @@ implements ActionListener
 	private void handleArea()
 	{
 		this.sqlArea = new JTextArea();
+		this.sqlArea.setText("N'entrez qu'une requete à fois!");
 		this.bindElements(this.sqlArea, 200);
 	}
 	
@@ -92,5 +93,10 @@ implements ActionListener
 		else{
 			this.talk("Envoi de la requête...");
 		}
+	}
+
+
+	public JTextArea getSqlArea() {
+		return sqlArea;
 	}
 }
