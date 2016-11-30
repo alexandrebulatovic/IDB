@@ -114,7 +114,10 @@ public class Attribute {
 	 */
 	private String sqlAttribute()
 	{
-		return this.name + " " + this.type + "(" + this.size + ")";
+		StringBuilder result = new StringBuilder();
+		result.append(this.name + " " + this.type);
+		if (! this.type.equals("DATE")) result.append("(" + this.size + ")");
+		return result.toString();
 	}
 	
 	
