@@ -50,7 +50,8 @@ public abstract class ConnectionManager
 	 * Un objet qui représente la connexion à un SGBD.
 	 */
 	protected Connection dbms;
-	
+
+
 	/**
 	 * Contient tous les paramètres d'une connexion réussie.
 	 */

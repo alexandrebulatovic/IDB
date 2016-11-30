@@ -2,6 +2,7 @@ package main;
 
 import connect.ConnectionManager;
 import create.CreateTableController;
+import sql.SQLController;
 
 public class MainController 
 {
@@ -53,6 +54,19 @@ public class MainController
 		if (!this.mhiMode) {
 			this.mhiMode = true;
 			new CreateTableController(this.connector);
+		}
+	}
+	
+	/**
+	 * Affiche la vue pour utiliser un SGBD en mode SQL
+	 * si et seulement si il n'existe pas déjà d'instance 
+	 * de cette dernière, ne fais rien sinon.
+	 */
+	public void openSqlMode()
+	{
+		if (!this.sqlMode) {
+			this.sqlMode = true;
+			new SQLController(this.connector);
 		}
 	}
 }
