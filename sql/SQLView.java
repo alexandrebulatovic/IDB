@@ -1,10 +1,13 @@
 package sql;
 
 import interf.BasicView;
+import interf.IDBFrame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+
+import create.CreateTableController;
 
 @SuppressWarnings("serial")
 public class SQLView 
@@ -12,29 +15,36 @@ extends BasicView
 implements ActionListener
 {
 	//Attributs
+
+	/**
+	 * Controleur lié à l'IHM.
+	 */
+	private SQLController control;
+
 	/**
 	 * Zone de texte pour écrire les requêtes.
 	 */
 	private JTextArea sqlArea;
-	
+
 	/**
 	 * Bouton pour soumettre la requête
 	 */
 	private JButton okButton;
-	
+
 	//Constructeurs
 	/**
 	 * Constructeur commun.
 	 */
-	public SQLView()
+	public SQLView(SQLController c)
 	{
 		super("Menu SQL", null, 400, 350, 20);
+		this.control = c;
 		this.handleArea();
 		this.handleButtons();
 		this.setProperties();
 	}
-	
-	
+
+
 	//Public
 	/**
 	 * {@inheritDoc}
@@ -45,7 +55,7 @@ implements ActionListener
 			this.okButtonAction();
 		}
 	}
-	
+
 
 	/**
 	 * {@inheritDoc}
@@ -55,8 +65,8 @@ implements ActionListener
 		String query = this.sqlArea.getText();
 		return query.endsWith(";") && query.length() > 1;
 	}
-	
-	
+
+
 	//Privates
 	/**
 	 * Instancie, dimensionne, positionne et associe les
@@ -68,7 +78,7 @@ implements ActionListener
 		this.sqlArea.setText("N'entrez qu'une requete à fois!");
 		this.bindElements(this.sqlArea, 200);
 	}
-	
+
 	/**
 	 * Instancie, dimensionne, positionne et associe les
 	 * boutons.
@@ -80,8 +90,8 @@ implements ActionListener
 		this.okButton.addActionListener(this);
 		this.bindElements(this.okButton, 40);
 	}
-	
-	
+
+
 	/**
 	 * Exécute l'action voulue par un clic sur le bouton 'ok'.
 	 */
@@ -91,12 +101,8 @@ implements ActionListener
 			this.talk("Syntaxe attendue : ma_requête;");
 		}
 		else{
-			this.talk("Envoi de la requête...");
+			this.talk("Requete envoyée.");
+			this.control.sendSQL(this.sqlArea.getText().replaceAll(";", "")); // on envoie la requete au controleur sans le ";"
 		}
-	}
-
-
-	public JTextArea getSqlArea() {
-		return sqlArea;
 	}
 }
