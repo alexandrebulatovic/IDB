@@ -7,10 +7,19 @@ import javax.swing.table.AbstractTableModel;
 public class AttributesAbstractTableModel 
 extends AbstractTableModel {
 
+	/**
+	 * Liste des attributs présent dans le tableau
+	 */
 	private ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 
+	/**
+	 * Initialise l'en-tête
+	 */
 	private final String[] header = {"Nom Attribut", "Type", "Taille", "NOT NULL", "UNIQUE","PRIMARY KEY","FOREIGN KEY","Table","Attribut"};
 
+	/**
+	 * Constructeur 
+	 */
 	public AttributesAbstractTableModel() {
 		super();
 	}
@@ -26,6 +35,10 @@ extends AbstractTableModel {
 	public String getColumnName(int columnIndex) {
 		return header[columnIndex];
 	}
+	/**
+	 * @param rowIndex
+	 * @return Attribute
+	 */
 	public Attribute getAttributeAt(int rowIndex){
 		Attribute a = this.attributes.get(rowIndex);
 		return a;
@@ -58,6 +71,10 @@ extends AbstractTableModel {
 			return null; 
 		}
 	}
+	/**
+	 * @param a
+	 * @return boolean
+	 */
 	public boolean isDuplicateAttributeName(Attribute a){
 		boolean res = false;
 		for(Attribute object: attributes){
@@ -68,6 +85,11 @@ extends AbstractTableModel {
 		return res;
 	}
 
+	/**
+	 * Ajoute un attribut dans la Table et dans l'ArrayList
+	 * @param atrribute
+	 * @return int
+	 */
 	public int addAttribute(Attribute atrribute) {
 		if(!(isDuplicateAttributeName(atrribute))){
 		attributes.add(atrribute);
@@ -78,6 +100,9 @@ extends AbstractTableModel {
 		}
 	}
 	
+	/**
+	 * Supprime tout les attribut de la Table et de l'ArrayList
+	 */
 	public void removeAll(){
 		 for(int i = this.attributes.size() - 1; i >= 0; i--){
 			 removeAttributes(i);
@@ -85,15 +110,25 @@ extends AbstractTableModel {
 	}
 	
 
+	/**
+	 * Supprime un attribut dans la Table et dans l'ArrayList
+	 * @param rowIndex
+	 */
 	public void removeAttributes(int rowIndex) {
 		attributes.remove(rowIndex);
 		fireTableRowsDeleted(rowIndex, rowIndex);
 	}
 	
+	/**
+	 * @return ArrayList<Attribute>
+	 */
 	public ArrayList<Attribute> getAttributes(){
 		return this.attributes;
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	public boolean isEmpty(){
 		if(attributes.size() == 0){
 			return true;

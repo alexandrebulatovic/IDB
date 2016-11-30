@@ -180,4 +180,53 @@ public class Attribute {
 		}
 		return result.toString();
 	}
+	
+	public int checkAttributes(){
+		if(this.type.equals("VHARCHAR")){
+			if(this.size == 0 || this.size > 2000){
+				return -1;
+			}else{
+				return 1;
+			}
+		}else if (this.type.equals("NUMBER")){
+			if(this.size == 0){
+				return -2;
+			}else{
+				return 2;
+			}
+		}else if (this.type.equals("CHAR")){
+			if(this.size == 0 || this.size > 2000){
+			return -3;
+		}else{
+			return 3;
+		}
+			
+		}else{
+			return 0;
+	}
+			
+			
+			
+		}
+	
+	public String errorAttributes(int i){
+		String error;
+		if(i==-1){
+			error = "Un VARCHAR doit avoir une Taille comprise entre 1 et 4000";
+			return error;
+		}else if(i==-2){
+			error = "Un NUMBER doit avoir une Taille Supérieure à 0";
+			return error;
+	}else if(i==-3){
+		error = "Un CHAR doit avoir une Taille comprise entre 1 et 2000";
+		return error;
+		
+	}else{
+		error = "";
+		return error;
+		
+	}
+		
+	}
 }
+
