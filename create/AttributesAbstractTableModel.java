@@ -37,23 +37,23 @@ extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		switch(columnIndex){
 		case 0:
-			return attributes.get(rowIndex).getName();
+			return attributes.get(rowIndex).name;
 		case 1:
-			return attributes.get(rowIndex).getType();
+			return attributes.get(rowIndex).type;
 		case 2:
-			return attributes.get(rowIndex).getSize();
+			return attributes.get(rowIndex).size;
 		case 3:
-			return attributes.get(rowIndex).isNotNull();
+			return attributes.get(rowIndex).notNull;
 		case 4:
-			return attributes.get(rowIndex).isUnique();
+			return attributes.get(rowIndex).unique;
 		case 5:
-			return attributes.get(rowIndex).isPrimaryKey();
+			return attributes.get(rowIndex).primaryKey;
 		case 6:
-			return attributes.get(rowIndex).isForeignKey();
+			return attributes.get(rowIndex).foreignKey;
 		case 7:
-			return attributes.get(rowIndex).getFkTable();
+			return attributes.get(rowIndex).fkTable;
 		case 8:
-			return attributes.get(rowIndex).getFkAttribute();
+			return attributes.get(rowIndex).fkAttribute;
 		default:
 			return null; 
 		}

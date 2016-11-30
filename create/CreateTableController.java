@@ -41,6 +41,7 @@ public class CreateTableController
 		CustomizedResponse response = this.creator.createTable(table.toSQL());
 		if (response.success()) {
 			this.talk("Table créée.");
+			this.mhi.resetView();
 		}
 		else {
 			this.talk(response.message());

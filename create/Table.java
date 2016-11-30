@@ -52,14 +52,68 @@ public class Table {
 	{
 		StringBuilder result = new StringBuilder();
 		
-		result.append("CREATE TABLE " + this.tableName + "\n(");
+		result.append("CREATE TABLE " + this.tableName + "\n(\n");
 		for (Attribute a : this.listAttributes) {
 			result.append(a.toSQL());
 			result.append(",\n");
 		}
-		result.deleteCharAt(result.length()-1);
-		result.deleteCharAt(result.length()-1);
-		result.append("\n)");
+		result.append(this.sqlPrimaryKeys());
+		result.append(")");
+		return result.toString();
+	}
+	
+	
+	/**
+	 * Retourne le nombre d'attributs qui
+	 * composent la clef primaire de $this.
+	 * 
+	 * @return int
+	 */
+	private int countPrimaryKey()
+	{
+		int result = 0;
+		for (Attribute a : this.listAttributes) {
+			if (a.primaryKey) result++;
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Retourne vrai si et seulement si $this possède
+	 * au moins un attribut de clef primaire.
+	 * 
+	 * @return boolean
+	 */
+	private boolean hasPrimaryKey()
+	{
+		return this.countPrimaryKey() != 0;
+	}
+	
+	
+	/**
+	 * Retourne une chaîne de caractères qui synthétise les attributs
+	 * de la clée primaire de $this sous la forme d'une clause CONSTRAINT.
+	 * 
+	 * @return String
+	 */
+	private String sqlPrimaryKeys()
+	{
+		StringBuilder result = new StringBuilder();
+		if (this.hasPrimaryKey()) {
+			result.append("CONSTRAINT pk_");
+			result.append(this.tableName);
+			result.append(" PRIMARY KEY (");
+			for (Attribute a : this.listAttributes) {
+				if (a.primaryKey) {
+					result.append(a.name);
+					result.append(", ");
+				}
+			}
+			result.deleteCharAt(result.length()-1);
+			result.deleteCharAt(result.length()-1);
+			result.append(")\n");
+		}
 		return result.toString();
 	}
 	

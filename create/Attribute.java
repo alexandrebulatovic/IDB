@@ -10,24 +10,38 @@ public class Attribute {
 	 */
 	private static final String CST = ",\nCONSTRAINT ";
 	
-	private String name;
+	public final String name;
 
-	private String type;
+	public final String type;
 
-	private int size;
+	public final int size;
 
-	private boolean notNull;
+	public final boolean notNull;
 
-	private boolean unique;
+	public final boolean unique;
 
-	private boolean primaryKey;
+	public final boolean primaryKey;
 
-	private boolean foreignKey;
+	public final boolean foreignKey;
 
-	private String fkTable;
+	public final String fkTable;
 
-	private String fkAttribute;
+	public final String fkAttribute;
 
+	
+	/**
+	 * Constructeur lambda.
+	 * 
+	 * @param name
+	 * @param type
+	 * @param size
+	 * @param notNull
+	 * @param unique
+	 * @param pk
+	 * @param fk
+	 * @param fkTable
+	 * @param fkAttribute
+	 */
 	public Attribute(String name, String type, int size, boolean notNull, 
 			boolean unique, boolean pk, boolean fk, 
 			String fkTable, String fkAttribute ){
@@ -42,80 +56,6 @@ public class Attribute {
 		this.fkAttribute=fkAttribute;
 	}
 
-
-	//Accesseurs, mutateurs
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String n) {
-		this.name = n;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String t) {
-		this.type = t;
-	}
-
-	public int getSize() {
-		return size;
-	}
-
-	public void setSize(int s) {
-		this.size = s;
-	}
-
-	public boolean isNotNull() {
-		return notNull;
-	}
-
-	public void setNotNull(boolean nn) {
-		this.notNull = nn;
-	}
-
-	public boolean isUnique() {
-		return unique;
-	}
-
-	public void setUnique(boolean u) {
-		this.unique = u;
-	}
-
-	public boolean isPrimaryKey() {
-		return primaryKey;
-	}
-
-	public void setPrimaryKey(boolean pk) {
-		this.primaryKey = pk;
-	}
-
-	public boolean isForeignKey() {
-		return foreignKey;
-	}
-
-	public void setForeignKey(boolean fk) {
-		this.foreignKey = fk;
-	}
-
-	public String getFkTable() {
-		return fkTable;
-	}
-
-	public void setFkTable(String fkT) {
-		this.fkTable = fkT;
-	}
-
-	public String getFkAttribute() {
-		return fkAttribute;
-	}
-
-	public void setFkAttribute(String fkA) {
-		this.fkAttribute = fkA;
-	}
-	
 	
 	//Méthodes
 	/**
@@ -160,7 +100,6 @@ public class Attribute {
 		result.append(this.sqlAttribute());
 		if (this.notNull) 		result.append(this.sqlNotNull());
 		if (this.unique) 		result.append(this.sqlUnique());
-		if (this.primaryKey) 	result.append(this.sqlPrimaryKey());
 		if (this.foreignKey) 	result.append(this.sqlForeignKey());
 		return result.toString();
 	}
@@ -200,18 +139,6 @@ public class Attribute {
 	private String sqlUnique()
 	{
 		return this.concatSqlConstraint("un", "UNIQUE", "");
-	}
-	
-	
-	/**
-	 * Retourne une chaîne de caractères qui correspond à
-	 * une déclaration de contrainte PRIMARY KEY pour $this.
-	 * 
-	 * @return StringBuilder
-	 */
-	private String sqlPrimaryKey()
-	{
-		return this.concatSqlConstraint("pk", "PRIMARY KEY", "");
 	}
 	
 	

@@ -597,7 +597,7 @@ implements ActionListener, ItemListener {
 		this.talk("");
 		int rowIndex = this.tables[0].getSelectedRow();
 		Attribute a = this.models[0].getAttributeAt(rowIndex);
-		this.setValues(a.getName(), a.getType(), Integer.toString(a.getSize()), a.isNotNull(), a.isUnique(), a.isPrimaryKey(), a.isForeignKey(), a.getFkTable(), a.getFkAttribute());
+		this.setValues(a.name, a.type, Integer.toString(a.size), a.notNull, a.unique, a.primaryKey, a.foreignKey, a.fkTable,a.fkAttribute);
 		this.models[0].removeAttributes(this.tables[0].getSelectedRow());
 		this.setEnableButtonUpdateDelete(false);
 	}
