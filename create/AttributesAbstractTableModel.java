@@ -26,7 +26,14 @@ extends AbstractTableModel {
 	public String getColumnName(int columnIndex) {
 		return header[columnIndex];
 	}
-
+	public Attribute getAttributeAt(int rowIndex){
+		Attribute a = this.attributes.get(rowIndex);
+		return a;
+	}
+			
+			
+			
+			
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		switch(columnIndex){
 		case 0:
@@ -75,7 +82,6 @@ extends AbstractTableModel {
 
 	public void removeAttributes(int rowIndex) {
 		attributes.remove(rowIndex);
-
 		fireTableRowsDeleted(rowIndex, rowIndex);
 	}
 	

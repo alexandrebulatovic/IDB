@@ -77,10 +77,14 @@ implements ActionListener,ItemListener {
 	private JButton attributeButton;
 
 	private JButton createTableButton;
+	
+	private JButton updateAttributeButton;
+	
+	private JButton deleteAttributeButton;
 
 	private JButton buttons[];
 
-	private final int buttonNumber = 2;
+	private final int buttonNumber = 4;
 
 
 	private JPanel panelAttributes;
@@ -141,7 +145,9 @@ implements ActionListener,ItemListener {
 	{
 		this.buttons = new JButton [this.buttonNumber];
 		this.buttons[0] = this.attributeButton = new JButton("Ajouter l'attribut") ;
-		this.buttons[1] = this.createTableButton = new JButton("Cr�er la Table") ;
+		this.buttons[1] = this.createTableButton = new JButton("Créer la Table") ;
+		this.buttons[2] = this.deleteAttributeButton = new JButton("Supprimer attribut") ;
+		this.buttons[3] = this.updateAttributeButton = new JButton("Mofifier attribut") ;
 	}
 
 
@@ -149,6 +155,11 @@ implements ActionListener,ItemListener {
 	{
 		this.attributeButton.setBounds((int)(1.35*this.margin), (int)(0.37*height), 165, (int)(1.5*this.elementHeight));
 		this.createTableButton.setBounds((int)(1.35*this.margin), (int)(0.87*height), 150, (int)(1.5*this.elementHeight));
+		this.deleteAttributeButton.setBounds((int)(1.35*this.margin), (int)(0.80*height), 150, (int)(1.5*this.elementHeight));
+		this.updateAttributeButton.setBounds((int)(1.35*this.margin)+ 160, (int)(0.80*height), 150, (int)(1.5*this.elementHeight));
+		this.deleteAttributeButton.setEnabled(false);
+		this.updateAttributeButton.setEnabled(false);
+		
 	}
 
 
@@ -278,6 +289,7 @@ implements ActionListener,ItemListener {
 				return false;
 			}
 		};
+		this.tables[0].getSelectionModel().addListSelectionListener(new ControlTableResult(this));
 		this.scrollPanes = new JScrollPane[1];
 		this.scrollPanes[0] = new JScrollPane(this.tables[0]);
 	}
@@ -285,7 +297,7 @@ implements ActionListener,ItemListener {
 
 	private void bindPanels()
 	{
-		this.panels[0].setBounds(0, (int)(0.5*height), width-5,  (int)(0.5*height)-100);
+		this.panels[0].setBounds(0, (int)(0.45*height), width-5,  (int)(0.5*height)-100);
 		this.tables[0].setFillsViewportHeight(true);
 		this.tables[0].setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.scrollPanes[0].setVisible(true);
@@ -429,11 +441,11 @@ implements ActionListener,ItemListener {
 			if(isGoodSizeValue(Integer.parseInt(size))){
 				return true;				
 			}else{
-				this.talk(errorAttribute + "La taille de l'attribut doit �tre un entier compris entre 0 et 4000.");
+				this.talk(errorAttribute + "La taille de l'attribut doit être un entier compris entre 0 et 4000.");
 				return false;
 			}
 		}else{
-			this.talk(errorAttribute + "La taille de l'attribut doit �tre un entier.");
+			this.talk(errorAttribute + "La taille de l'attribut doit être un entier.");
 			return false;
 		}
 	}
@@ -446,14 +458,45 @@ implements ActionListener,ItemListener {
 				return false;
 			}
 		}else{
-			this.talk(errorAttribute + "Les Champs nomAttribut et/ou Taille ne sont pas renseign�(s).");
+			this.talk(errorAttribute + "Les Champs nomAttribut et/ou Taille ne sont pas renseigné(s).");
 			return false;
 		}
+	}
+	
+	public void setEnableButtonUpdateDelete(boolean b){
+		this.deleteAttributeButton.setEnabled(b);
+		this.updateAttributeButton.setEnabled(b);
 	}
 	
 	public void talk(String message){
 		this.errorAttributesLabel.setText("");
 		this.errorAttributesLabel.setText(message);
+	}
+	
+	public void setValues(String name, String type, int size, boolean notNull, 
+			boolean unique, boolean pk, boolean fk, 
+			String fkTable, String fkAttribute){
+		this.attributeNameField.setText(name);
+		this.attributeTypeComboBox.setSelectedIndex(getIndexAttributeTypeComboBox(type));
+		this.attributeSizeField.setText(Integer.toString(size));
+		this.notNullCheck.setSelected(notNull);
+		this.uniqueCheck.setSelected(unique);
+		this.pkCheck.setSelected(pk);
+		this.fkCheck.setSelected(fk);
+		this.fkTableNameField.setText(fkTable);
+		this.fkAttributeNameField.setText(fkAttribute);
+	}
+	
+	public int getIndexAttributeTypeComboBox(String type){
+		if(type.equals("VARCHAR")){
+			return 0;
+		}else if(type.equals("NUMBER")){
+			return 1;
+		}else if(type.equals("DATE")){
+			return 2;
+		}else{
+			return 3;
+		}
 	}
 	
 	@Override
@@ -466,7 +509,12 @@ implements ActionListener,ItemListener {
 					this.models[0].getAttributes(),
 					this.tableNameField.getText()));
 		}
-
+		if (e.getSource() == this.deleteAttributeButton) {
+			this.deleteAttributeButtonAction();
+		}
+		if (e.getSource() == this.updateAttributeButton) {
+			updateAttributeButtonAction();
+		}
 	}
 	
 	public void itemStateChanged(ItemEvent item) {
@@ -498,7 +546,22 @@ implements ActionListener,ItemListener {
 			}
 	}
 	
+	private void updateAttributeButtonAction(){
+		this.talk("");
+		int rowIndex = this.tables[0].getSelectedRow();
+		Attribute a = this.models[0].getAttributeAt(rowIndex);
+		this.setValues(a.getName(), a.getType(), a.getSize(), a.isNotNull(), a.isUnique(), a.isPrimaryKey(), a.isForeignKey(), a.getFkTable(), a.getFkAttribute());
+		this.models[0].removeAttributes(this.tables[0].getSelectedRow());
+		this.setEnableButtonUpdateDelete(false);
+	}
 	
+	
+	
+	private void deleteAttributeButtonAction(){
+		this.models[0].removeAttributes(this.tables[0].getSelectedRow());
+		this.talk(succesAttribute+"Attribut supprimé");
+		this.setEnableButtonUpdateDelete(false);
+	}
 	
 	private void addAttributeButtonAction()
 	{
@@ -506,22 +569,23 @@ implements ActionListener,ItemListener {
 				if(fkCheck.isSelected()){
 					int i = this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText()));
 					if( i == 0){
-						this.talk(errorAttribute +"Un attribut existant a d�ja le m�me nom.");
+						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
 					}else{
-						this.talk(succesAttribute +"Attribut ajout�.");
+						this.talk(succesAttribute +"Attribut ajouté.");
 						this.clearAttribute();
 					}
 				}else{
 					int i = this.models[0].addAttribute(new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A"));	
 					if( i == 0){
-						this.talk(errorAttribute +"Un attribut existant a d�ja le m�me nom.");
+						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
 					}else{
-						this.talk(succesAttribute +"Attribut ajout�.");
+						this.talk(succesAttribute +"Attribut ajouté.");
 						this.clearAttribute();
 					}
 				}
 		}		
 		
 	}
+	
 }
 

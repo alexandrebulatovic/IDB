@@ -26,8 +26,6 @@ public class Attribute {
 
 	private String fkTable;
 
-
-
 	private String fkAttribute;
 
 	public Attribute(String name, String type, int size, boolean notNull, 
