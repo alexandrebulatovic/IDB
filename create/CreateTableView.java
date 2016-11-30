@@ -389,7 +389,7 @@ implements ActionListener, ItemListener {
 		this.fkAttributeNameField.addKeyListener(stringKey);		
 		this.tableNameField.setDocument(fieldInputSize(30));
 		this.attributeNameField.setDocument(fieldInputSize(64));
-		this.attributeSizeField.setDocument(fieldInputSize(4));
+		this.attributeSizeField.setDocument(fieldInputSize(3));
 		this.attributeNameField.setText("nomAttribut");
 		this.attributeSizeField.setText("Taille");
 		this.fkTableNameField.setText("nomTable");
