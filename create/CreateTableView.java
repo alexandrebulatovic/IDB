@@ -945,9 +945,9 @@ implements ActionListener, ItemListener {
 	private void addAttributeButtonAction()
 	{
 		if(isValidateAttributes()){
-				if(fkCheck.isSelected()){
-					Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText());
-					if (a.checkAttributes()>=0){
+			if(fkCheck.isSelected()){
+				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText());
+				if (a.checkAttributes()>=0){
 					int i = this.models[0].addAttribute(a);
 					if( i == 0){
 						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
@@ -955,28 +955,28 @@ implements ActionListener, ItemListener {
 						this.talk(succesAttribute +"Attribut ajouté.");
 						this.clearAttribute();
 					}
-					}else{
-						this.talk(errorAttribute +a.errorAttributes(a.checkAttributes()));							
-						}
-					
-					
 				}else{
-					Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A");	
-					if (a.checkAttributes()>=0){
-						int i = this.models[0].addAttribute(a);
-						if( i == 0){
-							this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
-						}else{
-							this.talk(succesAttribute +"Attribut ajouté.");
-							this.clearAttribute();
-						}
-						}else{
-							this.talk(errorAttribute +a.errorAttributes(a.checkAttributes()));							
-							}
-					}
+					this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
 				}
-		}		
-		
-	}
-	
+
+
+			}else{
+				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A");	
+				if (a.checkAttributes()>=0){
+					int i = this.models[0].addAttribute(a);
+					if( i == 0){
+						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
+					}else{
+						this.talk(succesAttribute +"Attribut ajouté.");
+						this.clearAttribute();
+					}
+				}else{
+					this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
+				}
+			}
+		}
+	}		
+
+}
+
 
