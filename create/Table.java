@@ -64,7 +64,6 @@ public class Table {
 		}
 		result.append(this.sqlPrimaryKeys());
 		result.append(")");
-		System.out.println(result.toString());
 		return result.toString();
 	}
 	

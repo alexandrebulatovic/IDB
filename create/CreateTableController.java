@@ -34,14 +34,14 @@ public class CreateTableController
 	/**
 	 * Envoie la requête SQL $sqlQuery au SGBD.
 	 * 
-	 * @param sqlQuery : une requête SQL de LDD pour créer une table.
+	 * @param table : une table à créer. L'objet peut être erroné;
 	 */
 	public void createTable(Table table)
 	{
 		CustomizedResponse response = this.creator.createTable(table.toSQL());
 		if (response.success()) {
-			this.talk("Table créée.");
 			this.mhi.resetView();
+			this.talk("Table " + table.getTableName() + " créée.");
 		}
 		else {
 			this.talk(response.message());
