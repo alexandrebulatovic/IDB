@@ -89,7 +89,7 @@ public class SQLController {
 			break;
 			case 955:showResult("Ce nom est déjà pris.");
 			break;
-			default: showResult("ECHEC!");
+			default: showResult("ECHEC!"+ ex.getMessage());
 			break;
 			}
 		}
