@@ -59,9 +59,6 @@ public class SQLController {
 				}
 				stringBuilder.append("\n");
 
-
-				// TODO connaitre le nombre de colonnes puis le type de chaque colonne pour les afficher
-
 				while (rs.next()) {
 					for (int i = 1; i <= rsmd.getColumnCount(); i++) {
 						if (i > 1) stringBuilder.append(",  ");
