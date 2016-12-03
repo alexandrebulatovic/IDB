@@ -15,6 +15,12 @@ public class MenuPrincipalView extends JFrame implements ActionListener{
 	/**Bouton "Créer une table".*/
 	private JButton creerTable;
 
+	/**Bouton "Supprimer une table".*/
+	private JButton supprimerTable;
+
+	/**Bouton "Modifier une table".*/
+	private JButton modifierTable;
+
 	/** Marge coin superieur gauche.*/
 	private int margin = 20;
 
@@ -25,15 +31,27 @@ public class MenuPrincipalView extends JFrame implements ActionListener{
 	}
 
 	/** Instancie les boutons. */
-	private void createButtons(){this.creerTable = new JButton("Créer une table");}
+	private void createButtons(){
+		this.creerTable = new JButton("Créer une table");
+		this.supprimerTable = new JButton("Supprimer une table");
+		this.modifierTable = new JButton("Modifier une table");
+	}
 
 	/** Positionne et dimensionne les boutons. */
-	private void bindButtons(){this.creerTable.setBounds(this.margin,this.margin, 200, 40);}
+	private void bindButtons(){
+		this.creerTable.setBounds(this.margin, this.margin, 200, 40);
+		this.supprimerTable.setBounds(this.margin,this.margin+80, 200, 40);
+		this.modifierTable.setBounds(this.margin, this.margin+160, 200, 40);
+	}
 
 	/** Ajoute les boutons et leur action listener à la view. */
 	private void addButtons(){	
 		this.add(this.creerTable);
+		this.add(this.supprimerTable);
+		this.add(this.modifierTable);
 		this.creerTable.addActionListener(this);
+		this.supprimerTable.addActionListener(this);
+		this.modifierTable.addActionListener(this);
 	}
 
 	/** Instancie, positionne, dimensionne et associe les boutons et leur listener à la view.*/
@@ -62,7 +80,13 @@ public class MenuPrincipalView extends JFrame implements ActionListener{
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == this.creerTable) {
-			// TODO
+			// TODO ouvre la view correspondante...
+		}
+		else if (e.getSource() == this.supprimerTable) {
+			// TODO ouvre la view correspondante... 
+		}
+		else if (e.getSource() == this.modifierTable){
+			// TODO ouvre la view correspondante...
 		}
 	}
 }
