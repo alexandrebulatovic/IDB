@@ -1,604 +1,178 @@
 package connect;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import create.MaxLengthTextDocument;
+import interf.BasicView;
 
-import interf.IDBFrame;
-
-import java.awt.event.*;
-
-import javax.swing.*;
-
-/**
- * Gère l'IHM pour se connecter à un SGBD.
- */
+@SuppressWarnings("serial")
 public class ConnectionView 
-extends JFrame 
-implements ActionListener,ItemListener, IDBFrame
+extends BasicView
+implements ActionListener
 {
-	//Attributes
-	/**
-	 * Controlleur de connexion.
-	 */
+	//Attributs
+	/**Controleur de connexion.*/
 	private ConnectionController control;
-	
-	/**
-	 * Hauteur de l'IHM.
-	 */
-	private final int height = 400;
-	
-	/**
-	 * Largeur de l'IHM.
-	 */
-	private final int width = 500;
-	
-	/**
-	 * Hauteur des éléments.
-	 */
-	private final int elementHeight = 20;
-	
-	
-	/**
-	 * Largeur des éléments.
-	 */
-	private int elementWidth;
-	
-	/**
-	 * Marge à gauche des éléments.
-	 */
-	private int margin = 30;
-	
-	/**
-	 * Bouton 'Connexion'.
-	 */
-	private JButton okButton;
-	
-	/**
-	 * Contient tous les boutons.
-	 */
-	private JButton [] buttons;
-	
-	/**
-	 * Nombre de boutons.
-	 */
-	private final int buttonNumber = 1;
-	
-	/**
-	 * La JComboBox de choix des drivers
-	 */
-	private JComboBox driverCombo;
-	
-	/**
-	 * Contiens toutes les JComboBox
-	 */
-	private JComboBox[]combos;
-	
-	/**
-	 * nombre de JComboBox
-	 */
-	private final int comboNumber = 1;
-	
-	/**
-	 * Boîte de saisie de l'adresse du SGBD.
-	 * Valeur Hôte/ip
-	 */
-	private JTextField urlField;
-	
-	/**
-	 * Boîte de saisie du nom d'utilisateur.
-	 */
-	private JTextField userField;
-	
-	/**
-	 * Boite de saisie du mot de passe.
-	 */
-	private JTextField passwordField;
-	
-	/**
-	 * Le nom de la BDD
-	 */
-	private JTextField baseNameField;
-	
-	/**
-	 * Le numéro de port
-	 */
-	private JTextField portField;
-	
-	/**
-	 * Contient toutes les boîtes de saisie.
-	 */
-	private JTextField [] fields;
-	
-	/**
-	 * Nombre de boîtes de saisie.
-	 */
-	private final int fieldNumber = 5;
-	
-	/**
-	 * Etiquette du label de choix des drivers;
-	 */
-	@SuppressWarnings("unused")
+
+	/**Etiquette des pilôtes.*/
 	private JLabel driverLabel;
 	
-	/**
-	 * Etiquette pour l'adresse du SGBD.
-	 */
-	@SuppressWarnings("unused")
-	private JLabel urlLabel;
+	/**Liste déroulante des différents pilôtes de SGBD.*/
+	private JComboBox<String> driverCombo;
 	
-	/**
-	 * Etiquette pour le nom d'utilisateur.
-	 */
-	@SuppressWarnings("unused")
+	/**Etiquette de l'adresse IP.*/
+	private JLabel ipLabel;
+	
+	/**Boite de saisie de l'adresse IP.*/
+	private JTextField ipField;
+	
+	/**Etiquette du nom d'utilisateur.*/
 	private JLabel userLabel;
 	
-	/**
-	 * Etiquette pour le mot de passe.
-	 */
-	@SuppressWarnings("unused")
+	/**Boite de saisie du nom d'utilisateur.*/
+	private JTextField userField;
+	
+	/**Etiquette du mot de passe.*/
 	private JLabel passwordLabel;
 	
-	/**
-	 * Eiquette pour le nom de la base
-	 */
-	@SuppressWarnings("unused")
-	private JLabel baseLabel;
+	/**Boite de saisie du mot de passe.*/
+	private JPasswordField passwordField;
 	
-	/**
-	 * Etiquette pour le port
-	 */
-	@SuppressWarnings("unused")
+	/**Etiquette du nom de base de données.*/
+	private JLabel bdLabel;
+	
+	/**Boîte de saisie du nom de base de données.*/
+	private JTextField bdField;
+	
+	/**Etiquette du numéro de port.*/
 	private JLabel portLabel;
 	
+	/**Boîte de saisie du numéro de port.*/
+	private JTextField portField;
+	
+	/**Bouton pour lancer la connexion.*/
+	private JButton okButton;
+	
+	
+	//Listener
 	/**
-	 * Etiquette pour communiquer.
+	 * Déclare un écouteur sur les touches pressés.
 	 */
-	@SuppressWarnings("unused")
-	private JLabel messageLabel;
+	KeyListener keylistener = new KeyListener(){
+
+        @Override
+        public void keyTyped(KeyEvent e) {}
+
+        @Override
+        public void keyReleased(KeyEvent e) {}
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        	if (e.getKeyCode()== KeyEvent.VK_ENTER) okButtonAction();
+        }
+	};
 	
+	
+	//Constructeur
 	/**
-	 * Contient toutes les étiquettes
-	 */
-	private JLabel [] labels;
-	
-	/**
-	 * Nombre d'étiquettes.
-	 */
-	private final int labelNumber = 7;
-	
-	
-	//Constructeurs
-	/**
-	 * Constructeur commun pour l'ihm de connexion.
+	 * Constructeur commun.
 	 */
 	public ConnectionView(ConnectionController cc)
 	{
-		super("Connexion");
+		super("Connexion", null, 450, 470, 20);
 		this.control = cc;
-		this.setLayout(null);
-		this.setDimension();
-		this.handleCombos();
-		this.handleFields();
-		this.handleLabels();
-		this.handleButtons();
+		this.createAndBindComponents();
+		this.handleFieldsSize();
+		this.limitCharacters();
+		this.listenFields();
 		this.setDefaultValues();
 		this.setProperties();
 	}
 	
 	
-	//Publics
-	/**
-	 * Gestionnaire appui touche ENTREE
-	 */
-	KeyListener keylistener = new KeyListener(){
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-        	}
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-        	if (e.getKeyCode()== KeyEvent.VK_ENTER){ // correspond au code de la touche ENTREE
-        		okButtonAction();
-        	}
-        }
-	};
-	
-	/** Associe le KEYLISTENER aux textfields et a la combo */
-	private void bindKeyListeners()
-	{
-		for (JTextField jtf : this.fields) {
-			jtf.addKeyListener(keylistener);
-		}
-		this.driverCombo.addKeyListener(keylistener);
-	}
-	
-	
-	
-	/**
-	 * Gestionnaire d'évènements.
-	 * 
-	 * @param e : un événement attrapé par l'IHM.
-	 */
-	public void actionPerformed(ActionEvent e)
-	{	
-		if (e.getSource() == this.okButton) {
-			this.okButtonAction();
-		}
-	}
-
-	
-	/**
-	 * 
-	 * @param e : événement
-	 */
-	public void itemStateChanged(ItemEvent e){
-		if(e.getStateChange()==1){//le nouvel item
-			if (e.getItem().toString().equals("Oracle")){
-				this.setValuesOracle();
+	//Méthodes
+	@Override
+	public boolean isComplete() {
+		for (JComponent jc : this.components) {
+			if (jc.getClass().getName().equals("javax.swing.JTextField")){
+				if (((JTextField)jc).getText().isEmpty())
+					return false;
 			}
-		}	
-	}
-	
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isComplete()
-	{
-		for (JTextField jtf : this.fields) {
-			if (jtf.getText().equals("") 
-				&& ! jtf.equals(this.passwordField)) return false;
 		}
 		return true;
 	}
-	
 
-	
-	public boolean isValidPasswordField(){
-		
-		boolean flag = true;
-		
-		if (!isComplete()){
-			flag=false;
-		}
-		
-		else{
-			String p = this.passwordField.getText();
 
-			if (p.length()>0){
-				if (p.length()>99 || p.charAt(0)==' ' || p.charAt(p.length()-1)==' ')
-					flag=false;
-			}
-			
-		}
-		return flag;
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void talk(String msg)
-	{
-		this.messageLabel.setText(msg);
-	}
-	
-	public JTextField getUrlField(){
-		return this.urlField;
-	}
-	
-	
-	//Privates
-	
-	/**
-	 * 
-	 */
-	private void setDimension()
-	{
-		this.elementWidth = (int) (0.7 * this.width);
-		this.margin = (int)((0.3*this.width)/2);
-	}
-	
-	/**
-	 * Instancie les combobox
-	 */
-	private void createCombos()
-	{
-		this.combos = new JComboBox[this.comboNumber];
-		this.combos[0] = this.driverCombo = new JComboBox<String>();
-		this.driverCombo.addItem("Oracle");
-	}
-	
-	private void bindCombos(){
-		driverCombo.setBounds(this.margin, this.elementHeight, this.elementWidth, this.elementHeight);
-		
-		
-	}
-	
-	private void addCombos(){
-		for (JComboBox<String> c : this.combos){
-			c.addItemListener(this);
-			this.add(c);
-		}			
-	}
-	
-	
-	
-	/**
-	 * Instancie les boîtes de saisies.
-	 */
-	private void createFields()
+	@Override
+	public void actionPerformed(ActionEvent e)
 	{	
-		this.fields = new JTextField [this.fieldNumber];
-		this.fields[0] = this.urlField = new JTextField();
-		this.fields[1] = this.userField = new JTextField();
-		this.fields[2] = this.passwordField = new JPasswordField(); 
-		this.fields[3] = this.baseNameField = new JTextField();
-		this.fields[4] = this.portField = new JTextField();
-		
-		//évite de confondre le point avec la virgule (bloque l'appuis de la virgule)
-		this.urlField.addKeyListener(
-				new java.awt.event.KeyAdapter() {
-			        public void keyTyped(KeyEvent evt) {
-			        	char c = evt.getKeyChar();
-			        	if (c==',') evt.consume();
-			        }
-				}
-			);
-		
-		this.portField.addKeyListener(
-				new java.awt.event.KeyAdapter() {
-			        public void keyTyped(KeyEvent evt) {
-			        	char c = evt.getKeyChar();
-			        	if (c==',') evt.consume();
-			        	//évite de confondre le point avec la virgule (bloque l'appuis de la virgule)
-			        	if(c<'0' || c>'9'){
-			        		evt.consume();
-			        	}
-			        }
-				}
-			);
-		
-		MaxLengthTextDocument maxLengthUrlField = new MaxLengthTextDocument();
-		maxLengthUrlField.setMaxChars(15);
-		this.urlField.setDocument(maxLengthUrlField);
-		
-		MaxLengthTextDocument maxLengthUserField = new MaxLengthTextDocument();
-		maxLengthUserField.setMaxChars(32);
-		this.userField.setDocument(maxLengthUserField);
-		
-		MaxLengthTextDocument maxLengthBaseNameField = new MaxLengthTextDocument();
-		maxLengthBaseNameField.setMaxChars(50);
-		this.baseNameField.setDocument(maxLengthBaseNameField);
-		
-		MaxLengthTextDocument maxLengthPasswordField = new MaxLengthTextDocument();
-		maxLengthPasswordField.setMaxChars(50);
-		this.passwordField.setDocument(maxLengthPasswordField);
-		
-		MaxLengthTextDocument maxLengthPortField = new MaxLengthTextDocument();
-		maxLengthPortField.setMaxChars(5);
-		this.portField.setDocument(maxLengthPortField);
-		
-		
-
+		if (e.getSource() == this.okButton) this.okButtonAction();
 	}
 	
 	
-	/**
-	 * Positionne et dimensionne les boîtes de saisie.
-	 */
-	private void bindFields()
+	//Privées
+	private void createAndBindComponents()
 	{
-		int foot = (int)(0.25*this.fieldNumber*this.elementHeight);
-		foot*=2;//on ajoute la taille des labels
-		int jump = this.elementHeight*4;//et ici le textBox
+		//Pilôtes.
+		this.driverLabel = new JLabel("Pilôte :");
+		this.bindElements(this.driverLabel);
 		
-		for(final JTextField field : this.fields){
-			field.setBounds(this.margin, jump-10, this.elementWidth, this.elementHeight);
-			jump+=foot;				
-		}
+		this.driverCombo = new JComboBox<String>();
+		//TODO : ajouter d'autres pilôtes
+		//TODO : créer une classe statique avec des constantes sur les nom des pilôtes.
+		this.driverCombo.addItem("Oracle");
+		this.bindElements(this.driverCombo);
 		
+		//Adresse IP
+		this.ipLabel = new JLabel("Adesse IP du serveur :");
+		this.bindElements(this.ipLabel);
 		
-		/*Les méthodes statiques seront gardés en cas de rollback
-		this.urlField		.setBounds(this.margin, jump, this.elementWidth, this.elementHeight);
-		this.userField		.setBounds(this.margin, jump, this.elementWidth, this.elementHeight);
-		this.passwordField	.setBounds(this.margin, 200, this.elementWidth, this.elementHeight);
-		this.baseNameField  .setBounds(this.margin, 260, this.elementWidth, this.elementHeight);
-		this.portField		.setBounds(this.margin, 310, this.elementWidth, this.elementHeight);
-		*/
-	}
-	
-	
-	/**
-	 * Associe les boîtes de saisie à l'IHM.
-	 */
-	private void addFields()
-	{
-		for (JTextField jtf : this.fields) {
-			this.add(jtf);
-		}
-	}
-	
-	
-	/**
-	 * Instancie les étiquettes.
-	 */
-	private void createLabels()
-	{
-		this.labels = new JLabel [this.labelNumber];
-		this.labels[0] = this.driverLabel = new JLabel("Pilote :");
-		this.labels[1] = this.urlLabel = new JLabel("URL du serveur :");
-		this.labels[2] = this.userLabel = new JLabel("Utilisateur :");
-		this.labels[3] = this.passwordLabel = new JLabel("Mot de passe :");
-		this.labels[4] = this.baseLabel = new JLabel("Nom de la Base de Données :");
-		this.labels[5] = this.portLabel = new JLabel("Port du Serveur :");
-		this.labels[6] = this.messageLabel = new JLabel("");
-	}
-	
-	
-	/**
-	 * Positionne et dimensionne les étiquettes.
-	 */
-	private void bindLabels()
-	{
-		int foot = (int)(0.25*this.fieldNumber*this.elementHeight);
-		foot*=2;
-		int jump = 0;//et ici le textBox
+		this.ipField = new JTextField();
+		this.bindElements(this.ipField);
 		
-		for(final JLabel label : this.labels){
-			label.setBounds(this.margin, jump, this.elementWidth, this.elementHeight);
-			jump+=foot;				
-		}
-		/*
-		this.urlLabel.setBounds(this.margin, 20, this.elementWidth, this.elementHeight);
-		this.userLabel.setBounds(this.margin, 100, this.elementWidth, this.elementHeight);
-		this.passwordLabel.setBounds(this.margin, 180, this.elementWidth, this.elementHeight);
-		this.messageLabel.setBounds(this.margin, 300, this.elementWidth, this.elementHeight);
-		this.baseLabel.setBounds(this.margin, 300+60, elementWidth, elementHeight);
-		this.portLabel.setBounds(this.margin, 300+60+60, elementWidth, elementHeight);
-		*/
-	}
-	
-	
-	/**
-	 * Associe les étiquettes à l'IHM.
-	 */
-	private void addLabels()
-	{
-		for (JLabel jl : this.labels) {
-			this.add(jl);
-		}
-	}
-	
-	
-	/**
-	 * Instancie les boutons.
-	 */
-	private void createButtons()
-	{
-		this.buttons = new JButton [this.buttonNumber];
-		this.buttons[0] = this.okButton = new JButton("Connexion");
+		//Utilisateur
+		this.userLabel = new JLabel("Nom d'utilisateur : ");
+		this.bindElements(this.userLabel);
+		
+		this.userField = new JTextField();
+		this.bindElements(this.userField);
+		
+		//Mot de passe
+		this.passwordLabel = new JLabel("Mot de passe : ");
+		this.bindElements(this.passwordLabel);
+		
+		this.passwordField = new JPasswordField();
+		this.bindElements(this.passwordField);
+		
+		//Base de données
+		this.bdLabel = new JLabel("Nom de base de données : ");
+		this.bindElements(this.bdLabel);
+		
+		this.bdField = new JTextField();
+		this.bindElements(this.bdField);
+		
+		//Numéro de port
+		this.portLabel = new JLabel("Numéro de port : ");
+		this.bindElements(this.portLabel);
+		this.portField = new JTextField();
+		this.bindElements(this.portField);
+		
+		//Bouton valider
+		this.okButton = new JButton("Se connecter");
 		this.okButton.setActionCommand("OK");
+		this.okButton.addActionListener(this);
+		this.bindElements(this.okButton, 40);
 	}
-	
-	
-	/**
-	 * Positionne et dimensionne les boutons.
-	 */
-	private void bindButtons()
-	{
-		this.okButton.setBounds(this.margin, (int)(0.75*this.height)+20, this.elementWidth, 30);
-	}
-	
-	
-	/**
-	 * Associe les boutons à this.
-	 */
-	private void addButtons()
-	{
-		for (JButton jb : this.buttons) {
-			jb.addActionListener(this);
-			this.add(jb);
-		}
-	}
-	
-	
-	/**
-	 * Définit certaines propriétés de l'IHM.
-	 */
-	private void setProperties()
-	{
-		this.setSize(this.width, this.height);
-		this.setLocationRelativeTo(null); 
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-		this.setVisible(true);    
-		this.setResizable(false);
-	}
-	
-	private void handleCombos()
-	{
-		
-		this.createCombos();
-		this.bindCombos();
-		this.addCombos();
-	}
-	
-	
-	/**
-	 * Instancie, positionne, dimensionne et associe
-	 * les boîtes de saisie et le KeyListener
-	 */
-	private void handleFields()
-	{
-		this.createFields();
-		this.bindFields();
-		this.addFields();
-		this.bindKeyListeners();
-	}
-	
-	
-	/**
-	 * Instancie, positionne, dimensionne et associe
-	 * les étiquettes.
-	 */
-	private void handleLabels()
-	{
-		this.createLabels();
-		this.bindLabels();
-		this.addLabels();
-	}
-	
-	
-	/**
-	 * Instancie, positionne, dimensionne et associe
-	 * les boutons.
-	 */
-	private void handleButtons()
-	{
-		this.createButtons();
-		this.bindButtons();
-		this.addButtons();
-	}
-	
-	
-	/**
-	 * Inscrit des valeurs par défaut dans les boites de saisies.
-	 * 
-	 */
-	private void setDefaultValues()
-	{
-		DefaultValueManager dvm = new DefaultValueManager();
-		this.urlField.setText(dvm.getUrl());
-		this.userField.setText(dvm.getUser());
-		this.baseNameField.setText(dvm.getDataBase());
-		this.portField.setText(dvm.getPort());
-		
-		if (this.urlField.getText().isEmpty() && 
-				this.userField.getText().isEmpty() && 
-				this.baseNameField.getText().isEmpty() && 
-				this.portField.getText().isEmpty()){
-			if (this.driverCombo.getSelectedItem().toString().equals("Oracle"))
-				this.setValuesOracle();
-		}
-			
-		
-		
-		//TODO : extraire les valeurs par défaut depuis quelque part.
-		//this.urlField.setText("jdbc:oracle:thin:@162.38.222.149:1521:IUT");
-	}
-	
-	private void setValuesOracle() {
-		// TODO Auto-generated method stub
-		this.urlField.setText("162.38.222.149");
-		this.portField.setText("1521");
-		this.baseNameField.setText("IUT");
-	}
-	
-	
+
+
 	/**
 	 * Gère les actions après un clic sur le bouton 'Valider'.
 	 */
@@ -607,19 +181,116 @@ implements ActionListener,ItemListener, IDBFrame
 		if (!this.isComplete()) {
 			this.talk("Erreur : les champs doivent être remplis.");
 		}
-		else if(!this.isValidPasswordField()){
-			this.talk("Erreur : le mot de passe est invalide");
-		}
 		else {
-			ConnectionStrings parameters = new ConnectionStrings
-					(this.driverCombo.getSelectedItem().toString(),
-					this.urlField.getText(),
+			this.rawPassword();
+			ConnectionStrings parameters = new ConnectionStrings(
+					this.driverCombo.getSelectedItem().toString(),
+					this.ipField.getText(),
 					this.userField.getText(), 
-					this.passwordField.getText(), 
-					this.baseNameField.getText(), 
+					this.rawPassword(), 
+					this.bdField.getText(), 
 					this.portField.getText());
 			this.control.connect(parameters);
 		}
 	}
 	
+	
+	/**
+	 * Pose des limitations de tailles sur les boites de saisies.
+	 */
+	private void handleFieldsSize()
+	{
+		setFieldSize(this.ipField, 15);
+		setFieldSize(this.userField, 32);
+		setFieldSize(this.bdField, 50);
+		setFieldSize(this.passwordField, 50);
+		setFieldSize(this.portField, 5);
+	}
+	
+	
+	/**
+	 * Limite les caractères pouvant être saisis dans certaines boites de saisie.
+	 */
+	private void limitCharacters()
+	{
+		this.ipField.addKeyListener(
+				new java.awt.event.KeyAdapter() {
+			        public void keyTyped(KeyEvent evt) {
+			        	char c = evt.getKeyChar();
+			        	if (c==',') evt.consume();
+			        }
+				}
+			);
+		this.portField.addKeyListener(
+				new java.awt.event.KeyAdapter() {
+			        public void keyTyped(KeyEvent evt) {
+			        	char c = evt.getKeyChar();
+			        	if (c==',') evt.consume();
+			        	if(c<'0' || c>'9'){
+			        		evt.consume();
+			        	}
+			        }
+				}
+			);
+	}
+	
+	
+	/**
+	 * Associe le listener déclaré dans la classe aux boites de saisie.
+	 * Associe le listener déclaré dans la classe à la liste déroulante.
+	 */
+	private void listenFields()
+	{
+		for (JComponent jc: this.components) {
+			if (jc.getClass().getName().equals("javax.swing.JTextField")
+					|| jc.getClass().getName().equals("javax.swing.JPasswordField")) {
+				jc.addKeyListener(keylistener);			
+			}
+		}
+		this.driverCombo.addKeyListener(keylistener);
+	}
+	
+	
+	/**
+	 * Inscrit des valeurs par défaut dans les boites de saisies.
+	 */
+	private void setDefaultValues()
+	{
+		DefaultValueManager dvm = new DefaultValueManager();
+		this.ipField.setText(dvm.getUrl());
+		this.userField.setText(dvm.getUser());
+		this.bdField.setText(dvm.getDataBase());
+		this.portField.setText(dvm.getPort());
+	}
+	
+	
+	/**
+	 * Retourne une chaîne de caractères différente du mot de passe
+	 * saisi si et seulement si ce dernier commence ou termine par un espace.
+	 * Retourne le mot de passe saisi dans les autres cas.
+	 * 
+	 * @return String
+	 */
+	private String rawPassword()
+	{
+		char [] tab = this.passwordField.getPassword();
+		String result = new String(tab);
+		if (result.startsWith(" ") || result.endsWith(" "))
+			result += 'a';
+		return result;
+	}
+	
+	
+	/**
+	 * Limite le nombre de caractères saisissables dans $field à $size. 
+	 * 
+	 * @param field : une boite de saisie de $this.
+	 * @param size : nombre de caractères maximum.
+	 */
+	private static void setFieldSize(JTextField field, int size)
+	{
+		MaxLengthTextDocument mltd = new MaxLengthTextDocument();
+		mltd.setMaxChars(15);
+		field.setDocument(mltd);
+	}
 }

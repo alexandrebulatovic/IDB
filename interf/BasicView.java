@@ -55,7 +55,7 @@ implements IDBFrame
 	/**
 	 * Contients tous les composants de $this.
 	 */
-	private ArrayList <JComponent> components;
+	protected ArrayList <JComponent> components;
 	
 	
 	//Constructeur
