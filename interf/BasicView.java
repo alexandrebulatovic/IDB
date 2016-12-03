@@ -150,18 +150,14 @@ implements IDBFrame
 	}
 	
 	//Méthode
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public void talk(String msg)
 	{
 		this.messageLabel.setText(msg);
 	}
 	
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public String toString()
 	{
 		int i = 0;

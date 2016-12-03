@@ -13,9 +13,7 @@ extends ConnectionManager
 	
 	
 	//Protected
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	protected String errorMessage(SQLException e)
 	{
 		switch (e.getErrorCode()) {
@@ -29,9 +27,7 @@ extends ConnectionManager
 	
 	
 	//Privates
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	protected String entireUrl(ConnectionStrings param)
 	{	
 		return "jdbc:" 

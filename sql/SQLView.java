@@ -46,9 +46,7 @@ implements ActionListener
 
 
 	//Public
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public void actionPerformed(ActionEvent event) 
 	{
 		if (event.getSource() == this.okButton) {
@@ -57,9 +55,7 @@ implements ActionListener
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public boolean isComplete() 
 	{
 		String query = this.sqlArea.getText();

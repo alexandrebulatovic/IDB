@@ -45,9 +45,7 @@ public class Table {
 	
 	
 	//Méthodes
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();

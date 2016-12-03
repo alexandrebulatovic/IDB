@@ -81,9 +81,7 @@ public class Attribute {
 
 	
 	//Méthodes
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public boolean equals(Object o)
 	{
 		Attribute a = (Attribute) o;
@@ -91,9 +89,7 @@ public class Attribute {
 	}
 	
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();

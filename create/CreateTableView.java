@@ -650,7 +650,7 @@ implements ActionListener, ItemListener {
 	{
 		this.setSize(width, height);
 		this.setLocationRelativeTo(null); 
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);  
 		this.setVisible(true);    
 		this.setResizable(false);
 	}

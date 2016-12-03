@@ -11,7 +11,7 @@ implements ActionListener
 {
 	//Attributes
 	/**
-	 * COntroleur de l'IHM.
+	 * Controleur de l'IHM.
 	 */
 	private MainController control;
 
@@ -40,9 +40,7 @@ implements ActionListener
 
 
 	//Méthodes
-	/**
-	 * {@inheritDoc}
-	 */
+    @Override
 	public boolean isComplete() {return true;}
 
 

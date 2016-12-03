@@ -133,9 +133,7 @@ public abstract class ConnectionManager
 	public boolean isConnected() {return this.dbms != null;}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder ();
