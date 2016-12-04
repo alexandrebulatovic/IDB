@@ -1,17 +1,17 @@
 package sql;
 
-import interf.BasicView;
+import interf.BasicGUI;
 import interf.IDBFrame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-import create.CreateTableController;
+import create.DDLController;
 
 @SuppressWarnings("serial")
 public class SQLView 
-extends BasicView
+extends BasicGUI
 implements ActionListener
 {
 	//Attributs

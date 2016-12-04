@@ -9,7 +9,7 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 import connect.ConnectionManager;
-import create.CreateTableManager;
+import create.DDLManager;
 import create.CreateTableView;
 
 public class SQLController {
@@ -28,7 +28,7 @@ public class SQLController {
 	 */
 	public SQLController(){
 		this.sql = new SQLView(this);
-		this.creator = new SQLModel(ConnectionManager.getConnector());
+		this.creator = new SQLModel(ConnectionManager.getInstance());
 		Connection conn = this.creator.getConnector();
 		try {
 			this.stat = conn.createStatement();

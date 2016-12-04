@@ -1,33 +1,21 @@
 package main;
 
 import connect.ConnectionManager;
-import create.CreateTableController;
+import create.CreateTableView;
+import create.DDLController;
 import sql.SQLController;
 
 public class MainController 
 {
 	//Attributes
-	/**
-	 * Connexion vers le SGBD.
-	 */
-	private ConnectionManager connector;
+	/** Vue du controleur.*/
+	private MainView gui;
 	
-	/**
-	 * Vue du controleur.
-	 */
-	private MainView mhi;
+	/** Controleur du LDD.*/
+	private DDLController ddlControl;
 	
-	/**
-	 * Vrai si et seulement si la vue graphique est 
-	 * déjà ouverte, faux sinon.
-	 */
-	private boolean mhiMode;
-	
-	/**
-	 * Vrai si et seulement si la vue SQL est déjà
-	 * ouverte, faux sinon.
-	 */
-	private boolean sqlMode;
+	/** Controleur du SQL.*/
+	private SQLController sqlControl;
 	
 	
 	//Constructeur
@@ -38,35 +26,29 @@ public class MainController
 	 */
 	public MainController()
 	{
-		this.connector = ConnectionManager.getConnector();
-		this.mhi = new MainView(this);
-		this.mhi.talk("Bienvenue " + this.connector.user());
-	}
-	
-	
-	/**
-	 * Affiche la vue pour utiliser un SGBD en mode graphique
-	 * si et seulement si il n'existe pas déjà d'instance 
-	 * de cette dernière, ne fais rien sinon.
-	 */
-	public void openMhiMode()
-	{
-		if (!this.mhiMode) {
-			this.mhiMode = true;
-			new CreateTableController();
-		}
+		this.gui = new MainView(this);
+		this.gui.talk("Bienvenue " 
+				+ ConnectionManager.getInstance().user());
 	}
 	
 	/**
-	 * Affiche la vue pour utiliser un SGBD en mode SQL
-	 * si et seulement si il n'existe pas déjà d'instance 
-	 * de cette dernière, ne fais rien sinon.
+	 * Ouvre l'IHM pour créer des tables.
 	 */
-	public void openSqlMode()
+	public void openCreateGUI()
 	{
-		if (!this.sqlMode) {
-			this.sqlMode = true;
-			new SQLController();
-		}
+		DDLController ddlc = DDLController.getInstance();
+		ddlc.openCreateGUI();
 	}
+	
+
+	public void openSqlGUI()
+	{
+//		if (!this.sqlMode) {
+//			this.sqlMode = true;
+//			new SQLController();
+//		}
+	}
+	
+	
+	public void openDropGUI(){}
 }

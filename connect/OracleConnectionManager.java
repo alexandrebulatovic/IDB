@@ -6,9 +6,13 @@ public class OracleConnectionManager
 extends ConnectionManager
 {	
 	//Constructor
+	/**
+	 * Constructeur commun.
+	 */
 	private OracleConnectionManager()
 	{
 		super("oracle.jdbc.OracleDriver");
+		INSTANCE = this;
 	}
 	
 	
@@ -22,9 +26,7 @@ extends ConnectionManager
 	 */
 	public static ConnectionManager getConnector()
 	{
-		if (INSTANCE == null) {
-			INSTANCE = new OracleConnectionManager();
-		}
+		if (INSTANCE == null) new OracleConnectionManager();
 		return INSTANCE;
 	}
 	

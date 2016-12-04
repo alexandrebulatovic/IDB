@@ -2,37 +2,37 @@ package main;
 
 import javax.swing.*;
 import java.awt.event.*;
-import interf.BasicView;
+import interf.BasicGUI;
 
 @SuppressWarnings("serial")
 public class MainView 
-extends BasicView
+extends BasicGUI
 implements ActionListener
 {
 	//Attributes
-	/**
-	 * Controleur de l'IHM.
-	 */
+	/** Controleur de l'IHM.*/
 	private MainController control;
 
-	/**
-	 * Bouton pour se rendre vers l'IHM de code SQL.
-	 */
+	/** Bouton pour se rendre vers l'IHM de code SQL.*/
 	private JButton sqlButton;
 
-	/**
-	 * Bouton pour se rendre vers l'IHM pour les nuls.
-	 */
-	private JButton mhiButton;
+	/** Bouton pour ouvrir l'IHM de création des tables.*/
+	private JButton createButton;
 
-
+	/** Bouton pour ouvrir l'IHM de modification des tables.*/
+	private JButton alterButton;
+	
+	/** Bouton pour ouvrir l'IHM de suppression des tables.*/
+	private JButton dropButton;
+	
+	
 	//Constructeur
 	/**
 	 * Constructeur commun.
 	 */
 	public MainView(MainController control)
 	{
-		super("Menu principal", null, 400, 200, 40);
+		super("Menu principal", null, 400, 400, 30);
 		this.control = control;
 		this.handleButtons();
 		this.setProperties();
@@ -44,19 +44,15 @@ implements ActionListener
 	public boolean isComplete() {return true;}
 
 
-	/**
-	 * Gestionnaire d'évènements.
-	 * 
-	 * @param e : un évènement attrapé par l'IHM.
-	 */
+    @Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource() == this.sqlButton) {
-			this.sqlButtonAction();
-		}
-		else if (e.getSource() == this.mhiButton) {
-			this.ihmButtonAction();
-		}
+		Object o = e.getSource();
+		if (o == this.sqlButton) this.sqlButtonAction();
+		else 
+			if (o == this.createButton) this.createButtonAction();
+		else 
+			if (o == this.dropButton) this.dropButtonAction();
 	}
 
 
@@ -77,13 +73,23 @@ implements ActionListener
 	 */
 	private void createButtons()
 	{
-		this.sqlButton = new JButton("Mode SQL");
+		this.sqlButton = new JButton("SQL");
 		this.sqlButton.setActionCommand("sql_mode");
-		this.sqlButton.addActionListener(this);
 
-		this.mhiButton = new JButton("Mode graphique");
-		this.mhiButton.setActionCommand("graphic_mode");
-		this.mhiButton.addActionListener(this);
+		this.createButton = new JButton("LDD : créer tables");
+		this.createButton.setActionCommand("ldd_create_table");
+		
+		this.alterButton = new JButton("LDD : modifier tables");
+		this.alterButton.setActionCommand("ldd_alter_table");
+		
+		this.dropButton = new JButton("LDD : supprimer tables");
+		this.dropButton.setActionCommand("ldd_drop_table");
+
+		for (JComponent jc : this.components) {
+			if (jc.getClass().getName().endsWith("JButton")) {
+				((JButton)jc).addActionListener(this);
+			}
+		}
 	}
 
 
@@ -93,24 +99,31 @@ implements ActionListener
 	private void bindButtons()
 	{
 		this.bindElements(this.sqlButton);
-		this.bindElements(this.mhiButton);
+		this.bindElements(this.createButton);
+		this.bindElements(this.alterButton);
+		this.bindElements(this.dropButton);
+		for (JComponent jc : this.components) {
+			if (jc.getClass().getName().endsWith("JButton")) {
+				((JButton)jc).addActionListener(this);
+			}
+		}
 	}
 
 
 	/**
 	 * Gère les actions sur l'appui du bouton 'SQL'
 	 */
-	private void sqlButtonAction()
-	{
-		this.control.openSqlMode();
-	}
+	private void sqlButtonAction(){this.control.openSqlGUI();}
 
 
 	/**
-	 * Gère les actions sur l'appui du bouton 'Graphique'
+	 * Gère les actions sur l'appui du bouton 'Créer des tables'.
 	 */
-	private void ihmButtonAction()
-	{
-		this.control.openMhiMode();
-	}
+	private void createButtonAction(){this.control.openCreateGUI();}
+	
+	
+	/**
+	 * Gère les actions sur l'appui du bouton 'Supprimer des tables'.
+	 */
+	private void dropButtonAction(){this.control.openDropGUI();}
 }

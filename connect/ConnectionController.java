@@ -11,7 +11,7 @@ public class ConnectionController
 	/**
 	 * IHM pour se connecter à un SGBD.
 	 */
-	private ConnectionView gui;
+	private ConnectionGUI gui;
 	
 	/**
 	 * Objet pour se connecter à un SGBD.
@@ -25,7 +25,7 @@ public class ConnectionController
 	 */
 	public ConnectionController ()
 	{
-		this.gui = new ConnectionView(this);
+		this.gui = new ConnectionGUI(this);
 	}
 	
 	

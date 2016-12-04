@@ -6,7 +6,7 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 
-public class CreateTableManager 
+public class DDLManager 
 {
 	//Attributs
 	/**
@@ -23,12 +23,10 @@ public class CreateTableManager
 	//Constructeur
 	/**
 	 * Constructeur commun.
-	 * 
-	 * @param cm :  Gestionnaire de connexion vers un SGBD.
 	 */
-	public CreateTableManager(ConnectionManager cm)
+	public DDLManager()
 	{
-		this.connector = cm;
+		this.connector = ConnectionManager.getInstance();
 	}
 	
 	

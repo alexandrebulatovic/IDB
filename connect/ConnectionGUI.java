@@ -11,11 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import create.MaxLengthTextDocument;
-import interf.BasicView;
+import interf.BasicGUI;
 
 @SuppressWarnings("serial")
-public class ConnectionView 
-extends BasicView
+public class ConnectionGUI 
+extends BasicGUI
 implements ActionListener
 {
 	//Attributs
@@ -85,9 +85,9 @@ implements ActionListener
 	/**
 	 * Constructeur commun.
 	 */
-	public ConnectionView(ConnectionController cc)
+	public ConnectionGUI(ConnectionController cc)
 	{
-		super("Connexion", null, 450, 470, 20);
+		super("Connexion", null, 450, 410, 20);
 		this.control = cc;
 		this.createAndBindComponents();
 		this.handleFieldsSize();

@@ -5,11 +5,13 @@ import javax.swing.*;
 
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 @SuppressWarnings("serial")
-public abstract class BasicView 
+public abstract class BasicGUI 
 extends JFrame
-implements IDBFrame
+implements IDBFrame, WindowListener
 {
 	//Attributs
 	/**
@@ -59,7 +61,7 @@ implements IDBFrame
 	
 	
 	//Constructeur
-	protected BasicView(String name, LayoutManager lm, int width, int height, int elementHeight)
+	protected BasicGUI(String name, LayoutManager lm, int width, int height, int elementHeight)
 	{
 		super(name);
 		this.setLayout(lm);
@@ -218,7 +220,7 @@ implements IDBFrame
 	private void increaseTop(int add)
 	{
 		//TODO : Supprimer le +10 car risque d'erreur
-		this.elementTop += add + 10;
+		this.elementTop += add +5;
 	}
 	
 	
@@ -233,4 +235,25 @@ implements IDBFrame
 		//TODO : sSécuriser pour ne pas dépasser
 		this.elementLeft += add +5;
 	}
+	
+	@Override
+	public void windowActivated(WindowEvent arg0) {}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {}	
 }

@@ -64,7 +64,7 @@ public abstract class ConnectionManager
 	 * 
 	 * @return ConnectionManager
 	 */
-	public static ConnectionManager getConnector(){return INSTANCE;}
+	public static ConnectionManager getInstance(){return INSTANCE;}
 	
 	
 	/**

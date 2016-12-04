@@ -1,21 +1,27 @@
 package create;
 
+import interf.ListeningGUI;
+
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.awt.Font;
 
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class CreateTableView
-extends JFrame 
-implements ActionListener, ItemListener {
+extends ListeningGUI 
+implements ActionListener, ItemListener
+{
 	// ==========================VARIABLES========================
+	private static CreateTableView INSTANCE;
+	
 	private static final String FONT = null;
 	
 	/**
 	 * Controleur lié à l'IHM.
 	 */
-	private CreateTableController control;
+	private DDLController control;
 	
 	/**
 	 * Hauteur des éléments.
@@ -256,10 +262,11 @@ implements ActionListener, ItemListener {
 	 * Constructeur commun pour l'ihm de création de table.
 	 * @param cm : objet ConnectionManager obtenu lors de la connexion.
 	 */
-	public CreateTableView(CreateTableController cm)
+	private CreateTableView()
 	{
 		super("Création de table");
-		this.control = cm;
+		INSTANCE = this;
+		this.control = DDLController.getInstance();
 		this.setLayout(null);
 		this.handlePanels();
 		this.handleComboBox();
@@ -268,9 +275,22 @@ implements ActionListener, ItemListener {
 		this.handleButtons();
 		this.handleCheckBox();
 		this.setProperties();
+		this.addWindowListener(this);
 	}
 
-
+	/**
+	 * Retourne l'IHM active si et seulement si elle existe déjà.
+	 * Retourne une nouvelle IHM sinon.
+	 * 
+	 * @return CreateTableView
+	 */
+	public static CreateTableView getInstance()
+	{
+		if (INSTANCE == null) new CreateTableView();
+		return INSTANCE;
+	}
+	
+	
 	// ==========================BUTTONS========================
 	/**
 	 * Instancie les boutons.
@@ -647,7 +667,7 @@ implements ActionListener, ItemListener {
 	 * Définit certaines propriétés de l'IHM.
 	 */
 	private void setProperties()
-	{
+	{	this.setAutoRequestFocus(true);
 		this.setSize(width, height);
 		this.setLocationRelativeTo(null); 
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);  
@@ -916,8 +936,13 @@ implements ActionListener, ItemListener {
 			}
 	}
 	
+	
+	@Override
+	public void windowClosing(WindowEvent we){INSTANCE = null;}
+	
+	
 	/**
-	 * Metrre a jour un attribut.
+	 * Mettre a jour un attribut.
 	 */
 	private void updateAttributeButtonAction()
 	{
@@ -975,8 +1000,7 @@ implements ActionListener, ItemListener {
 				}
 			}
 		}
-	}		
-
+	}
 }
 
 

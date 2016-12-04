@@ -5,7 +5,7 @@ import connect.ConnectionStrings;
 import connect.CustomizedResponse;
 import connect.OracleConnectionManager;
 import create.Attribute;
-import create.CreateTableManager;
+import create.DDLManager;
 import create.Table;
 import java.util.ArrayList;
 
@@ -33,7 +33,7 @@ public class test_create {
 				"IUT", 
 				"1521");
 		connector.connect(param);
-		CreateTableManager creator = new CreateTableManager(connector);
+		DDLManager creator = new DDLManager(connector);
 		
 		
 		//QUELQUES ATTRIBUTS
