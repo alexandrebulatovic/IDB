@@ -2,6 +2,7 @@ package main;
 
 import connect.ConnectionManager;
 import create.CreateTableController;
+import modify.ModifyTableController;
 import sql.SQLController;
 
 public class MainController 
@@ -28,6 +29,8 @@ public class MainController
 	 * ouverte, faux sinon.
 	 */
 	private boolean sqlMode;
+
+	private boolean modifyMode;
 	
 	
 	//Constructeur
@@ -38,6 +41,11 @@ public class MainController
 	 */
 	public MainController(ConnectionManager connector)
 	{
+		this.mhiMode=false;
+		this.sqlMode=false;
+		this.modifyMode=false;
+		
+		
 		this.connector = connector;
 		this.mhi = new MainView(this);
 		this.mhi.talk("Bienvenue " + this.connector.user());
@@ -67,6 +75,13 @@ public class MainController
 		if (!this.sqlMode) {
 			this.sqlMode = true;
 			new SQLController(this.connector);
+		}
+	}
+	
+	public void openModifyMode(){
+		if (!this.modifyMode){
+			this.modifyMode=true;
+			new ModifyTableController(this.connector);
 		}
 	}
 }

@@ -4,7 +4,6 @@ import connect.ConnectionManager;
 import connect.CustomizedResponse;
 import java.sql.Statement;
 import java.sql.SQLException;
-import java.sql.SQLTimeoutException;
 
 public class CreateTableManager 
 {

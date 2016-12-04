@@ -916,6 +916,17 @@ implements ActionListener, ItemListener {
 			}
 	}
 	
+//	/**
+//	 * Cette méthode va permettre d'ajouter une liste d'attributs
+//	 * @param a
+//	 */
+//	public void setAttributes(Attribute a[]){
+//		this.resetView();
+//		for (Attribute attribute : a){
+//			this.models.
+//		}
+//	}
+	
 	/**
 	 * Metrre a jour un attribut.
 	 */
@@ -940,7 +951,7 @@ implements ActionListener, ItemListener {
 	}
 	
 	/**
-	 * Ajouter un attribut.
+	 * Ajoute un attribut au tableau.
 	 */
 	private void addAttributeButtonAction()
 	{
@@ -962,7 +973,7 @@ implements ActionListener, ItemListener {
 
 			}else{
 				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A");	
-				if (a.checkAttributes()>=0){
+				if (a.checkAttributes()>=0){//si le format de l'attribut est correct
 					int i = this.models[0].addAttribute(a);
 					if( i == 0){
 						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");

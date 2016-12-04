@@ -111,6 +111,7 @@ implements ActionListener
 	 */
 	private void ihmButtonAction()
 	{
-		this.control.openMhiMode();
+		//this.control.openMhiMode();
+		this.control.openModifyMode();	
 	}
 }
