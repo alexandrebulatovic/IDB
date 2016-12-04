@@ -6,55 +6,41 @@ import java.sql.SQLException;
 
 /**
  * Gère la connection à un SGBD.
+ * 
+ * Singleton.
  */
 public abstract class ConnectionManager 
 {
 	//Attributes
-	/**
-	 * Nom du driver java pour utiliser la base de données.
-	 */
+	/** Instance 'singleton' en cours.*/
+	protected static ConnectionManager INSTANCE;
+	
+	/** Nom du driver java pour utiliser la base de données.*/
 	protected final String driverName;
 	
-	
-	/**
-	 * Driver java utiliser pour la base de données.
-	 */
+	/** Driver java utiliser pour la base de données.*/
 	protected Class<?> driver;
 	
-	/**
-	 * Adresse du SGBD connecté avec succès.
-	 */
+	/** Adresse du SGBD connecté avec succès.*/
 	protected String url;
 	
-	/**
-	 * Nom d'utilisateur connecté au SGBD avec succès.
-	 */
+	/** Nom d'utilisateur connecté au SGBD avec succès.*/
 	protected String user;
 	
-	/**
-	 * Mot de passe d'utilisateur de la Base de Données.
-	 */
+	/** Mot de passe d'utilisateur de la Base de Données.*/
 	protected String pswd;
 	
-	/**
-	 * indentificateur
-	 */
+	/** Nom de la base de données.*/
 	protected String baseName;
 	
-	/**
-	 * Le port nécessaire à la connexion
-	 */
+	/** Le port nécessaire à la connexion.*/
 	protected String port;
 	
-	/**
-	 * Un objet qui représente la connexion à un SGBD.
-	 */
+	/** Un objet qui représente la connexion à un SGBD.*/
 	protected Connection dbms;
 
 
-	/**
-	 * Contient tous les paramètres d'une connexion réussie.
-	 */
+	/** Contient tous les paramètres d'une connexion réussie.*/
 	protected ConnectionStrings parameters;
 	
 	
@@ -71,6 +57,16 @@ public abstract class ConnectionManager
 	
 	
 	//Methods
+	/**
+	 * Retourne null si et seulement si la méthode de même nom
+	 * disponible dans chacune des classes fille n'a jamais été appellée.
+	 * Retourne le gestionnaire de connection en cours dans les autres cas.
+	 * 
+	 * @return ConnectionManager
+	 */
+	public static ConnectionManager getConnector(){return INSTANCE;}
+	
+	
 	/**
 	 * Tente d'établir une connexion vers un SGBD en fonction
 	 * des informations de connexions de $parameters.

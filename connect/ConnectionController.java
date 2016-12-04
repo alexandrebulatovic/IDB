@@ -11,7 +11,7 @@ public class ConnectionController
 	/**
 	 * IHM pour se connecter à un SGBD.
 	 */
-	private ConnectionView ihm;
+	private ConnectionView gui;
 	
 	/**
 	 * Objet pour se connecter à un SGBD.
@@ -25,7 +25,7 @@ public class ConnectionController
 	 */
 	public ConnectionController ()
 	{
-		this.ihm = new ConnectionView(this);
+		this.gui = new ConnectionView(this);
 	}
 	
 	
@@ -44,7 +44,7 @@ public class ConnectionController
 		this.talk(response.toString());
 		if (response.success()) {
 			this.saveDefaultValue(parameters);
-			this.ihm.dispose();
+			this.gui.dispose();
 			new MainController(this.connector);
 		}
 	}
@@ -57,7 +57,7 @@ public class ConnectionController
 	 */
 	public void talk(String msg)
 	{
-		this.ihm.talk(msg);
+		this.gui.talk(msg);
 	}
 	
 	
@@ -73,7 +73,7 @@ public class ConnectionController
 	private ConnectionManager chooseManager(String driver)
 	{
 		switch (driver){
-		case "Oracle" : return new OracleConnectionManager();
+		case "Oracle" : return OracleConnectionManager.getConnector();
 		default : return null;
 		}
 	}
