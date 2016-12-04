@@ -24,7 +24,7 @@ public class test_create {
 	public static void main(String[] args) {
 		//CONNEXION
 		ArrayList <Table> col = new ArrayList<Table>();
-		ConnectionManager connector = new OracleConnectionManager();
+		ConnectionManager connector = OracleConnectionManager.getConnector();
 		ConnectionStrings param = new ConnectionStrings(
 				"oracle.jdbc.OracleDriver", 
 				"162.38.222.149", 

@@ -26,9 +26,9 @@ public class SQLController {
 	/** Constructeur commun
 	 * @param cm : objet ConnectionManager obtenu lors de la connexion
 	 */
-	public SQLController(ConnectionManager cm){
+	public SQLController(){
 		this.sql = new SQLView(this);
-		this.creator = new SQLModel(cm);
+		this.creator = new SQLModel(ConnectionManager.getConnector());
 		Connection conn = this.creator.getConnector();
 		try {
 			this.stat = conn.createStatement();

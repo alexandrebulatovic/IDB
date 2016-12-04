@@ -39,13 +39,13 @@ public class ConnectionController
 	public void connect(ConnectionStrings parameters)
 	{
 		this.connector = this.chooseManager(parameters.driver);
-		this.talk("Tentative de connexion...");
 		CustomizedResponse response = this.connector.connect(parameters);
 		this.talk(response.toString());
+		
 		if (response.success()) {
 			this.saveDefaultValue(parameters);
 			this.gui.dispose();
-			new MainController(this.connector);
+			new MainController();
 		}
 	}
 	 

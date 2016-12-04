@@ -24,10 +24,10 @@ public class CreateTableController
 	 * 
 	 * @param cm : objet ConnectionManager obtenu lors de la connexion.
 	 */
-	public CreateTableController(ConnectionManager cm)
+	public CreateTableController()
 	{
 		this.mhi = new CreateTableView(this);
-		this.creator = new CreateTableManager(cm);
+		this.creator = new CreateTableManager(ConnectionManager.getConnector());
 	}
 	
 	

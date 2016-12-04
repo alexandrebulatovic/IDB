@@ -36,9 +36,9 @@ public class MainController
 	 * 
 	 * @param connector : un objet ConnectionManager.
 	 */
-	public MainController(ConnectionManager connector)
+	public MainController()
 	{
-		this.connector = connector;
+		this.connector = ConnectionManager.getConnector();
 		this.mhi = new MainView(this);
 		this.mhi.talk("Bienvenue " + this.connector.user());
 	}
@@ -53,7 +53,7 @@ public class MainController
 	{
 		if (!this.mhiMode) {
 			this.mhiMode = true;
-			new CreateTableController(this.connector);
+			new CreateTableController();
 		}
 	}
 	
@@ -66,7 +66,7 @@ public class MainController
 	{
 		if (!this.sqlMode) {
 			this.sqlMode = true;
-			new SQLController(this.connector);
+			new SQLController();
 		}
 	}
 }
