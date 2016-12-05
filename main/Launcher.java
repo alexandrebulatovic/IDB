@@ -1,4 +1,4 @@
-package launch;
+package main;
 
 import connect.ConnectionController;
 

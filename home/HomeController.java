@@ -1,15 +1,15 @@
-package main;
+package home;
 
-import connect.ConnectionManager;
-import create.CreateTableView;
-import create.DDLController;
+import ddl.DDLController;
+import ddl.create.CreateTableView;
 import sql.SQLController;
+import useful.ConnectionManager;
 
-public class MainController 
+public class HomeController 
 {
 	//Attributes
 	/** Vue du controleur.*/
-	private MainView gui;
+	private HomeGUI gui;
 	
 	/** Controleur du LDD.*/
 	private DDLController ddlControl;
@@ -21,34 +21,34 @@ public class MainController
 	//Constructeur
 	/**
 	 * Constructeur lambda.
-	 * 
-	 * @param connector : un objet ConnectionManager.
 	 */
-	public MainController()
+	public HomeController()
 	{
-		this.gui = new MainView(this);
+		this.gui = new HomeGUI(this);
 		this.gui.talk("Bienvenue " 
 				+ ConnectionManager.getInstance().user());
 	}
+	
 	
 	/**
 	 * Ouvre l'IHM pour créer des tables.
 	 */
 	public void openCreateGUI()
 	{
-		DDLController ddlc = DDLController.getInstance();
-		ddlc.openCreateGUI();
+		this.ddlControl = DDLController.getInstance();
+		this.ddlControl.openCreateGUI();
 	}
 	
 
 	public void openSqlGUI()
 	{
-//		if (!this.sqlMode) {
-//			this.sqlMode = true;
-//			new SQLController();
-//		}
+
 	}
 	
 	
-	public void openDropGUI(){}
+	public void openDropGUI()
+	{
+		this.ddlControl = DDLController.getInstance();
+		this.ddlControl.openDropGUI();
+	}
 }

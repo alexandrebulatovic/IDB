@@ -1,4 +1,4 @@
-package create;
+package ddl.create;
 
 /**
  * @author Adrian

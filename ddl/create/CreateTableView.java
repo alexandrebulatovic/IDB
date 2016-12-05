@@ -1,4 +1,4 @@
-package create;
+package ddl.create;
 
 import interf.ListeningGUI;
 
@@ -7,6 +7,10 @@ import java.awt.event.*;
 import java.awt.Font;
 
 import javax.swing.*;
+
+import useful.MaxLengthTextDocument;
+
+import ddl.DDLController;
 
 @SuppressWarnings("serial")
 public class CreateTableView

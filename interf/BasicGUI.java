@@ -11,7 +11,7 @@ import java.awt.event.WindowListener;
 @SuppressWarnings("serial")
 public abstract class BasicGUI 
 extends JFrame
-implements IDBFrame, WindowListener
+implements IDBGUI, WindowListener
 {
 	//Attributs
 	/**
@@ -65,11 +65,13 @@ implements IDBFrame, WindowListener
 	{
 		super(name);
 		this.setLayout(lm);
+		this.setDimension(width, height, elementHeight);
+		
 		this.name = name;
 		this.components = new ArrayList<JComponent>();
-		this.setDimension(width, height, elementHeight);
 		this.messageLabel = new JLabel();
 		this.bindElements(this.messageLabel);
+		this.addWindowListener(this);
 	}
 	
 	
@@ -141,12 +143,15 @@ implements IDBFrame, WindowListener
 	
 	/**
 	 * Définit certaines propriétés de l'IHM.
+	 * 
+	 * @param closeOperation : une constante pour indiquer ce qu'il
+	 * se passe en cliquant sur la croix.
 	 */
-	protected void setProperties()
+	protected void setProperties(int closeOperation)
 	{
 		this.setSize(this.width, this.height);
 		this.setLocationRelativeTo(null); 
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+		this.setDefaultCloseOperation(closeOperation);  
 		this.setVisible(true);    
 		this.setResizable(false);
 	}

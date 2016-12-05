@@ -1,17 +1,17 @@
-package main;
+package home;
 
 import javax.swing.*;
 import java.awt.event.*;
 import interf.BasicGUI;
 
 @SuppressWarnings("serial")
-public class MainView 
+public class HomeGUI 
 extends BasicGUI
 implements ActionListener
 {
 	//Attributes
 	/** Controleur de l'IHM.*/
-	private MainController control;
+	private HomeController control;
 
 	/** Bouton pour se rendre vers l'IHM de code SQL.*/
 	private JButton sqlButton;
@@ -30,12 +30,12 @@ implements ActionListener
 	/**
 	 * Constructeur commun.
 	 */
-	public MainView(MainController control)
+	public HomeGUI(HomeController control)
 	{
 		super("Menu principal", null, 400, 400, 30);
 		this.control = control;
 		this.handleButtons();
-		this.setProperties();
+		this.setProperties(EXIT_ON_CLOSE);
 	}
 
 
@@ -55,7 +55,14 @@ implements ActionListener
 			if (o == this.dropButton) this.dropButtonAction();
 	}
 
-
+    
+    @Override
+    public void windowClosing (WindowEvent e)
+    {
+    	//TODO : fermer proprement la connexion
+    }
+    
+    
 	//Privates
 	/**
 	 * Instancie, positionne, dimensionne et associe

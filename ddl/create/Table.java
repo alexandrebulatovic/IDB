@@ -1,5 +1,6 @@
-package create;
+package ddl.create;
 import java.util.ArrayList;
+
 
 public class Table {
 	

@@ -1,6 +1,9 @@
-package create;
+package ddl;
 
-import connect.CustomizedResponse;
+import ddl.create.CreateTableView;
+import ddl.create.Table;
+import ddl.drop.DropTableGUI;
+import useful.CustomizedResponse;
 
 public class DDLController 
 {
@@ -10,6 +13,9 @@ public class DDLController
 	//Attributs
 	/** IHM pour créer une table et ses attributs.*/
 	private CreateTableView createGUI;
+	
+	/** IHM pour supprimer une table.*/
+	private DropTableGUI dropGUI;
 	
 	/** Objet pour gérer la communication avec un SGBD 
 	 * dans l'optique d'utiliser le LDD.*/
@@ -40,13 +46,26 @@ public class DDLController
 	}
 	
 	/**
-	 * Ouvre l'IHM de création des tables.
+	 * Ouvre l'IHM de création des tables si et seulement si 
+	 * elle n'existe pas, sinon tente de l'afficher au premier plan.
 	 */
 	public void openCreateGUI()
 	{
 		this.createGUI = CreateTableView.getInstance();
 		this.createGUI.toFront();
 	}
+	
+	
+	/**
+	 * Ouvre l'IHM de création des tables si et seulement si 
+	 * elle n'existe pas, sinon tente de l'afficher au premier plan.
+	 */
+	public void openDropGUI()
+	{
+		this.dropGUI = DropTableGUI.getInstance();
+		this.dropGUI.toFront();
+	}
+	
 	
 	/**
 	 * Envoie $table au DDLManager dans l'optique de la créer dans le SGBD.

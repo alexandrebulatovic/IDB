@@ -1,13 +1,14 @@
 package sql;
 
 import interf.BasicGUI;
-import interf.IDBFrame;
+import interf.IDBGUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-import create.DDLController;
+import ddl.DDLController;
+
 
 @SuppressWarnings("serial")
 public class SQLView 
@@ -41,7 +42,7 @@ implements ActionListener
 		this.control = c;
 		this.handleArea();
 		this.handleButtons();
-		this.setProperties();
+		this.setProperties(DISPOSE_ON_CLOSE);
 	}
 
 

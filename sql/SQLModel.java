@@ -4,6 +4,8 @@ import java.sql.*;
 
 import javax.swing.JOptionPane;
 
+import useful.ConnectionManager;
+
 import connect.*;
 
 public class SQLModel {

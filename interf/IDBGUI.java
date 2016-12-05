@@ -1,6 +1,6 @@
 package interf;
 
-public interface IDBFrame 
+public interface IDBGUI 
 {	
 	/**
 	 * Retourne vrai si et seulement si tous les composants nécessaires

@@ -10,7 +10,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import create.MaxLengthTextDocument;
+
+import useful.MaxLengthTextDocument;
+
+
 import interf.BasicGUI;
 
 @SuppressWarnings("serial")
@@ -94,7 +97,7 @@ implements ActionListener
 		this.limitCharacters();
 		this.listenFields();
 		this.setDefaultValues();
-		this.setProperties();
+		this.setProperties(EXIT_ON_CLOSE);
 	}
 	
 	

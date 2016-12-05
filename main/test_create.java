@@ -1,13 +1,16 @@
-package launch;
+package main;
 
-import connect.ConnectionManager;
 import connect.ConnectionStrings;
-import connect.CustomizedResponse;
 import connect.OracleConnectionManager;
-import create.Attribute;
-import create.DDLManager;
-import create.Table;
 import java.util.ArrayList;
+
+import ddl.DDLManager;
+import ddl.create.Attribute;
+import ddl.create.Table;
+
+
+import useful.ConnectionManager;
+import useful.CustomizedResponse;
 
 
 /**

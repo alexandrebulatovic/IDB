@@ -8,9 +8,10 @@ import java.sql.Statement;
 
 import javax.swing.JOptionPane;
 
-import connect.ConnectionManager;
-import create.DDLManager;
-import create.CreateTableView;
+import useful.ConnectionManager;
+
+import ddl.DDLManager;
+import ddl.create.CreateTableView;
 
 public class SQLController {
 

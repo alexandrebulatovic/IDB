@@ -1,8 +1,11 @@
-package connect;
+package useful;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import connect.ConnectionStrings;
+
 
 /**
  * Gère la connection à un SGBD.

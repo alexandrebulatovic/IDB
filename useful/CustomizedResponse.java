@@ -1,4 +1,4 @@
-package connect;
+package useful;
 
 /**
  * Fournit plusieurs informations sur une tentative de connexion

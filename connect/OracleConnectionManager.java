@@ -2,6 +2,8 @@ package connect;
 
 import java.sql.SQLException;
 
+import useful.ConnectionManager;
+
 public class OracleConnectionManager 
 extends ConnectionManager
 {	

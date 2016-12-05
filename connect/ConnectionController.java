@@ -1,6 +1,8 @@
 package connect;
 
-import main.MainController;
+import home.HomeController;
+import useful.ConnectionManager;
+import useful.CustomizedResponse;
 
 /**
  * Gère le dialogue entre l'IHM et le connecteur au SGBD.
@@ -45,7 +47,7 @@ public class ConnectionController
 		if (response.success()) {
 			this.saveDefaultValue(parameters);
 			this.gui.dispose();
-			new MainController();
+			new HomeController();
 		}
 	}
 	 

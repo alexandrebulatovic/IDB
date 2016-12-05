@@ -1,8 +1,9 @@
-package create;
+package ddl.create;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 
 public class ControlTableResult  implements ListSelectionListener{
 	CreateTableView createFrame;

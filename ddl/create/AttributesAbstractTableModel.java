@@ -1,8 +1,9 @@
-package create;
+package ddl.create;
 
 import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
+
 
 public class AttributesAbstractTableModel 
 extends AbstractTableModel {
