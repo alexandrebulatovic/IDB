@@ -956,37 +956,37 @@ implements ActionListener, ItemListener {
 	private void addAttributeButtonAction()
 	{
 		if(isValidateAttributes()){
-			if(fkCheck.isSelected()){
+			if(fkCheck.isSelected()){//si il s'agit d'une clé étrangère
 				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText());
-				if (a.checkAttributes()>=0){
-					int i = this.models[0].addAttribute(a);
-					if( i == 0){
-						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
-					}else{
-						this.talk(succesAttribute +"Attribut ajouté.");
-						this.clearAttribute();
-					}
-				}else{
-					this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
-				}
+				this.addAttributeToTable(a);
 
 
 			}else{
 				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A");	
-				if (a.checkAttributes()>=0){//si le format de l'attribut est correct
-					int i = this.models[0].addAttribute(a);
-					if( i == 0){
-						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
-					}else{
-						this.talk(succesAttribute +"Attribut ajouté.");
-						this.clearAttribute();
-					}
-				}else{
-					this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
-				}
+				this.addAttributeToTable(a);
 			}
 		}
-	}		
+	}
+	
+	public void addAttributeToTable(Attribute a){
+		if (a.checkAttributes()>=0){
+			int i = this.models[0].addAttribute(a);
+			if( i == 0){
+				this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
+			}else{
+				this.talk(succesAttribute +"Attribut ajouté.");
+				this.clearAttribute();
+			}
+		}else{
+			this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
+		}
+	}
+
+
+	public void setTableName(String tableName) {
+		this.tableNameField.setText(tableName);
+		
+	}
 
 }
 

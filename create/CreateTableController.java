@@ -49,6 +49,14 @@ public class CreateTableController
 	}
 	
 	
+	public void setView(Attribute[] attributes,String tableName){
+		for (Attribute a : attributes){
+			this.mhi.addAttributeToTable(a);
+		}
+		this.mhi.setTableName(tableName);
+	}
+	
+	
 	//Privées
 	/**
 	 * Communique avec l'utilisateur en affichant $msg.

@@ -32,10 +32,12 @@ implements ActionListener, ItemListener
 	private JComboBox<String> comboTables;
 	
 	private ConnectionManager cm;
+	private ModifyTableController controller;
 	
-	ModifyTableView(ConnectionManager connection){
+	ModifyTableView(ModifyTableController controller, ConnectionManager connection){
 		super("modifier table vue");
 		cm = connection;
+		this.controller=controller;
 		setProperties();
 		this.handleCombos();
 		this.handleButtons();
@@ -109,9 +111,17 @@ implements ActionListener, ItemListener
 	private void handleButtons() {
 		this.createButtons();
 		this.bindButtons();
+		this.initButtons();
 		this.addButton();
 		
 	}
+
+	private void initButtons() {
+		this.buttonConfirm.addActionListener(this);
+		
+	}
+
+
 
 	private void addButton() {
 		this.add(buttonConfirm);
@@ -165,14 +175,11 @@ implements ActionListener, ItemListener
 	}
 
 	@Override
-	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void itemStateChanged(ItemEvent e) {}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		this.controller.modifier(this.comboTables.getSelectedItem().toString());
 		
 	}
 }

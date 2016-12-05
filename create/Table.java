@@ -10,6 +10,11 @@ public class Table {
 	
 	
 	//Constructeur
+	/**
+	 * 
+	 * @param list (liste d'attributs)
+	 * @param name (nom de la table)
+	 */
 	public Table(ArrayList<Attribute> list, String name){
 		this.listAttributes=list;
 		this.tableName=name;		
