@@ -127,7 +127,7 @@ implements ActionListener
 	private void createAndBindComponents()
 	{
 		//pilotes.
-		this.driverLabel = new JLabel("pilote :");
+		this.driverLabel = new JLabel("Pilote :");
 		this.bindElements(this.driverLabel);
 		
 		this.driverCombo = new JComboBox<String>();
@@ -191,7 +191,7 @@ implements ActionListener
 			ConnectionStrings parameters = new ConnectionStrings(
 					this.driverCombo.getSelectedItem().toString(),
 					this.ipField.getText(),
-					this.userField.getText(), 
+					this.userField.getText().trim(), 
 					this.rawPassword(), 
 					this.bdField.getText(), 
 					this.portField.getText());

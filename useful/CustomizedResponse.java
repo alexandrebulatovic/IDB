@@ -20,6 +20,18 @@ public class CustomizedResponse
 	
 	//Constructors
 	/**
+	 * Constructeur sans message.
+	 * 
+	 * @param response : vrai ssi la tentative a réussie, faux sinon.
+	 */
+	public CustomizedResponse(boolean response)
+	{
+		this.response = response;
+		this.msg = "";
+	}
+	
+	
+	/**
 	 * Constructeur commun.
 	 * 
 	 * @param response : vrai ssi la tentative a réussie, faux sinon.
@@ -42,15 +54,23 @@ public class CustomizedResponse
 		this.msg = copy.msg;
 	}
 	
+	//Mutateurs
+	/**
+	 * Définit le message de $this comme étant $msg.
+	 * 
+	 * @param msg : nouveau message de $this.
+	 */
+	public void setMessage(String msg){this.msg = msg;}
 	
-	//Methods
+	
+	//Methodes
 	/**
 	 * Retourne vrai si et seulement si la tentative
 	 * a réussie, faux sinon.
 	 * 
 	 * @return boolean
 	 */
-	public boolean success(){return this.response;}
+	public boolean hasSuccess(){return this.response;}
 	
 	
 	/**
@@ -59,7 +79,7 @@ public class CustomizedResponse
 	 * 
 	 * @return String
 	 */
-	public String message(){return this.msg;}
+	public String getMessage(){return this.msg;}
 	
 	
 	/**
@@ -68,10 +88,10 @@ public class CustomizedResponse
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
-		result.append(this.success() 
+		result.append(this.hasSuccess() 
 				? ""
 				: "Erreur : ");
-		result.append(this.message());
+		result.append(this.getMessage());
 		return result.toString();
 	}
 }

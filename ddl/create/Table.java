@@ -5,43 +5,57 @@ import java.util.ArrayList;
 public class Table {
 	
 	//Attributs
-	private ArrayList<Attribute> listAttributes;
+	private ArrayList<Attribute> attributes;
 	
-	private String tableName;
+	private String name;
 	
+	
+	/**
+	 * Vrai si et seulement si la table doit être supprimée
+	 * en cascade, faux sinon.
+	 */
+	private boolean cascade;
+
 	
 	//Constructeur
 	public Table(ArrayList<Attribute> list, String name){
-		this.listAttributes=list;
-		this.tableName=name;		
+		this.attributes=list;
+		this.name=name;		
 	}
 	
 	
 	public Table(Attribute a, String name)
 	{
-		this.listAttributes = new ArrayList<Attribute>();
-		this.listAttributes.add(a);
-		this.tableName = name;
+		this.attributes = new ArrayList<Attribute>();
+		this.attributes.add(a);
+		this.name = name;
 	}
 	
 	
-	public Table (Attribute [] as, String name)
+	public Table(Attribute [] as, String name)
 	{
-		this.listAttributes = new ArrayList<Attribute>();
+		this.attributes = new ArrayList<Attribute>();
 		for (Attribute a : as) {
-			this.listAttributes.add(a);
+			this.attributes.add(a);
 		}
-		this.tableName = name;
+		this.name = name;
 	}
 	
+	
+	public Table(boolean cascade, String name)
+	{
+		this.name = name;
+		this.cascade = cascade;
+		this.attributes = new ArrayList<Attribute>();
+	}
 	
 	//Accesseurs
 	public  ArrayList<Attribute> getListAttributes(){
-		return this.listAttributes;
+		return this.attributes;
 	}
 	
-	public  String getTableName(){
-		return this.tableName;
+	public  String getName(){
+		return this.name;
 	}
 	
 	
@@ -50,8 +64,9 @@ public class Table {
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
-		result.append(this.tableName + ":\n");
-		for (Attribute a : this.listAttributes) {
+		result.append(this.name + ":\n");
+		result.append(this.cascade ? "cascade constraint\n" : "");
+		for (Attribute a : this.attributes) {
 			result.append(a.toString());
 			result.append('\n');
 		}
@@ -65,7 +80,7 @@ public class Table {
 	 * 
 	 * @return String
 	 */
-	public String toSQL()
+	public String toCreate()
 	{
 		StringBuilder result = new StringBuilder();
 
@@ -80,6 +95,18 @@ public class Table {
 		return result.toString();
 	}
 	
+	/**
+	 * Retourne une chaîne de caractères qui synthétise $this
+	 * en une requète SQL de suppression de table.
+	 * 
+	 * @return String
+	 */
+	public String toDrop()
+	{
+		return "DROP TABLE " + this.name + 
+				(this.cascade ? " CASCADE CONSTRAINTS" : "");
+	}
+	
 	
 	/**
 	 * Retourne le nombre d'attributs qui
@@ -90,7 +117,7 @@ public class Table {
 	private int countPrimaryKey()
 	{
 		int result = 0;
-		for (Attribute a : this.listAttributes) {
+		for (Attribute a : this.attributes) {
 			if (a.primaryKey) result++;
 		}
 		return result;
@@ -119,7 +146,7 @@ public class Table {
 	 */
 	private String tableNameToSQL()
 	{
-		return "CREATE TABLE " + this.tableName;
+		return "CREATE TABLE " + this.name;
 	}
 	
 	
@@ -134,7 +161,7 @@ public class Table {
 	private String attributesToSQL()
 	{
 		StringBuilder result = new StringBuilder();
-		for (Attribute a : this.listAttributes) {
+		for (Attribute a : this.attributes) {
 			result.append(a.toSQL());
 			result.append(",\n");
 		}
@@ -158,9 +185,9 @@ public class Table {
 		StringBuilder result = new StringBuilder();
 		if (this.hasPrimaryKey()) {
 			result.append("CONSTRAINT pk_");
-			result.append(this.tableName);
+			result.append(this.name);
 			result.append(" PRIMARY KEY (");
-			for (Attribute a : this.listAttributes) {
+			for (Attribute a : this.attributes) {
 				if (a.primaryKey) {
 					result.append(a.name);
 					result.append(", ");

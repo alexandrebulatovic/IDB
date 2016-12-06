@@ -68,8 +68,7 @@ public class DDLManager
 
 
 	/**
-	 * Tente de créer une table dans la base de données
-	 * connecté à $this, à partir de la requête $sqlQuery.
+	 * Tente de créer une $table.
 	 * Retourne une réponse personnalisée qui décrit la tentative.
 	 * 
 	 * @param table : une table à créer.
@@ -77,14 +76,25 @@ public class DDLManager
 	 */
 	public CustomizedResponse createTable(Table table)
 	{	
-		CustomizedResponse result;
-		try{
-			this.statement.executeUpdate(table.toSQL());
-			result = new CustomizedResponse
-					(true, "Table " + table.getTableName() + " créée.");
+		CustomizedResponse result = this.executeUpdate(table.toCreate());
+		if (result.hasSuccess()) {
+			result.setMessage("Table " + table.getName() + " créée.");
 		}
-		catch(SQLException e){
-			result = new CustomizedResponse(false, e.getMessage());
+		return result;
+	}
+	
+	/**
+	 * Tente de supprimer $table.
+	 * Retourne une réponse personnalisée qui décrit la tentative.
+	 * 
+	 * @param table : une table à supprimer.
+	 * @return CustomizedResponse
+	 */
+	public CustomizedResponse dropTable(Table table)
+	{
+		CustomizedResponse result = this.executeUpdate(table.toDrop());
+		if (result.hasSuccess()) {
+			result.setMessage("Table " + table.getName() + " supprimée.");
 		}
 		return result;
 	}
@@ -105,8 +115,8 @@ public class DDLManager
 			String [] tab = {"TABLE"};
 			this.tables = this.metadata.getTables(
 					null, 
-					this.metadata.getUserName(),
-					"%", 
+					this.metadata.getUserName(), //TODO : virer les espaces du nom d'user
+					"%",  //Symbole en SQL et PL/SQL pour dire "aucun ou n'importe quels caractères"
 					tab);
 			ok = true;
 		}
@@ -150,7 +160,7 @@ public class DDLManager
 	 * Retourne une réponse personnalisée qui décrit une tentative
 	 * pour lire un objet ResulSet contenant le nom des tables de la base.
 	 * La réponse contient le nom des tables si et seulement si elles ont toutes
-	 * été lues, elle ne les contient pas sinon.
+	 * été lues, sinon ne les contient pas.
 	 * 
 	 * @return CustomizedResponseWithData
 	 */
@@ -170,8 +180,25 @@ public class DDLManager
 		return new CustomizedResponseWithData<String>
 			(true, "Tables récupérées", result);
 	}
+	
+
+	/**
+	 * Retourne une réponse personnalisée après l'envoi
+	 * d'une requête sans qui ne retourne rien.
+	 * 
+	 * @param sql : une requête SQL qui ne retourne rien.
+	 * @return CustomizedResponse
+	 */
+	private CustomizedResponse executeUpdate(String sql)
+	{
+		CustomizedResponse result;
+		try{
+			this.statement.executeUpdate(sql);
+			result = new CustomizedResponse(true);
+		}
+		catch(SQLException e){
+			result = new CustomizedResponse(false, e.getMessage());
+		}
+		return result;
+	}
 }
-
-
-	
-	

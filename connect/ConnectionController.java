@@ -45,7 +45,7 @@ public class ConnectionController
 		CustomizedResponse response = this.connector.connect(parameters);
 		this.talk(response.toString());
 		
-		if (response.success()) {
+		if (response.hasSuccess()) {
 			this.saveDefaultValue(parameters);
 			this.gui.dispose();
 			new HomeController();

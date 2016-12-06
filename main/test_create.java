@@ -85,14 +85,14 @@ public class test_create {
 		 */
 		CustomizedResponse response;
 		for (Table t : col) {
-			response = creator.createTable(t.toSQL());
-			t(response.success());
-			if (! response.success()) {
-				System.out.println(t.toSQL());
-				System.out.println(response.message());
+			response = creator.createTable(t.toCreate());
+			t(response.hasSuccess());
+			if (! response.hasSuccess()) {
+				System.out.println(t.toCreate());
+				System.out.println(response.getMessage());
 			}
 			else{
-				creator.createTable("DROP TABLE " + t.getTableName());
+				creator.createTable("DROP TABLE " + t.getName());
 			}
 		}
 		

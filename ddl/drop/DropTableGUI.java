@@ -8,9 +8,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
+import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
 
 import ddl.DDLController;
+import ddl.create.Table;
 
 import interf.BasicGUI;
 
@@ -75,9 +77,10 @@ implements ActionListener
 	
 	
 	@Override
-	public void actionPerformed(ActionEvent arg0) 
+	public void actionPerformed(ActionEvent e) 
 	{
-		// TODO Auto-generated method stub	
+		Object ev = e.getSource();
+		if (ev == this.okButton) this.okButtonAction();
 	}
 
 
@@ -111,11 +114,30 @@ implements ActionListener
 		CustomizedResponseWithData<String> 
 			response = this.control.getTables();
 		
-		if (response.success()) {
+		if (response.hasSuccess()) {
 			for (String s : response.getCollection()) {
 				this.tableComboBox.addItem(s);
 			}
 		}
-		this.talk(response.message());
+		this.talk(response.getMessage());
+	}
+	
+	
+	/**
+	 * Détermine ce qu'il se passe en appuyant sur le bouton 'ok'.
+	 */
+	private void okButtonAction()
+	{
+		if (tableComboBox.getItemCount() != 0) {
+			String selection = (String)this.tableComboBox.getSelectedItem();
+			Table table = new Table(
+					this.cascadeCheckBox.isSelected(), 
+					selection);
+			CustomizedResponse response = this.control.dropTable(table);
+			this.talk(response.toString()); 
+			if (response.hasSuccess()) {
+				this.tableComboBox.removeItem(selection);
+			}
+		}
 	}
 }

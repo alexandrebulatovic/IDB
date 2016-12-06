@@ -1,7 +1,5 @@
 package ddl;
 
-import java.util.ArrayList;
-
 import ddl.create.CreateTableView;
 import ddl.create.Table;
 import ddl.drop.DropTableGUI;
@@ -71,17 +69,29 @@ public class DDLController
 	
 	
 	/**
-	 * Envoie $table au DDLManager dans l'optique de la créer dans le SGBD.
+	 * Envoie $table au DDLManager dans l'optique de la créer.
 	 * 
 	 * @param table : une table à créer. L'objet peut être erroné;
 	 */
 	public void createTable(Table table)
 	{
 		CustomizedResponse response = this.manager.createTable(table);
-		if (response.success()) {
+		if (response.hasSuccess()) {
 			this.createGUI.resetView();
 		}
-		this.createGUI.talk(response.message());
+		this.createGUI.talk(response.toString());
+	}
+	
+	
+	/**
+	 * Envoie $table au DDLManager dans l'optique de la supprimer.
+	 * 
+	 * @param table : une table à supprimé. L'objet peut être erroné.
+	 * @return CustomizedResponse
+	 */
+	public CustomizedResponse dropTable(Table table)
+	{
+		return this.manager.dropTable(table);
 	}
 	
 	
