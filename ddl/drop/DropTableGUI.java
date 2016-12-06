@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
@@ -50,6 +51,7 @@ implements ActionListener
 		this.control = DDLController.getInstance();
 		this.handleComponents();
 		this.fillComboBox();
+		this.enableOrDisableComponent();
 		this.setProperties(DISPOSE_ON_CLOSE);
 	}
 	
@@ -108,18 +110,21 @@ implements ActionListener
 	/**
 	 * Remplit la liste déroulante avec le nom des 
 	 * tables de données disponibles pour l'utilisateur.
+	 * Affiche le nombre de tables récupérées.
 	 */
 	private void fillComboBox()
 	{
+		String msg;
 		CustomizedResponseWithData<String> 
 			response = this.control.getTables();
-		
+		msg = response.getMessage();
 		if (response.hasSuccess()) {
+			msg += " : " + response.getCollection().size();
 			for (String s : response.getCollection()) {
 				this.tableComboBox.addItem(s);
 			}
 		}
-		this.talk(response.getMessage());
+		this.talk(msg);
 	}
 	
 	
@@ -137,7 +142,22 @@ implements ActionListener
 			this.talk(response.toString()); 
 			if (response.hasSuccess()) {
 				this.tableComboBox.removeItem(selection);
+				this.enableOrDisableComponent();
 			}
 		}
 	}
+	
+	
+	/**
+	 * Active les composants de $this si et seulement s'il
+	 * y a des tables à supprimer, les désactive sinon.
+	 */
+	private void enableOrDisableComponent()
+	{
+		boolean b = this.tableComboBox.getItemCount() != 0;
+		for (JComponent jc : this.components) {
+			jc.setEnabled(b);
+		}
+	}
+	
 }

@@ -240,7 +240,7 @@ public class Attribute {
 			String condition)
 	{
 		StringBuilder result = new StringBuilder();
-		result.append(this.constraintNameToSQL(constraintNamePrefix));
+		result.append(",\n" + this.constraintNameToSQL(constraintNamePrefix));
 		result.append(" ");
 		result.append(this.constraintTypeToSQL(constraintType, condition));
 		if (constraintType.equals("FOREIGN KEY")) {
@@ -262,7 +262,7 @@ public class Attribute {
 	 */
 	private String constraintNameToSQL(String constraintNamePrefix)
 	{
-		return ",\nCONSTRAINT " + constraintNamePrefix + "_" + this.name;
+		return "CONSTRAINT " + constraintNamePrefix + "_" + this.name;
 	}
 	
 	
