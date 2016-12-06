@@ -8,6 +8,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
+import useful.CustomizedResponseWithData;
+
 import ddl.DDLController;
 
 import interf.BasicGUI;
@@ -41,10 +43,11 @@ implements ActionListener
 	 */
 	private DropTableGUI()
 	{
-		super("Suppression de table", null, 400, 400, 30);
+		super("Suppression de table", null, 400, 150, 30);
 		INSTANCE = this;
 		this.control = DDLController.getInstance();
 		this.handleComponents();
+		this.fillComboBox();
 		this.setProperties(DISPOSE_ON_CLOSE);
 	}
 	
@@ -64,10 +67,7 @@ implements ActionListener
 	
 	
 	@Override
-	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public boolean isComplete() {return true;}
 	
 	
 	@Override
@@ -92,12 +92,30 @@ implements ActionListener
 		this.bindElements(this.tableComboBox);
 		
 		//Case à cocher.
-		this.cascadeCheckBox = new JCheckBox("supression en cascade.");
+		this.cascadeCheckBox = new JCheckBox("suppression en cascade.");
 		this.bindElements(this.cascadeCheckBox);
 
 		//Bouton
 		this.okButton = new JButton("Supprimer");
 		this.okButton.addActionListener(this);
 		this.bindElements(this.okButton);
+	}
+	
+	
+	/**
+	 * Remplit la liste déroulante avec le nom des 
+	 * tables de données disponibles pour l'utilisateur.
+	 */
+	private void fillComboBox()
+	{
+		CustomizedResponseWithData<String> 
+			response = this.control.getTables();
+		
+		if (response.success()) {
+			for (String s : response.getCollection()) {
+				this.tableComboBox.addItem(s);
+			}
+		}
+		this.talk(response.message());
 	}
 }

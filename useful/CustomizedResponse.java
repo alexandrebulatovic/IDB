@@ -10,25 +10,36 @@ public class CustomizedResponse
 	/**
 	 * Vrai si la tentative a réussie, faux sinon.
 	 */
-	private boolean response;
+	protected boolean response;
 	
 	/**
 	 * Message associé à la tentative.
 	 */
-	private String msg;
+	protected String msg;
 	
 	
 	//Constructors
 	/**
 	 * Constructeur commun.
 	 * 
-	 * @param response : vrai si la tentative a réussie, faux sinon.
+	 * @param response : vrai ssi la tentative a réussie, faux sinon.
 	 * @param msg : message associé à la tentative.
 	 */
 	public CustomizedResponse(boolean response, String msg)
 	{
 		this.response = response;
 		this.msg = msg;
+	}
+	
+	/**
+	 * Contructeur par recopie.
+	 * 
+	 * @param copy : un objet CustomizedResponse à recopier.
+	 */
+	public CustomizedResponse(CustomizedResponse copy)
+	{
+		this.response = copy.response;
+		this.msg = copy.msg;
 	}
 	
 	

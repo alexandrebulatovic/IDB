@@ -1,7 +1,6 @@
 package main;
 
 import connect.ConnectionStrings;
-import connect.OracleConnectionManager;
 import java.util.ArrayList;
 
 import ddl.DDLManager;
@@ -11,6 +10,7 @@ import ddl.create.Table;
 
 import useful.ConnectionManager;
 import useful.CustomizedResponse;
+import useful.OracleConnectionManager;
 
 
 /**

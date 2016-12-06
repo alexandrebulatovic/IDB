@@ -1,9 +1,12 @@
 package ddl;
 
+import java.util.ArrayList;
+
 import ddl.create.CreateTableView;
 import ddl.create.Table;
 import ddl.drop.DropTableGUI;
 import useful.CustomizedResponse;
+import useful.CustomizedResponseWithData;
 
 public class DDLController 
 {
@@ -19,7 +22,7 @@ public class DDLController
 	
 	/** Objet pour gérer la communication avec un SGBD 
 	 * dans l'optique d'utiliser le LDD.*/
-	private DDLManager ddlor;
+	private DDLManager manager;
 	
 	
 	//Contructeur
@@ -29,7 +32,7 @@ public class DDLController
 	private DDLController()
 	{
 		INSTANCE = this;
-		this.ddlor = new DDLManager();
+		this.manager = DDLManager.getInstance();
 	}
 	
 	
@@ -74,15 +77,31 @@ public class DDLController
 	 */
 	public void createTable(Table table)
 	{
-		CustomizedResponse response = this.ddlor.createTable(table.toSQL());
+		CustomizedResponse response = this.manager.createTable(table);
 		if (response.success()) {
 			this.createGUI.resetView();
-			this.createGUI.talk("Table " + table.getTableName() + " créée.");
 		}
-		else {
-			this.createGUI.talk(response.message());
-		}
+		this.createGUI.talk(response.message());
 	}
+	
+	
+	/**
+	 * Retourne une réponse personnalisée contenant le nom des tables
+	 * de la base, si et seulement si (ces dernières existent et 
+	 * il n'y a pas eu d'exceptions).
+	 * 
+	 * @return CustomizedResponseWithData
+	 */
+	public CustomizedResponseWithData<String> getTables()
+	{
+		return this.manager.getTables();
+	}
+	
+	
+	/**
+	 * Ferme proprement les objets Statements.
+	 */
+	public void closeStatement(){this.manager.closeStatement();}
 	
 	
 	//Privées

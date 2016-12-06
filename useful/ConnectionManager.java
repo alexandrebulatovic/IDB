@@ -131,7 +131,17 @@ public abstract class ConnectionManager
 	 */
 	public boolean isConnected() {return this.dbms != null;}
 
-
+	
+	/**
+	 * Ferme proprement la connexion.
+	 */
+	public void disconnect()
+	{
+		try {this.dbms.close();} 
+		catch (SQLException e) {}
+	}
+	
+	
 	@Override
 	public String toString()
 	{

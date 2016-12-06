@@ -46,9 +46,22 @@ public class HomeController
 	}
 	
 	
+	/**
+	 * Ouvre l'IHM de suppression des tables.
+	 */
 	public void openDropGUI()
 	{
 		this.ddlControl = DDLController.getInstance();
 		this.ddlControl.openDropGUI();
+	}
+	
+	
+	/**
+	 * Ferme proprement les objets liés à la connexion.
+	 */
+	public void disconnect()
+	{
+		if (this.ddlControl != null) this.ddlControl.closeStatement();
+		ConnectionManager.getInstance().disconnect();
 	}
 }

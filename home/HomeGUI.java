@@ -59,7 +59,7 @@ implements ActionListener
     @Override
     public void windowClosing (WindowEvent e)
     {
-    	//TODO : fermer proprement la connexion
+    	this.control.disconnect();
     }
     
     

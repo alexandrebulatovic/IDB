@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -25,10 +27,10 @@ implements ActionListener
 	/**Controleur de connexion.*/
 	private ConnectionController control;
 
-	/**Etiquette des pilôtes.*/
+	/**Etiquette des pilotes.*/
 	private JLabel driverLabel;
 	
-	/**Liste déroulante des différents pilôtes de SGBD.*/
+	/**Liste déroulante des différents pilotes de SGBD.*/
 	private JComboBox<String> driverCombo;
 	
 	/**Etiquette de l'adresse IP.*/
@@ -124,13 +126,13 @@ implements ActionListener
 	//Privées
 	private void createAndBindComponents()
 	{
-		//Pilôtes.
-		this.driverLabel = new JLabel("Pilôte :");
+		//pilotes.
+		this.driverLabel = new JLabel("pilote :");
 		this.bindElements(this.driverLabel);
 		
 		this.driverCombo = new JComboBox<String>();
-		//TODO : ajouter d'autres pilôtes
-		//TODO : créer une classe statique avec des constantes sur les nom des pilôtes.
+		//TODO : ajouter d'autres pilotes
+		//TODO : créer une classe statique avec des constantes sur les nom des pilotes.
 		this.driverCombo.addItem("Oracle");
 		this.bindElements(this.driverCombo);
 		
