@@ -42,14 +42,15 @@ public class SQLController {
 		JOptionPane.showMessageDialog(null, res, "Résultat", JOptionPane.INFORMATION_MESSAGE);
 	}
 
+	/** Methode pour envoyer la requête au serveur.
+	 * @param rq : requête sous forme de chaîne de caractères à envoyer. */
 	public void sendSQL(String rq){
 
 		try {
-			StringBuilder stringBuilder = new StringBuilder(); // pour les requetes SELECT
-			// j'execute la requete
+			StringBuilder stringBuilder = new StringBuilder();
 			boolean res = stat.execute(rq);
 
-			if (res) { // SELECT donc on affiche le resultat
+			if (res) { // Si le résultat est un ResultSet
 
 				ResultSet rs = stat.getResultSet() ;
 				ResultSetMetaData rsmd = rs.getMetaData(); // permet d'avoir des infos sur les colonnes retournees
@@ -77,9 +78,8 @@ public class SQLController {
 				} else if (rq.contains("UPDATE")){
 					showResult(stat.getUpdateCount()+" ligne mis à jour.");
 				}else {
-					showResult("Réussite!");
+					showResult("Aucune ligne retournée.");
 				}
-
 			}
 
 		}catch (SQLException ex) {
