@@ -1,27 +1,48 @@
 package ddl.create;
 
-/**
- * @author Adrian
- *
- */
+
 public class Attribute {
 
+	/** Nom de l'attribut.*/
 	public final String name;
 
+	/** Type de donnée.*/
 	public final String type;
 
+	/** Nombre d'octets.*/
 	public final int size;
 
+	/**
+	 * Vrai si et seulement si $this ne peut pas être null, faux sinon.
+	 */
 	public final boolean notNull;
 
+	/**
+	 * Vrai si et seulement si chaque valeur de this 
+	 * doit être unique dans la table, faux sinon.
+	 */
 	public final boolean unique;
 
+	/**
+	 * Vrai si et seulement si $this est membre de la clef primaire,
+	 * faux sinon.
+	 */
 	public final boolean primaryKey;
 
+	/**
+	 * Vrai si et seulement si $this (actuellement) une clef étrangère,
+	 * faux sinon.
+	 */
 	public final boolean foreignKey;
 
+	/**
+	 * Nom de la table de référence lorsque $this est une clef étrangère.
+	 */
 	public final String fkTable;
 
+	/**
+	 * Nom de l'attribut de référence lorsque $this est une clef étrangère.
+	 */
 	public final String fkAttribute;
 
 	
