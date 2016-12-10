@@ -895,8 +895,8 @@ implements ActionListener, ItemListener
 		if (e.getSource() == this.createTableButton) {
 			if(this.isCompleteTable()){
 				this.control.createTable(new Table(
-					this.models[0].getAttributes(),
-					this.tableNameField.getText()));
+					this.tableNameField.getText(),
+					this.models[0].getAttributes()));
 			}
 		}
 		if (e.getSource() == this.deleteAttributeButton) {
@@ -954,6 +954,7 @@ implements ActionListener, ItemListener
 		int rowIndex = this.tables[0].getSelectedRow();
 		Attribute a = this.models[0].getAttributeAt(rowIndex);
 		this.setValues(a.name, a.type, Integer.toString(a.size), a.notNull, a.unique, a.primaryKey, a.foreignKey, a.fkTable,a.fkAttribute);
+		this.tables[0].getSelectedRow();
 		this.models[0].removeAttributes(this.tables[0].getSelectedRow());
 		this.setEnableButtonUpdateDelete(false);
 	}
@@ -975,7 +976,15 @@ implements ActionListener, ItemListener
 	{
 		if(isValidateAttributes()){
 			if(fkCheck.isSelected()){
-				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText());
+				Attribute a = new Attribute(attributeNameField.getText(),
+						(String)attributeTypeComboBox.getSelectedItem(), 
+						Integer.parseInt(attributeSizeField.getText()), 
+						notNullCheck.isSelected(), 
+						uniqueCheck.isSelected(),
+						pkCheck.isSelected(),
+						fkCheck.isSelected(),
+						fkTableNameField.getText(),
+						fkAttributeNameField.getText());
 				if (a.checkAttributes()>=0){
 					int i = this.models[0].addAttribute(a);
 					if( i == 0){

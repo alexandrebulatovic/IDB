@@ -45,6 +45,9 @@ public class Attribute {
 	 */
 	public final String fkAttribute;
 
+	/** Nom de la table où se situe $this.*/
+	private String tableName;
+	
 	
 	/**
 	 * Constructeur lambda.
@@ -71,36 +74,36 @@ public class Attribute {
 		this.foreignKey=fk;
 		this.fkTable=fkTable;
 		this.fkAttribute=fkAttribute;
-	}
-
-	
-	/**
-	 * Constructeur pour attribut sans aucune contrainte.
-	 * 
-	 * @param name
-	 * @param type
-	 * @param taille
-	 */
-	public Attribute(String name, String type, int taille)
-	{
-		this(name, type, taille, false, false, false, false, null, null);
+		this.tableName = "";
 	}
 	
 	
 	/**
-	 * Constructeur pour attribut membre de la clée et c'est tout.
+	 * Constructeur par recopie.
 	 * 
-	 * @param name
-	 * @param type
-	 * @param taille
-	 * @param pk : vrai si et seulement si $this est membre de la clée.
+	 * @param copy : un attribut à recopier.
 	 */
-	public Attribute(String name, String type, int taille, boolean pk)
+	public Attribute(Attribute copy)
 	{
-		this(name, type, taille, false, false, pk, false, null, null);
+		this.name = copy.name;
+		this.type = copy.type;
+		this.size = copy.size;
+		this.notNull = copy.notNull;
+		this.unique = copy.unique;
+		this.primaryKey = copy.primaryKey;
+		this.foreignKey = copy.foreignKey;
+		this.fkTable = copy.fkTable;
+		this.fkAttribute = copy.fkAttribute;
+		this.tableName = copy.tableName;
 	}
-
 	
+	
+	/** 
+	 * Définit le nom de la table de $this comme étant $name.
+	 */
+	public void setTableName(String name){this.tableName = name;}
+
+
 	//Méthodes
 	@Override
 	public boolean equals(Object o)
@@ -151,13 +154,13 @@ public class Attribute {
 	 * 
 	 * @return String
 	 */
-	public String toSQL()
+	public String toCreate()
 	{
 		StringBuilder result = new StringBuilder();
-		result.append(this.attributeToSQL());
-		if (this.notNull) 		result.append(this.notNullToSQL());
-		if (this.unique) 		result.append(this.uniqueToSQL());
-		if (this.foreignKey) 	result.append(this.foreignKeyToSQL());
+		result.append(this.declarationToSQL());
+		result.append(this.notNullToSQL());
+		result.append(this.uniqueToSQL());
+		result.append(this.foreignKeyToSQL());
 		return result.toString();
 	}
 	
@@ -197,12 +200,13 @@ public class Attribute {
 
 	//Privées
 	/**
-	 * Retourne une chaîne de caractères qui correspond à une
-	 * déclaration d'attribut pour $this.
+	 * Retourne une chaîne de caractères qui représente le nom et le type de $this, 
+	 * comme s'il s'agissait d'une requête SQL pour créer une table.
+	 * La taille de $this est ajoutée uniquement lorsque c'est nécessaire.
 	 * 
 	 * @return String
 	 */
-	private String attributeToSQL()
+	private String declarationToSQL()
 	{
 		StringBuilder result = new StringBuilder();
 		result.append(this.name + " " + this.type);
@@ -213,86 +217,99 @@ public class Attribute {
 	
 	/**
 	 * Retourne une chaîne de caractères qui correspond à
-	 * une déclaration de contrainte NOT NULL pour $this.
+	 * une déclaration de contrainte NOT NULL pour $this,
+	 * si et seulement si $this possède cette contrainte.
+	 * Retourne une chaîne vide sinon.
 	 * 
-	 * @return StringBuilder
+	 * @return String
 	 */
 	private String notNullToSQL()
 	{
-		return this.concatToSQL("nn", "CHECK", "IS NOT NULL");
+		return this.notNull 
+				? this.concatToSQL("nn", "CHECK", "IS NOT NULL")
+				: "";
 	}
 	
 	
 	/**
 	 * Retourne une chaîne de caractères qui correspond à
-	 * une déclaration de contrainte UNIQUE pour $this.
+	 * une déclaration de contrainte UNIQUE pour $this,
+	 * si et seulement si $this possède cette contrainte.
+	 * Retourne une chaîne vide sinon.
 	 * 
-	 * @return StringBuilder
+	 * @return String
 	 */
 	private String uniqueToSQL()
 	{
-		return this.concatToSQL("un", "UNIQUE", null);
+		return this.unique 
+				? this.concatToSQL("un", "UNIQUE", null)
+				: "";
 	}
 	
 	
 	/**
 	 * Retourne une chaîne de caractères qui correspond à
-	 * une déclaration de contrainte FOREIGN KEY pour $this.
+	 * une déclaration de contrainte FOREIGN KEY pour $this,
+	 * si et seulement si $this possède cette contrainte.
+	 * Retourne une chaîne vide sinon.
 	 * 
-	 * @return StringBuilder
+	 * @return String
 	 */
 	private String foreignKeyToSQL()
 	{
-		return this.concatToSQL("fk", "FOREIGN KEY", null);
+		return this.foreignKey
+				? this.concatToSQL("fk", "FOREIGN KEY", null)
+				: "";
 	}
 	
 	
 	/**
-	 * Retourne une chaîne de caractères qui représentent
-	 * une clause SQL CONSTRAINT.
+	 * Retourne une chaîne de caractères qui représente une clause CONSTRAINT 
+	 * complète, dont le nom commence par $prefix, le type $keyword et 
+	 * éventuellement de condition $condition.
 	 * 
-	 * @param constraintNamePrefix : préfixe du nom de la contrainte (pk, fk, nn, un, ck)
-	 * @param constraintType : mot-clef de contrainte (UNIQUE, CHECK, FOREIGN KEY)
-	 * @param condition : null ssi $constraintType != "CHECK"
-	 * @return StringBuilder
+	 * @param prefix : pk, fk, nn, un, ck.
+	 * @param keyword : UNIQUE, CHECK, FOREIGN KEY.
+	 * @param condition : null ssi $constraintType != "CHECK", représente une condition booléenne sinon.
+	 * @return String
 	 */
 	private String concatToSQL(
-			String constraintNamePrefix, String constraintType,
+			String prefix, String keyword,
 			String condition)
 	{
 		StringBuilder result = new StringBuilder();
-		result.append(",\n" + this.constraintNameToSQL(constraintNamePrefix));
+		result.append(",\n" + this.constraintNameToSQL(prefix));
 		result.append(" ");
-		result.append(this.constraintTypeToSQL(constraintType, condition));
-		if (constraintType.equals("FOREIGN KEY")) {
+		result.append(this.constraintTypeToSQL(keyword, condition));
+		if (keyword.equals("FOREIGN KEY")) {
 			result.append(" ");
 			result.append(this.referencesToSQL());
 		}
 		return result.toString();
 	}
-	
-	
+
+
 	/**
-	 * Retourne une chaîne de caractères qui représente 
-	 * le nom de la contrainte que va subir $this.
-	 * 
-	 * La chaîne retournée commence par une virgule et un saut de ligne.
-	 * 
-	 * @param constraintNamePrefix : préfixe du nom de la contrainte (pk, fk, nn, un, ck)
+	 * Retourne une chaîne de caractères qui représente le début
+	 * d'une clause CONSTRAINT en SQL, c'est à dire le mot CONSTRAINT et le nom de la contrainte.
+	 * Le nom de la contrainte commence par $prefix.
+	 * 	  
+	 * @param prefix : préfixe du nom de la contrainte (pk, fk, nn, un, ck)
 	 * @return String
 	 */
-	private String constraintNameToSQL(String constraintNamePrefix)
+	private String constraintNameToSQL(String prefix)
 	{
-		return "CONSTRAINT " + constraintNamePrefix + "_" + this.name;
+		return "CONSTRAINT " + prefix + "_" 
+				+ this.tableName + "_" + this.name;
 	}
 	
 	
 	/**
 	 * Retourne une chaîne de caractères qui représente 
-	 * le type de contrainte que subit $this.
+	 * $constraintType imposée sur $this.
 	 * 
 	 * @param constraintType : mot-clef de contrainte (UNIQUE, CHECK, FOREIGN KEY)
-	 * @param condition : null ssi $constraintType != "CHECK"
+	 * @param condition : null ssi $constraintType != "CHECK", expression booléenne sinon.
 	 * @return String
 	 */
 	private String constraintTypeToSQL(String constraintType, String condition)
@@ -304,9 +321,11 @@ public class Attribute {
 		return result.toString();
 	}
 	
+	
 	/**
 	 * Retourne une chaîne de caractères qui représente
-	 * la référence d'une clef étrangère.
+	 * la référence sur laquelle se base $this.
+	 * Cette méthode ne doit pas être appellée si $this n'est pas une clef étrangère.
 	 * 
 	 * @return String
 	 */
@@ -321,4 +340,3 @@ public class Attribute {
 		return result.toString();
 	}
 }
-

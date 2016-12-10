@@ -1,14 +1,14 @@
 package ddl.create;
-import java.util.ArrayList;
-
+import java.util.LinkedHashSet;
 
 public class Table {
 	
 	//Attributs
-	private ArrayList<Attribute> attributes;
-	
+	/** Nom de la table.*/
 	private String name;
 	
+	/** Un ensemble d'attributs (pas de doublons).*/
+	private LinkedHashSet<Attribute> attributes;
 	
 	/**
 	 * Vrai si et seulement si la table doit être supprimée
@@ -17,40 +17,58 @@ public class Table {
 	private boolean cascade;
 
 	
-	//Constructeur
-	public Table(ArrayList<Attribute> list, String name){
-		this.attributes=list;
-		this.name=name;		
+	//Constructeurs
+	/**
+	 * Constructeur vide.
+	 * Instancie un ensemble vide.
+	 */
+	protected Table(){this.attributes = new LinkedHashSet<Attribute>();}
+	
+	
+	/**
+	 * Construit une table nommée $name.
+	 * Recopie les attributs de $attributes dans $this.
+	 * 
+	 * @param name : le nom de la table.
+	 * @param attributes : un ensemble d'attributs, peut être vide.
+	 */
+	public Table(String name, LinkedHashSet<Attribute> attributes){
+		this();
+		this.name=name;	
+		this.copyAttributes(attributes);		
 	}
 	
 	
-	public Table(Attribute a, String name)
+	/**
+	 * Construit une table nommée $name.
+	 * Si $cascade est vrai, la table doit être supprimée avec 
+	 * l'option CASCADE CONSTRAINT dans le SGBD.
+	 * 
+	 * @param name : le nom de la table.
+	 * @param cascade : un ensemble d'attributs, peut être vide.
+	 */
+	public Table(String name, boolean cascade)
 	{
-		this.attributes = new ArrayList<Attribute>();
-		this.attributes.add(a);
-		this.name = name;
-	}
-	
-	
-	public Table(Attribute [] as, String name)
-	{
-		this.attributes = new ArrayList<Attribute>();
-		for (Attribute a : as) {
-			this.attributes.add(a);
-		}
-		this.name = name;
-	}
-	
-	
-	public Table(boolean cascade, String name)
-	{
+		this();
 		this.name = name;
 		this.cascade = cascade;
-		this.attributes = new ArrayList<Attribute>();
 	}
 	
+	/**
+	 * Constructeur par recopie profonde.
+	 * 
+	 * @param copy : une table à recopier.
+	 */
+	public Table(Table copy)
+	{
+		this();
+		this.name = copy.name;
+		this.copyAttributes(attributes);
+	}
+	
+	
 	//Accesseurs
-	public  ArrayList<Attribute> getListAttributes(){
+	public  LinkedHashSet<Attribute> getAttributes(){
 		return this.attributes;
 	}
 	
@@ -94,6 +112,7 @@ public class Table {
 		result.append("\n)");
 		return result.toString();
 	}
+	
 	
 	/**
 	 * Retourne une chaîne de caractères qui synthétise $this
@@ -162,7 +181,8 @@ public class Table {
 	{
 		StringBuilder result = new StringBuilder();
 		for (Attribute a : this.attributes) {
-			result.append(a.toSQL());
+			a.setTableName(this.name);
+			result.append(a.toCreate());
 			result.append(",\n");
 		}
 		int resultLength = result.length();
@@ -201,5 +221,16 @@ public class Table {
 	}
 	
 	
-
+	/**
+	 * Recopie chaque attribut contenu dans $attributes,
+	 * et place la copie dans l'ensemble d'attributs de $this.
+	 * 
+	 * @param attributes : un ensemble d'attributs, peut être vide.
+	 */
+	private void copyAttributes(LinkedHashSet<Attribute> attributes)
+	{
+		for (Attribute a : attributes) {
+			this.attributes.add(new Attribute(a));
+		}
+	}
 }

@@ -1,6 +1,7 @@
 package ddl.create;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Iterator;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -11,7 +12,7 @@ extends AbstractTableModel {
 	/**
 	 * Liste des attributs présent dans le tableau
 	 */
-	private ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+	private LinkedHashSet<Attribute> attributes = new LinkedHashSet<Attribute>();
 
 	/**
 	 * Initialise l'en-tête
@@ -41,33 +42,41 @@ extends AbstractTableModel {
 	 * @return Attribute
 	 */
 	public Attribute getAttributeAt(int rowIndex){
-		Attribute a = this.attributes.get(rowIndex);
-		return a;
+		int i = 0;
+		Iterator <Attribute> iterator = this.attributes.iterator();
+		Attribute result = null; //compilateur chiale
+		
+		while (iterator.hasNext() && i <= rowIndex) {
+			result = iterator.next();
+			i++;
+		}
+		return result;
 	}
 			
 			
 			
 			
 	public Object getValueAt(int rowIndex, int columnIndex) {
+		Attribute a = this.getAttributeAt(rowIndex);
 		switch(columnIndex){
 		case 0:
-			return attributes.get(rowIndex).name;
+			return a.name;
 		case 1:
-			return attributes.get(rowIndex).type;
+			return a.type;
 		case 2:
-			return attributes.get(rowIndex).size;
+			return a.size;
 		case 3:
-			return attributes.get(rowIndex).notNull;
+			return a.notNull;
 		case 4:
-			return attributes.get(rowIndex).unique;
+			return a.unique;
 		case 5:
-			return attributes.get(rowIndex).primaryKey;
+			return a.primaryKey;
 		case 6:
-			return attributes.get(rowIndex).foreignKey;
+			return a.foreignKey;
 		case 7:
-			return attributes.get(rowIndex).fkTable;
+			return a.fkTable;
 		case 8:
-			return attributes.get(rowIndex).fkAttribute;
+			return a.fkAttribute;
 		default:
 			return null; 
 		}
@@ -116,14 +125,14 @@ extends AbstractTableModel {
 	 * @param rowIndex
 	 */
 	public void removeAttributes(int rowIndex) {
-		attributes.remove(rowIndex);
+		attributes.remove(this.getAttributeAt(rowIndex));
 		fireTableRowsDeleted(rowIndex, rowIndex);
 	}
 	
 	/**
 	 * @return ArrayList<Attribute>
 	 */
-	public ArrayList<Attribute> getAttributes(){
+	public LinkedHashSet<Attribute> getAttributes(){
 		return this.attributes;
 	}
 	
@@ -136,6 +145,5 @@ extends AbstractTableModel {
 		}else{
 			return false;
 		}
-		
 	}
 }

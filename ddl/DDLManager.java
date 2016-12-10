@@ -76,6 +76,7 @@ public class DDLManager
 	 */
 	public CustomizedResponse createTable(Table table)
 	{	
+		System.out.println(table);
 		CustomizedResponse result = this.executeUpdate(table.toCreate());
 		if (result.hasSuccess()) {
 			result.setMessage("Table " + table.getName() + " créée.");
@@ -115,7 +116,7 @@ public class DDLManager
 			String [] tab = {"TABLE"};
 			this.tables = this.metadata.getTables(
 					null, 
-					this.metadata.getUserName(), //TODO : virer les espaces du nom d'user
+					this.metadata.getUserName(),
 					"%",  //Symbole en SQL et PL/SQL pour dire "aucun ou n'importe quels caractères"
 					tab);
 			ok = true;
@@ -191,6 +192,7 @@ public class DDLManager
 	 */
 	private CustomizedResponse executeUpdate(String sql)
 	{
+		System.out.println(sql);
 		CustomizedResponse result;
 		try{
 			this.statement.executeUpdate(sql);

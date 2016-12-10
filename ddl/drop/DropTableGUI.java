@@ -136,8 +136,8 @@ implements ActionListener
 		if (tableComboBox.getItemCount() != 0) {
 			String selection = (String)this.tableComboBox.getSelectedItem();
 			Table table = new Table(
-					this.cascadeCheckBox.isSelected(), 
-					selection);
+					selection, 
+					this.cascadeCheckBox.isSelected());
 			CustomizedResponse response = this.control.dropTable(table);
 			this.talk(response.toString()); 
 			if (response.hasSuccess()) {
