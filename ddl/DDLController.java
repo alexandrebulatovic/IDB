@@ -71,13 +71,6 @@ public class DDLController
 		this.dropGUI = DropTableGUI.getInstance();
 		this.dropGUI.toFront();
 	}
-	
-	/**
-	 * 
-	 */
-	public void closeStatement(){
-		this.manager.closeStatement();
-	}
 
 
 	public void openModifyGUI() {
