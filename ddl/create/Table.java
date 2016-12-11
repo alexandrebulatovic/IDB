@@ -17,12 +17,16 @@ public class Table {
 	private boolean cascade;
 
 	
+
 	//Constructeurs
 	/**
 	 * Constructeur vide.
 	 * Instancie un ensemble vide.
 	 */
-	protected Table(){this.attributes = new LinkedHashSet<Attribute>();}
+	protected Table(){
+		this.attributes = new LinkedHashSet<Attribute>();
+	}
+	
 	
 	
 	/**
@@ -35,9 +39,9 @@ public class Table {
 	public Table(String name, LinkedHashSet<Attribute> attributes){
 		this();
 		this.name=name;	
-		this.copyAttributes(attributes);		
+		this.copyAttributes(attributes);
 	}
-	
+
 	
 	/**
 	 * Construit une table nommée $name.

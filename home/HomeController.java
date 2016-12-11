@@ -64,4 +64,13 @@ public class HomeController
 		if (this.ddlControl != null) this.ddlControl.closeStatement();
 		ConnectionManager.getInstance().disconnect();
 	}
+
+	/**
+	 * Ouvre l'IHM de modification des tables.
+	 */
+	public void openModifyGUI() {
+		this.ddlControl = DDLController.getInstance();
+		this.ddlControl.openModifyGUI();
+		
+	}
 }
