@@ -110,7 +110,7 @@ public class DDLManager
 	public CustomizedResponseWithData<String> getTables()
 	{
 		boolean ok;
-		CustomizedResponseWithData<String> result = null; //Compilateur chiale.
+		CustomizedResponseWithData<String> result = null;
 		
 		try{
 			String [] tab = {"TABLE"};
