@@ -53,10 +53,19 @@ implements ActionListener
 			if (o == this.createButton) this.createButtonAction();
 		else 
 			if (o == this.dropButton) this.dropButtonAction();
+		else
+			if (o == this.alterButton)
+				this.alterButtonAction();
+				
 	}
 
     
-    @Override
+    private void alterButtonAction() {
+		this.control.openModifyGUI();
+	}
+
+
+	@Override
     public void windowClosing (WindowEvent e)
     {
     	this.control.disconnect();
@@ -120,17 +129,23 @@ implements ActionListener
 	/**
 	 * Gère les actions sur l'appui du bouton 'SQL'
 	 */
-	private void sqlButtonAction(){this.control.openSqlGUI();}
+	private void sqlButtonAction(){
+		this.control.openSqlGUI();
+	}
 
 
 	/**
 	 * Gère les actions sur l'appui du bouton 'Créer des tables'.
 	 */
-	private void createButtonAction(){this.control.openCreateGUI();}
+	private void createButtonAction(){
+		this.control.openCreateGUI();
+	}
 	
 	
 	/**
 	 * Gère les actions sur l'appui du bouton 'Supprimer des tables'.
 	 */
-	private void dropButtonAction(){this.control.openDropGUI();}
+	private void dropButtonAction(){
+		this.control.openDropGUI();
+	}
 }

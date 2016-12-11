@@ -704,6 +704,19 @@ implements ActionListener, ItemListener
 		this.models[0].removeAll();
 	}
 	
+	/**
+	 * affiche les arguments passés en paramètres
+	 * @param attributes
+	 * @param string
+	 */
+	public void setView(Attribute[] attributes, String tableName) {
+		for (Attribute a : attributes){
+			this.addAttributeToTable(a);
+		}
+		this.setTableName(tableName);
+		
+	}
+	
 	
 	/**
 	 * @param size : un entier int
@@ -940,24 +953,12 @@ implements ActionListener, ItemListener
 			}
 	}
 	
-<<<<<<< HEAD:ddl/create/CreateTableView.java
+
 	
 	@Override
 	public void windowClosing(WindowEvent we){INSTANCE = null;}
 	
-=======
-//	/**
-//	 * Cette méthode va permettre d'ajouter une liste d'attributs
-//	 * @param a
-//	 */
-//	public void setAttributes(Attribute a[]){
-//		this.resetView();
-//		for (Attribute attribute : a){
-//			this.models.
-//		}
-//	}
->>>>>>> modifier_table:create/CreateTableView.java
-	
+
 	/**
 	 * Mettre a jour un attribut.
 	 */
@@ -988,7 +989,6 @@ implements ActionListener, ItemListener
 	private void addAttributeButtonAction()
 	{
 		if(isValidateAttributes()){
-<<<<<<< HEAD:ddl/create/CreateTableView.java
 			if(fkCheck.isSelected()){
 				Attribute a = new Attribute(attributeNameField.getText(),
 						(String)attributeTypeComboBox.getSelectedItem(), 
@@ -1010,11 +1010,7 @@ implements ActionListener, ItemListener
 				}else{
 					this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
 				}
-=======
-			if(fkCheck.isSelected()){//si il s'agit d'une clé étrangère
-				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText());
-				this.addAttributeToTable(a);
->>>>>>> modifier_table:create/CreateTableView.java
+
 
 
 			}else{
@@ -1037,8 +1033,7 @@ implements ActionListener, ItemListener
 			this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
 		}
 	}
-<<<<<<< HEAD:ddl/create/CreateTableView.java
-=======
+
 
 
 	public void setTableName(String tableName) {
@@ -1046,7 +1041,6 @@ implements ActionListener, ItemListener
 		
 	}
 
->>>>>>> modifier_table:create/CreateTableView.java
 }
 
 

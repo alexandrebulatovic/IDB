@@ -15,7 +15,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
-import connect.ConnectionManager;
+import ddl.create.CreateTableView;
+import ddl.drop.DropTableGUI;
+import useful.ConnectionManager;
+
+import ddl.DDLController;
 
 public class ModifyTableView
 extends JFrame 
@@ -26,18 +30,19 @@ implements ActionListener, ItemListener
 	static final int componentHeight=30;
 	static final int componentWidth=170;
 	static final int componentMarge=5;
+	private static final ModifyTableView INSTANCE = null;
 	
     private JButton buttonConfirm;
     private JLabel label1;
 	private JComboBox<String> comboTables;
 	
 	private ConnectionManager cm;
-	private ModifyTableController controller;
+	private DDLController controller;
+
 	
-	ModifyTableView(ModifyTableController controller, ConnectionManager connection){
+	ModifyTableView(){
 		super("modifier table vue");
-		cm = connection;
-		this.controller=controller;
+		this.controller = DDLController.getInstance();
 		setProperties();
 		this.handleCombos();
 		this.handleButtons();
@@ -59,6 +64,7 @@ implements ActionListener, ItemListener
 
 	private void initCombos() {
 		String[] valeurs = null;
+		
 		if (!cm.isConnected()){
 			cm.connect();
 		}
@@ -179,7 +185,15 @@ implements ActionListener, ItemListener
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		DDLController controller = DDLController.getInstance();
 		this.controller.modifier(this.comboTables.getSelectedItem().toString());
 		
+	}
+
+
+
+	public static ModifyTableView getInstance() {
+		if (INSTANCE == null) new ModifyTableView();
+		return INSTANCE;
 	}
 }
