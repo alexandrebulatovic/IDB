@@ -132,10 +132,15 @@ public class DDLController
 		
 	}
 	
-	
 
-
-
+	public CustomizedResponseWithData<String> getPkAttributes(String table)
+	{
+		return this.manager.getPrimaryKey(table);
+	}
+	/**
+	 * Ferme proprement les objets Statements.
+	 */
+	public void closeStatement(){this.manager.closeStatement();}
 
 	
 	
