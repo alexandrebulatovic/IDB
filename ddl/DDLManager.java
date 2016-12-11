@@ -31,6 +31,8 @@ public class DDLManager
 	/** Stocke les tables de la base de données.*/
 	private ResultSet tables;
 	
+	/** Stocke les clés primaires de la base de données.*/
+	private ResultSet pkAttributes;
 	
 	//Constructeur
 	/**
@@ -100,6 +102,26 @@ public class DDLManager
 		return result;
 	}
 	
+	public CustomizedResponseWithData<String> getPrimaryKey(String table){
+		boolean ok;
+		CustomizedResponseWithData<String> result = null;
+
+		try{
+			this.pkAttributes = this.metadata.getPrimaryKeys(
+					null, 
+					this.metadata.getUserName(),
+					table);
+			ok = true;
+		}
+		catch(SQLException e){
+			ok = false;
+			result = new CustomizedResponseWithData<String>
+			(false, e.getMessage(), null);
+		}
+		
+		if (ok) result = this.readPkAttributes();
+		return result;
+	}
 	
 	/**
 	 * Retourne une réponse personnalisée vis à vis d'une tentative 
@@ -180,6 +202,23 @@ public class DDLManager
 		}
 		return new CustomizedResponseWithData<String>
 			(true, "Tables récupérées", result);
+	}
+	
+	private CustomizedResponseWithData<String> readPkAttributes()
+	{
+		ArrayList<String> result = new ArrayList<String>();
+		try{
+			while (this.pkAttributes.next()) {
+				result.add(this.pkAttributes.getString(4));
+			}
+			this.pkAttributes.close();
+		}
+		catch(SQLException e){
+			return new CustomizedResponseWithData<String>
+			(false, e.getMessage(), null);
+		}
+		return new CustomizedResponseWithData<String>
+			(true, "Clés Primaires récupérées", result);
 	}
 	
 

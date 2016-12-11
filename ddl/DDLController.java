@@ -107,7 +107,10 @@ public class DDLController
 		return this.manager.getTables();
 	}
 	
-	
+	public CustomizedResponseWithData<String> getPkAttributes(String table)
+	{
+		return this.manager.getPrimaryKey(table);
+	}
 	/**
 	 * Ferme proprement les objets Statements.
 	 */
