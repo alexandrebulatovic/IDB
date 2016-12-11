@@ -1,16 +1,15 @@
-package launch;
-
-import connect.ConnectionController;
-
-public class Launcher {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		new ConnectionController();
-		
-	}
-
-}
+//package launch;
+//
+//import connect.ConnectionController;
+//
+//public class Launcher {
+//
+//	/**
+//	 * @param args
+//	 */
+//	public static void main(String[] args) {
+//		new ConnectionController();
+//		
+//	}
+//
+//}
