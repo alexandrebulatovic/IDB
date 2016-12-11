@@ -940,10 +940,23 @@ implements ActionListener, ItemListener
 			}
 	}
 	
+<<<<<<< HEAD:ddl/create/CreateTableView.java
 	
 	@Override
 	public void windowClosing(WindowEvent we){INSTANCE = null;}
 	
+=======
+//	/**
+//	 * Cette méthode va permettre d'ajouter une liste d'attributs
+//	 * @param a
+//	 */
+//	public void setAttributes(Attribute a[]){
+//		this.resetView();
+//		for (Attribute attribute : a){
+//			this.models.
+//		}
+//	}
+>>>>>>> modifier_table:create/CreateTableView.java
 	
 	/**
 	 * Mettre a jour un attribut.
@@ -970,11 +983,12 @@ implements ActionListener, ItemListener
 	}
 	
 	/**
-	 * Ajouter un attribut.
+	 * Ajoute un attribut au tableau.
 	 */
 	private void addAttributeButtonAction()
 	{
 		if(isValidateAttributes()){
+<<<<<<< HEAD:ddl/create/CreateTableView.java
 			if(fkCheck.isSelected()){
 				Attribute a = new Attribute(attributeNameField.getText(),
 						(String)attributeTypeComboBox.getSelectedItem(), 
@@ -996,24 +1010,43 @@ implements ActionListener, ItemListener
 				}else{
 					this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
 				}
+=======
+			if(fkCheck.isSelected()){//si il s'agit d'une clé étrangère
+				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),fkTableNameField.getText(),fkAttributeNameField.getText());
+				this.addAttributeToTable(a);
+>>>>>>> modifier_table:create/CreateTableView.java
 
 
 			}else{
 				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A");	
-				if (a.checkAttributes()>=0){
-					int i = this.models[0].addAttribute(a);
-					if( i == 0){
-						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
-					}else{
-						this.talk(succesAttribute +"Attribut ajouté.");
-						this.clearAttribute();
-					}
-				}else{
-					this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
-				}
+				this.addAttributeToTable(a);
 			}
 		}
 	}
+	
+	public void addAttributeToTable(Attribute a){
+		if (a.checkAttributes()>=0){
+			int i = this.models[0].addAttribute(a);
+			if( i == 0){
+				this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
+			}else{
+				this.talk(succesAttribute +"Attribut ajouté.");
+				this.clearAttribute();
+			}
+		}else{
+			this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
+		}
+	}
+<<<<<<< HEAD:ddl/create/CreateTableView.java
+=======
+
+
+	public void setTableName(String tableName) {
+		this.tableNameField.setText(tableName);
+		
+	}
+
+>>>>>>> modifier_table:create/CreateTableView.java
 }
 
 

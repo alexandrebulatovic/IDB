@@ -17,6 +17,7 @@ public class Table {
 	private boolean cascade;
 
 	
+<<<<<<< HEAD:ddl/create/Table.java
 	//Constructeurs
 	/**
 	 * Constructeur vide.
@@ -36,6 +37,17 @@ public class Table {
 		this();
 		this.name=name;	
 		this.copyAttributes(attributes);		
+=======
+	//Constructeur
+	/**
+	 * 
+	 * @param list (liste d'attributs)
+	 * @param name (nom de la table)
+	 */
+	public Table(ArrayList<Attribute> list, String name){
+		this.listAttributes=list;
+		this.tableName=name;		
+>>>>>>> modifier_table:create/Table.java
 	}
 	
 	
