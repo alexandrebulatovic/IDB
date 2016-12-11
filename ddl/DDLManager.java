@@ -68,6 +68,44 @@ public class DDLManager
 	 */
 	public static boolean hasInstance(){return INSTANCE != null;}
 
+	/**
+	 * @return Le nombre de tables existantes dans la base de données
+	 * @throws SQLException
+	 */
+	public int getNbTables() throws SQLException{
+		this.createStatementAndMetaData();
+		ResultSet rs = this.statement.executeQuery("SELECT COUNT(*) FROM user_tables");
+		rs.next();
+		return rs.getInt(1);
+	}
+	
+	/**
+	 *
+	 * @return la liste des tables présentes dans la bdd
+	 */
+	public String[] getTablesString(){
+//		CustomizedResponseWithData<String>
+		String[] valeurs = null;
+		
+		
+		
+		
+		this.createStatementAndMetaData();
+		try {
+			valeurs = new String[this.getNbTables()];
+			ResultSet rs = this.statement.executeQuery("SELECT TABLE_NAME FROM user_tables");
+			int i=0;
+			while (rs.next()){
+				valeurs[i] = rs.getString(1);				
+				i++;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return valeurs;
+
+	}
 
 	/**
 	 * Tente de créer une $table.

@@ -1,3 +1,4 @@
+package ddl.modify;
 //package modify;
 //
 //import java.sql.Statement;

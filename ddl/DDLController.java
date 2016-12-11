@@ -4,7 +4,7 @@ import ddl.create.Attribute;
 import ddl.create.CreateTableView;
 import ddl.create.Table;
 import ddl.drop.DropTableGUI;
-import modify.ModifyTableView;
+import ddl.modify.ModifyTableView;
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
 
@@ -119,9 +119,11 @@ public class DDLController
 	}
 
 
-	public void modifier(String string) {
-		System.out.println("Je vais modifier la table"+string);
-		//TODO
+	public void modifier(String tableName) {
+		System.out.println("Je vais modifier la table"+tableName);
+		CreateTableView create = CreateTableView.getInstance();
+		Attribute att = new Attribute(tableName, tableName, 0, false, false, false, false, tableName, tableName);
+		create.setView(new Attribute[]{att}, tableName);
 		
 	}
 	

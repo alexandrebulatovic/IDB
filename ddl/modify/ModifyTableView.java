@@ -1,4 +1,4 @@
-package modify;
+package ddl.modify;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +20,7 @@ import ddl.drop.DropTableGUI;
 import useful.ConnectionManager;
 
 import ddl.DDLController;
+import ddl.DDLManager;
 
 public class ModifyTableView
 extends JFrame 
@@ -35,13 +36,13 @@ implements ActionListener, ItemListener
     private JButton buttonConfirm;
     private JLabel label1;
 	private JComboBox<String> comboTables;
-	
-	private ConnectionManager cm;
+
 	private DDLController controller;
 
 	
 	ModifyTableView(){
 		super("modifier table vue");
+
 		this.controller = DDLController.getInstance();
 		setProperties();
 		this.handleCombos();
@@ -64,26 +65,8 @@ implements ActionListener, ItemListener
 
 	private void initCombos() {
 		String[] valeurs = null;
-		
-		if (!cm.isConnected()){
-			cm.connect();
-		}
-		Connection co = cm.dbms();
-		try {
-			Statement st = co.createStatement();
-			ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM user_tables");
-			rs.next();
-			valeurs = new String[rs.getInt(1)];
-			rs = st.executeQuery("SELECT TABLE_NAME FROM user_tables");
-			int i=0;
-			while (rs.next()){
-				valeurs[i] = rs.getString(1);				
-				i++;
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		DDLManager manager = DDLManager.getInstance();
+		valeurs = manager.getTablesString();
 		if (valeurs == null){
 			this.comboTables.setEnabled(false);
 			valeurs = new String[]{"pas de tables"};
