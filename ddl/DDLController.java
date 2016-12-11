@@ -1,8 +1,10 @@
 package ddl;
 
+import ddl.create.Attribute;
 import ddl.create.CreateTableView;
 import ddl.create.Table;
 import ddl.drop.DropTableGUI;
+import modify.ModifyTableView;
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
 
@@ -21,6 +23,9 @@ public class DDLController
 	/** Objet pour gérer la communication avec un SGBD 
 	 * dans l'optique d'utiliser le LDD.*/
 	private DDLManager manager;
+	
+	
+	private ModifyTableView modifyGUI;
 	
 	
 	//Contructeur
@@ -67,6 +72,19 @@ public class DDLController
 		this.dropGUI.toFront();
 	}
 	
+	/**
+	 * 
+	 */
+	public void closeStatement(){
+		this.manager.closeStatement();
+	}
+
+
+	public void openModifyGUI() {
+		this.modifyGUI = ModifyTableView.getInstance();
+		
+	}
+	
 	
 	/**
 	 * Envoie $table au DDLManager dans l'optique de la créer.
@@ -106,7 +124,15 @@ public class DDLController
 	{
 		return this.manager.getTables();
 	}
+
+
+	public void modifier(String string) {
+		System.out.println("Je vais modifier la table"+string);
+		//TODO
+		
+	}
 	
+
 	public CustomizedResponseWithData<String> getPkAttributes(String table)
 	{
 		return this.manager.getPrimaryKey(table);
@@ -115,6 +141,7 @@ public class DDLController
 	 * Ferme proprement les objets Statements.
 	 */
 	public void closeStatement(){this.manager.closeStatement();}
+
 	
 	
 	//Privées

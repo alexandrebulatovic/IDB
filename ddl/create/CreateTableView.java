@@ -735,6 +735,19 @@ implements ActionListener, ItemListener
 		this.models[0].removeAll();
 	}
 	
+	/**
+	 * affiche les arguments passés en paramètres
+	 * @param attributes
+	 * @param string
+	 */
+	public void setView(Attribute[] attributes, String tableName) {
+		for (Attribute a : attributes){
+			this.addAttributeToTable(a);
+		}
+		this.setTableName(tableName);
+		
+	}
+	
 	
 	/**
 	 * @param size : un entier int
@@ -980,11 +993,12 @@ implements ActionListener, ItemListener
 			}
 	}
 	
+
 	
 	@Override
 	public void windowClosing(WindowEvent we){INSTANCE = null;}
 	
-	
+
 	/**
 	 * Mettre a jour un attribut.
 	 */
@@ -1010,7 +1024,7 @@ implements ActionListener, ItemListener
 	}
 	
 	/**
-	 * Ajouter un attribut.
+	 * Ajoute un attribut au tableau.
 	 */
 	private void addAttributeButtonAction()
 	{
@@ -1038,22 +1052,35 @@ implements ActionListener, ItemListener
 				}
 
 
+
 			}else{
 				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheck.isSelected(), uniqueCheck.isSelected(),pkCheck.isSelected(),fkCheck.isSelected(),"N/A","N/A");	
-				if (a.checkAttributes()>=0){
-					int i = this.models[0].addAttribute(a);
-					if( i == 0){
-						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
-					}else{
-						this.talk(succesAttribute +"Attribut ajouté.");
-						this.clearAttribute();
-					}
-				}else{
-					this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
-				}
+				this.addAttributeToTable(a);
 			}
 		}
 	}
+	
+	public void addAttributeToTable(Attribute a){
+		if (a.checkAttributes()>=0){
+			int i = this.models[0].addAttribute(a);
+			if( i == 0){
+				this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
+			}else{
+				this.talk(succesAttribute +"Attribut ajouté.");
+				this.clearAttribute();
+			}
+		}else{
+			this.talk(errorAttribute +a.attributeSizeError(a.checkAttributes()));							
+		}
+	}
+
+
+
+	public void setTableName(String tableName) {
+		this.tableNameField.setText(tableName);
+		
+	}
+
 }
 
 
