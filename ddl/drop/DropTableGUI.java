@@ -46,7 +46,7 @@ implements ActionListener
 	 */
 	private DropTableGUI()
 	{
-		super("Suppression de table", null, 400, 150, 30);
+		super("Suppression de table", null, 400, 180, 30);
 		INSTANCE = this;
 		this.control = DDLController.getInstance();
 		this.handleComponents();
