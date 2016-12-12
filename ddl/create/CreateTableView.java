@@ -138,7 +138,7 @@ implements ActionListener, ItemListener
 	 * Etiquette pour le titre Table.
 	 */
 	private JLabel tableLabel;
-
+	
 	/**
 	 * Etiquette pour le titre Attribut.
 	 */
@@ -166,6 +166,9 @@ implements ActionListener, ItemListener
 	 */
 	private JButton resetButton;
 	
+	private JButton upPositionAttribute;
+	
+	private JButton downPositionAttribute;
 	/**
 	 * Bouton 'Ajouter l'attribut'.
 	 */
@@ -194,7 +197,7 @@ implements ActionListener, ItemListener
 	/**
 	 * Nombre de boutons.
 	 */
-	private final int buttonNumber = 5;
+	private final int buttonNumber = 7;
 	
 	
 	// ==========================PANELS========================
@@ -316,6 +319,8 @@ implements ActionListener, ItemListener
 		this.buttons[2] = this.deleteAttributeButton = new JButton("Supprimer attribut") ;
 		this.buttons[3] = this.updateAttributeButton = new JButton("Mofifier attribut") ;
 		this.buttons[4] = this.resetButton = new JButton("Reset") ;
+		this.buttons[5] = this.downPositionAttribute = new JButton("DOWN") ;
+		this.buttons[6] = this.upPositionAttribute = new JButton("UP") ;
 
 	}
 
@@ -329,6 +334,8 @@ implements ActionListener, ItemListener
 		this.deleteAttributeButton.setBounds((int)(1.35*this.margin), (int)(0.80*height), 150, (int)(1.5*this.elementHeight));
 		this.updateAttributeButton.setBounds((int)(1.35*this.margin)+ 160, (int)(0.80*height), 150, (int)(1.5*this.elementHeight));
 		this.resetButton.setBounds(800, (int)(0.80*height), 80, (int)(1.5*this.elementHeight));
+		this.upPositionAttribute.setBounds(575, (int)(0.80*height), 75, (int)(1.5*this.elementHeight));
+		this.downPositionAttribute.setBounds(665, (int)(0.80*height), 75, (int)(1.5*this.elementHeight));
 	}
 
 	/**
@@ -336,8 +343,7 @@ implements ActionListener, ItemListener
 	 */
 	private void initButtons()
 	{
-		this.deleteAttributeButton.setEnabled(false);
-		this.updateAttributeButton.setEnabled(false);
+		this.setEnableButtonUpdateDeleteUpDown(false);
 	}
 	
 	/**
@@ -721,6 +727,7 @@ implements ActionListener, ItemListener
 		this.uniqueCheck.setSelected(false);
 		this.fkCheck.setSelected(false);
 		this.pkCheck.setSelected(false);
+		this.attributeTypeComboBox.setSelectedIndex(0);
 	}
 	
 	/**
@@ -781,7 +788,7 @@ implements ActionListener, ItemListener
 	 */
 	public boolean isCompleteAttribute()
 	{
-		if(this.attributeNameField.getText().equals((String)"") || this.attributeSizeField.getText().equals((String)"")){
+		if(this.attributeNameField.getText().equals((String)"") || this.attributeSizeField.getText().equals((String)"") || (this.fkCheck.isSelected() && (this.fkAttribute.getSize()==0 || this.fkTable.getSize()==0))){
 			return false;
 		}else{
 			return true;
@@ -852,7 +859,7 @@ implements ActionListener, ItemListener
 				return false;
 			}
 		}else{
-			this.talk(errorAttribute + "Les Champs nomAttribut et/ou Taille ne sont pas renseigné(s).");
+			this.talk(errorAttribute + "Tous les champs Attributs doivent être renseignés.");
 			return false;
 		}
 	}
@@ -861,9 +868,11 @@ implements ActionListener, ItemListener
 	 * Modifie l'état des attributs de modifications du tableau
 	 * @param b : un boolean
 	 */
-	public void setEnableButtonUpdateDelete(boolean b){
+	public void setEnableButtonUpdateDeleteUpDown(boolean b){
 		this.deleteAttributeButton.setEnabled(b);
 		this.updateAttributeButton.setEnabled(b);
+		this.upPositionAttribute.setEnabled(b);
+		this.downPositionAttribute.setEnabled(b);
 	}
 	
 	public void setEnabledSizeField(boolean b){
@@ -960,6 +969,12 @@ implements ActionListener, ItemListener
 		if (e.getSource() == this.resetButton) {
 			this.resetView();
 		}
+		if (e.getSource() == this.upPositionAttribute) {
+			this.positionAttributButtonAction("UP");
+		}
+		if (e.getSource() == this.downPositionAttribute) {
+			this.positionAttributButtonAction("DOWN");
+		}
 	}
 	
 	public void itemStateChanged(ItemEvent item)
@@ -1000,7 +1015,20 @@ implements ActionListener, ItemListener
 	@Override
 	public void windowClosing(WindowEvent we){INSTANCE = null;}
 	
-
+	
+	public void positionAttributButtonAction(String direction){
+		if(this.tables[0].getSelectedRow()!=-1){
+				int rowIndex = this.tables[0].getSelectedRow();
+				if(direction.equals("UP") && rowIndex!=0){
+				this.models[0].changeAttributePosition(direction, rowIndex);
+				this.tables[0].setRowSelectionInterval(rowIndex-1, rowIndex-1);
+				}
+				if(direction.equals("DOWN") && rowIndex!=this.tables[0].getRowCount()-1){
+					this.models[0].changeAttributePosition(direction, rowIndex);
+					this.tables[0].setRowSelectionInterval(rowIndex+1, rowIndex+1);
+				}
+	}
+	}
 	/**
 	 * Mettre a jour un attribut.
 	 */
@@ -1012,7 +1040,7 @@ implements ActionListener, ItemListener
 		this.setValues(a.name, a.type, Integer.toString(a.size), a.notNull, a.unique, a.primaryKey, a.foreignKey, a.fkTable,a.fkAttribute);
 		this.tables[0].getSelectedRow();
 		this.models[0].removeAttributes(this.tables[0].getSelectedRow());
-		this.setEnableButtonUpdateDelete(false);
+		this.setEnableButtonUpdateDeleteUpDown(false);
 	}
 		
 	/**
@@ -1022,7 +1050,7 @@ implements ActionListener, ItemListener
 	{
 		this.models[0].removeAttributes(this.tables[0].getSelectedRow());
 		this.talk(succesAttribute+"Attribut supprimé");
-		this.setEnableButtonUpdateDelete(false);
+		this.setEnableButtonUpdateDeleteUpDown(false);
 	}
 	
 	/**

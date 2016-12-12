@@ -15,7 +15,7 @@ public ControlTableResult(CreateTableView c){
 public void valueChanged(ListSelectionEvent listSelectionEvent){
     ListSelectionModel lsm = (ListSelectionModel)listSelectionEvent.getSource();
     if (!(lsm.isSelectionEmpty())) {
-    	createFrame.setEnableButtonUpdateDelete(true);
+    	createFrame.setEnableButtonUpdateDeleteUpDown(true);
     }
 
 }

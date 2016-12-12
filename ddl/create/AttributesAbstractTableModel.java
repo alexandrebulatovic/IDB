@@ -81,9 +81,25 @@ extends AbstractTableModel {
 			return null; 
 		}
 	}
+	
+	public void setAttributeValueAt(int rowIndex, String name, String type, int size, boolean notNull, 
+			boolean unique, boolean pk, boolean fk, 
+			String fkTable, String fkAttribute){
+		Attribute select = this.getAttributeAt(rowIndex);
+		select.name=name;
+		select.type=type;
+		select.size=size;
+		select.notNull=notNull;
+		select.unique=unique;
+		select.primaryKey=pk;
+		select.foreignKey=fk;
+		select.fkTable=fkTable;
+		select.fkAttribute=fkAttribute;
+		
+	}
 	/**
 	 * @param a
-	 * @return boolean
+	 * @return booleans
 	 */
 	public boolean isDuplicateAttributeName(Attribute a){
 		boolean res = false;
@@ -109,7 +125,6 @@ extends AbstractTableModel {
 			return 0;
 		}
 	}
-	
 	/**
 	 * Supprime tout les attribut de la Table et de l'ArrayList
 	 */
@@ -119,6 +134,27 @@ extends AbstractTableModel {
          }
 	}
 	
+	public void changeAttributePosition(String direction, int rowIndex){
+		Attribute select;
+		Attribute overSelect;
+		switch (direction){
+		case "UP" : 
+			select = new Attribute(this.getAttributeAt(rowIndex));
+			overSelect =  new Attribute(this.getAttributeAt(rowIndex-1));
+			this.setAttributeValueAt(rowIndex-1, select.name, select.type, select.size, select.notNull, select.unique, select.primaryKey, select.foreignKey, select.fkTable, select.fkAttribute);
+			this.setAttributeValueAt(rowIndex, overSelect.name, overSelect.type, overSelect.size, overSelect.notNull, overSelect.unique, overSelect.primaryKey, overSelect.foreignKey, overSelect.fkTable, overSelect.fkAttribute);
+			this.fireTableDataChanged();
+			break;
+			
+		case "DOWN" :
+			select = new Attribute(this.getAttributeAt(rowIndex));
+			overSelect= new Attribute(this.getAttributeAt(rowIndex+1));
+			this.setAttributeValueAt(rowIndex+1, select.name, select.type, select.size, select.notNull, select.unique, select.primaryKey, select.foreignKey, select.fkTable, select.fkAttribute);
+			this.setAttributeValueAt(rowIndex, overSelect.name, overSelect.type, overSelect.size, overSelect.notNull, overSelect.unique, overSelect.primaryKey, overSelect.foreignKey, overSelect.fkTable, overSelect.fkAttribute);
+			this.fireTableDataChanged();
+			break;
+		}
+	}
 
 	/**
 	 * Supprime un attribut dans la Table et dans l'ArrayList
