@@ -877,7 +877,9 @@ implements ActionListener, ItemListener
 	}
 	public void setFkAttributeName(String table){
 		this.fkAttribute.removeAllElements();
-		CustomizedResponseWithData<String> result = control.getPkAttributes(table);
+		CustomizedResponseWithData<String> result = control.getPrimaryKey(table);
+		//TODO : Il faut controler qu'il n'y ait pas eu d'erreur ! 
+		//TODO : le for each boucle sur un null si erreur !
 		for (String s : result.getCollection()) {
 			this.fkAttribute.addElement(s);
 		}

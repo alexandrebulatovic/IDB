@@ -18,15 +18,15 @@ extends CustomizedResponse
 	 * @param msg : message associé à la tentative.
 	 * @param data : liste des données à retourner.
 	 */
-	public CustomizedResponseWithData(
-			boolean response, String msg, ArrayList<T> data)
+	public CustomizedResponseWithData(boolean response, String msg, ArrayList<T> data)
 	{
 		super(response, msg);
 		this.data = data; //TODO : virer ce pointeur par un ajout element par élément
 	}
 	
+	
 	/**
-	 * Constructeur pour ajout au fur et à mesure.
+	 * Constructeur pour ajouter les données au fur et à mesure.
 	 * 
 	 * @param response
 	 * @param msg
@@ -39,7 +39,8 @@ extends CustomizedResponse
 	
 	
 	/**
-	 * Recopie $copy, 
+	 * Constructeur pour initialiser l'objet avec les valeurs 
+	 * d'un CustomizeResponse, et y ajouter les données d'un coup.
 	 * 
 	 * @param copy : un objet CustomizedResponse à recopier.
 	 * @param data : liste des données à retourner.

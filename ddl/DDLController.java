@@ -119,6 +119,19 @@ public class DDLController
 	}
 
 
+	/**
+	 * Retourne une réponse personnalisée qui contient les membres
+	 * de la clée primaire de $table.
+	 * 
+	 * @param table : nom de la table, ne doit pas être null.
+	 * @return CustomizedResponseWithData
+	 */
+	public CustomizedResponseWithData<String> getPrimaryKey(String table)
+	{
+		return this.manager.getPrimaryKey(table);
+	}
+
+
 	public void modifier(String tableName) {
 		System.out.println("Je vais modifier la table"+tableName);
 		CreateTableView create = CreateTableView.getInstance();
@@ -128,10 +141,6 @@ public class DDLController
 	}
 	
 
-	public CustomizedResponseWithData<String> getPkAttributes(String table)
-	{
-		return this.manager.getPrimaryKey(table);
-	}
 	/**
 	 * Ferme proprement les objets Statements.
 	 */

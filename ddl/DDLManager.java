@@ -28,11 +28,9 @@ public class DDLManager
 	/** Pour obtenir le nom des tables.*/
 	private DatabaseMetaData metadata;
 	
-	/** Stocke les tables de la base de données.*/
-	private ResultSet tables;
+	/** Stocke les résultats d'une requête sur les meta-données.*/
+	private ResultSet metaDataResult;
 	
-	/** Stocke les clés primaires de la base de données.*/
-	private ResultSet pkAttributes;
 	
 	//Constructeur
 	/**
@@ -107,6 +105,7 @@ public class DDLManager
 
 	}
 
+	
 	/**
 	 * Tente de créer une $table.
 	 * Retourne une réponse personnalisée qui décrit la tentative.
@@ -124,6 +123,7 @@ public class DDLManager
 		return result;
 	}
 	
+	
 	/**
 	 * Tente de supprimer $table.
 	 * Retourne une réponse personnalisée qui décrit la tentative.
@@ -140,60 +140,45 @@ public class DDLManager
 		return result;
 	}
 	
-	public CustomizedResponseWithData<String> getPrimaryKey(String table){
-		boolean ok;
-		CustomizedResponseWithData<String> result = null;
-
-		try{
-			this.pkAttributes = this.metadata.getPrimaryKeys(
-					null, 
-					this.metadata.getUserName(),
-					table);
-			ok = true;
-		}
-		catch(SQLException e){
-			ok = false;
-			result = new CustomizedResponseWithData<String>
-			(false, e.getMessage(), null);
-		}
-		
-		if (ok) result = this.readPkAttributes();
-		return result;
-	}
 	
 	/**
-	 * Retourne une réponse personnalisée vis à vis d'une tentative 
-	 * pour récupérer toutes les tables de données.
+	 * Retourne une réponse personnalisée qui contient les noms des différentes
+	 * tables de données disponibles pour l'utilisateur si et seulement si aucune
+	 * erreur ne survient lors de l'interrogation de la base.
+	 * Retourne une réponse personnalisée qui ne contient aucun nom de table 
+	 * en cas d'erreur. La réponse décrit l'erreur rencontrée. 
+	 * 
+	 * @param table : nom de la table où chercher les clées primaires, ne doit pas être null.
+	 * @return CustomizedResponseWithData
+	 */
+	public CustomizedResponseWithData<String> getPrimaryKey(String table)
+	{
+		CustomizedResponse cr = this.getMetaData("PRIMARY KEYS", table);
+		if (cr == null) return this.readMetaData("Clées primaires récupérées", 4);
+		else 			return new CustomizedResponseWithData<String>(cr, null);
+	}
+	
+
+	
+	/**
+	 * Retourne une réponse personnalisée qui contient les noms des différentes
+	 * tables de données disponibles pour l'utilisateur si et seulement si aucune
+	 * erreur ne survient lors de l'interrogation de la base.
+	 * Retourne une réponse personnalisée qui ne contient aucun nom de table 
+	 * en cas d'erreur. La réponse décrit l'erreur rencontrée. 
 	 * 
 	 * @return CustomizedResponseWithData
 	 */
 	public CustomizedResponseWithData<String> getTables()
 	{
-		boolean ok;
-		CustomizedResponseWithData<String> result = null;
-		
-		try{
-			String [] tab = {"TABLE"};
-			this.tables = this.metadata.getTables(
-					null, 
-					this.metadata.getUserName(),
-					"%",  //Symbole en SQL et PL/SQL pour dire "aucun ou n'importe quels caractères"
-					tab);
-			ok = true;
-		}
-		catch(SQLException e){
-			ok = false;
-			result = new CustomizedResponseWithData<String>
-			(false, e.getMessage(), null);
-		}
-		
-		if (ok) result = this.readTables();
-		return result;
+		CustomizedResponse cr = this.getMetaData("TABLES", null);
+		if (cr == null) return this.readMetaData("Clées primaires récupérées", 3);
+		else 			return new CustomizedResponseWithData<String>(cr, null);
 	}
 	
 	
 	/**
-	 * Ferme proprement les statements.
+	 * Ferme proprement les objets statements.
 	 */
 	public void closeStatement()
 	{
@@ -209,7 +194,6 @@ public class DDLManager
 	 */
 	private void createStatementAndMetaData() 
 	{
-		//TODO : voir si on peut empécher la catastrophe ferroviaire
 		try{
 			this.statement = this.connector.dbms().createStatement();
 			this.metadata = this.connector.dbms().getMetaData();
@@ -218,51 +202,8 @@ public class DDLManager
 		
 	
 	/**
-	 * Retourne une réponse personnalisée qui décrit une tentative
-	 * pour lire un objet ResulSet contenant le nom des tables de la base.
-	 * La réponse contient le nom des tables si et seulement si elles ont toutes
-	 * été lues, sinon ne les contient pas.
-	 * 
-	 * @return CustomizedResponseWithData
-	 */
-	private CustomizedResponseWithData<String> readTables()
-	{
-		ArrayList<String> result = new ArrayList<String>();
-		try{
-			while (this.tables.next()) {
-				result.add(this.tables.getString(3));
-			}
-			this.tables.close();
-		}
-		catch(SQLException e){
-			return new CustomizedResponseWithData<String>
-			(false, e.getMessage(), null);
-		}
-		return new CustomizedResponseWithData<String>
-			(true, "Tables récupérées", result);
-	}
-	
-	private CustomizedResponseWithData<String> readPkAttributes()
-	{
-		ArrayList<String> result = new ArrayList<String>();
-		try{
-			while (this.pkAttributes.next()) {
-				result.add(this.pkAttributes.getString(4));
-			}
-			this.pkAttributes.close();
-		}
-		catch(SQLException e){
-			return new CustomizedResponseWithData<String>
-			(false, e.getMessage(), null);
-		}
-		return new CustomizedResponseWithData<String>
-			(true, "Clés Primaires récupérées", result);
-	}
-	
-
-	/**
-	 * Retourne une réponse personnalisée après l'envoi
-	 * d'une requête sans qui ne retourne rien.
+	 * Retourne une réponse personnalisée qui décrit les effets 
+	 * d'une requête SQL qui ne retourne rien.
 	 * 
 	 * @param sql : une requête SQL qui ne retourne rien.
 	 * @return CustomizedResponse
@@ -279,5 +220,84 @@ public class DDLManager
 			result = new CustomizedResponse(false, e.getMessage());
 		}
 		return result;
+	}
+
+
+	/**
+	 * Retourne null si et seulement si une requête concernant les méta-données
+	 * a été exécutée avec succès et remplit l'attribut de $this avec le résultat de cette requête.
+	 * Retourne une réponse personnnalisée qui détaille pourquoi la requête a échouée
+	 * dans les autres cas.
+	 * 
+	 * @param wanted : méta-donnée voule, parmi "TABLES", "PRIMARY KEYS".
+	 * @param tableName : nom de la table où chercher les méta-données, 
+	 * null ssi $wanted == "TABLES".
+	 * @return CustomizedResponseWithData
+	 */
+	private CustomizedResponse getMetaData(String wanted, String tableName)
+	{
+		CustomizedResponse result;
+		try{
+			this.retrieveMetaData(wanted, tableName);
+			result = null;
+		}
+		catch(SQLException e){
+			result = new CustomizedResponse(false, e.getMessage());
+		}
+		return result;
+	}
+
+
+	/**
+	 * Interroge le SGBD à propos de ses méta-données $wanted.
+	 * Stocke le resultat de la requête dans un attribut de $this.
+	 * Lève une exception en cas d'erreur lors de l'interrogation.
+	 * 
+	 * @param wanted : parmi "TABLES", "PRIMARY KEYS".	 
+	 * @param tableName : nom de la table où chercher les clées primaires. 
+	 * null ssi $wanted == "TABLES".
+	 * @throws SQLException
+	 */
+	private void retrieveMetaData(String wanted, String tableName) throws SQLException
+	{
+		switch (wanted){
+		case "TABLES" : 
+			String [] tab = {"TABLE"};
+			this.metaDataResult = 
+					this.metadata.getTables(null, this.metadata.getUserName(), "%", tab);
+			break;
+			
+		case "PRIMARY KEYS" :
+			this.metaDataResult = 
+				this.metadata.getPrimaryKeys(null, this.metadata.getUserName(), tableName);
+			break;
+		}
+	}
+
+
+	/**
+	 * Retourne une réponse personnalisée qui décrit une tentative
+	 * pour lire un objet ResulSet contenant les dernières méta-données recherchées.
+	 * La réponse contient une collection de données si la lecture ne lève aucune Exception,
+	 * sinon la collection est null.
+	 * 
+	 * @param succesMessage : Message à afficher si réussite, ne doit pas être null.
+	 * @param column : numero de la colonne où chercher les méta-données.
+	 * @return CustomizedResponseWithData
+	 */
+	private CustomizedResponseWithData<String> readMetaData(String succesMessage, int column)
+	{
+		ArrayList<String> data = new ArrayList<String>();
+		try{
+			while (this.metaDataResult.next()) {
+				data.add(this.metaDataResult.getString(column));
+			}
+			this.metaDataResult.close();
+			return new CustomizedResponseWithData<String> (true, succesMessage, data);
+		}
+		catch(SQLException e){
+			return new CustomizedResponseWithData<String> (false, e.getMessage(), null);
+		}
+		
 	}
 }
