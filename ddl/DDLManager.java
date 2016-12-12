@@ -216,7 +216,7 @@ public class DDLManager
 	public CustomizedResponseWithData<String> getTables()
 	{
 		CustomizedResponse cr = this.getMetaData("TABLES", null);
-		if (cr == null) return this.readMetaData("Clées primaires récupérées", 3);
+		if (cr == null) return this.readMetaData("Tables récupérées", 3);
 		else 			return new CustomizedResponseWithData<String>(cr, null);
 	}
 	
