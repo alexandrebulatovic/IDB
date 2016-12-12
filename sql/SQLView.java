@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import ddl.DDLController;
+import ddl.create.CreateTableView;
 
 
 @SuppressWarnings("serial")
@@ -17,6 +18,10 @@ implements ActionListener
 {
 	//Attributs
 
+	/** Instance en cours. */
+	private static SQLView INSTANCE;
+	
+	
 	/**
 	 * Controleur lié à l'IHM.
 	 */
@@ -36,10 +41,10 @@ implements ActionListener
 	/**
 	 * Constructeur commun.
 	 */
-	public SQLView(SQLController c)
+	public SQLView()
 	{
 		super("Menu SQL", null, 400, 350, 20);
-		this.control = c;
+		this.control = SQLController.getInstance();
 		this.handleArea();
 		this.handleButtons();
 		this.setProperties(DISPOSE_ON_CLOSE);
@@ -53,6 +58,18 @@ implements ActionListener
 		if (event.getSource() == this.okButton) {
 			this.okButtonAction();
 		}
+	}
+	
+	/**
+	 * Retourne l'IHM active si et seulement si elle existe déjà.
+	 * Retourne une nouvelle IHM sinon.
+	 * 
+	 * @return CreateTableView
+	 */
+	public static SQLView getInstance()
+	{
+		if (INSTANCE == null) new SQLView();
+		return INSTANCE;
 	}
 
 
