@@ -58,9 +58,10 @@ public class Attribute {
 	 * @param notNull
 	 * @param unique
 	 * @param pk
-	 * @param fk
-	 * @param fkTable
-	 * @param fkAttribute
+	 * @param boolean fk Vrai si et seulement si $this (actuellement) une clef étrangère,
+	 * faux sinon.
+	 * @param fkTable  Nom de la table de référence lorsque $this est une clef étrangère.
+	 * @param fkAttribute Nom de l'attribut de référence lorsque $this est une clef étrangère.
 	 */
 	public Attribute(String name, String type, int size, 
 			boolean notNull, boolean unique, boolean pk, boolean fk, 

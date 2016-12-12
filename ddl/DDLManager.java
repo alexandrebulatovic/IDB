@@ -1,16 +1,20 @@
 package ddl;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import ddl.create.Table;
 
 import useful.ConnectionManager;
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
+import ddl.create.Attribute;
 
 public class DDLManager 
 {
@@ -86,8 +90,7 @@ public class DDLManager
 		String[] valeurs = null;
 		
 		
-		
-		
+
 		this.createStatementAndMetaData();
 		try {
 			valeurs = new String[this.getNbTables()];
@@ -97,12 +100,53 @@ public class DDLManager
 				valeurs[i] = rs.getString(1);				
 				i++;
 			}
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return valeurs;
 
+	}
+	
+	
+	public List<Attribute> getAttributes(String table) throws SQLException{
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		
+		
+		this.createStatementAndMetaData();
+		ResultSet rs = this.statement.executeQuery("SELECT a.* FROM "+table+" a");
+		
+		ConnectionManager manager = ConnectionManager.getInstance();
+		Connection co = manager.dbms();
+		DatabaseMetaData meta = co.getMetaData();//nous aurons des informations générales sur la bdd
+		ResultSet rsKeys = meta.getPrimaryKeys(null, null, table);
+		
+		ResultSet rsFk = meta.getExportedKeys(null,null,table);
+		//rsFk.getR(1);
+		
+		ResultSetMetaData rsmd = rs.getMetaData();
+//		rs.getFetchSize();
+		int nbColumns = rsmd.getColumnCount();
+		for (int i=1 ; i<=nbColumns ; i++){
+			System.out.println(rsmd.getColumnName(1));
+			rsKeys.next();
+			rsFk.next();
+			String name = rsmd.getColumnName(i);
+			String type = rsmd.getColumnTypeName(i);
+			int size = rsmd.getPrecision(i);
+			
+			boolean nullable = (rsmd.isNullable(i)==ResultSetMetaData.columnNullable);
+			boolean unique = false; //TODO trouver un moyen de détecté si la colonne est unique
+			boolean pk =rsKeys.getBoolean(i);//faux
+			
+			//String fkTable = rsFk.getString("FKTABLE_NAME");
+			
+			//boolean fk
+			
+			attributes.add(new Attribute(name, type, size, nullable, unique, pk, false, null, null));
+		}
+		return attributes;
 	}
 
 	
