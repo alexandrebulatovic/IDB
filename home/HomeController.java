@@ -39,10 +39,14 @@ public class HomeController
 		this.ddlControl.openCreateGUI();
 	}
 	
-
+	/**
+	 * Ouvre l'IHM pour rentrer des requetes SQL.
+	 */
 	public void openSqlGUI()
 	{
-
+		this.sqlControl = SQLController.getInstance();
+		this.sqlControl.openSQL();
+		
 	}
 	
 	
