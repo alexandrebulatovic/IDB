@@ -1,30 +1,15 @@
 package ddl.modify;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.awt.event.*;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
-import ddl.create.CreateTableView;
-import ddl.drop.DropTableGUI;
-import useful.ConnectionManager;
 import ddl.DDLController;
 import ddl.DDLManager;
+import interf.ListeningGUI;
 
 public class ModifyTableChoiceView
-extends JFrame 
+extends ListeningGUI
 implements ActionListener, ItemListener
 {
 	private final int width=280;
@@ -43,13 +28,15 @@ implements ActionListener, ItemListener
 	
 	ModifyTableChoiceView(){
 		super("modifier table vue");
-		this.INSTANCE = this;	
-		this.elementWidth=width-(2*marge);
+		INSTANCE = this;	
+		
 
 		this.controller = DDLController.getInstance();
+		
+		this.elementWidth=width-(2*marge);
 
 		
-		setProperties();
+		
 		
 		
 		this.handleCombos();
@@ -58,8 +45,12 @@ implements ActionListener, ItemListener
 		
 		JLabel lab = new JLabel("rien");
 		lab.setEnabled(false);
-		lab.setVisible(false);		
+		lab.setVisible(false);
 		this.add(lab);
+		
+		setProperties();
+		this.addWindowListener(this);
+		
 				
 	}
 
@@ -175,6 +166,10 @@ implements ActionListener, ItemListener
 		this.setVisible(true);    
 		this.setResizable(false);
 	}
+	
+	
+	@Override
+	public void windowClosing(WindowEvent we){INSTANCE = null;}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {}
@@ -189,7 +184,7 @@ implements ActionListener, ItemListener
 
 
 	public static ModifyTableChoiceView getInstance() {
-		if (INSTANCE == null) ModifyTableChoiceView.INSTANCE = new ModifyTableChoiceView();
+		if (INSTANCE == null) new ModifyTableChoiceView();
 		return INSTANCE;
 	}
 

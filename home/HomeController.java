@@ -40,6 +40,15 @@ public class HomeController
 	}
 	
 	/**
+	 * Ouvre l'IHM de modification des tables.
+	 */
+	public void openModifyGUI() {
+		this.ddlControl = DDLController.getInstance();
+		this.ddlControl.openModifyGUI();
+		
+	}
+	
+	/**
 	 * Ouvre l'IHM pour rentrer des requetes SQL.
 	 */
 	public void openSqlGUI()
@@ -69,12 +78,5 @@ public class HomeController
 		ConnectionManager.getInstance().disconnect();
 	}
 
-	/**
-	 * Ouvre l'IHM de modification des tables.
-	 */
-	public void openModifyGUI() {
-		this.ddlControl = DDLController.getInstance();
-		this.ddlControl.openModifyGUI();
-		
-	}
+
 }

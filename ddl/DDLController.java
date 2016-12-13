@@ -1,5 +1,9 @@
 package ddl;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import ddl.create.Attribute;
 import ddl.create.CreateTableView;
 import ddl.create.Table;
@@ -36,6 +40,7 @@ public class DDLController
 	{
 		INSTANCE = this;
 		this.manager = DDLManager.getInstance();
+		
 	}
 	
 	
@@ -47,6 +52,7 @@ public class DDLController
 	 */
 	public static DDLController getInstance()
 	{
+		
 		if (INSTANCE == null) new DDLController();
 		return INSTANCE;
 	}
@@ -61,6 +67,12 @@ public class DDLController
 		this.createGUI.toFront();
 	}
 	
+	public void openModifyGUI() {
+		
+		this.modifyGUI = ModifyTableChoiceView.getInstance();
+		this.modifyGUI.toFront();
+	}
+	
 	
 	/**
 	 * Ouvre l'IHM de création des tables si et seulement si 
@@ -73,10 +85,7 @@ public class DDLController
 	}
 
 
-	public void openModifyGUI() {
-		this.modifyGUI = ModifyTableChoiceView.getInstance();
-		
-	}
+
 	
 	
 	/**
@@ -133,10 +142,23 @@ public class DDLController
 
 
 	public void modifier(String tableName) {
-		System.out.println("Je vais modifier la table"+tableName);
+		System.out.println("Je vais modifier la table "+tableName);
 		CreateTableView create = CreateTableView.getInstance();
+		
+		
+		List<Attribute> attributes = null;
+		try {
+			attributes = this.manager.getAttributes(tableName);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if (attributes==null){
+			//TODO
+		}
+		
+		
 		Attribute att = new Attribute(tableName, tableName, 0, false, false, false, false, tableName, tableName);
-		create.setView(new Attribute[]{att}, tableName);
+		create.setView(attributes, tableName);
 		
 	}
 	

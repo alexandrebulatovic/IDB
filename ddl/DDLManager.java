@@ -102,13 +102,41 @@ public class DDLManager
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return valeurs;
 
 	}
 	
+	private List<String> getPrimaryKeys(String table){
+		ConnectionManager manager = ConnectionManager.getInstance();
+		Connection co = manager.dbms();
+		DatabaseMetaData meta;
+		List<String>pks = null;
+		try {
+			meta = co.getMetaData();
+			ResultSet rsKeys = meta.getPrimaryKeys(null, null, table);
+			
+			pks = new ArrayList<String>();
+			while (rsKeys.next()){
+				pks.add(rsKeys.getString(4));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}//nous aurons des informations générales sur la bdd
+		return pks;
+	}
+	
+	private boolean isPk(String table, String attributeName){
+		List<String>pks = this.getPrimaryKeys(table);
+		for (String pkString : pks){
+			if (attributeName.equals(pkString)){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public List<Attribute> getAttributes(String table) throws SQLException{
 		List<Attribute> attributes = new ArrayList<Attribute>();
@@ -119,33 +147,54 @@ public class DDLManager
 		
 		ConnectionManager manager = ConnectionManager.getInstance();
 		Connection co = manager.dbms();
-		DatabaseMetaData meta = co.getMetaData();//nous aurons des informations générales sur la bdd
-		ResultSet rsKeys = meta.getPrimaryKeys(null, null, table);
+		DatabaseMetaData meta = co.getMetaData();
+		
+		
 		
 		ResultSet rsFk = meta.getExportedKeys(null,null,table);
-		//rsFk.getR(1);
-		
-		ResultSetMetaData rsmd = rs.getMetaData();
-//		rs.getFetchSize();
-		int nbColumns = rsmd.getColumnCount();
-		for (int i=1 ; i<=nbColumns ; i++){
-			System.out.println(rsmd.getColumnName(1));
-			rsKeys.next();
-			rsFk.next();
-			String name = rsmd.getColumnName(i);
-			String type = rsmd.getColumnTypeName(i);
-			int size = rsmd.getPrecision(i);
+
+		while (rsFk.next()){
+			System.out.println(rsFk.getString(1));//null
+			System.out.println(rsFk.getString(2));//user
+			System.out.println(rsFk.getString(3));//table
+			System.out.println(rsFk.getString(4));//pk REFERENCE
+			System.out.println(rsFk.getString(5));//null
+			System.out.println(rsFk.getString(6));//user
+			System.out.println(rsFk.getString(8));//FK
+			System.out.println(rsFk.getString(9));//1 ??
+			System.out.println(rsFk.getString(10));//null
+			System.out.println(rsFk.getString(12));//nom fk
 			
-			boolean nullable = (rsmd.isNullable(i)==ResultSetMetaData.columnNullable);
-			boolean unique = false; //TODO trouver un moyen de détecté si la colonne est unique
-			boolean pk =rsKeys.getBoolean(i);//faux
+			System.out.println("\n\n");
 			
-			//String fkTable = rsFk.getString("FKTABLE_NAME");
-			
-			//boolean fk
-			
-			attributes.add(new Attribute(name, type, size, nullable, unique, pk, false, null, null));
 		}
+		
+		
+		
+//		ResultSetMetaData rsmd = rs.getMetaData();
+////		rs.getFetchSize();
+//		int nbColumns = rsmd.getColumnCount();
+//		for (int i=1 ; i<=nbColumns ; i++){
+//			
+//			
+//			rsFk.next();
+//			String nameAttribute = rsmd.getColumnName(i);
+//			System.out.println(nameAttribute);
+//			
+//			String type = rsmd.getColumnTypeName(i);
+//			int size = rsmd.getPrecision(i);
+//			
+//			boolean nullable = (rsmd.isNullable(i)==ResultSetMetaData.columnNullable);
+//			boolean unique = false; //TODO trouver un moyen de détecter si la colonne est unique
+//			boolean pk = this.isPk(table, nameAttribute);
+//			
+//			
+//			//String fkTable = rsFk.getString("FKTABLE_NAME");
+//			
+//			//boolean fk
+//			
+//			attributes.add(new Attribute(nameAttribute, type, size, nullable, unique, pk, false, null, null));
+//		}
 		return attributes;
 	}
 

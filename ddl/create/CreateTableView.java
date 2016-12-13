@@ -4,6 +4,7 @@ import interf.ListeningGUI;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
+import java.util.List;
 import java.awt.Font;
 
 import javax.swing.*;
@@ -740,7 +741,7 @@ implements ActionListener, ItemListener
 	 * @param attributes
 	 * @param string
 	 */
-	public void setView(Attribute[] attributes, String tableName) {
+	public void setView(List<Attribute> attributes, String tableName) {
 		for (Attribute a : attributes){
 			this.addAttributeToTable(a);
 		}
