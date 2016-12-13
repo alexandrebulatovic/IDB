@@ -4,7 +4,8 @@ import java.sql.*;
 
 import javax.swing.JOptionPane;
 
-import useful.ConnectionManager;
+import manager.ConnectionManager;
+
 
 import connect.*;
 

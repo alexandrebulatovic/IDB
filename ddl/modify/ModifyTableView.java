@@ -15,12 +15,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
-import ddl.create.CreateTableView;
+import manager.ConnectionManager;
+import manager.DDLManager;
+
+import ddl.create.CreateTableGUI;
 import ddl.drop.DropTableGUI;
-import useful.ConnectionManager;
 
 import ddl.DDLController;
-import ddl.DDLManager;
 
 public class ModifyTableView
 extends JFrame 
@@ -149,7 +150,7 @@ implements ActionListener, ItemListener
 
 
 	private void createLabels() {
-		this.label1 = new JLabel("Choisissez une table à modifier :");
+		this.label1 = new JLabel("Choisissez une table ï¿½ modifier :");
 		
 	}
 

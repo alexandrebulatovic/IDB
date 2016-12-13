@@ -12,10 +12,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import useful.ConnectionManager;
+import manager.ConnectionManager;
+import manager.DDLManager;
+
 import ddl.DDLController;
-import ddl.DDLManager;
-import ddl.create.CreateTableView;
+import ddl.create.CreateTableGUI;
 
 public class SQLController {
 

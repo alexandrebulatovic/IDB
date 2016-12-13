@@ -6,8 +6,8 @@ import javax.swing.event.ListSelectionListener;
 
 
 public class ControlTableResult  implements ListSelectionListener{
-	CreateTableView createFrame;
-public ControlTableResult(CreateTableView c){
+	CreateTableGUI createFrame;
+public ControlTableResult(CreateTableGUI c){
 	this.createFrame=c;
 	
 }

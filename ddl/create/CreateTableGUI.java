@@ -10,15 +10,22 @@ import javax.swing.*;
 
 import useful.CustomizedResponseWithData;
 import useful.MaxLengthTextDocument;
+import ddl.Attribute;
 import ddl.DDLController;
+import ddl.Table;
 
 @SuppressWarnings("serial")
-public class CreateTableView
+/**
+ * IHM pour créer des tables dans la base de données.
+ * 
+ * @author MAURY Adrian
+ */
+public class CreateTableGUI
 extends ListeningGUI 
 implements ActionListener, ItemListener
 {
 	// ==========================VARIABLES========================
-	private static CreateTableView INSTANCE;
+	private static CreateTableGUI INSTANCE;
 	
 	private static final String FONT = null;
 	
@@ -278,7 +285,7 @@ implements ActionListener, ItemListener
 	 * Constructeur commun pour l'ihm de création de table.
 	 * @param cm : objet ConnectionManager obtenu lors de la connexion.
 	 */
-	private CreateTableView()
+	private CreateTableGUI()
 	{
 		super("Création de table");
 		INSTANCE = this;
@@ -300,9 +307,9 @@ implements ActionListener, ItemListener
 	 * 
 	 * @return CreateTableView
 	 */
-	public static CreateTableView getInstance()
+	public static CreateTableGUI getInstance()
 	{
-		if (INSTANCE == null) new CreateTableView();
+		if (INSTANCE == null) new CreateTableGUI();
 		return INSTANCE;
 	}
 	

@@ -1,4 +1,4 @@
-package ddl;
+package manager;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -9,12 +9,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ddl.create.Table;
+import ddl.Attribute;
+import ddl.Table;
 
-import useful.ConnectionManager;
+
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
-import ddl.create.Attribute;
 
 public class DDLManager 
 {

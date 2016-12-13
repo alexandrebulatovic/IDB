@@ -1,5 +1,6 @@
-package ddl.create;
+package ddl;
 import java.util.LinkedHashSet;
+
 
 public class Table {
 	

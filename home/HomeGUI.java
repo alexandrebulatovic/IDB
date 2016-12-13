@@ -4,11 +4,21 @@ import javax.swing.*;
 import java.awt.event.*;
 import interf.BasicGUI;
 
+/**
+ * IHM du menu principal, une fois la connexion établie.
+ * Singleton.
+ * 
+ * @author UGOLINI Romain
+ */
 @SuppressWarnings("serial")
 public class HomeGUI 
 extends BasicGUI
 implements ActionListener
 {
+	//Instance
+	/** Instance singleton en cours.*/
+	private static HomeGUI INSTANCE;
+	
 	//Attributes
 	/** Controleur de l'IHM.*/
 	private HomeController control;
@@ -30,16 +40,30 @@ implements ActionListener
 	/**
 	 * Constructeur commun.
 	 */
-	public HomeGUI(HomeController control)
+	private HomeGUI()
 	{
 		super("Menu principal", null, 400, 400, 30);
-		this.control = control;
+		INSTANCE = this;
+		this.control = HomeController.getInstance();
 		this.handleButtons();
 		this.setProperties(EXIT_ON_CLOSE);
 	}
 
 
 	//Méthodes
+	/**
+	 * Retourne une nouvelle IHM si et seulement s'il n'en existe
+	 * pas déjà une, retourne l'IHM actuelle sinon.
+	 * 
+	 * @return HomeGUI
+	 */
+	public static HomeGUI getInstance()
+	{
+		if (INSTANCE == null) new HomeGUI();
+		return INSTANCE;
+	}
+	
+	
     @Override
 	public boolean isComplete() {return true;}
 
@@ -114,10 +138,10 @@ implements ActionListener
 	 */
 	private void bindButtons()
 	{
-		this.bindElements(this.sqlButton);
-		this.bindElements(this.createButton);
-		this.bindElements(this.alterButton);
-		this.bindElements(this.dropButton);
+		this.bindElement(this.sqlButton);
+		this.bindElement(this.createButton);
+		this.bindElement(this.alterButton);
+		this.bindElement(this.dropButton);
 		for (JComponent jc : this.components) {
 			if (jc.getClass().getName().endsWith("JButton")) {
 				((JButton)jc).addActionListener(this);
@@ -130,7 +154,7 @@ implements ActionListener
 	 * Gère les actions sur l'appui du bouton 'SQL'
 	 */
 	private void sqlButtonAction(){
-		this.control.openSqlGUI();
+		this.control.openSQLGUI();
 	}
 
 

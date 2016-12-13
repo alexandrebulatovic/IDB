@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import ddl.DDLController;
-import ddl.create.CreateTableView;
+import ddl.create.CreateTableGUI;
 
 
 @SuppressWarnings("serial")
@@ -90,7 +90,7 @@ implements ActionListener
 	{
 		this.sqlArea = new JTextArea();
 		this.sqlArea.setText("N'entrez qu'une requete à fois!");
-		this.bindElements(this.sqlArea, 200);
+		this.bindElement(this.sqlArea, 200);
 	}
 
 	/**
@@ -102,7 +102,7 @@ implements ActionListener
 		this.okButton = new JButton("Envoyer");
 		this.okButton.setActionCommand("send_sql_query");
 		this.okButton.addActionListener(this);
-		this.bindElements(this.okButton, 40);
+		this.bindElement(this.okButton, 40);
 	}
 
 

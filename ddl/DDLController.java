@@ -1,13 +1,20 @@
 package ddl;
 
-import ddl.create.Attribute;
-import ddl.create.CreateTableView;
-import ddl.create.Table;
+import manager.DDLManager;
+import ddl.create.CreateTableGUI;
 import ddl.drop.DropTableGUI;
 import ddl.modify.ModifyTableView;
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
 
+/**
+ * Assure le dialogue entre les IHM du langage de définition des données
+ * et le gestionnaire de ce même langage.
+ * Singleton.
+ * 
+ * @author UGOLINI Romain
+ * @author MAURY Adrian
+ */
 public class DDLController 
 {
 	/** Controleur en cours.*/
@@ -15,13 +22,12 @@ public class DDLController
 	
 	//Attributs
 	/** IHM pour créer une table et ses attributs.*/
-	private CreateTableView createGUI;
+	private CreateTableGUI createGUI;
 	
 	/** IHM pour supprimer une table.*/
 	private DropTableGUI dropGUI;
 	
-	/** Objet pour gérer la communication avec un SGBD 
-	 * dans l'optique d'utiliser le LDD.*/
+	/** Gère la communication avec un SGBD dans l'optique d'utiliser le LDD.*/
 	private DDLManager manager;
 	
 	
@@ -57,7 +63,7 @@ public class DDLController
 	 */
 	public void openCreateGUI()
 	{
-		this.createGUI = CreateTableView.getInstance();
+		this.createGUI = CreateTableGUI.getInstance();
 		this.createGUI.toFront();
 	}
 	
@@ -75,7 +81,6 @@ public class DDLController
 
 	public void openModifyGUI() {
 		this.modifyGUI = ModifyTableView.getInstance();
-		
 	}
 	
 	
@@ -134,7 +139,7 @@ public class DDLController
 
 	public void modifier(String tableName) {
 		System.out.println("Je vais modifier la table"+tableName);
-		CreateTableView create = CreateTableView.getInstance();
+		CreateTableGUI create = CreateTableGUI.getInstance();
 		Attribute att = new Attribute(tableName, tableName, 0, false, false, false, false, tableName, tableName);
 		create.setView(new Attribute[]{att}, tableName);
 		

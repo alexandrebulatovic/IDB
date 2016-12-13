@@ -1,7 +1,8 @@
-package ddl.create;
+package ddl;
 
 
-public class Attribute {
+public class Attribute 
+{
 
 	/** Nom de l'attribut.*/
 	public String name;

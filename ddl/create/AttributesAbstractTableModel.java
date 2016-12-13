@@ -5,6 +5,8 @@ import java.util.Iterator;
 
 import javax.swing.table.AbstractTableModel;
 
+import ddl.Attribute;
+
 
 public class AttributesAbstractTableModel 
 extends AbstractTableModel {

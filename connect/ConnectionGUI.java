@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,15 +13,26 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import useful.MaxLengthTextDocument;
-
-
 import interf.BasicGUI;
 
+
+/**
+ * IHM pour se connecter à un SGBD.
+ * Singleton.
+ * 
+ * @author ALCANTUD Gaël
+ * @author UGOLINI Romain
+ *
+ */
 @SuppressWarnings("serial")
 public class ConnectionGUI 
 extends BasicGUI
 implements ActionListener
 {
+	//Instance
+	/** Instance singleton en cours.*/
+	private static ConnectionGUI INSTANCE;
+	
 	//Attributs
 	/**Controleur de connexion.*/
 	private ConnectionController control;
@@ -69,7 +79,7 @@ implements ActionListener
 	
 	//Listener
 	/**
-	 * Déclare un écouteur sur les touches pressés.
+	 * Déclare un écouteur sur les touches pressées.
 	 */
 	KeyListener keylistener = new KeyListener(){
 
@@ -90,10 +100,11 @@ implements ActionListener
 	/**
 	 * Constructeur commun.
 	 */
-	public ConnectionGUI(ConnectionController cc)
+	private ConnectionGUI()
 	{
 		super("Connexion", null, 450, 410, 20);
-		this.control = cc;
+		INSTANCE = this;
+		this.control = ConnectionController.getInstance();
 		this.createAndBindComponents();
 		this.handleFieldsSize();
 		this.limitCharacters();
@@ -104,6 +115,12 @@ implements ActionListener
 	
 	
 	//Méthodes
+	public static ConnectionGUI getInstance()
+	{
+		if (INSTANCE == null) new ConnectionGUI();
+		return INSTANCE;
+	}
+	
 	@Override
 	public boolean isComplete() {
 		for (JComponent jc : this.components) {
@@ -124,57 +141,61 @@ implements ActionListener
 	
 	
 	//Privées
+	/**
+	 * Instancie, dimensionne et positionne les différentes éléments de l'IHM.
+	 * Associe certains composants à des écouteurs si besoin.
+	 */
 	private void createAndBindComponents()
 	{
 		//pilotes.
 		this.driverLabel = new JLabel("Pilote :");
-		this.bindElements(this.driverLabel);
+		this.bindElement(this.driverLabel);
 		
 		this.driverCombo = new JComboBox<String>();
 		//TODO : ajouter d'autres pilotes
 		//TODO : créer une classe statique avec des constantes sur les nom des pilotes.
 		this.driverCombo.addItem("Oracle");
-		this.bindElements(this.driverCombo);
+		this.bindElement(this.driverCombo);
 		
 		//Adresse IP
 		this.ipLabel = new JLabel("Adesse IP du serveur :");
-		this.bindElements(this.ipLabel);
+		this.bindElement(this.ipLabel);
 		
 		this.ipField = new JTextField();
-		this.bindElements(this.ipField);
+		this.bindElement(this.ipField);
 		
 		//Utilisateur
 		this.userLabel = new JLabel("Nom d'utilisateur : ");
-		this.bindElements(this.userLabel);
+		this.bindElement(this.userLabel);
 		
 		this.userField = new JTextField();
-		this.bindElements(this.userField);
+		this.bindElement(this.userField);
 		
 		//Mot de passe
 		this.passwordLabel = new JLabel("Mot de passe : ");
-		this.bindElements(this.passwordLabel);
+		this.bindElement(this.passwordLabel);
 		
 		this.passwordField = new JPasswordField();
-		this.bindElements(this.passwordField);
+		this.bindElement(this.passwordField);
 		
 		//Base de données
 		this.bdLabel = new JLabel("Nom de base de données : ");
-		this.bindElements(this.bdLabel);
+		this.bindElement(this.bdLabel);
 		
 		this.bdField = new JTextField();
-		this.bindElements(this.bdField);
+		this.bindElement(this.bdField);
 		
 		//Numéro de port
 		this.portLabel = new JLabel("Numéro de port : ");
-		this.bindElements(this.portLabel);
+		this.bindElement(this.portLabel);
 		this.portField = new JTextField();
-		this.bindElements(this.portField);
+		this.bindElement(this.portField);
 		
 		//Bouton valider
 		this.okButton = new JButton("Se connecter");
 		this.okButton.setActionCommand("OK");
 		this.okButton.addActionListener(this);
-		this.bindElements(this.okButton, 40);
+		this.bindElement(this.okButton, 40);
 	}
 
 
