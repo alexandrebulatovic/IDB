@@ -275,7 +275,7 @@ implements ActionListener, ItemListener
 	 * Constructeur commun pour l'ihm de création de table.
 	 * @param cm : objet ConnectionManager obtenu lors de la connexion.
 	 */
-	private CreateTableView()
+	protected CreateTableView()
 	{
 		super("Création de table");
 		INSTANCE = this;

@@ -4,7 +4,7 @@ import ddl.create.Attribute;
 import ddl.create.CreateTableView;
 import ddl.create.Table;
 import ddl.drop.DropTableGUI;
-import ddl.modify.ModifyTableView;
+import ddl.modify.ModifyTableChoiceView;
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
 
@@ -25,7 +25,7 @@ public class DDLController
 	private DDLManager manager;
 	
 	
-	private ModifyTableView modifyGUI;
+	private ModifyTableChoiceView modifyGUI;
 	
 	
 	//Contructeur
@@ -74,7 +74,7 @@ public class DDLController
 
 
 	public void openModifyGUI() {
-		this.modifyGUI = ModifyTableView.getInstance();
+		this.modifyGUI = ModifyTableChoiceView.getInstance();
 		
 	}
 	
