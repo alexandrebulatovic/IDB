@@ -47,7 +47,7 @@ public class DDLController
 	 */
 	public static DDLController getInstance()
 	{
-		if (INSTANCE == null) DDLController.INSTANCE = new DDLController();
+		if (INSTANCE == null) new DDLController();
 		return INSTANCE;
 	}
 	
