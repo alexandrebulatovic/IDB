@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ddl.create.Table;
-
 import useful.ConnectionManager;
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
+import useful.ForeinKey;
 import ddl.create.Attribute;
 
 public class DDLManager 
@@ -122,9 +122,8 @@ public class DDLManager
 				pks.add(rsKeys.getString(4));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}//nous aurons des informations générales sur la bdd
+		}
 		return pks;
 	}
 	
@@ -138,10 +137,23 @@ public class DDLManager
 		return false;
 	}
 	
+	/**
+	 * Retourne un type ForeinKey représentant une clé étrangère
+	 * selon le nom d'un attribut dans une table
+	 *  
+	 * @param table
+	 * @param attributeName
+	 * @return ForeinKey ou 
+	 * null si l'attribut n'est pas clé étrangère
+	 */
+	private ForeinKey getForeinKey(String table, String attributeName){
+		
+	}
+	
 	public List<Attribute> getAttributes(String table) throws SQLException{
 		List<Attribute> attributes = new ArrayList<Attribute>();
 		
-		
+
 		this.createStatementAndMetaData();
 		ResultSet rs = this.statement.executeQuery("SELECT a.* FROM "+table+" a");
 		
@@ -166,6 +178,7 @@ public class DDLManager
 			System.out.println(rsFk.getString(12));//nom fk
 			
 			System.out.println("\n\n");
+			new Attribute(table, table, 0, false, false, false, false, table, table)
 			
 		}
 		

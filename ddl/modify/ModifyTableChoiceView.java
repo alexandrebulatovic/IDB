@@ -29,15 +29,11 @@ implements ActionListener, ItemListener
 	ModifyTableChoiceView(){
 		super("modifier table vue");
 		INSTANCE = this;	
-		
-
+	
 		this.controller = DDLController.getInstance();
 		
 		this.elementWidth=width-(2*marge);
 
-		
-		
-		
 		
 		this.handleCombos();
 		this.handleButtons();
