@@ -1,9 +1,14 @@
 package ddl;
 
-import manager.ddl.DDLManager;
+
+import java.sql.SQLException;
+import java.util.List;
+
 import ddl.create.CreateTableGUI;
 import ddl.drop.DropTableGUI;
-import ddl.modify.ModifyTableView;
+import ddl.modify.ModifyTableChoiceGUI;
+import ddl.modify.ModifyTableGUI;
+import manager.ddl.DDLManager;
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
 
@@ -31,7 +36,7 @@ public class DDLController
 	private DDLManager manager;
 	
 	
-	private ModifyTableView modifyGUI;
+	private ModifyTableChoiceGUI modifyGUI;
 	
 	
 	//Contructeur
@@ -42,6 +47,7 @@ public class DDLController
 	{
 		INSTANCE = this;
 		this.manager = DDLManager.getInstance();
+		
 	}
 	
 	
@@ -53,6 +59,7 @@ public class DDLController
 	 */
 	public static DDLController getInstance()
 	{
+		
 		if (INSTANCE == null) new DDLController();
 		return INSTANCE;
 	}
@@ -67,6 +74,12 @@ public class DDLController
 		this.createGUI.toFront();
 	}
 	
+	public void openModifyGUI() {
+		
+		this.modifyGUI = ModifyTableChoiceGUI.getInstance();
+		this.modifyGUI.toFront();
+	}
+	
 	
 	/**
 	 * Ouvre l'IHM de création des tables si et seulement si 
@@ -79,10 +92,6 @@ public class DDLController
 	}
 
 
-	public void openModifyGUI() {
-		this.modifyGUI = ModifyTableView.getInstance();
-	}
-	
 	
 	/**
 	 * Envoie $table au DDLManager dans l'optique de la créer.
@@ -138,10 +147,22 @@ public class DDLController
 
 
 	public void modifier(String tableName) {
-		System.out.println("Je vais modifier la table"+tableName);
-		CreateTableGUI create = CreateTableGUI.getInstance();
-		Attribute att = new Attribute(tableName, tableName, 0, false, false, false, false, tableName, tableName);
-		create.setView(new Attribute[]{att}, tableName);
+		ModifyTableGUI modify = new ModifyTableGUI();
+		
+		
+		List<Attribute> attributes = null;
+		try {
+			attributes = this.manager.getAttributes(tableName);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if (attributes==null){
+			//TODO
+		}
+		
+		
+		//Attribute att = new Attribute(tableName, tableName, 0, false, false, false, false, tableName, tableName);
+		modify.setView(attributes, tableName);
 		
 	}
 	

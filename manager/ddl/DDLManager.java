@@ -1,22 +1,20 @@
 package manager.ddl;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import manager.connection.ConnectionManager;
-
 import ddl.Attribute;
 import ddl.Table;
-
-
+import manager.connection.ConnectionManager;
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
+import useful.ForeinKey;
+
 
 public class DDLManager 
 {
@@ -87,66 +85,169 @@ public class DDLManager
 	 *
 	 * @return la liste des tables présentes dans la bdd
 	 */
-	public String[] getTablesString(){
+	public List<String> getTablesString(){
 //		CustomizedResponseWithData<String>
-		String[] valeurs = null;
-		
-		
-
+		//TODO trouver un comprimis avec la méthode getTables.
+		List<String> valeurs = new ArrayList<String>();
 		this.createStatementAndMetaData();
 		try {
-			valeurs = new String[this.getNbTables()];
 			ResultSet rs = this.statement.executeQuery("SELECT TABLE_NAME FROM user_tables");
-			int i=0;
 			while (rs.next()){
-				valeurs[i] = rs.getString(1);				
-				i++;
+				valeurs.add(rs.getString(1));
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return valeurs;
 
 	}
 	
+	/**
+	 * 
+	 * @param table
+	 * @return une liste de nom de clés primaires ou
+	 * null s'il n'en existe pas
+	 */
+	private List<String> getPrimaryKeys(String table){
+		List<String>pks = new ArrayList<String>();
+		try {
+			this.createStatementAndMetaData();
+			ResultSet rsKeys = this.metadata.getPrimaryKeys(null, null, table);
+			
+			pks = new ArrayList<String>();
+			while (rsKeys.next()){
+				pks.add(rsKeys.getString("COLUMN_NAME"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if (pks.isEmpty())
+			return null;
+		else
+			return pks;
+	}
+	
+	private boolean isPk(String table, String attributeName){
+		List<String>pks = this.getPrimaryKeys(table);
+		if (pks != null){ //s'il existe des clés primaires
+			for (String pkString : pks){
+				if (attributeName.equals(pkString)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Pour des raisons techniques, il est nécessaire de récupérer
+	 * TOUTES les clés étrangères pour les appliqués à un attribut
+	 * @param table : String
+	 * @return List<ForeinKey>
+	 */
+	private List<ForeinKey> getAllForeinKeys(){
+		List<String> tables = this.getTablesString();
+		List<ForeinKey> fks = new ArrayList<ForeinKey>();
+		this.createStatementAndMetaData();
+		try {
+			ResultSet rsFk;
+//			String name,String table,String fk, String ref,String user, String userTarget
+			
+			for (String t : tables){
+				rsFk = this.metadata.getExportedKeys(null,null,t);
+				while (rsFk.next()){
+					fks.add(//TODO mettre des id plus lisibles
+					new ForeinKey(	rsFk.getString("FK_NAME"),
+									rsFk.getString("PKTABLE_SCHEM"), 
+									rsFk.getString("PKTABLE_NAME"),
+									rsFk.getString("PKCOLUMN_NAME"),
+									
+									rsFk.getString("FKTABLE_SCHEM"), 
+									rsFk.getString("FKTABLE_NAME"), 
+									rsFk.getString("FKCOLUMN_NAME")) 
+					);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		if (fks.isEmpty())
+			return null;
+		else
+			return fks;
+	}
+	
+	/**
+	 * Retourne un type ForeinKey représentant une clé étrangère
+	 * selon le nom d'un attribut dans une table
+	 *  
+	 * @param table
+	 * @param attributeName
+	 * @return ForeinKey ou 
+	 * null si l'attribut n'est pas clé étrangère
+	 */
+	private ForeinKey getForeinKey(String table,String attributeName){
+		List<ForeinKey>fks = this.getAllForeinKeys();
+		if (fks != null){ //s'il existe des clés étrangères
+			for (ForeinKey fk : fks){
+				if (fk.getFkColumnName().equals(attributeName) && fk.getFkTableName().equals(table)){
+					return fk;
+				}
+			}
+		}
+		return null;
+	}
+
 	
 	public List<Attribute> getAttributes(String table) throws SQLException{
+		
+//
+//		for (ForeinKey k : this.getAllForeinKeys()){
+//			System.out.println(k.toString());
+//		}
+		
 		List<Attribute> attributes = new ArrayList<Attribute>();
-		
-		
-		this.createStatementAndMetaData();
+		this.createStatementAndMetaData();//TODO à supprimer éventuellement
 		ResultSet rs = this.statement.executeQuery("SELECT a.* FROM "+table+" a");
-		
-		ConnectionManager manager = ConnectionManager.getInstance();
-		Connection co = manager.dbms();
-		DatabaseMetaData meta = co.getMetaData();//nous aurons des informations générales sur la bdd
-		ResultSet rsKeys = meta.getPrimaryKeys(null, null, table);
-		
-		ResultSet rsFk = meta.getExportedKeys(null,null,table);
-		//rsFk.getR(1);
+	
 		
 		ResultSetMetaData rsmd = rs.getMetaData();
-//		rs.getFetchSize();
 		int nbColumns = rsmd.getColumnCount();
 		for (int i=1 ; i<=nbColumns ; i++){
-			System.out.println(rsmd.getColumnName(1));
-			rsKeys.next();
-			rsFk.next();
-			String name = rsmd.getColumnName(i);
+			
+			String nameAttribute = rsmd.getColumnName(i);
+			
 			String type = rsmd.getColumnTypeName(i);
 			int size = rsmd.getPrecision(i);
 			
-			boolean nullable = (rsmd.isNullable(i)==ResultSetMetaData.columnNullable);
-			boolean unique = false; //TODO trouver un moyen de détecté si la colonne est unique
-			boolean pk =rsKeys.getBoolean(i);//faux
+			boolean nullable = !(rsmd.isNullable(i)==ResultSetMetaData.columnNullable);
+			boolean unique = false; //TODO trouver un moyen de détecter si la colonne est unique
+			boolean pk = this.isPk(table, nameAttribute);//TODO le problème, c'est que la meme requette est envoyé à chaque attribut !
+			ForeinKey fk = this.getForeinKey(table, nameAttribute);//TODO meme problème (solution ? Créer une classe InfoTables).
+			String fkTable;
+			String fkAttribute;
+			if (fk==null){
+				fkTable=null;
+				fkAttribute=null;
+			}
+			else{
+				fkTable = fk.getPkTableName();
+				fkAttribute = fk.getPkColumnName();
+			}
 			
-			//String fkTable = rsFk.getString("FKTABLE_NAME");
-			
-			//boolean fk
-			
-			attributes.add(new Attribute(name, type, size, nullable, unique, pk, false, null, null));
+			attributes.add(new Attribute(
+					nameAttribute, 
+					type, 
+					size, 
+					nullable, 
+					unique, 
+					pk, 
+					!(fk==null), 
+					fkTable, 
+					fkAttribute)
+					);
 		}
 		return attributes;
 	}

@@ -1,38 +1,27 @@
 package ddl.modify;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.WindowConstants;
-
-import manager.connection.ConnectionManager;
-import manager.ddl.DDLManager;
-
-import ddl.create.CreateTableGUI;
-import ddl.drop.DropTableGUI;
+import javax.swing.*;
 
 import ddl.DDLController;
+import manager.ddl.DDLManager;
+import interf.ListeningGUI;
 
-public class ModifyTableView
-extends JFrame 
+
+
+public class ModifyTableChoiceGUI
+extends ListeningGUI
 implements ActionListener, ItemListener
 {
-	static final int width=190;
-	static final int height=100*2;
-	static final int componentHeight=30;
-	static final int componentWidth=170;
-	static final int componentMarge=5;
-	private static final ModifyTableView INSTANCE = null;
+	private final int width=280;
+	private final int height=200;
+	private int elementHeight=30;
+	private int elementWidth;
+	private final int marge=15;
+	private static ModifyTableChoiceGUI INSTANCE = null;
 	
     private JButton buttonConfirm;
     private JLabel label1;
@@ -41,14 +30,27 @@ implements ActionListener, ItemListener
 	private DDLController controller;
 
 	
-	ModifyTableView(){
+	ModifyTableChoiceGUI(){
 		super("modifier table vue");
-
+		INSTANCE = this;	
+	
 		this.controller = DDLController.getInstance();
-		setProperties();
+		
+		this.elementWidth=width-(2*marge);
+
+		
 		this.handleCombos();
 		this.handleButtons();
 		this.handleLabels();
+		
+		JLabel lab = new JLabel("rien");
+		lab.setEnabled(false);
+		lab.setVisible(false);
+		this.add(lab);
+		
+		setProperties();
+		this.addWindowListener(this);
+		
 				
 	}
 
@@ -65,17 +67,17 @@ implements ActionListener, ItemListener
 
 
 	private void initCombos() {
-		String[] valeurs = null;
+		List<String> valeurs = new ArrayList<String>();
 		DDLManager manager = DDLManager.getInstance();
 		valeurs = manager.getTablesString();
-		if (valeurs == null){
+		if (valeurs.isEmpty()){
 			this.comboTables.setEnabled(false);
-			valeurs = new String[]{"pas de tables"};
+			valeurs.add("pas de tables");
 		}
+
+		String[] strings = valeurs.stream().toArray(String[]::new);
 		
-		
-		this.comboTables.setModel(new javax.swing.DefaultComboBoxModel<>(valeurs));
-		//TODO faire une requette pour mettre les bonnes vaeurs;
+		this.comboTables.setModel(new javax.swing.DefaultComboBoxModel<>(strings));
 	}
 
 
@@ -87,7 +89,7 @@ implements ActionListener, ItemListener
 
 
 	private void bindCombos() {
-		this.comboTables.setBounds(componentMarge,componentHeight+componentMarge,componentWidth,componentHeight);
+		this.comboTables.setBounds(marge,elementHeight+marge,elementWidth,elementHeight);
 	}
 
 
@@ -119,7 +121,7 @@ implements ActionListener, ItemListener
 	}
 
 	private void bindButtons() {
-		this.buttonConfirm.setBounds(componentMarge,(componentHeight*2)+(componentMarge*2),componentWidth,componentHeight);
+		this.buttonConfirm.setBounds(marge,(elementHeight*2)+(marge*2),elementWidth,elementHeight);
 		
 	}
 
@@ -130,6 +132,7 @@ implements ActionListener, ItemListener
 	
 	private void handleLabels() {
 		this.createLabels();
+		
 		this.bindLabels();
 		this.addLabels();
 		
@@ -142,8 +145,8 @@ implements ActionListener, ItemListener
 
 
 	private void bindLabels() {
-		//this.label1.setBounds(componentMarge, 30, componentWidth, componentHeight);
-		this.label1.setBounds(500, 0, 0, 0);
+		this.label1.setBounds(marge, marge, elementWidth, elementHeight);
+		//this.label1.setBounds(500, 0, 0, 0);
 		
 	}
 
@@ -159,10 +162,14 @@ implements ActionListener, ItemListener
 	{
 		this.setSize(width, height);
 		this.setLocationRelativeTo(null); 
-		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);  
+		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setVisible(true);    
 		this.setResizable(false);
 	}
+	
+	
+	@Override
+	public void windowClosing(WindowEvent we){INSTANCE = null;}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {}
@@ -176,8 +183,9 @@ implements ActionListener, ItemListener
 
 
 
-	public static ModifyTableView getInstance() {
-		if (INSTANCE == null) new ModifyTableView();
+	public static ModifyTableChoiceGUI getInstance() {
+		if (INSTANCE == null) new ModifyTableChoiceGUI();
 		return INSTANCE;
 	}
+
 }

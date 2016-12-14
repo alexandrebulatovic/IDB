@@ -1,5 +1,5 @@
-package ddl.modify;
-//package modify;
+
+//package ddl.modify;
 //
 //import java.sql.Statement;
 //import java.util.ArrayList;

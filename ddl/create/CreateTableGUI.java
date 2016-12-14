@@ -4,6 +4,7 @@ import interf.ListeningGUI;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
+import java.util.List;
 import java.awt.Font;
 
 import javax.swing.*;
@@ -285,7 +286,8 @@ implements ActionListener, ItemListener
 	 * Constructeur commun pour l'ihm de création de table.
 	 * @param cm : objet ConnectionManager obtenu lors de la connexion.
 	 */
-	private CreateTableGUI()
+	protected CreateTableGUI()
+
 	{
 		super("Création de table");
 		INSTANCE = this;
@@ -754,7 +756,9 @@ implements ActionListener, ItemListener
 	 * @param attributes
 	 * @param string
 	 */
-	public void setView(Attribute[] attributes, String tableName) {
+	public void setView(List<Attribute> attributes, String tableName) {
+		
+		this.resetView();
 		for (Attribute a : attributes){
 			this.addAttributeToTable(a);
 		}
