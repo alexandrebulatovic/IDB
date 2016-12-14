@@ -1,9 +1,7 @@
 package sql;
 
 import java.sql.*;
-import javax.swing.JOptionPane;
-import manager.ConnectionManager;
-import connect.*;
+import manager.connection.*;
 
 public class SQLModel {
 

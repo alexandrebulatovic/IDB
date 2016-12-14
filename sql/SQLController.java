@@ -10,7 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import manager.ConnectionManager;
+import manager.connection.ConnectionManager;
+import ddl.create.CreateTableGUI;
 
 public class SQLController {
 

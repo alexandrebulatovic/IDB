@@ -1,6 +1,6 @@
 package home;
 
-import manager.ConnectionManager;
+import manager.connection.ConnectionManager;
 import ddl.DDLController;
 import sql.SQLController;
 
