@@ -1,18 +1,25 @@
 package ddl;
 
+
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import ddl.create.Attribute;
-import ddl.create.CreateTableView;
-import ddl.create.Table;
+import ddl.create.CreateTableGUI;
 import ddl.drop.DropTableGUI;
-import ddl.modify.ModifyTableChoiceView;
-import ddl.modify.ModifyTableView;
+import ddl.modify.ModifyTableChoiceGUI;
+import ddl.modify.ModifyTableGUI;
+import manager.ddl.DDLManager;
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
 
+/**
+ * Assure le dialogue entre les IHM du langage de définition des données
+ * et le gestionnaire de ce même langage.
+ * Singleton.
+ * 
+ * @author UGOLINI Romain
+ * @author MAURY Adrian
+ */
 public class DDLController 
 {
 	/** Controleur en cours.*/
@@ -20,17 +27,16 @@ public class DDLController
 	
 	//Attributs
 	/** IHM pour créer une table et ses attributs.*/
-	private CreateTableView createGUI;
+	private CreateTableGUI createGUI;
 	
 	/** IHM pour supprimer une table.*/
 	private DropTableGUI dropGUI;
 	
-	/** Objet pour gérer la communication avec un SGBD 
-	 * dans l'optique d'utiliser le LDD.*/
+	/** Gère la communication avec un SGBD dans l'optique d'utiliser le LDD.*/
 	private DDLManager manager;
 	
 	
-	private ModifyTableChoiceView modifyGUI;
+	private ModifyTableChoiceGUI modifyGUI;
 	
 	
 	//Contructeur
@@ -64,13 +70,13 @@ public class DDLController
 	 */
 	public void openCreateGUI()
 	{
-		this.createGUI = CreateTableView.getInstance();
+		this.createGUI = CreateTableGUI.getInstance();
 		this.createGUI.toFront();
 	}
 	
 	public void openModifyGUI() {
 		
-		this.modifyGUI = ModifyTableChoiceView.getInstance();
+		this.modifyGUI = ModifyTableChoiceGUI.getInstance();
 		this.modifyGUI.toFront();
 	}
 	
@@ -86,8 +92,6 @@ public class DDLController
 	}
 
 
-
-	
 	
 	/**
 	 * Envoie $table au DDLManager dans l'optique de la créer.
@@ -143,7 +147,7 @@ public class DDLController
 
 
 	public void modifier(String tableName) {
-		CreateTableView modify = ModifyTableView.getInstance();
+		ModifyTableGUI modify = new ModifyTableGUI();
 		
 		
 		List<Attribute> attributes = null;

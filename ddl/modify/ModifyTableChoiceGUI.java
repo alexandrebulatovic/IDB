@@ -7,12 +7,12 @@ import java.util.List;
 import javax.swing.*;
 
 import ddl.DDLController;
-import ddl.DDLManager;
+import manager.ddl.DDLManager;
 import interf.ListeningGUI;
 
 
 
-public class ModifyTableChoiceView
+public class ModifyTableChoiceGUI
 extends ListeningGUI
 implements ActionListener, ItemListener
 {
@@ -21,7 +21,7 @@ implements ActionListener, ItemListener
 	private int elementHeight=30;
 	private int elementWidth;
 	private final int marge=15;
-	private static ModifyTableChoiceView INSTANCE = null;
+	private static ModifyTableChoiceGUI INSTANCE = null;
 	
     private JButton buttonConfirm;
     private JLabel label1;
@@ -30,7 +30,7 @@ implements ActionListener, ItemListener
 	private DDLController controller;
 
 	
-	ModifyTableChoiceView(){
+	ModifyTableChoiceGUI(){
 		super("modifier table vue");
 		INSTANCE = this;	
 	
@@ -183,8 +183,8 @@ implements ActionListener, ItemListener
 
 
 
-	public static ModifyTableChoiceView getInstance() {
-		if (INSTANCE == null) new ModifyTableChoiceView();
+	public static ModifyTableChoiceGUI getInstance() {
+		if (INSTANCE == null) new ModifyTableChoiceGUI();
 		return INSTANCE;
 	}
 

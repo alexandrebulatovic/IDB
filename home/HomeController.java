@@ -1,12 +1,21 @@
 package home;
 
+import manager.connection.ConnectionManager;
 import ddl.DDLController;
-import ddl.create.CreateTableView;
 import sql.SQLController;
-import useful.ConnectionManager;
 
+/**
+ * Controleur principal de l'application une fois la connexion établie.
+ * Singleton.
+ * 
+ * @author UGOLINI Romain.
+ */
 public class HomeController 
 {
+	//Instance
+	/** Instance singleton en cours.*/
+	private static HomeController INSTANCE;
+	
 	//Attributes
 	/** Vue du controleur.*/
 	private HomeGUI gui;
@@ -24,9 +33,24 @@ public class HomeController
 	 */
 	public HomeController()
 	{
-		this.gui = new HomeGUI(this);
+		INSTANCE = this;
+		this.gui = HomeGUI.getInstance();
 		this.gui.talk("Bienvenue " 
 				+ ConnectionManager.getInstance().user());
+	}
+	
+	
+	//Méthodes
+	/**
+	 * Retourne une nouveau controleur principal si et seulement s'il
+	 * n'en existe pas, retourne un nouveau controleur sinon.
+	 * 
+	 * @return HomeController
+	 */
+	public static HomeController getInstance()
+	{
+		if (INSTANCE == null) new HomeController();
+		return INSTANCE;
 	}
 	
 	
@@ -51,10 +75,10 @@ public class HomeController
 	/**
 	 * Ouvre l'IHM pour rentrer des requetes SQL.
 	 */
-	public void openSqlGUI()
+	public void openSQLGUI()
 	{
 		this.sqlControl = SQLController.getInstance();
-		this.sqlControl.openSQL();
+		//this.sqlControl.openSQL();
 		
 	}
 	

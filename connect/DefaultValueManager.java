@@ -10,8 +10,9 @@ import java.io.IOException;
 
 
 /**
- * Gère la lecture et l'écriture des valeurs de connexion
- * par défaut.
+ * Gère la lecture et l'écriture des valeurs de connexion par défaut dans un fichier XML.
+ * 
+ * @author UGOLINI Romain
  */
 public class DefaultValueManager 
 {

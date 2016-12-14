@@ -5,146 +5,176 @@ import javax.swing.*;
 
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+/**
+ * Propose un moyen simple de créer des vues simples. <br/><br/>
+ * L'objectif de cette classe abstraite est de permettre à ses classes filles de ne plus
+ * se soucier : <br/>
+ * -de la liaison avec l'IHM, <br/>
+ * -des coordonnées, <br/>
+ * -et des dimensions de chaque composant placé sur l'IHM.<br/><br/>
+ * 
+ *  Pour cela, elle met à disposition la méthode 'bindElement()' et ses différentes surcharges.
+ *  Chacune de ces méthodes effectue les opérations évoquées précedemment et limitent l'implication
+ *  du développeur. Chaque appel à une de ces méthodes place automatiquement le composant concerné
+ *  à un endroit différent du précédent composant. La largeur des composants est gérée 
+ *  dynamiquement en fonction de la taille de l'IHM.<br/><br/>
+ *  
+ *  Toutefois ces méthodes ne vérifient pas que l'IHM soit suffisamment grande pour accueillir tous les 
+ *  composants. C'est au programmeur de calibrer la taille initiale de l'IHM. <br/><br/>
+ *  
+ *  En plus de cela, cette classe redéfinit toutes les méthodes de l'interface WindowListener,
+ *  et force la classe à "s'écouter" elle-même. De ce fait, les classes filles n'ont pas besoin de
+ *  réécrire toutes les méthodes de l'interface WindowListener, et peuvent se contenter de
+ *  redéfinir uniquement la ou les méthodes voulues.<br/><br/>
+ *  
+ *  Toute classe fille qui spécialise cette classe abstraite doit terminer son constructeur
+ *  par un appel de la méthode 'setProperties()'.
+ * 
+ * @author UGOLINI Romain
+ */
 @SuppressWarnings("serial")
 public abstract class BasicGUI 
 extends JFrame
-implements IDBGUI, WindowListener
+implements IDBGUI, WindowListener, ActionListener
 {
 	//Attributs
-	/**
-	 * Nom de l'IHM.
-	 */
+	/** Nom de l'IHM.*/
 	private String name;
 	
-	/**
-	 * Hauteur de l'IHM.
-	 */
+	/** Hauteur de l'IHM.*/
 	private int height;
 	
-	/**
-	 * Largeur de l'IHM.
-	 */
+	/** Largeur de l'IHM.*/
 	private int width;
 	
-	/**
-	 * Marge de l'IHM.
-	 */
-	private int elementLeft;
+	/** Marge de l'IHM.*/
+	private int componentLeft;
 	
-	/**
-	 * Hauteur des éléments.
-	 */
-	private int elementHeight;
+	/** Hauteur des composants.*/
+	private int componentHeight;
 	
-	/**
-	 * Largeur des éléments.
-	 */
-	private int elementWidth;
+	/** Largeur des composants.*/
+	private int componentWidth;
 	
-	/**
-	 * Incrément pour positionner les éléments sur la hauteur.
-	 */
-	private int elementTop;
+	/** Incrément pour positionner les composants sur la hauteur.*/
+	private int componentTop;
 	
-	/**
-	 * Etiquette pour dialoguer avec l'utilisateur.
-	 */
+	/** Etiquette pour dialoguer avec l'utilisateur.*/
 	private JLabel messageLabel;
 	
-	/**
-	 * Contients tous les composants de $this.
-	 */
+	/** Contients tous les composants de l'IHM.*/
 	protected ArrayList <JComponent> components;
 	
 	
 	//Constructeur
-	protected BasicGUI(String name, LayoutManager lm, int width, int height, int elementHeight)
+	/**
+	 * Constructeur commun.
+	 * 
+	 * @param name : nom de l'IHM, null interdit.
+	 * @param lm : gestionnaire de bordure, null autorisé.
+	 * @param width : largeur de l'IHM, 0 < width.
+	 * @param height : hauteur de l'IHM, 0 < height.
+	 * @param componentHeight : hauteur par défaut des composants de l'IHM, 0 < componentHeight.
+	 */
+	protected BasicGUI(String name, LayoutManager lm, int width, int height, int componentHeight)
 	{
 		super(name);
 		this.setLayout(lm);
-		this.setDimension(width, height, elementHeight);
+		this.setDimension(width, height, componentHeight);
 		
 		this.name = name;
 		this.components = new ArrayList<JComponent>();
 		this.messageLabel = new JLabel();
-		this.bindElements(this.messageLabel);
+		this.bindElement(this.messageLabel);
 		this.addWindowListener(this);
 	}
 	
 	
 	//Protected
 	/**
-	 * Dimensionne et positionne $element selon les attributs de $this.
-	 * Associe $element à $this.
-	 * Détermine l'emplacement du prochain élément.
+	 * Dimensionne $component avec une hauteur par défaut et 
+	 * une largeur calculée en fonction de celle de l'IHM. <br/>
+	 * Positionne $component en dessous du précédent composant.<br/>
+	 * Associe $component à l'IHM.<br/>
+	 * Détermine l'emplacement du prochain composant.
 	 * 
-	 * @param element : un objet JComponent
+	 * @param component : un objet JComponent, null interdit.
 	 */
-	protected void bindElements(JComponent element)
+	protected void bindElement(JComponent component)
 	{
 		Rectangle r = new Rectangle(
-				this.elementLeft, this.elementTop, this.elementWidth, this.elementHeight);
-		this.bindAndAdd(element, r);
-		this.increaseTop(this.elementHeight);
+				this.componentLeft, this.componentTop, this.componentWidth, this.componentHeight);
+		this.bindAndAdd(component, r);
+		this.increaseTop(this.componentHeight);
 	}
 	
 	
 	/**
-	 * Dimensionne et positionne $element selon les attributs de $this,
-	 * sauf pour la hauteur qui est déterminé sur $height pixels.
-	 * Associe $element à $this.
-	 * Détermine l'emplacement du prochain élément.
+	 * Dimensionne $component avec une hauteur $height et 
+	 * une largeur calculée en fonction de celle de l'IHM. <br/>
+	 * Positionne $component en dessous du précédent composant.<br/>
+	 * Associe $component à l'IHM.<br/>
+	 * Détermine l'emplacement du prochain composant.
 	 * 
-	 * @param element : un objet JComponent
-	 * @param height :  un entier naturel > 0 et < à la hauteur de $this
+	 * @param component : un objet JComponent, null interdit.
+	 * @param height :  un entier naturel > 0 et < à la hauteur de l'IHM.
 	 */
-	protected void bindElements(JComponent element, int height)
+	protected void bindElement(JComponent component, int height)
 	{
 		Rectangle r = new Rectangle(
-				this.elementLeft, this.elementTop, this.elementWidth, height);
-		this.bindAndAdd(element, r);
+				this.componentLeft, this.componentTop, this.componentWidth, height);
+		this.bindAndAdd(component, r);
 		this.increaseTop(height);
 	}
 	
 
 	/**
-	 * Dimensionne et positionne $element, avec une largeur $nb fois 
-	 * plus petite que celle définit par les attributs de $this.
-	 * Si $alignNext est vrai, le PROCHAIN élément sera placé à droite de $element,
-	 * sinon en bas.
-	 * Lorsque cette méthode est appellée avec $alignNext vrai, il faut impérativement
-	 * la réutiliser en série jusqu'à passer un faux.
-	 * Associe $element à $this.
-	 * Détermine l'emplacement du prochain élément.
+	 * Dimensionne $component avec une hauteur par défaut et 
+	 * une largeur $nb fois plus petite que celle habituellement calculée 
+	 * avec la largeur de l'IHM. <br/><br/>
+	 * Positionne $component à droite du précédent composant si et seulement
+	 * si le précédent appel de cet méthode avait $alignNext vrai,
+	 * positionne $component en dessous du précédent composant sinon.<br/><br/>
+	 * Associe $component à l'IHM.<br/><br/>
+	 * Détermine l'emplacement du prochain composant.
 	 * 
-	 * @param element : un objet JComponenet
-	 * @param nb : un entier naturel > 0
-	 * @param alignNext : vrai pour aligner le prochain élément à droite,
-	 * faux pour l'aligner en bas.
+	 * @param component : un objet JComponent, null interdit.
+	 * @param nb : un entier naturel > 0.
+	 * @param alignNext : vrai si et seulement si le prochain composant doit
+	 * être aligné à droite, faux sinon.
 	 */
-	protected void bindElements(JComponent element, int nb, boolean alignNext)
+	protected void bindElement(JComponent component, int nb, boolean alignNext)
 	{
-		int width = (int) (this.elementWidth/nb);
+		int width = this.componentWidth/nb;
 		Rectangle r = new Rectangle(
-				this.elementLeft, this.elementTop, width, this.elementHeight);
-		this.bindAndAdd(element, r);
+				this.componentLeft, this.componentTop, width, this.componentHeight);
+		this.bindAndAdd(component, r);
 		if (alignNext) {
 			this.increaseLeft(width);
 		}
 		else{
-			this.increaseTop(this.elementHeight);
-			this.elementLeft = (int) (0.05 * this.width);
+			this.increaseTop(this.componentHeight);
+			this.componentLeft = (int) (0.05 * this.width);
 		}
 	}
 	
 	
 	/**
-	 * Définit certaines propriétés de l'IHM.
+	 * Définit certaines propriétés de l'IHM : <br/>
+	 * -les dimensions (de l'IHM et ses composants),<br/>
+	 * -la position relative,<br/>
+	 * -ce que doit faire le système après un clic sur la croix,<br/>
+	 * Affiche l'IHM.<br/>
+	 * N'autorise pas le redimensionnement.<br/>
 	 * 
-	 * @param closeOperation : une constante pour indiquer ce qu'il
+	 * Cette méthode doit être appelée en fin  
+	 * de construction d'une instance de classe fille.<br/>
+	 * 
+	 * @param closeOperation : constante pour indiquer ce qu'il
 	 * se passe en cliquant sur la croix.
 	 */
 	protected void setProperties(int closeOperation)
@@ -190,56 +220,47 @@ implements IDBGUI, WindowListener
 	/**
 	 * Dimensionne l'IHM.
 	 */
-	private void setDimension(int width, int height, int elementHeight)
+	private void setDimension(int width, int height, int componentHeight)
 	{
 		this.width = width;
 		this.height = height;
-		this.elementHeight = elementHeight;
-		this.elementTop = 0;
-		this.elementLeft = (int) (0.05 * this.width);
-		this.elementWidth = (int) (0.9 * this.width);
+		this.componentHeight = componentHeight;
+		this.componentTop = 0;
+		this.componentLeft = (int) (0.05 * this.width);
+		this.componentWidth = (int) (0.9 * this.width);
 	}
 	
 	
 	/**
-	 * Dimensionne, positionne et associe $element à l'IHM,
+	 * Dimensionne, positionne et associe $component à l'IHM,
 	 * en fonction des valeurs de $r.
 	 * 
-	 * @param element : un objet JComponent
+	 * @param component : un objet JComponent
 	 * @param r : un objet Rectangle
 	 */
-	private void bindAndAdd(JComponent element, Rectangle r)
+	private void bindAndAdd(JComponent component, Rectangle r)
 	{
-		element.setBounds(r);
-		this.add(element);
-		this.components.add(element);
+		component.setBounds(r);
+		this.add(component);
+		this.components.add(component);
 	}
 
 
 	/**
-	 * Incrémente la position du prochain élément 
-	 * d'un peu plus de $add pixels en ordonnée.
+	 * Incrémente la position du prochain composant d'un peu plus de $add pixels en ordonnée.
 	 * 
-	 * @param add : un entier naturel > 0 et < la hauteur de $this.
+	 * @param add : 0 < add < hauteur de l'IHM.
 	 */
-	private void increaseTop(int add)
-	{
-		//TODO : Supprimer le +10 car risque d'erreur
-		this.elementTop += add +5;
-	}
+	private void increaseTop(int add){this.componentTop += add +5;}
 	
 	
 	/**
-	 * Incrémente la position du prochain élément 
-	 * d'un peu plus de $add pixels en abscisse.
+	 * Incrémente la position du prochain composant d'un peu plus de $add pixels en abscisse.
 	 * 
-	 * @param add
+	 * @param add : 0 < add < largeur de l'IHM.
 	 */
-	private void increaseLeft(int add)
-	{
-		//TODO : sSécuriser pour ne pas dépasser
-		this.elementLeft += add +5;
-	}
+	private void increaseLeft(int add){this.componentLeft += add +5;}
+	
 	
 	@Override
 	public void windowActivated(WindowEvent arg0) {}

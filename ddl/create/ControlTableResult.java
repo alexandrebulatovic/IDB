@@ -6,8 +6,8 @@ import javax.swing.event.ListSelectionListener;
 
 
 public class ControlTableResult  implements ListSelectionListener{
-	CreateTableView createFrame;
-public ControlTableResult(CreateTableView c){
+	CreateTableGUI createFrame;
+public ControlTableResult(CreateTableGUI c){
 	this.createFrame=c;
 	
 }
@@ -15,7 +15,7 @@ public ControlTableResult(CreateTableView c){
 public void valueChanged(ListSelectionEvent listSelectionEvent){
     ListSelectionModel lsm = (ListSelectionModel)listSelectionEvent.getSource();
     if (!(lsm.isSelectionEmpty())) {
-    	createFrame.setEnableButtonUpdateDelete(true);
+    	createFrame.setEnableButtonUpdateDeleteUpDown(true);
     }
 
 }

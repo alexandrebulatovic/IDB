@@ -4,38 +4,28 @@ package connect;
  * Classe pour enrouler les différentes chaînes de
  * caractères indispensable à la connexion vers un
  * SGBD.
+ * 
+ * @author UGOLINI Romain
  */
 public class ConnectionStrings 
 {
 	//Attributs
-	/**
-	 * Nom grossier du pilote.
-	 */
+	/** Nom grossier du pilote.*/
 	public String driver;
 	
-	/**
-	 * Adresse du SGBD.
-	 */
+	/** Adresse du SGBD.*/
 	public String url;
 	
-	/**
-	 * Nom d'utilisateur.
-	 */
+	/** Nom d'utilisateur.*/
 	public String user;
 	
-	/**
-	 * Mot de passe.
-	 */
+	/** Mot de passe.*/
 	public String password;
 	
-	/**
-	 * Nom de la base de données.
-	 */
+	/** Nom de la base de données.*/
 	public String baseName;
 	
-	/**
-	 * Port nécessaire à la connexion.
-	 */
+	/** Port nécessaire à la connexion.*/
 	public String port;
 	
 	
@@ -43,12 +33,12 @@ public class ConnectionStrings
 	/**
 	 * Constructeur commun.
 	 * 
-	 * @param driver : Nom grossier du pilote.
-	 * @param url : Adresse du SGBD.
-	 * @param user : Nom d'utilisateur.
-	 * @param password : Mot de passe.
-	 * @param baseName : Nom de la base de données.
-	 * @param port : Port nécessaire à la connexion.
+	 * @param driver : Nom grossier du pilote, null interdit.
+	 * @param url : Adresse du SGBD, null interdit.
+	 * @param user : Nom d'utilisateur, null interdit.
+	 * @param password : Mot de passe, null interdit.
+	 * @param baseName : Nom de la base de données, null interdit.
+	 * @param port : Port nécessaire à la connexion, null interdit.
 	 */
 	public ConnectionStrings
 	(String driver, String url, String user, String password, String baseName, String port)

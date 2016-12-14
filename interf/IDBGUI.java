@@ -1,5 +1,10 @@
 package interf;
 
+/**
+ * Cette interface propose des méthodes qui reviennent régulièrement dans les IHM.
+ * 
+ * @author UGOLINI Romain
+ */
 public interface IDBGUI 
 {	
 	/**

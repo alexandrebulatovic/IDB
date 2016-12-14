@@ -6,16 +6,12 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
-
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
-import useful.ConnectionManager;
-import ddl.DDLController;
-import ddl.DDLManager;
-import ddl.create.CreateTableView;
+import manager.connection.ConnectionManager;
+import ddl.create.CreateTableGUI;
 
 public class SQLController {
 
@@ -31,17 +27,21 @@ public class SQLController {
 	/**  Objet pour appeler les methodes execute sql */
 	private Statement stat;
 
+	/**  Objet qui représente la connexion à la BD. */
+	private Connection conn;
+
 	/** Constructeur commun
-	 * @param cm : objet ConnectionManager obtenu lors de la connexion
-	 */
+	 * @param cm : objet ConnectionManager obtenu lors de la connexion. */
 	public SQLController(){
 		INSTANCE = this;
 		this.sql = new SQLView();
 		this.creator = new SQLModel(ConnectionManager.getInstance());
-		Connection conn = this.creator.getConnector();
+		this.conn = this.creator.getConnector();
 
 		try {
-			this.stat = conn.createStatement();
+			conn.setAutoCommit(false);
+			this.stat = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			this.stat.setFetchSize(100);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -64,6 +64,8 @@ public class SQLController {
 		this.sql = SQLView.getInstance();
 	}
 
+	/** Affiche un pop-up avec un message.
+	 * @param res : message à afficher. */
 	public void showResult(String res){
 		JOptionPane.showMessageDialog(null, res, "Résultat", JOptionPane.INFORMATION_MESSAGE);
 	}
@@ -73,16 +75,16 @@ public class SQLController {
 	public void sendSQL(String rq){
 
 		try {
-			StringBuilder stringBuilder = new StringBuilder();
 			boolean res = stat.execute(rq);
 
 			if (res) { // Si le résultat est un ResultSet
 
 				ResultSet rs = stat.getResultSet() ;
-				JTable table = new JTable(buildTableModel(rs));
-				JOptionPane.showMessageDialog(null, new JScrollPane(table));
+				JTable table = new JTable(buildJTable(rs));
+				JOptionPane.showMessageDialog(null, new JScrollPane(table),"Résultat", JOptionPane.INFORMATION_MESSAGE);
 
-			} else { //  INSERT, UPDATE, or DELETE ou LDD donc on affiche, soit rien, soit le nombre de lignes affectés.
+
+			} else { //  INSERT, UPDATE, or DELETE ou LDD
 				if (rq.contains("INSERT")){
 					showResult(stat.getUpdateCount()+ " ligne ajoutée.");
 				} else if (rq.contains("DELETE")){
@@ -111,35 +113,34 @@ public class SQLController {
 			}
 		}
 		catch (Exception ex) {
-			ex.printStackTrace();
+			ex.printStackTrace();	
 		}
+
+
 	}
 
-	/** Créée un modèle pour la jTable.
-	 * @param rs : ResultSet à partir duquel créer le modèle. 
+	/** Créé un modèle pour remplir une jTable.
+	 * @param rs : ResultSet à partir duquel créer le modèle.
+	 * @return un nouveau modèle avec les attributs et les données de la table.
 	 */	
-	public static DefaultTableModel buildTableModel(ResultSet rs) {
+	public static DefaultTableModel buildJTable(ResultSet rs) {
 
-		ResultSetMetaData metaData;
-
+		ResultSetMetaData rsmd;
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		Vector<String> columnNames = new Vector<String>();
 
-
 		try {
-			metaData = rs.getMetaData();
-			// recupere le nom des colonnes
-			int columnCount = metaData.getColumnCount();
-			for (int column = 1; column <= columnCount; column++) {
-				columnNames.add(metaData.getColumnName(column));
+			rsmd = rs.getMetaData();
+			int size = rsmd.getColumnCount();
+			for (int i = 1; i <= size; i++) {
+				columnNames.add(rsmd.getColumnName(i));
 			}
 
-			// recupere les informations
 			while (rs.next()) {
 				Vector<Object> vector = new Vector<Object>();
-				for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-					vector.add(rs.getObject(columnIndex));
+				for (int i = 1; i <= size; i++) {
+					vector.add(rs.getObject(i));
 				}
 				data.add(vector);
 			}
@@ -149,7 +150,6 @@ public class SQLController {
 		}
 
 		return new DefaultTableModel(data, columnNames);
-
 	}
 
 }

@@ -1,6 +1,7 @@
-package useful;
+package manager.connection;
 
 import java.sql.SQLException;
+
 
 import connect.ConnectionStrings;
 
@@ -15,7 +16,7 @@ extends ConnectionManager
 	private OracleConnectionManager()
 	{
 		super("oracle.jdbc.OracleDriver");
-		INSTANCE = this;
+		ConnectionManager.INSTANCE = this;
 	}
 	
 	
@@ -29,8 +30,8 @@ extends ConnectionManager
 	 */
 	public static ConnectionManager getConnector()
 	{
-		if (INSTANCE == null) new OracleConnectionManager();
-		return INSTANCE;
+		if (ConnectionManager.INSTANCE == null) new OracleConnectionManager();
+		return ConnectionManager.INSTANCE;
 	}
 	
 	

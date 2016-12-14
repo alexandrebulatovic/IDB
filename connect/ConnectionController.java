@@ -1,24 +1,27 @@
 package connect;
 
+import manager.connection.ConnectionManager;
+import manager.connection.OracleConnectionManager;
 import home.HomeController;
-import useful.ConnectionManager;
 import useful.CustomizedResponse;
-import useful.OracleConnectionManager;
 
 /**
  * Gère le dialogue entre l'IHM et le connecteur au SGBD.
+ * Singleton.
+ * 
+ * @author UGOLINI Romain
  */
 public class ConnectionController 
 {
+	//Instance
+	/** Instance singleton en cours.*/
+	private static ConnectionController INSTANCE;
+	
 	//Attributes
-	/**
-	 * IHM pour se connecter à un SGBD.
-	 */
+	/** IHM pour se connecter à un SGBD.*/
 	private ConnectionGUI gui;
 	
-	/**
-	 * Objet pour se connecter à un SGBD.
-	 */
+	/** Objet pour se connecter à un SGBD.*/
 	private ConnectionManager connector;
 	
 	
@@ -26,13 +29,28 @@ public class ConnectionController
 	/**
 	 * Constructeur commun.
 	 */
-	public ConnectionController ()
+	private ConnectionController()
 	{
-		this.gui = new ConnectionGUI(this);
+		INSTANCE = this;
+		this.gui = ConnectionGUI.getInstance();
 	}
 	
 	
 	//Methods
+	/**
+	 * Retourne une nouveau controleur de connexion si et
+	 * seulement s'il n'en existe pas pas déjà un,
+	 * retourne l'instance en cours sinon.
+	 * 
+	 * @return ConnectionController
+	 */
+	public static ConnectionController getInstance()
+	{
+		if (INSTANCE == null) new ConnectionController();
+		return INSTANCE;
+	}
+	
+	
 	/**
 	 * Tente d'établir une connexion vers un SGBD
 	 * en utilisant les informations de connexion de $parameters.
@@ -48,7 +66,7 @@ public class ConnectionController
 		if (response.hasSuccess()) {
 			this.saveDefaultValue(parameters);
 			this.gui.dispose();
-			new HomeController();
+			HomeController.getInstance();
 		}
 	}
 	 
@@ -69,8 +87,7 @@ public class ConnectionController
 	 * Retourne un objet pour se connecter vers un SGBD
 	 * en fonction du nom de $driver passé en paramètre.
 	 * 
-	 * @param driver : le nom grossier du pilote, parmi
-	 * "Oracle"
+	 * @param driver : parmi "Oracle",
 	 * @return ConnectionManager
 	 */
 	private ConnectionManager chooseManager(String driver)

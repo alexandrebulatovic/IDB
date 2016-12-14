@@ -13,10 +13,16 @@ import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
 
 import ddl.DDLController;
-import ddl.create.Table;
+import ddl.Table;
 
 import interf.BasicGUI;
 
+/**
+ * IHM pour supprimer des tables de la base de données.
+ * Singleton.
+ * 
+ * @author UGOLINI Romain.
+ */
 @SuppressWarnings("serial")
 public class DropTableGUI 
 extends BasicGUI
@@ -94,16 +100,16 @@ implements ActionListener
 	{
 		//Liste déroulante
 		this.tableComboBox = new JComboBox<String>();
-		this.bindElements(this.tableComboBox);
+		this.bindElement(this.tableComboBox);
 		
 		//Case à cocher.
 		this.cascadeCheckBox = new JCheckBox("suppression en cascade.");
-		this.bindElements(this.cascadeCheckBox);
+		this.bindElement(this.cascadeCheckBox);
 
 		//Bouton
 		this.okButton = new JButton("Supprimer");
 		this.okButton.addActionListener(this);
-		this.bindElements(this.okButton);
+		this.bindElement(this.okButton);
 	}
 	
 	
