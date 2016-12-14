@@ -69,7 +69,7 @@ public class HomeController
 	public void openSQLGUI()
 	{
 		this.sqlControl = SQLController.getInstance();
-		this.sqlControl.openSQL();
+		//this.sqlControl.openSQL();
 		
 	}
 	
