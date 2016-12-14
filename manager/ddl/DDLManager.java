@@ -1,20 +1,20 @@
-package ddl;
+package manager.ddl;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import ddl.create.Table;
-import useful.ConnectionManager;
+import ddl.Attribute;
+import ddl.Table;
+import manager.connection.ConnectionManager;
 import useful.CustomizedResponse;
 import useful.CustomizedResponseWithData;
 import useful.ForeinKey;
-import ddl.create.Attribute;
+
 
 public class DDLManager 
 {
