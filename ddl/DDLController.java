@@ -143,7 +143,6 @@ public class DDLController
 
 
 	public void modifier(String tableName) {
-		System.out.println("Je vais modifier la table "+tableName);
 		CreateTableView modify = ModifyTableView.getInstance();
 		
 		
@@ -158,7 +157,7 @@ public class DDLController
 		}
 		
 		
-		Attribute att = new Attribute(tableName, tableName, 0, false, false, false, false, tableName, tableName);
+		//Attribute att = new Attribute(tableName, tableName, 0, false, false, false, false, tableName, tableName);
 		modify.setView(attributes, tableName);
 		
 	}

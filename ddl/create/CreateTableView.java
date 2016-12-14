@@ -742,6 +742,8 @@ implements ActionListener, ItemListener
 	 * @param string
 	 */
 	public void setView(List<Attribute> attributes, String tableName) {
+		
+		this.resetView();
 		for (Attribute a : attributes){
 			this.addAttributeToTable(a);
 		}

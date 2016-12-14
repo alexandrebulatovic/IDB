@@ -1,12 +1,16 @@
 package ddl.modify;
 
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 
 import ddl.DDLController;
 import ddl.DDLManager;
 import interf.ListeningGUI;
+
+
 
 public class ModifyTableChoiceView
 extends ListeningGUI
@@ -63,17 +67,17 @@ implements ActionListener, ItemListener
 
 
 	private void initCombos() {
-		String[] valeurs = null;
+		List<String> valeurs = new ArrayList<String>();
 		DDLManager manager = DDLManager.getInstance();
 		valeurs = manager.getTablesString();
-		if (valeurs == null){
+		if (valeurs.isEmpty()){
 			this.comboTables.setEnabled(false);
-			valeurs = new String[]{"pas de tables"};
+			valeurs.add("pas de tables");
 		}
+
+		String[] strings = valeurs.stream().toArray(String[]::new);
 		
-		
-		this.comboTables.setModel(new javax.swing.DefaultComboBoxModel<>(valeurs));
-		//TODO faire une requette pour mettre les bonnes vaeurs;
+		this.comboTables.setModel(new javax.swing.DefaultComboBoxModel<>(strings));
 	}
 
 
