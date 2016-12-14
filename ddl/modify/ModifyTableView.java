@@ -15,8 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
-import manager.ConnectionManager;
-import manager.DDLManager;
+import manager.connection.ConnectionManager;
+import manager.ddl.DDLManager;
 
 import ddl.create.CreateTableGUI;
 import ddl.drop.DropTableGUI;

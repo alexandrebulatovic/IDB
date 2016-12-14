@@ -1,6 +1,6 @@
 package ddl;
 
-import manager.DDLManager;
+import manager.ddl.DDLManager;
 import ddl.create.CreateTableGUI;
 import ddl.drop.DropTableGUI;
 import ddl.modify.ModifyTableView;

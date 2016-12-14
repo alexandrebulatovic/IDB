@@ -1,9 +1,9 @@
 package connect;
 
-import manager.ConnectionManager;
+import manager.connection.ConnectionManager;
+import manager.connection.OracleConnectionManager;
 import home.HomeController;
 import useful.CustomizedResponse;
-import useful.OracleConnectionManager;
 
 /**
  * Gère le dialogue entre l'IHM et le connecteur au SGBD.

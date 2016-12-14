@@ -12,8 +12,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import manager.ConnectionManager;
-import manager.DDLManager;
+import manager.connection.ConnectionManager;
+import manager.ddl.DDLManager;
 
 import ddl.DDLController;
 import ddl.create.CreateTableGUI;

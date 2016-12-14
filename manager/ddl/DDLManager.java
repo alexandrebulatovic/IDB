@@ -1,4 +1,4 @@
-package manager;
+package manager.ddl;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import manager.connection.ConnectionManager;
 
 import ddl.Attribute;
 import ddl.Table;
