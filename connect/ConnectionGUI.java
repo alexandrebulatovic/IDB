@@ -31,10 +31,6 @@ public class ConnectionGUI
 extends BasicGUI
 implements ActionListener, ItemListener
 {
-	//Instance
-	/** Instance singleton en cours.*/
-	private static ConnectionGUI INSTANCE;
-	
 	//Attributs
 	/**Controleur de connexion.*/
 	private ConnectionController control;
@@ -102,11 +98,10 @@ implements ActionListener, ItemListener
 	/**
 	 * Constructeur commun.
 	 */
-	private ConnectionGUI()
+	public ConnectionGUI(ConnectionController control)
 	{
 		super("Connexion", null, 450, 410, 20);
-		INSTANCE = this;
-		this.control = ConnectionController.getInstance();
+		this.control = control;
 		this.createAndBindComponents();
 		this.handleFieldsSize();
 		this.limitCharacters();
@@ -117,12 +112,6 @@ implements ActionListener, ItemListener
 	
 	
 	//Méthodes
-	public static ConnectionGUI getInstance()
-	{
-		if (INSTANCE == null) new ConnectionGUI();
-		return INSTANCE;
-	}
-	
 	@Override
 	public boolean isComplete() {
 		for (JComponent jc : this.components) {

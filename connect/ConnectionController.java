@@ -8,16 +8,11 @@ import useful.CustomizedResponse;
 
 /**
  * Gère le dialogue entre l'IHM et le connecteur au SGBD.
- * Singleton.
  * 
  * @author UGOLINI Romain
  */
 public class ConnectionController 
 {
-	//Instance
-	/** Instance singleton en cours.*/
-	private static ConnectionController INSTANCE;
-	
 	//Attributes
 	/** IHM pour se connecter à un SGBD.*/
 	private ConnectionGUI gui;
@@ -32,29 +27,14 @@ public class ConnectionController
 	/**
 	 * Constructeur commun.
 	 */
-	private ConnectionController()
+	public ConnectionController()
 	{
-		INSTANCE = this;
 		this.dvm = new DefaultValueManager();
-		this.gui = ConnectionGUI.getInstance();
+		this.gui = new ConnectionGUI(this);
 	}
 	
 	
 	//Methods
-	/**
-	 * Retourne une nouveau controleur de connexion si et
-	 * seulement s'il n'en existe pas pas déjà un,
-	 * retourne l'instance en cours sinon.
-	 * 
-	 * @return ConnectionController
-	 */
-	public static ConnectionController getInstance()
-	{
-		if (INSTANCE == null) new ConnectionController();
-		return INSTANCE;
-	}
-	
-	
 	/**
 	 * Tente d'établir une connexion vers un SGBD
 	 * en utilisant les informations de connexion de $parameters.
