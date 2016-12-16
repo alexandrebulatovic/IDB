@@ -103,7 +103,7 @@ implements ActionListener
 		this.bindElement(this.tableComboBox);
 		
 		//Case à cocher.
-		this.cascadeCheckBox = new JCheckBox("suppression en cascade.");
+		this.cascadeCheckBox = new JCheckBox("supprimer malgré les références");
 		this.bindElement(this.cascadeCheckBox);
 
 		//Bouton

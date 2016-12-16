@@ -2,6 +2,8 @@ package connect;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -27,7 +29,7 @@ import interf.BasicGUI;
 @SuppressWarnings("serial")
 public class ConnectionGUI 
 extends BasicGUI
-implements ActionListener
+implements ActionListener, ItemListener
 {
 	//Instance
 	/** Instance singleton en cours.*/
@@ -109,7 +111,7 @@ implements ActionListener
 		this.handleFieldsSize();
 		this.limitCharacters();
 		this.listenFields();
-		this.setDefaultValues();
+		this.setDefaultValues(false);
 		this.setProperties(EXIT_ON_CLOSE);
 	}
 	
@@ -140,6 +142,12 @@ implements ActionListener
 	}
 	
 	
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getSource() == this.driverCombo) this.setDefaultValues(true);
+	}
+
+
 	//Privées
 	/**
 	 * Instancie, dimensionne et positionne les différentes éléments de l'IHM.
@@ -155,7 +163,9 @@ implements ActionListener
 		//TODO : ajouter d'autres pilotes
 		//TODO : créer une classe statique avec des constantes sur les nom des pilotes.
 		this.driverCombo.addItem("Oracle");
+		this.driverCombo.addItem("MySQL");
 		this.bindElement(this.driverCombo);
+		this.driverCombo.addItemListener(this);
 		
 		//Adresse IP
 		this.ipLabel = new JLabel("Adesse IP du serveur :");
@@ -278,15 +288,31 @@ implements ActionListener
 	
 	
 	/**
-	 * Inscrit des valeurs par défaut dans les boites de saisies.
+	 * Inscrit les valeurs par défaut de la dernière connexion dans l'IHM.
+	 * Si $combo est vrai, les valeurs sont prises en fonction du pilote
+	 * affiché dans la liste déroulante, sinon en fonction de ce qui est écrit
+	 * dans le fichier xml des valeurs.
+	 * 
+	 * @param combo : vrai si et seulement si les valeurs dépendent du pilote
+	 * choisi dans la liste déroulante, faux sinon.
 	 */
-	private void setDefaultValues()
+	private void setDefaultValues(boolean combo)
 	{
-		DefaultValueManager dvm = new DefaultValueManager();
-		this.ipField.setText(dvm.getUrl());
-		this.userField.setText(dvm.getUser());
-		this.bdField.setText(dvm.getDataBase());
-		this.portField.setText(dvm.getPort());
+		ConnectionStrings cs;
+		if (combo) {
+			
+			cs = this.control.getDefaultValues(
+					this.driverCombo.getSelectedItem().toString());
+		}
+		else {
+			cs = this.control.getDefaultValues();
+			this.driverCombo.setSelectedItem(cs.driver);
+		}
+		
+		this.ipField.setText(cs.url);
+		this.userField.setText(cs.user);
+		this.bdField.setText(cs.baseName);
+		this.portField.setText(cs.port);
 	}
 	
 	

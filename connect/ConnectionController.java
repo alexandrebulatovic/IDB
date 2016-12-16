@@ -1,6 +1,7 @@
 package connect;
 
 import manager.connection.ConnectionManager;
+import manager.connection.MySQLConnectionManager;
 import manager.connection.OracleConnectionManager;
 import home.HomeController;
 import useful.CustomizedResponse;
@@ -24,6 +25,8 @@ public class ConnectionController
 	/** Objet pour se connecter à un SGBD.*/
 	private ConnectionManager connector;
 	
+	/** Gestionnaire des valeurs de connexions par défaut.*/
+	private DefaultValueManager dvm;
 	
 	//Constructeurs
 	/**
@@ -32,6 +35,7 @@ public class ConnectionController
 	private ConnectionController()
 	{
 		INSTANCE = this;
+		this.dvm = new DefaultValueManager();
 		this.gui = ConnectionGUI.getInstance();
 	}
 	
@@ -61,7 +65,7 @@ public class ConnectionController
 	{
 		this.connector = this.chooseManager(parameters.driver);
 		CustomizedResponse response = this.connector.connect(parameters);
-		this.talk(response.toString());
+		this.gui.talk(response.toString());
 		
 		if (response.hasSuccess()) {
 			this.saveDefaultValue(parameters);
@@ -69,19 +73,39 @@ public class ConnectionController
 			HomeController.getInstance();
 		}
 	}
-	 
+	
 	
 	/**
-	 * Communique avec l'utilisateur en lui affichant $msg.
+	 * Retourne les informations de la dernière connexion valide.
 	 * 
-	 * @param msg : un message à transmettre à l'utilisateur.
+	 * @return ConnectionStrings
 	 */
-	public void talk(String msg)
+	public ConnectionStrings getDefaultValues() 
 	{
-		this.gui.talk(msg);
+		return new ConnectionStrings(
+				this.dvm.getDriver(), 
+				this.dvm.getUrl(), 
+				this.dvm.getUser(), 
+				"", 
+				this.dvm.getDataBase(), 
+				this.dvm.getPort());
 	}
 	
 	
+	/**
+	 * Retourne les informations de la dernière connexion valide
+	 * au SGBD $dbms.
+	 * 
+	 * @param dbms : nom du SGBD, null interdit.
+	 * @return ConnectionStrings
+	 */
+	public ConnectionStrings getDefaultValues(String dmbs) 
+	{
+		this.dvm.setDriver(dmbs);
+		return this.getDefaultValues();
+	}
+
+
 	//Privates
 	/**
 	 * Retourne un objet pour se connecter vers un SGBD
@@ -94,6 +118,7 @@ public class ConnectionController
 	{
 		switch (driver){
 		case "Oracle" : return OracleConnectionManager.getConnector();
+		case "MySQL" : return MySQLConnectionManager.getConnector();
 		default : return null;
 		}
 	}
@@ -109,6 +134,7 @@ public class ConnectionController
 	private void saveDefaultValue(ConnectionStrings param)
 	{
 		DefaultValueManager dvm = new DefaultValueManager();
+		dvm.setDriver(param.driver);
 		dvm.setUrl(param.url);
 		dvm.setUser(param.user);
 		dvm.setPort(param.port);
