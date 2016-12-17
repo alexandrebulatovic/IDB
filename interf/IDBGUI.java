@@ -10,10 +10,8 @@ import useful.Response;
 public interface IDBGUI 
 {	
 	/**
-	 * Retourne vrai si et seulement si tous les composants nécessaires
+	 * @return Vrai si et seulement si tous les composants nécessaires
 	 * de $this sont remplis, faux sinon.
-	 * 
-	 * @return boolean
 	 */
 	public boolean isComplete();
 	
@@ -28,6 +26,8 @@ public interface IDBGUI
 	
 	/**
 	 * Communique avec l'utilisateur en affichant $reponse.
+	 * La couleur du message est noire si et seulement si $response 
+	 * est positive, rouge sinon.
 	 * 
 	 * @param response : une reponse suite à une tentative, null interdit.
 	 */

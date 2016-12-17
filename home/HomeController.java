@@ -99,7 +99,7 @@ public class HomeController
 	 * en utilisant les informations de connexion de $parameters.
 	 * 
 	 * @param parameters : un objet ConnectionStrings, null interdit.
-	 * @return CustomizedResponse
+	 * @return Une réponse personnalisée qui décrit la tentative de connexion.
 	 */
 	public Response connect(ConnectionStrings parameters)
 	{
@@ -110,9 +110,7 @@ public class HomeController
 	
 	
 	/**
-	 * Retourne les informations de la dernière connexion valide.
-	 * 
-	 * @return ConnectionStrings
+	 * @return Les informations de la dernière connexion valide.
 	 */
 	public ConnectionStrings getDefaultValues() 
 	{
@@ -127,15 +125,13 @@ public class HomeController
 	
 	
 	/**
-	 * Retourne les informations de la dernière connexion valide
-	 * au SGBD $dbms.
-	 * 
-	 * @param dbms : nom du SGBD, null interdit.
-	 * @return ConnectionStrings
+	 * @param driver : nom du pilote de SGBD, null interdit.
+	 * @return Retourne les informations de la dernière connexion valide
+	 * avec le pilote $driver.
 	 */
-	public ConnectionStrings getDefaultValues(String dmbs) 
+	public ConnectionStrings getDefaultValues(String driver) 
 	{
-		this.dvm.setDriver(dmbs);
+		this.dvm.setDriver(driver);
 		return this.getDefaultValues();
 	}
 
@@ -145,7 +141,7 @@ public class HomeController
 	 * dans un fichier xml  situé dans le répertoire courant.
 	 * Le fichier est créé s'il n'existe pas.
 	 * 
-	 * @param param : un objet ConnectionStrings
+	 * @param param : les informations de connexions, null interdit.
 	 */
 	public void saveDefaultValue(ConnectionStrings param)
 	{
@@ -157,14 +153,19 @@ public class HomeController
 		this.dvm.save();
 	}
 
-
+	
+	/**
+	 * @return Le nom de l'utilisateur si et seulement si l'application
+	 * est connectée à un SGBD, null sinon.
+	 */
+	public String getUser(){return this.connector.user();}
+	
+	
 	//Privates
 	/**
-	 * Retourne un objet pour se connecter vers un SGBD
+	 * @param driver : parmi "Oracle", "MySQL", null interdit.
+	 * @return Un objet pour se connecter vers un SGBD
 	 * en fonction du nom de $driver passé en paramètre.
-	 * 
-	 * @param driver : parmi "Oracle",
-	 * @return ConnectionManager
 	 */
 	private ConnectionManager chooseManager(String driver)
 	{

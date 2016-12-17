@@ -39,6 +39,7 @@ implements ActionListener
 	{
 		super("Menu principal", null, 400, 400, 30);
 		this.control = control;
+		this.talk("Bienvenue " + this.control.getUser());
 		this.handleButtons();
 		this.setProperties(EXIT_ON_CLOSE);
 	}
@@ -114,10 +115,10 @@ implements ActionListener
 	 */
 	private void bindButtons()
 	{
-		this.bindElement(this.sqlButton);
-		this.bindElement(this.createButton);
-		this.bindElement(this.alterButton);
-		this.bindElement(this.dropButton);
+		this.bindAndAdd(this.sqlButton);
+		this.bindAndAdd(this.createButton);
+		this.bindAndAdd(this.alterButton);
+		this.bindAndAdd(this.dropButton);
 		for (JComponent jc : this.components) {
 			if (jc.getClass().getName().endsWith("JButton")) {
 				((JButton)jc).addActionListener(this);
@@ -149,7 +150,7 @@ implements ActionListener
 		this.control.openDropGUI();
 	}
 
-
+	
 	private void alterButtonAction() {
 		this.control.openModifyGUI();
 	}

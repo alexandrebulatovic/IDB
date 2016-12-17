@@ -17,7 +17,7 @@ import java.io.IOException;
  */
 public class DefaultValueManager 
 {
-	//Static
+	//Statiques
 	/**Nom du fichier xml contenant les valeurs de connexion par défaut.*/
 	private static final String FILENAME = "default_connection.xml";
 	
@@ -65,50 +65,38 @@ public class DefaultValueManager
 	
 	//Méthods
 	/**
-	 * Retourne vrai si et seulement si $this possède des
+	 * @return Vrai si et seulement si $this possède des
 	 * propriétés à l'instant 't', faux sinon.
-	 * 
-	 * @return boolean
 	 */
 	public boolean hasProperty(){return this.exists;}
 	
 	
 	/**
-	 * Retourne le nom du pilote par défaut.
-	 * 
-	 * @return String
+	 * @return Le nom du pilote par défaut.
 	 */
 	public String getDriver(){return this.getDefaultValue(DRIVER);}
 	
 	
 	/**
-	 * Retourne l'URL de connexion par défaut.
-	 * 
-	 * @return String
+	 * @return L'URL de connexion par défaut.
 	 */
 	public String getUrl(){return this.getDefaultValue(URL);}
 	
 	
 	/**
-	 * Retourne le nom d'utilisateur par défaut.
-	 * 
-	 * @return String
+	 * @return Le nom d'utilisateur par défaut.
 	 */
 	public String getUser(){return this.getDefaultValue(USER);}
 	
 	
 	/**
-	 * Retourne le nom de la base de données par défaut.
-	 * 
-	 * @return String
+	 * @return Le nom de la base de données par défaut.
 	 */
 	public String getDataBase(){return this.getDefaultValue(DB);}
 	
 	
 	/**
-	 * Retourne le nom du port par défaut.
-	 * 
-	 * @return String
+	 * @return Le nom du port par défaut.
 	 */
 	public String getPort(){return this.getDefaultValue(PORT);}
 	
@@ -185,10 +173,8 @@ public class DefaultValueManager
 	
 	//Privates
 	/**
-	 * Retourne la valeur par défaut du champ $key.
-	 * 
 	 * @param key : clef pour récupérer une valeur par défaut, null interdit.
-	 * @return String
+	 * @return La valeur par défaut du champ $key.
 	 */
 	private String getDefaultValue(String key)
 	{
@@ -229,11 +215,9 @@ public class DefaultValueManager
 	
 	
 	/**
-	 * Retourne le nom du pilote par défaut suivit d'un underscore
-	 * si et seulement si $key != DRIVER, retourne une chaîne vide sinon.
-	 * 
 	 * @param key : nom de la clef, null interdit.
-	 * @return String
+	 * @return Le nom du pilote par défaut suivit d'un underscore
+	 * si et seulement si $key != DRIVER, une chaîne vide sinon.
 	 */
 	private String keyPrefix(String key)
 	{

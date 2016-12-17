@@ -10,7 +10,7 @@ import ddl.modify.ModifyTableChoiceGUI;
 import ddl.modify.ModifyTableGUI;
 import manager.ddl.DDLManager;
 import useful.Response;
-import useful.CustomizedResponseWithData;
+import useful.ResponseData;
 
 /**
  * Assure le dialogue entre les IHM du langage de définition des données
@@ -127,7 +127,7 @@ public class DDLController
 	 * 
 	 * @return CustomizedResponseWithData
 	 */
-	public CustomizedResponseWithData<String> getTables()
+	public ResponseData<String> getTables()
 	{
 		return this.manager.getTables();
 	}
@@ -140,7 +140,7 @@ public class DDLController
 	 * @param table : nom de la table, ne doit pas être null.
 	 * @return CustomizedResponseWithData
 	 */
-	public CustomizedResponseWithData<String> getPrimaryKey(String table)
+	public ResponseData<String> getPrimaryKey(String table)
 	{
 		return this.manager.getPrimaryKey(table);
 	}

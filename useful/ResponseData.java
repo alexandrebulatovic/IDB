@@ -2,7 +2,7 @@ package useful;
 
 import java.util.ArrayList;
 
-public class CustomizedResponseWithData <T>
+public class ResponseData <T>
 extends Response
 {
 	//Attributes
@@ -18,7 +18,7 @@ extends Response
 	 * @param msg : message associé à la tentative.
 	 * @param data : liste des données à retourner.
 	 */
-	public CustomizedResponseWithData(boolean response, String msg, ArrayList<T> data)
+	public ResponseData(boolean response, String msg, ArrayList<T> data)
 	{
 		super(response, msg);
 		this.data = data; //TODO : virer ce pointeur par un ajout element par élément
@@ -31,7 +31,7 @@ extends Response
 	 * @param response
 	 * @param msg
 	 */
-	public CustomizedResponseWithData(boolean response, String msg)
+	public ResponseData(boolean response, String msg)
 	{
 		super(response, msg);
 		this.data = new ArrayList<T> ();
@@ -45,7 +45,7 @@ extends Response
 	 * @param copy : un objet CustomizedResponse à recopier.
 	 * @param data : liste des données à retourner.
 	 */
-	public CustomizedResponseWithData(Response copy, ArrayList<T> data)
+	public ResponseData(Response copy, ArrayList<T> data)
 	{
 		super(copy);
 		this.data = data; //TODO : virer ce pointeur par un ajout element par élément

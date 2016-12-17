@@ -90,7 +90,7 @@ implements ActionListener
 	{
 		this.sqlArea = new JTextArea();
 		this.sqlArea.setText("N'entrez qu'une requete à fois!");
-		this.bindElement(this.sqlArea, 200);
+		this.bindAndAdd(this.sqlArea, 200);
 	}
 
 	/**
@@ -102,7 +102,7 @@ implements ActionListener
 		this.okButton = new JButton("Envoyer");
 		this.okButton.setActionCommand("send_sql_query");
 		this.okButton.addActionListener(this);
-		this.bindElement(this.okButton, 40);
+		this.bindAndAdd(this.okButton, 40);
 	}
 
 

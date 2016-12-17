@@ -12,7 +12,7 @@ import ddl.Attribute;
 import ddl.Table;
 import manager.connection.ConnectionManager;
 import useful.Response;
-import useful.CustomizedResponseWithData;
+import useful.ResponseData;
 import useful.ForeinKey;
 
 
@@ -298,11 +298,11 @@ public class DDLManager
 	 * @param table : nom de la table où chercher les clées primaires, ne doit pas être null.
 	 * @return CustomizedResponseWithData
 	 */
-	public CustomizedResponseWithData<String> getPrimaryKey(String table)
+	public ResponseData<String> getPrimaryKey(String table)
 	{
 		Response cr = this.getMetaData("PRIMARY KEYS", table);
 		if (cr == null) return this.readMetaData("Clées primaires récupérées", 4);
-		else 			return new CustomizedResponseWithData<String>(cr, null);
+		else 			return new ResponseData<String>(cr, null);
 	}
 	
 
@@ -316,11 +316,11 @@ public class DDLManager
 	 * 
 	 * @return CustomizedResponseWithData
 	 */
-	public CustomizedResponseWithData<String> getTables()
+	public ResponseData<String> getTables()
 	{
 		Response cr = this.getMetaData("TABLES", null);
 		if (cr == null) return this.readMetaData("Tables récupérées", 3);
-		else 			return new CustomizedResponseWithData<String>(cr, null);
+		else 			return new ResponseData<String>(cr, null);
 	}
 	
 	
@@ -432,7 +432,7 @@ public class DDLManager
 	 * @param column : numero de la colonne où chercher les méta-données.
 	 * @return CustomizedResponseWithData
 	 */
-	private CustomizedResponseWithData<String> readMetaData(String succesMessage, int column)
+	private ResponseData<String> readMetaData(String succesMessage, int column)
 	{
 		ArrayList<String> data = new ArrayList<String>();
 		try{
@@ -440,10 +440,10 @@ public class DDLManager
 				data.add(this.metaDataResult.getString(column));
 			}
 			this.metaDataResult.close();
-			return new CustomizedResponseWithData<String> (true, succesMessage, data);
+			return new ResponseData<String> (true, succesMessage, data);
 		}
 		catch(SQLException e){
-			return new CustomizedResponseWithData<String> (false, e.getMessage(), null);
+			return new ResponseData<String> (false, e.getMessage(), null);
 		}
 		
 	}

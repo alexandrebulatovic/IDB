@@ -102,9 +102,9 @@ public abstract class ConnectionManager
 	 * Ne doit être utilisé que si $this s'est déjà connecté avec succès
 	 * au cours de l'exécution de l'application.
 	 * 
-	 * @return CustomizedResponse
+	 * @return Response
 	 */
-	public Response connect()
+	public Response reconnect()
 	{
 		return this.connect(this.parameters);
 	}

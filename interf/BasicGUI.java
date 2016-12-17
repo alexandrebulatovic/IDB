@@ -5,6 +5,7 @@ import javax.swing.*;
 
 import useful.Response;
 
+import java.awt.Color;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
@@ -12,14 +13,14 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 /**
- * Propose un moyen simple de créer des vues simples. <br/><br/>
+ * Propose un moyen simple de créer des IHM basiques. <br/><br/>
  * L'objectif de cette classe abstraite est de permettre à ses classes filles de ne plus
  * se soucier : <br/>
- * -de la liaison avec l'IHM, <br/>
- * -des coordonnées, <br/>
- * -et des dimensions de chaque composant placé sur l'IHM.<br/><br/>
+ * -de la liaison des composants avec l'IHM, <br/>
+ * -de leurs coordonnées, <br/>
+ * -et de leurs dimensions.<br/><br/>
  * 
- *  Pour cela, elle met à disposition la méthode 'bindElement()' et ses différentes surcharges.
+ *  Pour cela, la classe met à disposition la méthode 'bindElement()' et ses différentes surcharges.
  *  Chacune de ces méthodes effectue les opérations évoquées précedemment et limitent l'implication
  *  du développeur. Chaque appel à une de ces méthodes place automatiquement le composant concerné
  *  à un endroit différent du précédent composant. La largeur des composants est gérée 
@@ -91,7 +92,7 @@ implements IDBGUI, WindowListener, ActionListener
 		this.name = name;
 		this.components = new ArrayList<JComponent>();
 		this.messageLabel = new JLabel();
-		this.bindElement(this.messageLabel);
+		this.bindAndAdd(this.messageLabel);
 		this.addWindowListener(this);
 	}
 	
@@ -106,7 +107,7 @@ implements IDBGUI, WindowListener, ActionListener
 	 * 
 	 * @param component : un objet JComponent, null interdit.
 	 */
-	protected void bindElement(JComponent component)
+	protected void bindAndAdd(JComponent component)
 	{
 		Rectangle r = new Rectangle(
 				this.componentLeft, this.componentTop, this.componentWidth, this.componentHeight);
@@ -125,7 +126,7 @@ implements IDBGUI, WindowListener, ActionListener
 	 * @param component : un objet JComponent, null interdit.
 	 * @param height :  un entier naturel > 0 et < à la hauteur de l'IHM.
 	 */
-	protected void bindElement(JComponent component, int height)
+	protected void bindAndAdd(JComponent component, int height)
 	{
 		Rectangle r = new Rectangle(
 				this.componentLeft, this.componentTop, this.componentWidth, height);
@@ -149,7 +150,7 @@ implements IDBGUI, WindowListener, ActionListener
 	 * @param alignNext : vrai si et seulement si le prochain composant doit
 	 * être aligné à droite, faux sinon.
 	 */
-	protected void bindElement(JComponent component, int nb, boolean alignNext)
+	protected void bindAndAdd(JComponent component, int nb, boolean alignNext)
 	{
 		int width = this.componentWidth/nb;
 		Rectangle r = new Rectangle(
@@ -192,6 +193,7 @@ implements IDBGUI, WindowListener, ActionListener
 	@Override
 	public void talk(String msg)
 	{
+		this.messageLabel.setForeground(Color.BLACK);
 		this.messageLabel.setText(msg);
 	}
 	
@@ -199,6 +201,8 @@ implements IDBGUI, WindowListener, ActionListener
 	@Override
 	public void talk(Response response)
 	{
+		this.messageLabel.setForeground(
+				response.hasSuccess() ? Color.BLACK : Color.RED);
 		this.messageLabel.setText(response.toString());	
 	}
 	

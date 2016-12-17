@@ -148,55 +148,55 @@ implements ActionListener, ItemListener
 	{
 		//pilotes.
 		this.driverLabel = new JLabel("Pilote :");
-		this.bindElement(this.driverLabel);
+		this.bindAndAdd(this.driverLabel);
 		
 		this.driverCombo = new JComboBox<String>();
 		//TODO : ajouter d'autres pilotes
 		//TODO : créer une classe statique avec des constantes sur les nom des pilotes.
 		this.driverCombo.addItem("Oracle");
 		this.driverCombo.addItem("MySQL");
-		this.bindElement(this.driverCombo);
+		this.bindAndAdd(this.driverCombo);
 		this.driverCombo.addItemListener(this);
 		
 		//Adresse IP
 		this.ipLabel = new JLabel("Adesse IP du serveur :");
-		this.bindElement(this.ipLabel);
+		this.bindAndAdd(this.ipLabel);
 		
 		this.ipField = new JTextField();
-		this.bindElement(this.ipField);
+		this.bindAndAdd(this.ipField);
 		
 		//Utilisateur
 		this.userLabel = new JLabel("Nom d'utilisateur : ");
-		this.bindElement(this.userLabel);
+		this.bindAndAdd(this.userLabel);
 		
 		this.userField = new JTextField();
-		this.bindElement(this.userField);
+		this.bindAndAdd(this.userField);
 		
 		//Mot de passe
 		this.passwordLabel = new JLabel("Mot de passe : ");
-		this.bindElement(this.passwordLabel);
+		this.bindAndAdd(this.passwordLabel);
 		
 		this.passwordField = new JPasswordField();
-		this.bindElement(this.passwordField);
+		this.bindAndAdd(this.passwordField);
 		
 		//Base de données
 		this.bdLabel = new JLabel("Nom de base de données : ");
-		this.bindElement(this.bdLabel);
+		this.bindAndAdd(this.bdLabel);
 		
 		this.bdField = new JTextField();
-		this.bindElement(this.bdField);
+		this.bindAndAdd(this.bdField);
 		
 		//Numéro de port
 		this.portLabel = new JLabel("Numéro de port : ");
-		this.bindElement(this.portLabel);
+		this.bindAndAdd(this.portLabel);
 		this.portField = new JTextField();
-		this.bindElement(this.portField);
+		this.bindAndAdd(this.portField);
 		
 		//Bouton valider
 		this.okButton = new JButton("Se connecter");
 		this.okButton.setActionCommand("OK");
 		this.okButton.addActionListener(this);
-		this.bindElement(this.okButton, 40);
+		this.bindAndAdd(this.okButton, 40);
 	}
 
 
@@ -314,11 +314,9 @@ implements ActionListener, ItemListener
 	
 	
 	/**
-	 * Retourne une chaîne de caractères différente du mot de passe
+	 * @return Une chaîne de caractères différente du mot de passe
 	 * saisi si et seulement si ce dernier commence ou termine par un espace.
 	 * Retourne le mot de passe saisi dans les autres cas.
-	 * 
-	 * @return String
 	 */
 	private String rawPassword()
 	{

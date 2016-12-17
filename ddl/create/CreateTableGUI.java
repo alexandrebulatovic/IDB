@@ -9,7 +9,7 @@ import java.awt.Font;
 
 import javax.swing.*;
 
-import useful.CustomizedResponseWithData;
+import useful.ResponseData;
 import useful.MaxLengthTextDocument;
 import ddl.Attribute;
 import ddl.DDLController;
@@ -65,7 +65,7 @@ implements ActionListener, ItemListener
 	 */
 	private String succesAttribute = "SUCCES : ";
 
-	private CustomizedResponseWithData<String> res;
+	private ResponseData<String> res;
 	/**
 	 * 
 	 */
@@ -916,7 +916,7 @@ implements ActionListener, ItemListener
 	 */
 	private void initComboBoxFkAttributeName(String table){
 		this.foreignKeyAttributeComboBoxModel.removeAllElements();
-		CustomizedResponseWithData<String> result = control.getPrimaryKey(table);
+		ResponseData<String> result = control.getPrimaryKey(table);
 		//TODO : Il faut controler qu'il n'y ait pas eu d'erreur ! 
 		//TODO : le for each boucle sur un null si erreur !
 		for (String s : result.getCollection()) {

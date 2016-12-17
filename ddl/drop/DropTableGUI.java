@@ -10,7 +10,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
 import useful.Response;
-import useful.CustomizedResponseWithData;
+import useful.ResponseData;
 
 import ddl.DDLController;
 import ddl.Table;
@@ -100,16 +100,16 @@ implements ActionListener
 	{
 		//Liste déroulante
 		this.tableComboBox = new JComboBox<String>();
-		this.bindElement(this.tableComboBox);
+		this.bindAndAdd(this.tableComboBox);
 		
 		//Case à cocher.
 		this.cascadeCheckBox = new JCheckBox("supprimer malgré les références");
-		this.bindElement(this.cascadeCheckBox);
+		this.bindAndAdd(this.cascadeCheckBox);
 
 		//Bouton
 		this.okButton = new JButton("Supprimer");
 		this.okButton.addActionListener(this);
-		this.bindElement(this.okButton);
+		this.bindAndAdd(this.okButton);
 	}
 	
 	
@@ -121,7 +121,7 @@ implements ActionListener
 	private void fillComboBox()
 	{
 		String msg;
-		CustomizedResponseWithData<String> 
+		ResponseData<String> 
 			response = this.control.getTables();
 		msg = response.getMessage();
 		if (response.hasSuccess()) {
@@ -145,7 +145,7 @@ implements ActionListener
 					selection, 
 					this.cascadeCheckBox.isSelected());
 			Response response = this.control.dropTable(table);
-			this.talk(response.toString()); 
+			this.talk(response); 
 			if (response.hasSuccess()) {
 				this.tableComboBox.removeItem(selection);
 				this.enableOrDisableComponent();
