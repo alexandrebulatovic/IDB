@@ -36,76 +36,7 @@ public class HomeController
 	 */
 	public HomeController()
 	{
-//		this.gui.talk("Bienvenue " 
-//				+ ConnectionManager.getInstance().user());
 		this.dvm = new DefaultValueManager();
-	}
-	
-	
-	//Méthodes
-	/**
-	 * Ouvre l'IHM pour créer des tables.
-	 */
-	public void openCreateGUI()
-	{
-		this.ddlControl = DDLController.getInstance();
-		this.ddlControl.openCreateGUI();
-	}
-	
-	/**
-	 * Ouvre l'IHM de modification des tables.
-	 */
-	public void openModifyGUI() {
-		this.ddlControl = DDLController.getInstance();
-		this.ddlControl.openModifyGUI();
-		
-	}
-	
-	/**
-	 * Ouvre l'IHM pour rentrer des requetes SQL.
-	 */
-	public void openSQLGUI()
-	{
-		this.sqlControl = SQLController.getInstance();
-		//this.sqlControl.openSQL();
-		
-	}
-	
-	
-	/**
-	 * Ouvre l'IHM de suppression des tables.
-	 */
-	public void openDropGUI()
-	{
-		this.ddlControl = DDLController.getInstance();
-		this.ddlControl.openDropGUI();
-	}
-	
-	
-	/**
-	 * Ferme proprement les objets liés à la connexion.
-	 */
-	public void disconnect()
-	{
-		if (this.ddlControl != null) this.ddlControl.closeStatement();
-		ConnectionManager.getInstance().disconnect();
-	}
-
-	
-	
-	//Methods de coonnexion
-	/**
-	 * Tente d'établir une connexion vers un SGBD
-	 * en utilisant les informations de connexion de $parameters.
-	 * 
-	 * @param parameters : un objet ConnectionStrings, null interdit.
-	 * @return Une réponse personnalisée qui décrit la tentative de connexion.
-	 */
-	public Response connect(ConnectionStrings parameters)
-	{
-		this.connector = this.chooseManager(parameters.driver);
-		return this.connector.connect(parameters);
-
 	}
 	
 	
@@ -122,17 +53,35 @@ public class HomeController
 				this.dvm.getDataBase(), 
 				this.dvm.getPort());
 	}
-	
-	
+
+
 	/**
+	 * Enregistre $driver comme étant le dernier SGBD connecté.
+	 * 
 	 * @param driver : nom du pilote de SGBD, null interdit.
-	 * @return Retourne les informations de la dernière connexion valide
+	 * @return Les informations de la dernière connexion valide
 	 * avec le pilote $driver.
 	 */
 	public ConnectionStrings getDefaultValues(String driver) 
 	{
 		this.dvm.setDriver(driver);
 		return this.getDefaultValues();
+	}
+
+
+	//Methods de coonnexion
+	/**
+	 * Tente d'établir une connexion vers un SGBD
+	 * en utilisant les informations de connexion de $parameters.
+	 * 
+	 * @param parameters : un objet ConnectionStrings, null interdit.
+	 * @return Une réponse personnalisée qui décrit la tentative de connexion.
+	 */
+	public Response connect(ConnectionStrings parameters)
+	{
+		this.connector = this.chooseManager(parameters.driver);
+		return this.connector.connect(parameters);
+	
 	}
 
 
@@ -153,14 +102,64 @@ public class HomeController
 		this.dvm.save();
 	}
 
-	
+
 	/**
 	 * @return Le nom de l'utilisateur si et seulement si l'application
 	 * est connectée à un SGBD, null sinon.
 	 */
 	public String getUser(){return this.connector.user();}
+
+
+	/**
+	 * Ouvre l'IHM pour rentrer des requetes SQL.
+	 */
+	public void openSQLGUI()
+	{
+		this.sqlControl = SQLController.getInstance();
+		//this.sqlControl.openSQL();
+		
+	}
+
+
+	//Méthodes
+	/**
+	 * Ouvre l'IHM pour créer des tables.
+	 */
+	public void openCreateGUI()
+	{
+		this.ddlControl = DDLController.getInstance();
+		this.ddlControl.openCreateGUI();
+	}
+	
+	/**
+	 * Ouvre l'IHM de modification des tables.
+	 */
+	public void openModifyGUI() {
+		this.ddlControl = DDLController.getInstance();
+		this.ddlControl.openModifyGUI();
+		
+	}
+	
+	/**
+	 * Ouvre l'IHM de suppression des tables.
+	 */
+	public void openDropGUI()
+	{
+		this.ddlControl = DDLController.getInstance();
+		this.ddlControl.openDropGUI();
+	}
 	
 	
+	/**
+	 * Ferme proprement les objets liés à la connexion.
+	 */
+	public void disconnect()
+	{
+		if (this.ddlControl != null) this.ddlControl.closeStatement();
+		ConnectionManager.getInstance().disconnect();
+	}
+
+
 	//Privates
 	/**
 	 * @param driver : parmi "Oracle", "MySQL", null interdit.

@@ -11,7 +11,25 @@ import java.io.IOException;
 
 
 /**
- * Gère la lecture et l'écriture des valeurs de connexion par défaut dans un fichier XML.
+ * Gère la lecture et l'écriture des valeurs de connexion par défaut dans un fichier XML.<br/><br>
+ * 
+ * Le fichier n'est ouvert qu'à deux moments : lors de la lecture des informations, et lors
+ * de leurs écriture. Chaque fin de lecture et d'écriture ferme automatiquement le fichier, sauf
+ * si une erreur survient, auquel cas l'utilisateur n'est pas avertit. Le reste du temps, la classe
+ * travaille sur un buffer.<br/><br/>
+ * 
+ * Les informations contenues dans le fichier sont lues à la création d'une instance.<br/>
+ * Les informations sont écrites dans le fichier à l'appel de la méthode "save()".<br/><br/>
+ * 
+ * Le fichier contient les informations pour chaque type de SGBD que l'application peut joindre. 
+ * Par exemple, il existe une clée "Oracle_url" et une clée "MySQL_url". En revanche, il 
+ * n'existe qu'une seule clée pour le nom de pilote, "driver".<br/><br/>
+ * 
+ * Ce dernier point implique que les méthodes fournies ne peuvent récupérer que les informations
+ * en rapport avec le driver mentionné par la clée "driver". <br/>
+ * Par exemple, si la clée "driver"contient la valeur "Oracle", il est possible de récupérer
+ * la valeur de la clée "Oracle_url", mais impossible de récupérer la valeur de la 
+ * clée "MySQL_url"... à moins de n'utiliser préalablement la méthode "setDriver(MySQL)".
  * 
  * @author UGOLINI Romain
  */
