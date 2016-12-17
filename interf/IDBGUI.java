@@ -1,5 +1,7 @@
 package interf;
 
+import useful.Response;
+
 /**
  * Cette interface propose des méthodes qui reviennent régulièrement dans les IHM.
  * 
@@ -19,7 +21,15 @@ public interface IDBGUI
 	/**
 	 * Communique avec l'utilisateur en affichant $msg.
 	 * 
-	 * @param msg : un message à transmettre à l'utilisateur
+	 * @param msg : un message à transmettre à l'utilisateur, null interdit.
 	 */
 	public void talk(String msg);
+	
+	
+	/**
+	 * Communique avec l'utilisateur en affichant $reponse.
+	 * 
+	 * @param response : une reponse suite à une tentative, null interdit.
+	 */
+	public void talk(Response response);
 }

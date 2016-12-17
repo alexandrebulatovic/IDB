@@ -6,7 +6,6 @@ import interf.BasicGUI;
 
 /**
  * IHM du menu principal, une fois la connexion établie.
- * Singleton.
  * 
  * @author UGOLINI Romain
  */
@@ -15,12 +14,8 @@ public class HomeGUI
 extends BasicGUI
 implements ActionListener
 {
-	//Instance
-	/** Instance singleton en cours.*/
-	private static HomeGUI INSTANCE;
-	
 	//Attributes
-	/** Controleur de l'IHM.*/
+	/** Controleur principal de l'application.*/
 	private HomeController control;
 
 	/** Bouton pour se rendre vers l'IHM de code SQL.*/
@@ -40,30 +35,16 @@ implements ActionListener
 	/**
 	 * Constructeur commun.
 	 */
-	private HomeGUI()
+	public HomeGUI(HomeController control)
 	{
 		super("Menu principal", null, 400, 400, 30);
-		INSTANCE = this;
-		this.control = HomeController.getInstance();
+		this.control = control;
 		this.handleButtons();
 		this.setProperties(EXIT_ON_CLOSE);
 	}
 
 
 	//Méthodes
-	/**
-	 * Retourne une nouvelle IHM si et seulement s'il n'en existe
-	 * pas déjà une, retourne l'IHM actuelle sinon.
-	 * 
-	 * @return HomeGUI
-	 */
-	public static HomeGUI getInstance()
-	{
-		if (INSTANCE == null) new HomeGUI();
-		return INSTANCE;
-	}
-	
-	
     @Override
 	public boolean isComplete() {return true;}
 
@@ -84,12 +65,7 @@ implements ActionListener
 	}
 
     
-    private void alterButtonAction() {
-		this.control.openModifyGUI();
-	}
-
-
-	@Override
+    @Override
     public void windowClosing (WindowEvent e)
     {
     	this.control.disconnect();
@@ -171,5 +147,10 @@ implements ActionListener
 	 */
 	private void dropButtonAction(){
 		this.control.openDropGUI();
+	}
+
+
+	private void alterButtonAction() {
+		this.control.openModifyGUI();
 	}
 }

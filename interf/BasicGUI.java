@@ -3,6 +3,8 @@ package interf;
 import java.util.ArrayList;
 import javax.swing.*;
 
+import useful.Response;
+
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
@@ -191,6 +193,13 @@ implements IDBGUI, WindowListener, ActionListener
 	public void talk(String msg)
 	{
 		this.messageLabel.setText(msg);
+	}
+	
+	
+	@Override
+	public void talk(Response response)
+	{
+		this.messageLabel.setText(response.toString());	
 	}
 	
 	

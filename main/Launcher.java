@@ -1,7 +1,7 @@
 
 package main;
 
-import connect.ConnectionController;
+import connect.ConnectionGUI;
 
 /**
  * Initialise l'application.
@@ -13,7 +13,7 @@ public class Launcher {
 	 */
 	public static void main(String[] args) 
 	{
-		new ConnectionController();
+		new ConnectionGUI();
 	}
 
 }

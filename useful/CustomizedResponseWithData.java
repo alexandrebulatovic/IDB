@@ -3,7 +3,7 @@ package useful;
 import java.util.ArrayList;
 
 public class CustomizedResponseWithData <T>
-extends CustomizedResponse
+extends Response
 {
 	//Attributes
 	/** Contient des données à récupérer.*/
@@ -45,7 +45,7 @@ extends CustomizedResponse
 	 * @param copy : un objet CustomizedResponse à recopier.
 	 * @param data : liste des données à retourner.
 	 */
-	public CustomizedResponseWithData(CustomizedResponse copy, ArrayList<T> data)
+	public CustomizedResponseWithData(Response copy, ArrayList<T> data)
 	{
 		super(copy);
 		this.data = data; //TODO : virer ce pointeur par un ajout element par élément

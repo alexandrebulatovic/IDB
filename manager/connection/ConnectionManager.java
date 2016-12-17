@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import useful.CustomizedResponse;
+import useful.Response;
 
 import connect.ConnectionStrings;
 
@@ -80,11 +80,11 @@ public abstract class ConnectionManager
 	 * @param parameters : un objet ConnectionStrings
 	 * @return ConnectionResponse
 	 */
-	public CustomizedResponse connect(ConnectionStrings param)
+	public Response connect(ConnectionStrings param)
 	{
-		CustomizedResponse result;
+		Response result;
 		if (! this.loadDriver()) {
-			result = new CustomizedResponse(false, "problème de pilote.");
+			result = new Response(false, "problème de pilote.");
 		}		
 		else{
 			result = this.reachConnection(param);
@@ -104,7 +104,7 @@ public abstract class ConnectionManager
 	 * 
 	 * @return CustomizedResponse
 	 */
-	public CustomizedResponse connect()
+	public Response connect()
 	{
 		return this.connect(this.parameters);
 	}
@@ -211,10 +211,10 @@ public abstract class ConnectionManager
 	 * 
 	 * @return ConnectionResponse
 	 */
-	protected CustomizedResponse reachConnection(ConnectionStrings param)
+	protected Response reachConnection(ConnectionStrings param)
 	{
 		Connection dbms;
-		CustomizedResponse result;
+		Response result;
 		String entireUrl =this.entireUrl(param);
 		try {
 			dbms = DriverManager.getConnection(
@@ -222,14 +222,14 @@ public abstract class ConnectionManager
 					param.user, 
 					param.password);
 			this.set(dbms, param);
-			result = new CustomizedResponse(true,  "Connexion réussie.");
+			result = new Response(true,  "Connexion réussie.");
 		}
 		catch(SQLException e){
-			result = new CustomizedResponse(false, this.errorMessage(e));
+			result = new Response(false, this.errorMessage(e));
 
 		}
 		catch(Exception e){
-			result =  new CustomizedResponse(false, "inconnue.");
+			result =  new Response(false, "inconnue.");
 		}
 		return result;
 	}

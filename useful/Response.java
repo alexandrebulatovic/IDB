@@ -4,7 +4,7 @@ package useful;
  * Fournit plusieurs informations sur une tentative de connexion
  * ou de requête sur le SGBD.
  */
-public class CustomizedResponse 
+public class Response 
 {
 	//Attributes
 	/**
@@ -24,7 +24,7 @@ public class CustomizedResponse
 	 * 
 	 * @param response : vrai ssi la tentative a réussie, faux sinon.
 	 */
-	public CustomizedResponse(boolean response)
+	public Response(boolean response)
 	{
 		this.response = response;
 		this.msg = "";
@@ -37,7 +37,7 @@ public class CustomizedResponse
 	 * @param response : vrai ssi la tentative a réussie, faux sinon.
 	 * @param msg : message associé à la tentative.
 	 */
-	public CustomizedResponse(boolean response, String msg)
+	public Response(boolean response, String msg)
 	{
 		this.response = response;
 		this.msg = msg;
@@ -48,7 +48,7 @@ public class CustomizedResponse
 	 * 
 	 * @param copy : un objet CustomizedResponse à recopier.
 	 */
-	public CustomizedResponse(CustomizedResponse copy)
+	public Response(Response copy)
 	{
 		this.response = copy.response;
 		this.msg = copy.msg;

@@ -1,30 +1,33 @@
 package home;
 
+import connect.ConnectionStrings;
+import connect.DefaultValueManager;
 import manager.connection.ConnectionManager;
+import manager.connection.MySQLConnectionManager;
+import manager.connection.OracleConnectionManager;
 import ddl.DDLController;
 import sql.SQLController;
+import useful.Response;
 
 /**
- * Controleur principal de l'application une fois la connexion établie.
- * Singleton.
+ * Controleur principal de l'application.
  * 
  * @author UGOLINI Romain.
  */
 public class HomeController 
 {
-	//Instance
-	/** Instance singleton en cours.*/
-	private static HomeController INSTANCE;
-	
 	//Attributes
-	/** Vue du controleur.*/
-	private HomeGUI gui;
+	/** Gestionnaire de connexion. */
+	private ConnectionManager connector;
 	
 	/** Controleur du LDD.*/
 	private DDLController ddlControl;
 	
 	/** Controleur du SQL.*/
 	private SQLController sqlControl;
+	
+	/** Gestionnaire des valeurs de connexions par défaut.*/
+	private DefaultValueManager dvm;
 	
 	
 	//Constructeur
@@ -33,27 +36,13 @@ public class HomeController
 	 */
 	public HomeController()
 	{
-		INSTANCE = this;
-		this.gui = HomeGUI.getInstance();
-		this.gui.talk("Bienvenue " 
-				+ ConnectionManager.getInstance().user());
+//		this.gui.talk("Bienvenue " 
+//				+ ConnectionManager.getInstance().user());
+		this.dvm = new DefaultValueManager();
 	}
 	
 	
 	//Méthodes
-	/**
-	 * Retourne une nouveau controleur principal si et seulement s'il
-	 * n'en existe pas, retourne un nouveau controleur sinon.
-	 * 
-	 * @return HomeController
-	 */
-	public static HomeController getInstance()
-	{
-		if (INSTANCE == null) new HomeController();
-		return INSTANCE;
-	}
-	
-	
 	/**
 	 * Ouvre l'IHM pour créer des tables.
 	 */
@@ -102,5 +91,88 @@ public class HomeController
 		ConnectionManager.getInstance().disconnect();
 	}
 
+	
+	
+	//Methods de coonnexion
+	/**
+	 * Tente d'établir une connexion vers un SGBD
+	 * en utilisant les informations de connexion de $parameters.
+	 * 
+	 * @param parameters : un objet ConnectionStrings, null interdit.
+	 * @return CustomizedResponse
+	 */
+	public Response connect(ConnectionStrings parameters)
+	{
+		this.connector = this.chooseManager(parameters.driver);
+		return this.connector.connect(parameters);
 
+	}
+	
+	
+	/**
+	 * Retourne les informations de la dernière connexion valide.
+	 * 
+	 * @return ConnectionStrings
+	 */
+	public ConnectionStrings getDefaultValues() 
+	{
+		return new ConnectionStrings(
+				this.dvm.getDriver(), 
+				this.dvm.getUrl(), 
+				this.dvm.getUser(), 
+				"", 
+				this.dvm.getDataBase(), 
+				this.dvm.getPort());
+	}
+	
+	
+	/**
+	 * Retourne les informations de la dernière connexion valide
+	 * au SGBD $dbms.
+	 * 
+	 * @param dbms : nom du SGBD, null interdit.
+	 * @return ConnectionStrings
+	 */
+	public ConnectionStrings getDefaultValues(String dmbs) 
+	{
+		this.dvm.setDriver(dmbs);
+		return this.getDefaultValues();
+	}
+
+
+	/**
+	 * Enregistre certaines informations de connexion de $parameters
+	 * dans un fichier xml  situé dans le répertoire courant.
+	 * Le fichier est créé s'il n'existe pas.
+	 * 
+	 * @param param : un objet ConnectionStrings
+	 */
+	public void saveDefaultValue(ConnectionStrings param)
+	{
+		this.dvm.setDriver(param.driver);
+		this.dvm.setUrl(param.url);
+		this.dvm.setUser(param.user);
+		this.dvm.setPort(param.port);
+		this.dvm.setDataBase(param.baseName);
+		this.dvm.save();
+	}
+
+
+	//Privates
+	/**
+	 * Retourne un objet pour se connecter vers un SGBD
+	 * en fonction du nom de $driver passé en paramètre.
+	 * 
+	 * @param driver : parmi "Oracle",
+	 * @return ConnectionManager
+	 */
+	private ConnectionManager chooseManager(String driver)
+	{
+		//TODO : à mettre dans une fabrique
+		switch (driver){
+		case "Oracle" : return OracleConnectionManager.getConnector();
+		case "MySQL" : return MySQLConnectionManager.getConnector();
+		default : return null;
+		}
+	}
 }

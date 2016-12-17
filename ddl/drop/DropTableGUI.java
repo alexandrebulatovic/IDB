@@ -9,7 +9,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
-import useful.CustomizedResponse;
+import useful.Response;
 import useful.CustomizedResponseWithData;
 
 import ddl.DDLController;
@@ -144,7 +144,7 @@ implements ActionListener
 			Table table = new Table(
 					selection, 
 					this.cascadeCheckBox.isSelected());
-			CustomizedResponse response = this.control.dropTable(table);
+			Response response = this.control.dropTable(table);
 			this.talk(response.toString()); 
 			if (response.hasSuccess()) {
 				this.tableComboBox.removeItem(selection);

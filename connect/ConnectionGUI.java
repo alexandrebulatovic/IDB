@@ -14,13 +14,15 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import useful.Response;
 import useful.MaxLengthTextDocument;
+import home.HomeController;
+import home.HomeGUI;
 import interf.BasicGUI;
 
 
 /**
  * IHM pour se connecter à un SGBD.
- * Singleton.
  * 
  * @author ALCANTUD Gaël
  * @author UGOLINI Romain
@@ -32,8 +34,8 @@ extends BasicGUI
 implements ActionListener, ItemListener
 {
 	//Attributs
-	/**Controleur de connexion.*/
-	private ConnectionController control;
+	/**Controleur principal de l'application.*/
+	private HomeController control;
 
 	/**Etiquette des pilotes.*/
 	private JLabel driverLabel;
@@ -98,10 +100,10 @@ implements ActionListener, ItemListener
 	/**
 	 * Constructeur commun.
 	 */
-	public ConnectionGUI(ConnectionController control)
+	public ConnectionGUI()
 	{
 		super("Connexion", null, 450, 410, 20);
-		this.control = control;
+		this.control = new HomeController();
 		this.createAndBindComponents();
 		this.handleFieldsSize();
 		this.limitCharacters();
@@ -204,10 +206,9 @@ implements ActionListener, ItemListener
 	private void okButtonAction()
 	{
 		if (!this.isComplete()) {
-			this.talk("Erreur : les champs doivent être remplis.");
+			this.talk("Les champs doivent être remplis.");
 		}
 		else {
-			this.rawPassword();
 			ConnectionStrings parameters = new ConnectionStrings(
 					this.driverCombo.getSelectedItem().toString(),
 					this.ipField.getText(),
@@ -215,7 +216,14 @@ implements ActionListener, ItemListener
 					this.rawPassword(), 
 					this.bdField.getText(), 
 					this.portField.getText());
-			this.control.connect(parameters);
+			
+			Response response = this.control.connect(parameters);
+			this.talk(response);
+			if (response.hasSuccess()) {
+				this.control.saveDefaultValue(parameters);
+				this.dispose();
+				new HomeGUI(this.control);
+			}
 		}
 	}
 	

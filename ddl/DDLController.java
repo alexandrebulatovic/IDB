@@ -9,7 +9,7 @@ import ddl.drop.DropTableGUI;
 import ddl.modify.ModifyTableChoiceGUI;
 import ddl.modify.ModifyTableGUI;
 import manager.ddl.DDLManager;
-import useful.CustomizedResponse;
+import useful.Response;
 import useful.CustomizedResponseWithData;
 
 /**
@@ -100,7 +100,7 @@ public class DDLController
 	 */
 	public void createTable(Table table)
 	{
-		CustomizedResponse response = this.manager.createTable(table);
+		Response response = this.manager.createTable(table);
 		if (response.hasSuccess()) {
 			this.createGUI.resetView();
 		}
@@ -114,7 +114,7 @@ public class DDLController
 	 * @param table : une table à supprimé. L'objet peut être erroné.
 	 * @return CustomizedResponse
 	 */
-	public CustomizedResponse dropTable(Table table)
+	public Response dropTable(Table table)
 	{
 		return this.manager.dropTable(table);
 	}

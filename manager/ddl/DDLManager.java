@@ -11,7 +11,7 @@ import java.util.List;
 import ddl.Attribute;
 import ddl.Table;
 import manager.connection.ConnectionManager;
-import useful.CustomizedResponse;
+import useful.Response;
 import useful.CustomizedResponseWithData;
 import useful.ForeinKey;
 
@@ -29,7 +29,7 @@ public class DDLManager
 	/** Pour créer des requètes SQL.*/
 	private Statement statement;
 	
-	/** Pour obtenir le nom des tables.*/
+	/** Pour obtenir des méta-données sur le SGBD.*/
 	private DatabaseMetaData metadata;
 	
 	/** Stocke les résultats d'une requête sur les meta-données.*/
@@ -260,10 +260,10 @@ public class DDLManager
 	 * @param table : une table à créer.
 	 * @return CustomizedResponse
 	 */
-	public CustomizedResponse createTable(Table table)
+	public Response createTable(Table table)
 	{	
 		System.out.println(table);
-		CustomizedResponse result = this.executeUpdate(table.toCreate());
+		Response result = this.executeUpdate(table.toCreate());
 		if (result.hasSuccess()) {
 			result.setMessage("Table " + table.getName() + " créée.");
 		}
@@ -278,9 +278,9 @@ public class DDLManager
 	 * @param table : une table à supprimer.
 	 * @return CustomizedResponse
 	 */
-	public CustomizedResponse dropTable(Table table)
+	public Response dropTable(Table table)
 	{
-		CustomizedResponse result = this.executeUpdate(table.toDrop());
+		Response result = this.executeUpdate(table.toDrop());
 		if (result.hasSuccess()) {
 			result.setMessage("Table " + table.getName() + " supprimée.");
 		}
@@ -300,7 +300,7 @@ public class DDLManager
 	 */
 	public CustomizedResponseWithData<String> getPrimaryKey(String table)
 	{
-		CustomizedResponse cr = this.getMetaData("PRIMARY KEYS", table);
+		Response cr = this.getMetaData("PRIMARY KEYS", table);
 		if (cr == null) return this.readMetaData("Clées primaires récupérées", 4);
 		else 			return new CustomizedResponseWithData<String>(cr, null);
 	}
@@ -318,7 +318,7 @@ public class DDLManager
 	 */
 	public CustomizedResponseWithData<String> getTables()
 	{
-		CustomizedResponse cr = this.getMetaData("TABLES", null);
+		Response cr = this.getMetaData("TABLES", null);
 		if (cr == null) return this.readMetaData("Tables récupérées", 3);
 		else 			return new CustomizedResponseWithData<String>(cr, null);
 	}
@@ -355,16 +355,16 @@ public class DDLManager
 	 * @param sql : une requête SQL qui ne retourne rien.
 	 * @return CustomizedResponse
 	 */
-	private CustomizedResponse executeUpdate(String sql)
+	private Response executeUpdate(String sql)
 	{
 		System.out.println(sql);
-		CustomizedResponse result;
+		Response result;
 		try{
 			this.statement.executeUpdate(sql);
-			result = new CustomizedResponse(true);
+			result = new Response(true);
 		}
 		catch(SQLException e){
-			result = new CustomizedResponse(false, e.getMessage());
+			result = new Response(false, e.getMessage());
 		}
 		return result;
 	}
@@ -381,15 +381,15 @@ public class DDLManager
 	 * null ssi $wanted == "TABLES".
 	 * @return CustomizedResponseWithData
 	 */
-	private CustomizedResponse getMetaData(String wanted, String tableName)
+	private Response getMetaData(String wanted, String tableName)
 	{
-		CustomizedResponse result;
+		Response result;
 		try{
 			this.retrieveMetaData(wanted, tableName);
 			result = null;
 		}
 		catch(SQLException e){
-			result = new CustomizedResponse(false, e.getMessage());
+			result = new Response(false, e.getMessage());
 		}
 		return result;
 	}
