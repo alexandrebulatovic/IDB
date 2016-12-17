@@ -141,21 +141,23 @@ extends AbstractTableModel {
 		Attribute overSelect;
 		switch (direction){
 		case "UP" : 
-			select = new Attribute(this.getAttributeAt(rowIndex));
-			overSelect =  new Attribute(this.getAttributeAt(rowIndex-1));
-			this.setAttributeValueAt(rowIndex-1, select.name, select.type, select.size, select.notNull, select.unique, select.primaryKey, select.foreignKey, select.fkTable, select.fkAttribute);
-			this.setAttributeValueAt(rowIndex, overSelect.name, overSelect.type, overSelect.size, overSelect.notNull, overSelect.unique, overSelect.primaryKey, overSelect.foreignKey, overSelect.fkTable, overSelect.fkAttribute);
-			this.fireTableDataChanged();
+			changePosition(rowIndex,-1);
 			break;
 			
 		case "DOWN" :
-			select = new Attribute(this.getAttributeAt(rowIndex));
-			overSelect= new Attribute(this.getAttributeAt(rowIndex+1));
-			this.setAttributeValueAt(rowIndex+1, select.name, select.type, select.size, select.notNull, select.unique, select.primaryKey, select.foreignKey, select.fkTable, select.fkAttribute);
-			this.setAttributeValueAt(rowIndex, overSelect.name, overSelect.type, overSelect.size, overSelect.notNull, overSelect.unique, overSelect.primaryKey, overSelect.foreignKey, overSelect.fkTable, overSelect.fkAttribute);
-			this.fireTableDataChanged();
+			changePosition(rowIndex,+1);
 			break;
 		}
+	}
+
+	private void changePosition(int rowIndex,int direction ) {
+		Attribute select;
+		Attribute overSelect;
+		select = new Attribute(this.getAttributeAt(rowIndex));
+		overSelect= new Attribute(this.getAttributeAt(rowIndex+direction));
+		this.setAttributeValueAt(rowIndex+direction, select.name, select.type, select.size, select.notNull, select.unique, select.primaryKey, select.foreignKey, select.fkTable, select.fkAttribute);
+		this.setAttributeValueAt(rowIndex, overSelect.name, overSelect.type, overSelect.size, overSelect.notNull, overSelect.unique, overSelect.primaryKey, overSelect.foreignKey, overSelect.fkTable, overSelect.fkAttribute);
+		this.fireTableDataChanged();
 	}
 
 	/**
