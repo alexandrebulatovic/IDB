@@ -1,8 +1,21 @@
 package useful;
 
 /**
- * Fournit plusieurs informations sur une tentative de connexion
- * ou de requête sur le SGBD.
+ * Propose une solution pour savoir si une quelconque requête envoyée au SGBD
+ * a réussie ou échouée.<br/><br/>
+ * 
+ * La totalité des méthodes proposées par Java pour agir sur le SGBD peuvent lever une
+ * SQLException. Même si les différents gestionnaires de l'application travaillent avec ces 
+ * Exceptions,
+ * ce n'est pas le cas des IHM et des controleurs, et cela doit rester ainsi.<br/><br/>
+ * 
+ * Pour maintenir cette séparation, cette classe met à disposition un premier attribut de type
+ * boolean, qui est vrai si et seulement si la requête a réussie, faux sinon. Le deuxième 
+ * attribut est une chaîne de caractères qui dans l'idéal contient le message d'erreur obtenu
+ * lorsque la requête échoue (disponible via Exception.getMessage()), ou bien un message de 
+ * réussite à la charge du développeur lorsque la requête réussit.<br/>
+ * 
+ * @author UGOLINI Romain
  */
 public class Response 
 {
@@ -43,10 +56,24 @@ public class Response
 		this.msg = msg;
 	}
 	
+	
+	/**
+	 * Contructeur en cas d'erreur.
+	 * Définit la requête comme échouée, et stocke le message d'erreur.
+	 * 
+	 * @param e : une exception levée, null interdit.
+	 */
+	public Response (Exception e)
+	{
+		this.response = false;
+		this.msg = e.getMessage();
+	}
+	
+	
 	/**
 	 * Contructeur par recopie.
 	 * 
-	 * @param copy : un objet CustomizedResponse à recopier.
+	 * @param copy : null interdit.
 	 */
 	public Response(Response copy)
 	{
@@ -54,11 +81,12 @@ public class Response
 		this.msg = copy.msg;
 	}
 	
+	
 	//Mutateurs
 	/**
 	 * Définit le message de $this comme étant $msg.
 	 * 
-	 * @param msg : nouveau message de $this.
+	 * @param msg : nouveau message de $this, null interdit.
 	 */
 	public void setMessage(String msg){this.msg = msg;}
 	

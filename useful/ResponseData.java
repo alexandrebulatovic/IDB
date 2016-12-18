@@ -2,6 +2,14 @@ package useful;
 
 import java.util.ArrayList;
 
+/**
+ * Spécialise sa classe mère en mettant à disposition une collection, pour récupérer
+ * le résultat d'une requête lorsqu'elle réussie.<br/><br/>
+ * 
+ * @author romain
+ *
+ * @param <T> : un objet
+ */
 public class ResponseData <T>
 extends Response
 {

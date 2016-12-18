@@ -1,9 +1,11 @@
 package useful;
 
-import javax.print.attribute.AttributeSet;
+//import javax.print.attribute.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+
+@SuppressWarnings("serial")
 public class MaxLengthTextDocument
 extends PlainDocument{
 	//Store maximum characters permitted

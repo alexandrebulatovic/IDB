@@ -10,7 +10,7 @@ import connect.ConnectionStrings;
 
 
 /**
- * Gère la connection à un SGBD.
+ * Gère la connexion et la déconnexion à un SGBD.
  * 
  * Singleton.
  */
