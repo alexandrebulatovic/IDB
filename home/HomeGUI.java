@@ -2,7 +2,8 @@ package home;
 
 import javax.swing.*;
 import java.awt.event.*;
-import interf.BasicGUI;
+
+import gui.BasicGUI;
 
 /**
  * IHM du menu principal, une fois la connexion établie.

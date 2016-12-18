@@ -2,10 +2,17 @@ package manager.connection;
 
 import java.sql.SQLException;
 
+import useful.ConnectionStrings;
 
-import connect.ConnectionStrings;
+import manager.ConnectionManager;
 
 
+
+/**
+ * Gère la connexion et la déconnexion vers Oracle.
+ * 
+ * @author UGOLINI Romain
+ */
 public class OracleConnectionManager 
 extends ConnectionManager
 {	
@@ -13,26 +20,7 @@ extends ConnectionManager
 	/**
 	 * Constructeur commun.
 	 */
-	private OracleConnectionManager()
-	{
-		super("oracle.jdbc.OracleDriver");
-		ConnectionManager.INSTANCE = this;
-	}
-	
-	
-	//Methodes
-	/**
-	 * Retourne le gestionnaire de connection en cours si et seulement
-	 * s'il existe déjà. 
-	 * Retourne un nouveau gestionnaire sinon.
-	 * 
-	 * @return ConnectionManager
-	 */
-	public static ConnectionManager getConnector()
-	{
-		if (ConnectionManager.INSTANCE == null) new OracleConnectionManager();
-		return ConnectionManager.INSTANCE;
-	}
+	public OracleConnectionManager(){super("oracle.jdbc.OracleDriver");}
 	
 	
 	//Protected
@@ -44,7 +32,7 @@ extends ConnectionManager
 		case 1017 	: return "utilisateur ou mot de passe incorrect.";
 		case 17002	: return "adresse IP ou port incorrect.";
 		case 17443 	: return "mot de passe nécessaire.";
-		default : return "inconnue.";
+		default 	: return "inconnue.";
 		}
 	}
 	

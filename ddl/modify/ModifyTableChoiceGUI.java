@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.*;
 
 import ddl.DDLController;
-import manager.ddl.DDLManager;
+import manager.DDLManager;
 import interf.ListeningGUI;
 
 

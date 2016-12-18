@@ -1,25 +1,24 @@
-package ddl.drop;
+package ddl;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.WindowConstants;
+
+import business.Table;
 
 import useful.Response;
 import useful.ResponseData;
 
-import ddl.DDLController;
-import ddl.Table;
 
-import interf.BasicGUI;
+import gui.BasicGUI;
 
 /**
  * IHM pour supprimer des tables de la base de données.
- * Singleton.
  * 
  * @author UGOLINI Romain.
  */
@@ -28,10 +27,6 @@ public class DropTableGUI
 extends BasicGUI
 implements ActionListener
 {
-	//Instance
-	/** Instance singleton en cours.*/
-	private static DropTableGUI INSTANCE;
-	
 	//Attributes
 	/** Controleur pour supprimer des tables.*/
 	private DDLController control;
@@ -50,39 +45,20 @@ implements ActionListener
 	/**
 	 * Constructeur lambda.
 	 */
-	private DropTableGUI()
+	public DropTableGUI(DDLController control)
 	{
 		super("Suppression de table", null, 400, 180, 30);
-		INSTANCE = this;
-		this.control = DDLController.getInstance();
+		this.control = control;
 		this.handleComponents();
 		this.fillComboBox();
 		this.enableOrDisableComponent();
-		this.setProperties(DISPOSE_ON_CLOSE);
+		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 	
 	
 	//Méthodes
-	/**
-	 * Retourne l'instance en cours si et seulement si elle existe déjà,
-	 * retourne une nouvelle instance sinon.
-	 * 
-	 * @return 
-	 */
-	public static DropTableGUI getInstance()
-	{
-		if (INSTANCE == null) new DropTableGUI();
-		return INSTANCE;
-	}
-	
-	
 	@Override
 	public boolean isComplete() {return true;}
-	
-	
-	@Override
-	public void windowClosing(WindowEvent arg0) {INSTANCE = null;}
-	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) 
@@ -135,7 +111,7 @@ implements ActionListener
 	
 	
 	/**
-	 * Détermine ce qu'il se passe en appuyant sur le bouton 'ok'.
+	 * Détermine ce qu'il se passe en appuyant sur le bouton 'Supprimer'.
 	 */
 	private void okButtonAction()
 	{

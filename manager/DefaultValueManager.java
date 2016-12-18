@@ -1,4 +1,4 @@
-package connect;
+package manager;
 
 import java.util.Properties;
 

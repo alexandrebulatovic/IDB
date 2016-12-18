@@ -1,14 +1,10 @@
 package sql;
 
-import interf.BasicGUI;
-import interf.IDBGUI;
+import gui.BasicGUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-
-import ddl.DDLController;
-import ddl.create.CreateTableGUI;
 
 
 @SuppressWarnings("serial")
@@ -17,11 +13,6 @@ extends BasicGUI
 implements ActionListener
 {
 	//Attributs
-
-	/** Instance en cours. */
-	private static SQLView INSTANCE;
-	
-	
 	/**
 	 * Controleur lié à l'IHM.
 	 */
@@ -41,13 +32,13 @@ implements ActionListener
 	/**
 	 * Constructeur commun.
 	 */
-	public SQLView()
+	public SQLView(SQLController control)
 	{
 		super("Menu SQL", null, 400, 350, 20);
-		this.control = SQLController.getInstance();
+		this.control = control;
 		this.handleArea();
 		this.handleButtons();
-		this.setProperties(DISPOSE_ON_CLOSE);
+		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 
 
@@ -60,18 +51,6 @@ implements ActionListener
 		}
 	}
 	
-	/**
-	 * Retourne l'IHM active si et seulement si elle existe déjà.
-	 * Retourne une nouvelle IHM sinon.
-	 * 
-	 * @return CreateTableView
-	 */
-	public static SQLView getInstance()
-	{
-		if (INSTANCE == null) new SQLView();
-		return INSTANCE;
-	}
-
 
 	@Override
 	public boolean isComplete() 

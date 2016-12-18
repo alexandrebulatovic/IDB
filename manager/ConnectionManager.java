@@ -1,25 +1,22 @@
-package manager.connection;
+package manager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import useful.ConnectionStrings;
 import useful.Response;
 
-import connect.ConnectionStrings;
 
 
 /**
  * Gère la connexion et la déconnexion à un SGBD.
  * 
- * Singleton.
+ * @author UGOLINI Romain
  */
 public abstract class ConnectionManager 
 {
 	//Attributes
-	/** Instance 'singleton' en cours.*/
-	protected static ConnectionManager INSTANCE;
-	
 	/** Nom du driver java pour utiliser la base de données.*/
 	protected final String driverName;
 	
@@ -61,24 +58,33 @@ public abstract class ConnectionManager
 	}
 	
 	
+	//Accesseurs
+	/**
+	 * @return Le nom de l'utilisateur connecté.
+	 */
+	public String getUser(){return this.user;}
+
+
+	/**
+	 * @return Le SGBD avec lequel est connecté $this, null si n'est pas connecté.
+	 */
+	public Connection getConnection() {return this.dbms;}
+	
+	
+	/**
+	 * @return Vrai si et seulement si $this est connecté à un SGBD,
+	 * faux sinon.
+	 */
+	public boolean isConnected() {return this.dbms != null;}
+
+
 	//Methods
 	/**
-	 * Retourne null si et seulement si la méthode de même nom
-	 * disponible dans chacune des classes fille n'a jamais été appellée.
-	 * Retourne le gestionnaire de connection en cours dans les autres cas.
-	 * 
-	 * @return ConnectionManager
-	 */
-	public static ConnectionManager getInstance(){return INSTANCE;}
-	
-	
-	/**
 	 * Tente d'établir une connexion vers un SGBD en fonction
-	 * des informations de connexions de $parameters.
-	 * Retourne un objet qui décrit la tentative de connexion.
+	 * des informations de connexions de $param.
 	 * 
-	 * @param parameters : un objet ConnectionStrings
-	 * @return ConnectionResponse
+	 * @param param : un objet ConnectionStrings
+	 * @return un objet qui décrit la tentative de connexion.
 	 */
 	public Response connect(ConnectionStrings param)
 	{
@@ -97,42 +103,17 @@ public abstract class ConnectionManager
 	 * Tente de re-établir une connexion vers le SGBD précédement
 	 * atteint avec succès, et dont les paramètres de connexions 
 	 * sont toujours enregistrés.
-	 * Retourne un objet qui décrit la tentative de connexion.
 	 * 
 	 * Ne doit être utilisé que si $this s'est déjà connecté avec succès
 	 * au cours de l'exécution de l'application.
 	 * 
-	 * @return Response
+	 * @return Un objet qui décrit la tentative de connexion.
 	 */
 	public Response reconnect()
 	{
 		return this.connect(this.parameters);
 	}
 	
-	/**
-	 * Retourne le nom de l'utilisateur connecté.
-	 * 
-	 * @return String
-	 */
-	public String user(){return this.user;}
-
-
-	/**
-	 * Retourne le SGBD avec lequel est connecté $this.
-	 * 
-	 * @return Connection
-	 */
-	public Connection dbms() {return this.dbms;}
-	
-	
-	/**
-	 * Retourne vrai si et seulement si $this est connecté à un SGBD,
-	 * faux sinon.
-	 * 
-	 * @return boolean
-	 */
-	public boolean isConnected() {return this.dbms != null;}
-
 	
 	/**
 	 * Ferme proprement la connexion.
@@ -168,8 +149,8 @@ public abstract class ConnectionManager
 	 * Cette méthode ne doit être appelée que si la connexion
 	 * avec un SGBD est effective.
 	 * 
-	 * @param dbms : un objet Connection
-	 * @param param : un objet ConnectionStrings
+	 * @param dbms : null interdit.
+	 * @param param : null interdit.
 	 */
 	protected void set(Connection dbms, ConnectionStrings param)
 	{
@@ -184,11 +165,10 @@ public abstract class ConnectionManager
 	
 	
 	/**
-	 * Charge le pilôte pour se connecter au SGBD correspondant.
-	 * Retourne vrai si et seulement si le pilôte est correctement chargé,
-	 * faux sinon.
+	 * Charge le pilote pour se connecter au SGBD correspondant.
 	 * 
-	 * @return boolean
+	 * @return Vrai si et seulement si le pilôte est correctement chargé,
+	 * faux sinon.
 	 */
 	protected boolean loadDriver()
 	{
@@ -207,9 +187,9 @@ public abstract class ConnectionManager
 	/**
 	 * Tente d'établir une connexion vers un SGBD en fonction
 	 * des informations de connexions de $param.
-	 * Retourne un objet qui décrit la tentative de connexion.
 	 * 
-	 * @return ConnectionResponse
+	 * @param param : null interdit.
+	 * @return Un objet qui décrit la tentative de connexion.
 	 */
 	protected Response reachConnection(ConnectionStrings param)
 	{
@@ -236,20 +216,16 @@ public abstract class ConnectionManager
 	
 	
 	/**
-	 * Retourne un message d'erreur plus lisible 
+	 * @return Un message d'erreur plus lisible 
 	 * que celui retourné par le SGBD après une tentative de connexion.
-	 * 
-	 * @return String
 	 */
 	protected abstract String errorMessage(SQLException e);
 	
 	
 	/**
-	 * Retourne l'adresse complète pour se connecter à un SGBD,
+	 * @param param : null interdit.
+	 * @return L'adresse complète pour se connecter à un SGBD,
 	 * en fonction des informations de $param.
-	 * 
-	 * @param param : un objet ConnectionStrings
-	 * @return String
 	 */
 	protected abstract String entireUrl(ConnectionStrings param);
 }

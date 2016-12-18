@@ -1,4 +1,4 @@
-package interf;
+package gui;
 
 import java.util.ArrayList;
 import javax.swing.*;

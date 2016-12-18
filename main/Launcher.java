@@ -1,7 +1,7 @@
 
 package main;
 
-import connect.ConnectionGUI;
+import connection.ConnectionGUI;
 
 /**
  * Initialise l'application.

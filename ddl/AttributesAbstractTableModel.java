@@ -1,11 +1,13 @@
-package ddl.create;
+package ddl;
 
 import java.util.LinkedHashSet;
 import java.util.Iterator;
 
 import javax.swing.table.AbstractTableModel;
 
-import ddl.Attribute;
+import business.Attribute;
+
+
 
 
 public class AttributesAbstractTableModel 

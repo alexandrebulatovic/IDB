@@ -1,4 +1,4 @@
-package interf;
+package gui;
 
 import useful.Response;
 

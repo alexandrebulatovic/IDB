@@ -1,4 +1,4 @@
-package ddl;
+package business;
 
 
 public class Attribute 

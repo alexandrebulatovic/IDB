@@ -1,5 +1,6 @@
-package ddl;
+package business;
 import java.util.LinkedHashSet;
+
 
 
 public class Table {

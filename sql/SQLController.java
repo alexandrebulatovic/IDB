@@ -10,19 +10,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import manager.connection.ConnectionManager;
-import ddl.create.CreateTableGUI;
+
+import manager.SQLManager;
 
 public class SQLController {
-
-	/** Controleur en cours.*/
-	private static SQLController INSTANCE;
 
 	/** IHM pour taper des requetes SQL. */
 	private SQLView sql;
 
 	/** Objet pour envoyer des requetes au SGBD. */
-	private SQLModel creator;
+	private SQLManager creator;
 
 	/**  Objet pour appeler les methodes execute sql */
 	private Statement stat;
@@ -32,11 +29,9 @@ public class SQLController {
 
 	/** Constructeur commun
 	 * @param cm : objet ConnectionManager obtenu lors de la connexion. */
-	public SQLController(){
-		INSTANCE = this;
-		this.sql = new SQLView();
-		this.creator = new SQLModel(ConnectionManager.getInstance());
-		this.conn = this.creator.getConnector();
+	public SQLController(Connection connection){
+		this.creator = new SQLManager(connection);
+		this.conn = connection;
 
 		try {
 			conn.setAutoCommit(false);
@@ -47,21 +42,16 @@ public class SQLController {
 		}
 	}
 
-	/** Retourne le controleur actif si et seulement s'il
-	 * existe déjà. Retourne un nouveau controleur sinon.
-	 * @return SQLController */
-	public static SQLController getInstance()
-	{
-		if (INSTANCE == null) new SQLController();
-		return INSTANCE;
-	}
-
-
+	
 	/** Ouvre l'IHM pour taper du code SQL si et seulement si 
 	 * elle n'existe pas, sinon tente de l'afficher au premier plan. */
 	public void openSQL()
 	{
-		this.sql = SQLView.getInstance();
+		if (this.sql == null) {
+			this.sql = new SQLView(this);
+		}
+		this.sql.setVisible(true);
+		this.sql.toFront();
 	}
 
 	/** Affiche un pop-up avec un message.

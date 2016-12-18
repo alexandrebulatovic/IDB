@@ -1,5 +1,6 @@
-package manager.ddl;
+package manager;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -8,9 +9,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import ddl.Attribute;
-import ddl.Table;
-import manager.connection.ConnectionManager;
+import business.Attribute;
+import business.Table;
+
 import useful.Response;
 import useful.ResponseData;
 import useful.ForeinKey;
@@ -18,14 +19,7 @@ import useful.ForeinKey;
 
 public class DDLManager 
 {
-	//Instance
-	/** Singleton en cours ou non.*/
-	private static DDLManager INSTANCE;
-	
 	//Attributs
-	/** Gestionnaire de connexion connecté à un SGBD.*/
-	private ConnectionManager connector;
-	
 	/** Pour créer des requètes SQL.*/
 	private Statement statement;
 	
@@ -40,42 +34,18 @@ public class DDLManager
 	/**
 	 * Constructeur commun.
 	 */
-	private DDLManager()
+	public DDLManager(Connection connection)
 	{
-		INSTANCE = this;
-		this.connector = ConnectionManager.getInstance();
-		this.createStatementAndMetaData();
+		this.createStatementAndMetaData(connection);
 	}
 	
 	
 	//Méthodes
 	/**
-	 * Retourne l'instance en cours si et seulement si elle existe déjà,
-	 * retourne une nouvelle instance sinon.
-	 * 
-	 * @return DDLManager
-	 */
-	public static DDLManager getInstance()
-	{
-		if (INSTANCE == null) new DDLManager();
-		return INSTANCE;
-	}
-	
-	
-	/**
-	 * Retourne vrai si et seulement si le singleton de $this est instancié, 
-	 * faux sinon.
-	 * 
-	 * @return boolean
-	 */
-	public static boolean hasInstance(){return INSTANCE != null;}
-
-	/**
 	 * @return Le nombre de tables existantes dans la base de données
 	 * @throws SQLException
 	 */
 	public int getNbTables() throws SQLException{
-		this.createStatementAndMetaData();
 		ResultSet rs = this.statement.executeQuery("SELECT COUNT(*) FROM user_tables");
 		rs.next();
 		return rs.getInt(1);
@@ -89,7 +59,6 @@ public class DDLManager
 //		CustomizedResponseWithData<String>
 		//TODO trouver un comprimis avec la méthode getTables.
 		List<String> valeurs = new ArrayList<String>();
-		this.createStatementAndMetaData();
 		try {
 			ResultSet rs = this.statement.executeQuery("SELECT TABLE_NAME FROM user_tables");
 			while (rs.next()){
@@ -112,7 +81,6 @@ public class DDLManager
 	private List<String> getPrimaryKeys(String table){
 		List<String>pks = new ArrayList<String>();
 		try {
-			this.createStatementAndMetaData();
 			ResultSet rsKeys = this.metadata.getPrimaryKeys(null, null, table);
 			
 			pks = new ArrayList<String>();
@@ -149,7 +117,6 @@ public class DDLManager
 	private List<ForeinKey> getAllForeinKeys(){
 		List<String> tables = this.getTablesString();
 		List<ForeinKey> fks = new ArrayList<ForeinKey>();
-		this.createStatementAndMetaData();
 		try {
 			ResultSet rsFk;
 //			String name,String table,String fk, String ref,String user, String userTarget
@@ -209,7 +176,6 @@ public class DDLManager
 //		}
 		
 		List<Attribute> attributes = new ArrayList<Attribute>();
-		this.createStatementAndMetaData();//TODO à supprimer éventuellement
 		ResultSet rs = this.statement.executeQuery("SELECT a.* FROM "+table+" a");
 	
 		
@@ -339,11 +305,11 @@ public class DDLManager
 	 * Fabrique des objets Statement et DataBaseMetaData  
 	 * et en fait des attributs pour $this.
 	 */
-	private void createStatementAndMetaData() 
+	private void createStatementAndMetaData(Connection connection ) 
 	{
 		try{
-			this.statement = this.connector.dbms().createStatement();
-			this.metadata = this.connector.dbms().getMetaData();
+			this.statement = connection.createStatement();
+			this.metadata = connection.getMetaData();
 		}catch(SQLException e){}
 	}
 		

@@ -1,6 +1,6 @@
-package ddl.create;
+package ddl;
 
-import interf.ListeningGUI;
+import gui.ListeningGUI;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
@@ -9,11 +9,11 @@ import java.awt.Font;
 
 import javax.swing.*;
 
+import business.Attribute;
+import business.Table;
+
 import useful.ResponseData;
 import useful.MaxLengthTextDocument;
-import ddl.Attribute;
-import ddl.DDLController;
-import ddl.Table;
 
 @SuppressWarnings("serial")
 /**
@@ -26,7 +26,6 @@ extends ListeningGUI
 implements ActionListener, ItemListener
 {
 	// ==========================VARIABLES========================
-	private static CreateTableGUI INSTANCE;
 
 	private static final String FONT = null;
 
@@ -276,12 +275,10 @@ implements ActionListener, ItemListener
 	 * Constructeur commun pour l'ihm de création de table.
 	 * @param cm : objet ConnectionManager obtenu lors de la connexion.
 	 */
-	protected CreateTableGUI()
-
+	public CreateTableGUI(DDLController control)
 	{
 		super("Création de table");
-		INSTANCE = this;
-		this.control = DDLController.getInstance();
+		this.control = control;
 		this.setLayout(null);
 		this.handlePanels();
 		this.handleComboBox();
@@ -291,18 +288,6 @@ implements ActionListener, ItemListener
 		this.handleCheckBox();
 		this.setProperties();
 		this.addWindowListener(this);
-	}
-
-	/**
-	 * Retourne l'IHM active si et seulement si elle existe déjà.
-	 * Retourne une nouvelle IHM sinon.
-	 * 
-	 * @return CreateTableView
-	 */
-	public static CreateTableGUI getInstance()
-	{
-		if (INSTANCE == null) new CreateTableGUI();
-		return INSTANCE;
 	}
 
 
@@ -1048,43 +1033,41 @@ implements ActionListener, ItemListener
 		this.talk(succesAttribute+"Attribut supprimé");
 		this.setEnableButtonUpdateDeleteUpDown(false);
 	}
-
-	@Override
-	public void windowClosing(WindowEvent we){INSTANCE = null;}
-
+	
 
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
-		if (e.getSource() == this.attributeButton) {
+		Object o = e.getSource();
+		if (o == this.attributeButton) {
 			this.addAttributeButtonAction();
 		}
-		if (e.getSource() == this.createTableButton) {
+		if (o == this.createTableButton) {
 			if(this.isCompleteTable()){
 				this.control.createTable(new Table(
 						this.tableNameField.getText(),
 						this.models[0].getAttributes()));
 			}
 		}
-		if (e.getSource() == this.deleteAttributeButton) {
+		if (o == this.deleteAttributeButton) {
 			this.deleteAttributeButtonAction();
 		}
-		if (e.getSource() == this.updateAttributeButton) {
+		if (o == this.updateAttributeButton) {
 			this.updateAttributeButtonAction();
 		}
-		if (e.getSource() == this.resetButton) {
+		if (o == this.resetButton) {
 			this.resetView();
 		}
-		if (e.getSource() == this.upPositionAttributeButton) {
+		if (o == this.upPositionAttributeButton) {
 			this.positionAttributButtonAction("UP");
 		}
-		if (e.getSource() == this.downPositionAttributeButton) {
+		if (o == this.downPositionAttributeButton) {
 			this.positionAttributButtonAction("DOWN");
 		}
-		if (e.getSource() == this.attributeTypeComboBox) {
+		if (o == this.attributeTypeComboBox) {
 			selectSizeDateComboBoxAction();
 		}
-		if (e.getSource() == this.fkTableNameComboBox) {
+		if (o == this.fkTableNameComboBox) {
 			selectForeignKeyTableComboBoxAction();
 		}
 	}

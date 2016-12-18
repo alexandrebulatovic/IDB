@@ -1,12 +1,12 @@
 package home;
 
-import connect.ConnectionStrings;
-import connect.DefaultValueManager;
-import manager.connection.ConnectionManager;
+import manager.ConnectionManager;
+import manager.DefaultValueManager;
 import manager.connection.MySQLConnectionManager;
 import manager.connection.OracleConnectionManager;
 import ddl.DDLController;
 import sql.SQLController;
+import useful.ConnectionStrings;
 import useful.Response;
 
 /**
@@ -45,13 +45,19 @@ public class HomeController
 	 */
 	public ConnectionStrings getDefaultValues() 
 	{
-		return new ConnectionStrings(
-				this.dvm.getDriver(), 
-				this.dvm.getUrl(), 
-				this.dvm.getUser(), 
-				"", 
-				this.dvm.getDataBase(), 
-				this.dvm.getPort());
+		if (this.dvm == null) { 
+			return new ConnectionStrings();
+		}
+		else {
+			return new ConnectionStrings(
+					this.dvm.getDriver(), 
+					this.dvm.getUrl(), 
+					this.dvm.getUser(), 
+					"", 
+					this.dvm.getDataBase(), 
+					this.dvm.getPort());
+		}
+		
 	}
 
 
@@ -64,7 +70,7 @@ public class HomeController
 	 */
 	public ConnectionStrings getDefaultValues(String driver) 
 	{
-		this.dvm.setDriver(driver);
+		if (this.dvm != null) this.dvm.setDriver(driver);
 		return this.getDefaultValues();
 	}
 
@@ -88,18 +94,24 @@ public class HomeController
 	/**
 	 * Enregistre certaines informations de connexion de $parameters
 	 * dans un fichier xml  situé dans le répertoire courant.
-	 * Le fichier est créé s'il n'existe pas.
+	 * Le fichier est créé s'il n'existe pas.<br/>
+	 * 
+	 * Après appel de cette méthode, il n'est plus possible d'utiliser
+	 * le gestionnaire de valeur par défaut jusqu'à la fermeture de l'application.
 	 * 
 	 * @param param : les informations de connexions, null interdit.
 	 */
 	public void saveDefaultValue(ConnectionStrings param)
 	{
-		this.dvm.setDriver(param.driver);
-		this.dvm.setUrl(param.url);
-		this.dvm.setUser(param.user);
-		this.dvm.setPort(param.port);
-		this.dvm.setDataBase(param.baseName);
-		this.dvm.save();
+		if (this.dvm != null) {
+			this.dvm.setDriver(param.driver);
+			this.dvm.setUrl(param.url);
+			this.dvm.setUser(param.user);
+			this.dvm.setPort(param.port);
+			this.dvm.setDataBase(param.baseName);
+			this.dvm.save();
+			this.dvm = null;
+		}
 	}
 
 
@@ -107,7 +119,7 @@ public class HomeController
 	 * @return Le nom de l'utilisateur si et seulement si l'application
 	 * est connectée à un SGBD, null sinon.
 	 */
-	public String getUser(){return this.connector.user();}
+	public String getUser(){return this.connector.getUser();}
 
 
 	/**
@@ -115,9 +127,9 @@ public class HomeController
 	 */
 	public void openSQLGUI()
 	{
-		this.sqlControl = SQLController.getInstance();
 		//this.sqlControl.openSQL();
-		
+		this.createOrNotSQLController();
+		this.sqlControl.openSQL();
 	}
 
 
@@ -127,17 +139,17 @@ public class HomeController
 	 */
 	public void openCreateGUI()
 	{
-		this.ddlControl = DDLController.getInstance();
+		this.createOrNotDDLControl();
 		this.ddlControl.openCreateGUI();
 	}
 	
 	/**
 	 * Ouvre l'IHM de modification des tables.
 	 */
-	public void openModifyGUI() {
-		this.ddlControl = DDLController.getInstance();
+	public void openModifyGUI() 
+	{
+		this.createOrNotDDLControl();
 		this.ddlControl.openModifyGUI();
-		
 	}
 	
 	/**
@@ -145,7 +157,7 @@ public class HomeController
 	 */
 	public void openDropGUI()
 	{
-		this.ddlControl = DDLController.getInstance();
+		this.createOrNotDDLControl();
 		this.ddlControl.openDropGUI();
 	}
 	
@@ -156,7 +168,7 @@ public class HomeController
 	public void disconnect()
 	{
 		if (this.ddlControl != null) this.ddlControl.closeStatement();
-		ConnectionManager.getInstance().disconnect();
+		if (this.connector != null)  this.connector.disconnect();
 	}
 
 
@@ -170,9 +182,30 @@ public class HomeController
 	{
 		//TODO : à mettre dans une fabrique
 		switch (driver){
-		case "Oracle" : return OracleConnectionManager.getConnector();
-		case "MySQL" : return MySQLConnectionManager.getConnector();
+		case "Oracle" : return new OracleConnectionManager();
+		case "MySQL" : return new  MySQLConnectionManager();
 		default : return null;
+		}
+	}
+	
+	
+	/**
+	 * Définit le controleur de LDD pour $this si besoin.
+	 */
+	private void createOrNotDDLControl()
+	{
+		if (this.ddlControl == null) {
+			this.ddlControl = new DDLController(this.connector.getConnection());
+		}
+	}
+	
+	/**
+	 * Définit le controleur de SQL pour $this si besoin.
+	 */
+	private void createOrNotSQLController()
+	{
+		if (this.sqlControl == null) {
+			this.sqlControl = new SQLController(this.connector.getConnection());
 		}
 	}
 }

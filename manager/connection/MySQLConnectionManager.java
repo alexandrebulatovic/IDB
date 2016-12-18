@@ -2,8 +2,16 @@ package manager.connection;
 
 import java.sql.SQLException;
 
-import connect.ConnectionStrings;
+import useful.ConnectionStrings;
 
+import manager.ConnectionManager;
+
+
+/**
+ * Gère la connexion et la déconnexion vers MySQL.
+ * 
+ * @author UGOLINI Romain
+ */
 public class MySQLConnectionManager 
 extends ConnectionManager
 {
@@ -11,28 +19,9 @@ extends ConnectionManager
 	/**
 	 * Constructeur commun.
 	 */
-	private MySQLConnectionManager()
-	{
-		super("com.mysql.jdbc.Driver");
-		ConnectionManager.INSTANCE = this;
-	}
+	public MySQLConnectionManager(){super("com.mysql.jdbc.Driver");}
 	
-	
-	//Methodes
-	/**
-	 * Retourne le gestionnaire de connection en cours si et seulement
-	 * s'il existe déjà. 
-	 * Retourne un nouveau gestionnaire sinon.
-	 * 
-	 * @return ConnectionManager
-	 */
-	public static ConnectionManager getConnector()
-	{
-		if (ConnectionManager.INSTANCE == null) new MySQLConnectionManager();
-		return ConnectionManager.INSTANCE;
-	}
-	
-	
+
 	//Protected
 	@Override
 	protected String errorMessage(SQLException e)
@@ -41,7 +30,7 @@ extends ConnectionManager
 		case 0 		: return "adresse IP ou port incorrect.";
 		case 1044 	: return "nom de base de données inaccessible.";
 		case 1045 	: return "nom d'utilisateur ou mot de passe incorrect.";
-		default : return "inconnue.";
+		default 	: return "inconnue.";
 		}
 	}
 	

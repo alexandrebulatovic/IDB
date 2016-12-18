@@ -1,8 +1,9 @@
-package ddl.create;
+package ddl;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 
 
 public class ControlTableResult  implements ListSelectionListener{

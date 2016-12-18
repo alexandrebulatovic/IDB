@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * 
  * @author romain
  *
- * @param <T> : un objet
+ * @param <T> : le type des données à retourner.
  */
 public class ResponseData <T>
 extends Response
@@ -23,8 +23,8 @@ extends Response
 	 * Constructeur commun.
 	 * 
 	 * @param response :  vrai ssi la tentative a réussie, faux sinon.
-	 * @param msg : message associé à la tentative.
-	 * @param data : liste des données à retourner.
+	 * @param msg : message associé à la tentative, null interdit.
+	 * @param data : liste des données à retourner, null interdit.
 	 */
 	public ResponseData(boolean response, String msg, ArrayList<T> data)
 	{
@@ -36,8 +36,8 @@ extends Response
 	/**
 	 * Constructeur pour ajouter les données au fur et à mesure.
 	 * 
-	 * @param response
-	 * @param msg
+	 * @param response vrai ssi la tentative a réussie, faux sinon.
+	 * @param msg : un message décrivant grossièrement la tentative, null interdit.
 	 */
 	public ResponseData(boolean response, String msg)
 	{
@@ -50,8 +50,8 @@ extends Response
 	 * Constructeur pour initialiser l'objet avec les valeurs 
 	 * d'un CustomizeResponse, et y ajouter les données d'un coup.
 	 * 
-	 * @param copy : un objet CustomizedResponse à recopier.
-	 * @param data : liste des données à retourner.
+	 * @param copy : un objet CustomizedResponse à recopier, null interdit.
+	 * @param data : liste des données à retourner null interdit.
 	 */
 	public ResponseData(Response copy, ArrayList<T> data)
 	{
@@ -62,9 +62,7 @@ extends Response
 	
 	//Accesseurs
 	/**
-	 * Retourne l'ensemble des données de $this.
-	 * 
-	 * @return ArrayList
+	 * @return L'ensemble des données de $this.
 	 */
 	public ArrayList<T> getCollection(){return this.data;}
 	
@@ -73,7 +71,7 @@ extends Response
 	/**
 	 * Ajoute $element à $this.
 	 * 
-	 * @param element
+	 * @param element : null autorisé.
 	 */
 	public void add(T element)
 	{

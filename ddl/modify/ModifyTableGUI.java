@@ -3,7 +3,7 @@ package ddl.modify;
 
 import javax.swing.JLabel;
 
-import ddl.create.CreateTableGUI;
+import ddl.CreateTableGUI;
 
 
 public class ModifyTableGUI extends CreateTableGUI{

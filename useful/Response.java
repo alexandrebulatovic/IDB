@@ -20,14 +20,10 @@ package useful;
 public class Response 
 {
 	//Attributes
-	/**
-	 * Vrai si la tentative a réussie, faux sinon.
-	 */
+	/** Vrai si la tentative a réussie, faux sinon.*/
 	protected boolean response;
 	
-	/**
-	 * Message associé à la tentative.
-	 */
+	/** Message associé à la tentative.*/
 	protected String msg;
 	
 	
@@ -48,7 +44,7 @@ public class Response
 	 * Constructeur commun.
 	 * 
 	 * @param response : vrai ssi la tentative a réussie, faux sinon.
-	 * @param msg : message associé à la tentative.
+	 * @param msg : message associé à la tentative, null interdit.
 	 */
 	public Response(boolean response, String msg)
 	{
@@ -93,19 +89,15 @@ public class Response
 	
 	//Methodes
 	/**
-	 * Retourne vrai si et seulement si la tentative
+	 * @return Vrai si et seulement si la tentative
 	 * a réussie, faux sinon.
-	 * 
-	 * @return boolean
 	 */
 	public boolean hasSuccess(){return this.response;}
 	
 	
 	/**
-	 * Retourne un message décrivant grossièrement le succès ou
+	 * @return Un message décrivant grossièrement le succès ou
 	 * l'échec de la tentative.
-	 * 
-	 * @return String
 	 */
 	public String getMessage(){return this.msg;}
 	

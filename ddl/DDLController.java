@@ -1,30 +1,30 @@
 package ddl;
 
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import ddl.create.CreateTableGUI;
-import ddl.drop.DropTableGUI;
+import javax.swing.JFrame;
+
+import business.Attribute;
+import business.Table;
+
 import ddl.modify.ModifyTableChoiceGUI;
 import ddl.modify.ModifyTableGUI;
-import manager.ddl.DDLManager;
+import manager.DDLManager;
 import useful.Response;
 import useful.ResponseData;
 
 /**
  * Assure le dialogue entre les IHM du langage de définition des données
  * et le gestionnaire de ce même langage.
- * Singleton.
  * 
  * @author UGOLINI Romain
  * @author MAURY Adrian
  */
 public class DDLController 
 {
-	/** Controleur en cours.*/
-	private static DDLController INSTANCE;
-	
 	//Attributs
 	/** IHM pour créer une table et ses attributs.*/
 	private CreateTableGUI createGUI;
@@ -43,26 +43,11 @@ public class DDLController
 	/**
 	 * Constructeur commun.
 	 */
-	private DDLController()
+	public DDLController(Connection connection)
 	{
-		INSTANCE = this;
-		this.manager = DDLManager.getInstance();
-		
+		this.manager = new DDLManager(connection);
 	}
 	
-	
-	/**
-	 * Retourne le controleur actif si et seulement s'il
-	 * existe déjà. Retourne un nouveau controleur sinon.
-	 * 
-	 * @return DDLController
-	 */
-	public static DDLController getInstance()
-	{
-		
-		if (INSTANCE == null) new DDLController();
-		return INSTANCE;
-	}
 	
 	/**
 	 * Ouvre l'IHM de création des tables si et seulement si 
@@ -70,14 +55,18 @@ public class DDLController
 	 */
 	public void openCreateGUI()
 	{
-		this.createGUI = CreateTableGUI.getInstance();
-		this.createGUI.toFront();
+		if (this.createGUI == null) {
+			this.createGUI = new CreateTableGUI(this);
+		}
+		else {
+			showGUI(this.createGUI);
+		}
 	}
 	
 	public void openModifyGUI() {
 		
 		this.modifyGUI = ModifyTableChoiceGUI.getInstance();
-		this.modifyGUI.toFront();
+//		this.modifyGUI.toFront();
 	}
 	
 	
@@ -87,8 +76,12 @@ public class DDLController
 	 */
 	public void openDropGUI()
 	{
-		this.dropGUI = DropTableGUI.getInstance();
-		this.dropGUI.toFront();
+		if (this.dropGUI == null) {
+			this.dropGUI = new DropTableGUI(this);
+		}
+		else{
+			showGUI(this.dropGUI);
+		}
 	}
 
 
@@ -173,7 +166,15 @@ public class DDLController
 	public void closeStatement(){this.manager.closeStatement();}
 
 	
-	
 	//Privées
-
+	/**
+	 * Affiche $gui au premier plan.
+	 * 
+	 * @param gui : une IHM, null interdit.
+	 */
+	private static void showGUI(JFrame gui)
+	{
+		gui.setVisible(true);
+		gui.toFront();
+	}
 }

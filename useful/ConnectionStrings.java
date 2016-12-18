@@ -1,4 +1,4 @@
-package connect;
+package useful;
 
 /**
  * Classe pour enrouler les différentes chaînes de
@@ -30,6 +30,21 @@ public class ConnectionStrings
 	
 	
 	//Constructeur
+	/**
+	 * Constructeur vide.
+	 * Passe des chaînes vides à chaque paramètre de connexion.
+	 */
+	public ConnectionStrings()
+	{
+		this.driver = "";
+		this.url = "";
+		this.user = "";
+		this.password = "";
+		this.baseName = "";
+		this.port = "";
+	}
+	
+	
 	/**
 	 * Constructeur commun.
 	 * 
