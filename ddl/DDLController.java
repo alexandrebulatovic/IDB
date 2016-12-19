@@ -93,7 +93,7 @@ public class DDLController
 	 */
 	public void createTable(Table table)
 	{
-		Response response = this.manager.createTable(table);
+		Response response = this.manager.createTable(table.toCreate());
 		if (response.hasSuccess()) {
 			this.createGUI.resetView();
 		}

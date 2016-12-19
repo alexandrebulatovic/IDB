@@ -1,6 +1,8 @@
 package useful;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Spécialise sa classe mère en mettant à disposition une collection, pour récupérer
@@ -15,7 +17,7 @@ extends Response
 {
 	//Attributes
 	/** Contient des données à récupérer.*/
-	protected ArrayList<T> data;
+	protected List<T> data;
 	
 	
 	//Constructeur
@@ -26,7 +28,7 @@ extends Response
 	 * @param msg : message associé à la tentative, null interdit.
 	 * @param data : liste des données à retourner, null interdit.
 	 */
-	public ResponseData(boolean response, String msg, ArrayList<T> data)
+	public ResponseData(boolean response, String msg, List<T> data)
 	{
 		super(response, msg);
 		this.data = data; //TODO : virer ce pointeur par un ajout element par élément
@@ -46,17 +48,10 @@ extends Response
 	}
 	
 	
-	/**
-	 * Constructeur pour initialiser l'objet avec les valeurs 
-	 * d'un CustomizeResponse, et y ajouter les données d'un coup.
-	 * 
-	 * @param copy : un objet CustomizedResponse à recopier, null interdit.
-	 * @param data : liste des données à retourner null interdit.
-	 */
-	public ResponseData(Response copy, ArrayList<T> data)
+	public ResponseData(SQLException e)
 	{
-		super(copy);
-		this.data = data; //TODO : virer ce pointeur par un ajout element par élément
+		super(e);
+		this.data = new ArrayList<>();
 	}
 	
 	
@@ -64,7 +59,7 @@ extends Response
 	/**
 	 * @return L'ensemble des données de $this.
 	 */
-	public ArrayList<T> getCollection(){return this.data;}
+	public List<T> getCollection(){return this.data;}
 	
 	
 	//Méthodes

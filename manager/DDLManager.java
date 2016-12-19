@@ -19,6 +19,18 @@ import useful.ForeinKey;
 
 public class DDLManager 
 {
+	//Statiques
+	/** Constante pour récupérer les tables de données.*/
+	private final static int TABLES = 0;
+	
+	/** Constante pour récupérer les clées primaires de la base.*/
+	private final static int PRIMARY_KEY = 1;
+	
+	/** Constante pour les clées étrangères DANS une table.*/
+	private final static int IN_FOREIGN_KEY = 2;
+	
+	/** Constante pour les attributs utilisés comme référence par une autre table.*/
+	private final static int OUT_FOREIGN_KEY = 3;
 	//Attributs
 	/** Pour créer des requètes SQL.*/
 	private Statement statement;
@@ -220,73 +232,56 @@ public class DDLManager
 
 	
 	/**
-	 * Tente de créer une $table.
-	 * Retourne une réponse personnalisée qui décrit la tentative.
+	 * Tente de créer une table dans la base de données.
 	 * 
-	 * @param table : une table à créer.
-	 * @return CustomizedResponse
+	 * @param table : une requête SQL pour créer une table, null interdit.
+	 * @return Une réponse personnalisée avec un message de succès si et seulement si
+	 * la table est créée, un message détaillant l'erreur sinon.
 	 */
-	public Response createTable(Table table)
+	public Response createTable(String table)
 	{	
 		System.out.println(table);
-		Response result = this.executeUpdate(table.toCreate());
-		if (result.hasSuccess()) {
-			result.setMessage("Table " + table.getName() + " créée.");
-		}
-		return result;
+		return this.executeUpdate(table, "Table créée.");
 	}
 	
 	
 	/**
-	 * Tente de supprimer $table.
-	 * Retourne une réponse personnalisée qui décrit la tentative.
+	 * Tente de supprimer une table dans la base de données.
 	 * 
-	 * @param table : une table à supprimer.
-	 * @return CustomizedResponse
+	 * @param table : une requête SQL pour supprimer une table, null interdit.
+	 * @return Une réponse personnalisée avec un message de succès si et seulement si
+	 * la table est supprimée, un message détaillant l'erreur sinon.
 	 */
 	public Response dropTable(Table table)
 	{
-		Response result = this.executeUpdate(table.toDrop());
-		if (result.hasSuccess()) {
-			result.setMessage("Table " + table.getName() + " supprimée.");
-		}
-		return result;
+		return this.executeUpdate(table.toDrop(), "Table supprimée");
+
 	}
 	
 	
 	/**
-	 * Retourne une réponse personnalisée qui contient les noms des différentes
-	 * tables de données disponibles pour l'utilisateur si et seulement si aucune
-	 * erreur ne survient lors de l'interrogation de la base.
-	 * Retourne une réponse personnalisée qui ne contient aucun nom de table 
-	 * en cas d'erreur. La réponse décrit l'erreur rencontrée. 
-	 * 
-	 * @param table : nom de la table où chercher les clées primaires, ne doit pas être null.
-	 * @return CustomizedResponseWithData
+	 * @param table : nom de la table où chercher la clée, null interdit.
+	 * @return Une réponse personnalisée contenant les attributs membres
+	 * de la clée primaire de $table si et seulement si la requête réussit,
+	 * sinon détaillant l'érreur survenue.
 	 */
 	public ResponseData<String> getPrimaryKey(String table)
 	{
-		Response cr = this.getMetaData("PRIMARY KEYS", table);
-		if (cr == null) return this.readMetaData("Clées primaires récupérées", 4);
-		else 			return new ResponseData<String>(cr, null);
+		return this.procedureToGetMetadata(
+				PRIMARY_KEY, table, 4, "Clée primaire récupérée");
 	}
 	
 
 	
 	/**
-	 * Retourne une réponse personnalisée qui contient les noms des différentes
-	 * tables de données disponibles pour l'utilisateur si et seulement si aucune
-	 * erreur ne survient lors de l'interrogation de la base.
-	 * Retourne une réponse personnalisée qui ne contient aucun nom de table 
-	 * en cas d'erreur. La réponse décrit l'erreur rencontrée. 
-	 * 
-	 * @return CustomizedResponseWithData
+	 * @return Une réponse personnalisée contenant le nom des tables de données
+	 * de la base si et seulement si la requête fonctionne, sinon détaillant
+	 * l'erreur survenue.
 	 */
 	public ResponseData<String> getTables()
 	{
-		Response cr = this.getMetaData("TABLES", null);
-		if (cr == null) return this.readMetaData("Tables récupérées", 3);
-		else 			return new ResponseData<String>(cr, null);
+		return this.procedureToGetMetadata(
+				TABLES, null, 3, "Tables récupérées");
 	}
 	
 	
@@ -315,102 +310,99 @@ public class DDLManager
 		
 	
 	/**
-	 * Retourne une réponse personnalisée qui décrit les effets 
-	 * d'une requête SQL qui ne retourne rien.
+	 * Exécute une requête SQL qui ne retourne rien.
 	 * 
-	 * @param sql : une requête SQL qui ne retourne rien.
-	 * @return CustomizedResponse
+	 * @param sql : une requête sql qui ne retourne rien, null interdit.
+	 * @param success : message en cas de succès, null interdit.
+	 * @return une réponse personnalisée avec un message de succès $success
+	 * si et seulement si la requête aboutie, un message détaillant l'erreur sinon.
 	 */
-	private Response executeUpdate(String sql)
+	private Response executeUpdate(String sql, String success)
 	{
-		System.out.println(sql);
 		Response result;
 		try{
 			this.statement.executeUpdate(sql);
-			result = new Response(true);
+			result = new Response(true, success);
 		}
 		catch(SQLException e){
-			result = new Response(false, e.getMessage());
+			result = new Response(e);
 		}
 		return result;
 	}
 
 
 	/**
-	 * Retourne null si et seulement si une requête concernant les méta-données
-	 * a été exécutée avec succès et remplit l'attribut de $this avec le résultat de cette requête.
-	 * Retourne une réponse personnnalisée qui détaille pourquoi la requête a échouée
-	 * dans les autres cas.
+	 * Interroge le SGBD à propos de ses métadonnées $what, qui peuvent se trouver dans $table.
+	 * Lit les résultats obtenus dans la $column-ième colonne en cas de succès.
 	 * 
-	 * @param wanted : méta-donnée voule, parmi "TABLES", "PRIMARY KEYS".
-	 * @param tableName : nom de la table où chercher les méta-données, 
-	 * null ssi $wanted == "TABLES".
-	 * @return CustomizedResponseWithData
+	 * @param what : les métadonnées voulues, parmi les variables statiques de la classe.
+	 * @param table : nom de la table qui contient $what, null autorisé si et seulement si 
+	 * les métadonnées $what ne se trouvent pas dans une table.
+	 * @param column : numéro de colonne où trouver les métadonnées.
+	 * @param success : message en cas de réussite, null interdit.
+	 * @return Une réponse personnalisée contenant les métadonnées voulues avec 
+	 * un message de réussite $success si et seulement si
+	 * la requête a aboutie, sinon une réponse personnalisée détaillant l'erreur rencontrée
+	 * et aucune donnée. 
 	 */
-	private Response getMetaData(String wanted, String tableName)
+	private ResponseData<String> procedureToGetMetadata(
+			int what, String table, int column, String success)
 	{
-		Response result;
-		try{
-			this.retrieveMetaData(wanted, tableName);
-			result = null;
+		ResponseData<String> result;
+		try {
+			this.chooseMetaData(what, table);
+			result = new ResponseData<String>
+				(true, success, this.readMetaData(column));
 		}
 		catch(SQLException e){
-			result = new Response(false, e.getMessage());
+			result = new ResponseData<>(e);
 		}
 		return result;
 	}
-
-
+	
+	
 	/**
-	 * Interroge le SGBD à propos de ses méta-données $wanted.
-	 * Stocke le resultat de la requête dans un attribut de $this.
-	 * Lève une exception en cas d'erreur lors de l'interrogation.
+	 * Exécute une requête pour récupérer les métadonnées $what qui se trouvent
+	 * éventuellement dans $table.
 	 * 
-	 * @param wanted : parmi "TABLES", "PRIMARY KEYS".	 
-	 * @param tableName : nom de la table où chercher les clées primaires. 
-	 * null ssi $wanted == "TABLES".
+	 * @param what : les métadonnées voulues, parmi les variables statiques de la classe.
+	 * @param table : nom de la table qui contient $what, null autorisé si et seulement si 
+	 * les métadonnées $what ne se trouvent pas dans une table.
 	 * @throws SQLException
 	 */
-	private void retrieveMetaData(String wanted, String tableName) throws SQLException
+	private void chooseMetaData(int what, String table) 
+	throws SQLException
 	{
-		switch (wanted){
-		case "TABLES" : 
+		switch (what){
+		case TABLES : 
 			String [] tab = {"TABLE"};
 			this.metaDataResult = 
 					this.metadata.getTables(null, this.metadata.getUserName(), "%", tab);
 			break;
 			
-		case "PRIMARY KEYS" :
+		case PRIMARY_KEY :
 			this.metaDataResult = 
-				this.metadata.getPrimaryKeys(null, this.metadata.getUserName(), tableName);
+				this.metadata.getPrimaryKeys(null, this.metadata.getUserName(), table);
 			break;
 		}
 	}
 
 
 	/**
-	 * Retourne une réponse personnalisée qui décrit une tentative
-	 * pour lire un objet ResulSet contenant les dernières méta-données recherchées.
-	 * La réponse contient une collection de données si la lecture ne lève aucune Exception,
-	 * sinon la collection est null.
+	 * Lit les dernières métadonnées obtenues.
 	 * 
-	 * @param succesMessage : Message à afficher si réussite, ne doit pas être null.
-	 * @param column : numero de la colonne où chercher les méta-données.
-	 * @return CustomizedResponseWithData
+	 * @param column : numéro de colonne où trouver les métadonnées.
+	 * @return Une liste contenant toutes les métadonnées lues.
+	 * @throws SQLException
 	 */
-	private ResponseData<String> readMetaData(String succesMessage, int column)
+	private List<String> readMetaData(int column)
+	throws SQLException
 	{
-		ArrayList<String> data = new ArrayList<String>();
-		try{
-			while (this.metaDataResult.next()) {
-				data.add(this.metaDataResult.getString(column));
-			}
-			this.metaDataResult.close();
-			return new ResponseData<String> (true, succesMessage, data);
+		List<String> result = new ArrayList<String>();
+		while (this.metaDataResult.next()) {
+			result.add(this.metaDataResult.getString(column));
 		}
-		catch(SQLException e){
-			return new ResponseData<String> (false, e.getMessage(), null);
-		}
-		
+		this.metaDataResult.close();
+		return result;
 	}
 }
