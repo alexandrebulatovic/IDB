@@ -89,11 +89,16 @@ public abstract class ConnectionManager
 	public Response connect(ConnectionStrings param)
 	{
 		Response result;
-		if (! this.loadDriver()) {
+		try {
+			this.loadDriver();
+			this.reachConnection(param);
+			result = new Response(true, "Connexion réussie.");
+		}
+		catch(SQLException e){
+			result = new Response(false, this.errorMessage(e));
+		}
+		catch(Exception e){
 			result = new Response(false, "problème de pilote.");
-		}		
-		else{
-			result = this.reachConnection(param);
 		}
 		return result;
 	}
@@ -144,7 +149,7 @@ public abstract class ConnectionManager
 	
 	//Protected
 	/**
-	 * Enregistre les informations de connexions en fonction
+	 * Enregistre les informations de connexion en fonction
 	 * de $dbms et $param.
 	 * Cette méthode ne doit être appelée que si la connexion
 	 * avec un SGBD est effective.
@@ -167,51 +172,33 @@ public abstract class ConnectionManager
 	/**
 	 * Charge le pilote pour se connecter au SGBD correspondant.
 	 * 
-	 * @return Vrai si et seulement si le pilôte est correctement chargé,
-	 * faux sinon.
+	 * @throws Exception
 	 */
-	protected boolean loadDriver()
+	protected void loadDriver() throws Exception
 	{
-		boolean result;
-		try{
-			this.driver = Class.forName(this.driverName);
-			result = true;
-		}
-		catch(Exception e1){
-			result = false;
-		}
-		return result;
+		this.driver = Class.forName(this.driverName);
 	}
 	
 	
 	/**
 	 * Tente d'établir une connexion vers un SGBD en fonction
-	 * des informations de connexions de $param.
+	 * des informations de connexion de $param.
+	 * Enregistre ces informations si et seulement si la connexion
+	 * réussie, sinon ne els enregistre pas.
 	 * 
 	 * @param param : null interdit.
-	 * @return Un objet qui décrit la tentative de connexion.
+	 * @throws SQLException
 	 */
-	protected Response reachConnection(ConnectionStrings param)
+	protected void reachConnection(ConnectionStrings param)
+	throws SQLException
 	{
 		Connection dbms;
-		Response result;
-		String entireUrl =this.entireUrl(param);
-		try {
-			dbms = DriverManager.getConnection(
-					entireUrl, 
-					param.user, 
-					param.password);
-			this.set(dbms, param);
-			result = new Response(true,  "Connexion réussie.");
-		}
-		catch(SQLException e){
-			result = new Response(false, this.errorMessage(e));
-
-		}
-		catch(Exception e){
-			result =  new Response(false, "inconnue.");
-		}
-		return result;
+		String entireUrl = this.entireUrl(param);
+		dbms = DriverManager.getConnection(
+				entireUrl, 
+				param.user, 
+				param.password);
+		this.set(dbms, param);
 	}
 	
 	

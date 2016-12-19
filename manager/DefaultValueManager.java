@@ -21,15 +21,24 @@ import java.io.IOException;
  * Les informations contenues dans le fichier sont lues à la création d'une instance.<br/>
  * Les informations sont écrites dans le fichier à l'appel de la méthode "save()".<br/><br/>
  * 
- * Le fichier contient les informations pour chaque type de SGBD que l'application peut joindre. 
+ * Le fichier contient les informations pour chaque type de SGBD que l'application peut joindre.
+ * Chaque information est identifié par une clée (couples clée/valeur), et chaque clée 
+ * commence par le nom du SGBD suivit du nom de l'information, à l'exception 
+ * de la clée "driver".<br/><br/>
+ *  
  * Par exemple, il existe une clée "Oracle_url" et une clée "MySQL_url". En revanche, il 
  * n'existe qu'une seule clée pour le nom de pilote, "driver".<br/><br/>
  * 
- * Ce dernier point implique que les méthodes fournies ne peuvent récupérer que les informations
- * en rapport avec le driver mentionné par la clée "driver". <br/>
- * Par exemple, si la clée "driver"contient la valeur "Oracle", il est possible de récupérer
- * la valeur de la clée "Oracle_url", mais impossible de récupérer la valeur de la 
- * clée "MySQL_url"... à moins de n'utiliser préalablement la méthode "setDriver(MySQL)".
+ * Ce dernier point implique que les méthodes fournies peuvent uniquement récupérer les 
+ * informations en rapport avec le driver mentionné par la clée "driver". <br/><br/>
+ * 
+ * Par exemple, si la clée "driver" contient la valeur "Oracle", il est :<br/>
+ * -possible de récupérer la valeur de la clée "Oracle_url",<br/>
+ * -impossible de récupérer la valeur de la clée "MySQL_url".<br/><br/>
+ * 
+ * La solution est d'utiliser préalablement la méthode "setDriver(MySQL)", ce qui a pour effet
+ * de remplacer le nom du SGBD dans le buffer, et donne accès aux informations de connexion
+ * de ce dernier.<br/>
  * 
  * @author UGOLINI Romain
  */
