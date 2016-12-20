@@ -31,6 +31,7 @@ public class DDLManager
 	
 	/** Constante pour les attributs utilisés comme référence par une autre table.*/
 	private final static int OUT_FOREIGN_KEY = 3;
+	
 	//Attributs
 	/** Pour créer des requètes SQL.*/
 	private Statement statement;
@@ -234,14 +235,14 @@ public class DDLManager
 	/**
 	 * Tente de créer une table dans la base de données.
 	 * 
-	 * @param table : une requête SQL pour créer une table, null interdit.
+	 * @param sql : une requête SQL pour créer une table, null interdit.
 	 * @return Une réponse personnalisée avec un message de succès si et seulement si
 	 * la table est créée, un message détaillant l'erreur sinon.
 	 */
-	public Response createTable(String table)
+	public Response createTable(String sql)
 	{	
-		System.out.println(table);
-		return this.executeUpdate(table, "Table créée.");
+		System.out.println(sql);
+		return this.executeUpdate(sql, "Table créée.");
 	}
 	
 	
@@ -252,9 +253,10 @@ public class DDLManager
 	 * @return Une réponse personnalisée avec un message de succès si et seulement si
 	 * la table est supprimée, un message détaillant l'erreur sinon.
 	 */
-	public Response dropTable(Table table)
+	public Response dropTable(String table, boolean cascade)
 	{
-		return this.executeUpdate(table.toDrop(), "Table supprimée");
+		String sql = "DROP TABLE " + table + (cascade ? " CASCADE CONSTRAINT" : "");
+		return this.executeUpdate(sql, "Table supprimée.");
 
 	}
 	
@@ -268,7 +270,7 @@ public class DDLManager
 	public ResponseData<String> getPrimaryKey(String table)
 	{
 		return this.procedureToGetMetadata(
-				PRIMARY_KEY, table, 4, "Clée primaire récupérée");
+				PRIMARY_KEY, table, 4, "Clée primaire récupérée.");
 	}
 	
 
@@ -355,7 +357,7 @@ public class DDLManager
 				(true, success, this.readMetaData(column));
 		}
 		catch(SQLException e){
-			result = new ResponseData<>(e);
+			result = new ResponseData<String>(e);
 		}
 		return result;
 	}
@@ -376,13 +378,13 @@ public class DDLManager
 		switch (what){
 		case TABLES : 
 			String [] tab = {"TABLE"};
-			this.metaDataResult = 
-					this.metadata.getTables(null, this.metadata.getUserName(), "%", tab);
+			this.metaDataResult = this.metadata.getTables(
+					null, this.metadata.getUserName(), "%", tab);
 			break;
 			
 		case PRIMARY_KEY :
-			this.metaDataResult = 
-				this.metadata.getPrimaryKeys(null, this.metadata.getUserName(), table);
+			this.metaDataResult = this.metadata.getPrimaryKeys(
+					null, this.metadata.getUserName(), table);
 			break;
 		}
 	}

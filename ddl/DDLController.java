@@ -107,9 +107,9 @@ public class DDLController
 	 * @param table : une table à supprimé. L'objet peut être erroné.
 	 * @return CustomizedResponse
 	 */
-	public Response dropTable(Table table)
+	public Response dropTable(String table, boolean cascade)
 	{
-		return this.manager.dropTable(table);
+		return this.manager.dropTable(table, cascade);
 	}
 	
 	

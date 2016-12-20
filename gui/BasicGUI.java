@@ -202,7 +202,7 @@ implements IDBGUI, WindowListener, ActionListener
 	public void talk(Response response)
 	{
 		this.messageLabel.setForeground(
-				response.hasSuccess() ? Color.BLACK : Color.RED);
+				response.hasSuccess() ? Color.BLUE : Color.RED);
 		this.messageLabel.setText(response.toString());	
 	}
 	

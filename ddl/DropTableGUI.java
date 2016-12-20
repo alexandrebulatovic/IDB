@@ -2,14 +2,13 @@ package ddl;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.WindowConstants;
-
-import business.Table;
 
 import useful.Response;
 import useful.ResponseData;
@@ -54,11 +53,15 @@ implements ActionListener
 		this.enableOrDisableComponent();
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
 	}
-	
-	
+
+
 	//Méthodes
 	@Override
-	public boolean isComplete() {return true;}
+	public boolean isComplete() 
+	{
+		return tableComboBox.getItemCount() != 0;
+	}
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) 
@@ -68,6 +71,15 @@ implements ActionListener
 	}
 
 
+	@Override
+	public void windowActivated(WindowEvent e)
+	{
+		this.tableComboBox.removeAllItems();
+		this.fillComboBox();
+		this.enableOrDisableComponent();
+	}
+	
+	
 	//Privées
 	/**
 	 * Instancie, positionne et dimensionne les différents composants de $this.
@@ -78,7 +90,7 @@ implements ActionListener
 		this.tableComboBox = new JComboBox<String>();
 		this.bindAndAdd(this.tableComboBox);
 		
-		//Case à cocher.
+		//Case à cocher
 		this.cascadeCheckBox = new JCheckBox("supprimer malgré les références");
 		this.bindAndAdd(this.cascadeCheckBox);
 
@@ -115,20 +127,19 @@ implements ActionListener
 	 */
 	private void okButtonAction()
 	{
-		if (tableComboBox.getItemCount() != 0) {
-			String selection = (String)this.tableComboBox.getSelectedItem();
-			Table table = new Table(
-					selection, 
-					this.cascadeCheckBox.isSelected());
-			Response response = this.control.dropTable(table);
+		if (this.isComplete()) {
+			String table = (String)this.tableComboBox.getSelectedItem();
+
+			Response response = this.control.dropTable(
+					table, this.cascadeCheckBox.isSelected());
 			this.talk(response); 
 			if (response.hasSuccess()) {
-				this.tableComboBox.removeItem(selection);
+				this.tableComboBox.removeItem(table);
 				this.enableOrDisableComponent();
 			}
 		}
 	}
-	
+
 	
 	/**
 	 * Active les composants de $this si et seulement s'il
@@ -136,7 +147,18 @@ implements ActionListener
 	 */
 	private void enableOrDisableComponent()
 	{
-		boolean b = this.tableComboBox.getItemCount() != 0;
+		boolean b = this.isComplete();
+		enableOrDisable(b);
+	}
+
+	
+	/**
+	 * Active les composants de $this si et seulement si b est vrai,
+	 * les désactive sinon.
+	 * 
+	 * @param b vrai pour activer tous les composants, faux pour les désactiver.
+	 */
+	private void enableOrDisable(boolean b) {
 		for (JComponent jc : this.components) {
 			jc.setEnabled(b);
 		}
