@@ -64,7 +64,7 @@ implements IDBGUI, WindowListener, ActionListener
 	private int componentWidth;
 	
 	/** Incrément pour positionner les composants sur la hauteur.*/
-	private int componentTop;
+	protected int componentTop;
 	
 	/** Etiquette pour dialoguer avec l'utilisateur.*/
 	private JLabel messageLabel;
@@ -264,7 +264,7 @@ implements IDBGUI, WindowListener, ActionListener
 	 * 
 	 * @param add : 0 < add < hauteur de l'IHM.
 	 */
-	private void increaseTop(int add){this.componentTop += add +5;}
+	protected void increaseTop(int add){this.componentTop += add +5;}
 	
 	
 	/**
@@ -272,7 +272,7 @@ implements IDBGUI, WindowListener, ActionListener
 	 * 
 	 * @param add : 0 < add < largeur de l'IHM.
 	 */
-	private void increaseLeft(int add){this.componentLeft += add +5;}
+	protected void increaseLeft(int add){this.componentLeft += add +5;}
 	
 	
 	@Override

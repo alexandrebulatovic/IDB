@@ -1,5 +1,6 @@
 package ddl;
 
+import gui.BasicGUI;
 import gui.ListeningGUI;
 
 import java.awt.BorderLayout;
@@ -11,10 +12,14 @@ import javax.swing.*;
 
 import business.Attribute;
 import business.Table;
-
+import useful.FieldsKeyAdapter;
 import useful.ResponseData;
 import useful.MaxLengthTextDocument;
 
+/**
+ * @author Adrian
+ *
+ */
 @SuppressWarnings("serial")
 /**
  * IHM pour créer des tables dans la base de données.
@@ -22,378 +27,265 @@ import useful.MaxLengthTextDocument;
  * @author MAURY Adrian
  */
 public class CreateTableGUI
-extends ListeningGUI 
+extends BasicGUI
 implements ActionListener, ItemListener
 {
 	// ==========================VARIABLES========================
 
 	private static final String FONT = null;
 
-	/**
-	 * Controleur lié à l'IHM.
-	 */
+	/** Controleur lié à l'IHM. */
 	private DDLController control;
 
-	/**
-	 * Hauteur des éléments.
-	 */
-	private final int elementHeight = 20;
-
-	/**
-	 * Marge à gauche des éléments.
-	 */
-	private final int margin = 20;
-
-	/**
-	 * Hauteur de l'IHM.
-	 */
-	private int height = 600;
-
-	/**
-	 * Largeur de l'IHM.
-	 */
-	private int width = 900;
-
-	/**
-	 * Préfixe des messages d'erreurs.
-	 */
+	/** Préfixe des messages d'erreurs. */
 	private String errorAttribute = "ERREUR : ";
 
-	/**
-	 * Préfixe des messages de succès.
-	 */
+	/** Préfixe des messages de succès. */
 	private String succesAttribute = "SUCCES : ";
 
 	private ResponseData<String> res;
-	/**
-	 * 
-	 */
+	/** Contenu de la comboBox du type d'un attribut. */
 	private Object[] types = new Object[]{"VARCHAR", "NUMBER", "DATE", "CHAR"};
 
+	/** Model de ComboBox pour les tables des clés étrangères. */
 	private DefaultComboBoxModel foreignKeyTableComboBoxModel;
 
+	/** Model de ComboBox pour les attributs des clés étrangères. */
 	private DefaultComboBoxModel foreignKeyAttributeComboBoxModel;
 
-	/**
-	 * Contient tous les models.
-	 */
-	private AttributesAbstractTableModel [] models;
+	/** Model de la Table pour gérer les lignes/colonnes. */
+	private AttributesAbstractTableModel  models;
 
-	/**
-	 * Tableau contenant les attributs.
-	 */
+	/** Tableau contenant les attributs. */
 	private JTable table;
 
-	/**
-	 * Contient tous les Tableaux.
-	 */
-	private JTable [] tables;
-
-	/**
-	 * ScrollPane du Tableau.
-	 */
+	/** ScrollPane du Tableau. */
 	private JScrollPane scrollPane;
+	
+	/** Etat de la modification */
+	private boolean updateState;
 
-	/**
-	 * Contient tous les scrollPanes.
-	 */
-	private JScrollPane [] scrollPanes;
+	/** Bloquage de caractères interdits pour les String */
+	private KeyAdapter stringKey;
 
+	/** Bloquage de caractères interdits pour les int */
+	private KeyAdapter intKey;
+
+	
 	// ==========================FIELDS========================
-	/**
-	 * Boite de saisie du nom de la table.
-	 */
+	/** Boite de saisie du nom de la table. */
 	private JTextField tableNameField;
 
-	/**
-	 * Boite de saisie du nom de l'attribut.
-	 */
+	/** Boite de saisie du nom de l'attribut. */
 	private JTextField attributeNameField;
 
-	/**
-	 * Boite de saisie de la taille de l'attribut.
-	 */
+	/** Boite de saisie de la taille de l'attribut. */
 	private JTextField attributeSizeField;
 
-	/**
-	 * Contient toutes les boîtes de saisie.
-	 */
-	private JTextField [] fields;
-
-	/**
-	 * Nombre de boîtes de saisie.
-	 */
-	private final int fieldNumber = 3;
-
+	
 	// ==========================LABELS========================
-	/**
-	 * Etiquette pour le nom de la Table.
-	 */
+	/** Etiquette pour le nom de la Table. */
 	private JLabel tableNameLabel;
 
-	/**
-	 * Etiquette pour le titre Table.
-	 */
+	/** Etiquette pour le titre Table. */
 	private JLabel tableLabel;
 
-	/**
-	 * Etiquette pour le titre Attribut.
-	 */
+	/** Etiquette pour le titre Attribut. */
 	private JLabel attributeLabel;
-
-	/**
-	 * Etiquette pour les Messages d'erreurs.
-	 */
-	private JLabel errorAttributesLabel;
-
-	/**
-	 * Contient toutes les étiquettes
-	 */
-	private JLabel [] labels;
-
-	/**
-	 * Nombre d'étiquettes.
-	 */
-	private final int labelNumber = 4;
 
 
 	// ==========================BUTTONS========================
-	/**
-	 * Bouton 'Reset'.
-	 */
+	/** Bouton 'Reset'. */
 	private JButton resetButton;
 
+	/** Bouton "UP". */
 	private JButton upPositionAttributeButton;
 
+	/** Bouton "DOWN". */
 	private JButton downPositionAttributeButton;
-	/**
-	 * Bouton 'Ajouter l'attribut'.
-	 */
+	
+	/** Bouton 'Ajouter l'attribut'. */
 	private JButton attributeButton;
 
-	/**
-	 * Bouton 'Créer la table'.
-	 */
+	/** Bouton 'Créer la table'. */
 	private JButton createTableButton;
 
-	/**
-	 * Bouton 'Modifier attribut'.
-	 */
+	/** Bouton 'Modifier attribut'. */
 	private JButton updateAttributeButton;
 
-	/**
-	 * Bouton 'Supprimer attribut'.
-	 */
+	/** Bouton 'Supprimer attribut'. */
 	private JButton deleteAttributeButton;
 
-	/**
-	 * Contient tous les boutons.
-	 */
-	private JButton buttons[];
+	/** Bouton "Modifier". */
+	private JButton confirmUpdateAttributeButton;
 
-	/**
-	 * Nombre de boutons.
-	 */
-	private final int buttonNumber = 7;
+	/** Bouton "Annuler la modification". */
+	private JButton cancelUpdateAttributeButton;
 
 
 	// ==========================PANELS========================
-	/**
-	 * Panel Contenant le tableau.
-	 */
+	/** Panel Contenant le tableau. */
 	private JPanel panelAttributes;
-
-	/**
-	 * Contient tous les panels.
-	 */
-	private JPanel [] panels;
-
-	/**
-	 * Nombre de panels.
-	 */
-	private final int panelNumber = 1;
 
 
 	// ==========================COMBOBOX========================
-	/**
-	 * ComboBox du choix du type de l'attribut.
-	 */
+	/** ComboBox du choix du type de l'attribut. */
 	private JComboBox<String> attributeTypeComboBox;
 
+	/** ComboBox du choix de la table pour les clés etrangères. */
 	private JComboBox<String> fkAtrributeNameComboBox;
 
+	/** ComboBox du choix du nom de l'attribut pour les clés etrangères. */
 	private JComboBox<String> fkTableNameComboBox;
-
-	/**
-	 * Contient toutes les ComboBoxs.
-	 */
-	private JComboBox [] comboBox;
-
-	/**
-	 * Nombre de comboBox.
-	 */
-	private final int comboBoxNumber = 3;
 
 
 	// ==========================CHECKBOXS========================
-	/**
-	 * 
-	 */
+	/** Case à cocher pour la contrainte NotNull */
 	private JCheckBox notNullCheckBox;
 
-	/**
-	 * 
-	 */
+	/** Case à cocher pour la contrainte Unique */
 	private JCheckBox uniqueCheckBox;
 
-	/**
-	 * 
-	 */
+	/** Case à cocher pour la contrainte PrimaryKey */
 	private JCheckBox primaryKeyCheckBox;
 
-	/**
-	 * 
-	 */
+	/** Case à cocher pour la contrainte ForeignKey */
 	private JCheckBox foreignKeyCheckBox;
 
-	/**
-	 * 
-	 */
-	private JCheckBox [] checkBoxs;
+	
 
-	/**
-	 * 
-	 */
-	private final int checkBoxNumber = 4;
-
-
-
-
-
-
+	
 	/**
 	 * Constructeur commun pour l'ihm de création de table.
 	 * @param cm : objet ConnectionManager obtenu lors de la connexion.
 	 */
 	public CreateTableGUI(DDLController control)
 	{
-		super("Création de table");
+		super("Création de table",null, 900, 550, 20);
 		this.control = control;
-		this.setLayout(null);
-		this.handlePanels();
-		this.handleComboBox();
-		this.handleFields();
-		this.handleLabels();
-		this.handleButtons();
-		this.handleCheckBox();
-		this.setProperties();
-		this.addWindowListener(this);
-	}
-
-
-	// ==========================BUTTONS========================
-	/**
-	 * Instancie les boutons.
-	 */
-	private void createButtons()
-	{
-		this.buttons = new JButton [this.buttonNumber];
-		this.buttons[0] = this.attributeButton = new JButton("Ajouter l'attribut") ;
-		this.buttons[1] = this.createTableButton = new JButton("Créer la Table") ;
-		this.buttons[2] = this.deleteAttributeButton = new JButton("Supprimer attribut") ;
-		this.buttons[3] = this.updateAttributeButton = new JButton("Mofifier attribut") ;
-		this.buttons[4] = this.resetButton = new JButton("Reset") ;
-		this.buttons[5] = this.downPositionAttributeButton = new JButton("DOWN") ;
-		this.buttons[6] = this.upPositionAttributeButton = new JButton("UP") ;
-
+		this.handleComponents();
+		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
+		this.initFields();
 	}
 
 	/**
-	 * Positionne et dimensionne les boutons.
+	 * Instancie, positionne et dimensionne les différents composants de $this.
 	 */
-	private void bindButtons()
+	private void handleComponents()
 	{
-		this.attributeButton.setBounds((int)(1.35*this.margin), (int)(0.37*height), 165, (int)(1.5*this.elementHeight));
-		this.createTableButton.setBounds((int)(1.35*this.margin), (int)(0.87*height), 150, (int)(1.5*this.elementHeight));
-		this.deleteAttributeButton.setBounds((int)(1.35*this.margin), (int)(0.80*height), 150, (int)(1.5*this.elementHeight));
-		this.updateAttributeButton.setBounds((int)(1.35*this.margin)+ 160, (int)(0.80*height), 150, (int)(1.5*this.elementHeight));
-		this.resetButton.setBounds(800, (int)(0.80*height), 80, (int)(1.5*this.elementHeight));
-		this.upPositionAttributeButton.setBounds(575, (int)(0.80*height), 75, (int)(1.5*this.elementHeight));
-		this.downPositionAttributeButton.setBounds(665, (int)(0.80*height), 75, (int)(1.5*this.elementHeight));
-	}
+		this.tableLabel = new JLabel("Table :");
+		this.tableLabel.setFont(new Font(FONT, Font.BOLD, 18));
+		this.bindAndAdd(this.tableLabel);
 
-	/**
-	 * Gère les caractéristiques des boutons.
-	 */
-	private void initButtons()
-	{
+		this.tableNameLabel= new JLabel("Nom de la table :");
+		this.bindAndAdd(this.tableNameLabel,7,true);
+
+		this.tableNameField = new JTextField();
+		this.bindAndAdd(this.tableNameField,10,false);
+
+		this.increaseTop(10);
+		this.attributeLabel = new JLabel("Attribut :");
+		this.attributeLabel.setFont(new Font(FONT, Font.BOLD, 18));
+		this.bindAndAdd(this.attributeLabel);
+
+		this.attributeNameField = new JTextField();
+		this.bindAndAdd(this.attributeNameField,10,true);
+
+		this.attributeTypeComboBox = new JComboBox(types);
+		this.attributeTypeComboBox.addActionListener(this);
+		this.bindAndAdd(this.attributeTypeComboBox,10,true);
+
+		this.attributeSizeField = new JTextField();
+		this.bindAndAdd(this.attributeSizeField,21,true);
+
+		this.notNullCheckBox = new JCheckBox("NOT NULL");
+		this.bindAndAdd(this.notNullCheckBox,9,true);
+
+		this.uniqueCheckBox = new JCheckBox("UNIQUE");
+		this.bindAndAdd(this.uniqueCheckBox,11,true);
+
+		this.primaryKeyCheckBox = new JCheckBox("PRIMARY KEY");
+		this.primaryKeyCheckBox.addItemListener(this);
+		this.bindAndAdd(this.primaryKeyCheckBox,7,true);
+
+		this.foreignKeyCheckBox = new JCheckBox("FOREIGN KEY");
+		this.foreignKeyCheckBox.addItemListener(this);
+		this.bindAndAdd(this.foreignKeyCheckBox,7,true);
+
+		this.foreignKeyTableComboBoxModel = new DefaultComboBoxModel();
+		this.foreignKeyTableComboBoxModel.addElement("Nom Table");
+		this.fkTableNameComboBox = new JComboBox(foreignKeyTableComboBoxModel);
+		this.fkTableNameComboBox.addActionListener(this);
+		this.fkTableNameComboBox.setEnabled(false);
+		this.bindAndAdd(this.fkTableNameComboBox,10,true);
+
+		this.foreignKeyAttributeComboBoxModel = new DefaultComboBoxModel();
+		this.foreignKeyAttributeComboBoxModel.addElement("Nom Attribut");
+		this.fkAtrributeNameComboBox = new JComboBox(foreignKeyAttributeComboBoxModel);
+		this.fkAtrributeNameComboBox.addActionListener(this);
+		this.fkAtrributeNameComboBox.setEnabled(false);
+		this.bindAndAdd(this.fkAtrributeNameComboBox,10,false);
+		this.increaseTop(10);
+
+		this.attributeButton = new JButton("Ajouter l'attribut") ;
+		this.attributeButton.addActionListener(this);
+		this.bindAndAdd(this.attributeButton,6,true);
+
+		this.confirmUpdateAttributeButton = new JButton("Modifier l'attribut") ;
+		this.confirmUpdateAttributeButton.addActionListener(this);
+		this.bindAndAdd(this.confirmUpdateAttributeButton,6,true);
+
+		this.cancelUpdateAttributeButton = new JButton("Annuler les modifications") ;
+		this.cancelUpdateAttributeButton.addActionListener(this);
+		this.bindAndAdd(this.cancelUpdateAttributeButton,4,false);
+		this.setVisibleEnabledUpdateButtons(false);
+		this.increaseTop(10);
+
+		this.panelAttributes = new JPanel(new BorderLayout());
+		this.models = new AttributesAbstractTableModel();
+		this.table = new JTable(this.models){
+			public boolean isCellEditable(int row, int col) {
+				return false;
+			}
+		};
+		this.table.getSelectionModel().addListSelectionListener(new ControlTableResult(this));
+		this.scrollPane = new JScrollPane(this.table);
+		this.table.setFillsViewportHeight(true);
+		this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		this.scrollPane.setVisible(true);
+		this.panelAttributes.add(this.scrollPane);
+		this.bindAndAdd(this.panelAttributes,200);
+		this.increaseTop(10);
+
+		this.deleteAttributeButton = new JButton("Supprimer attribut") ;
+		this.deleteAttributeButton.addActionListener(this);
+		this.bindAndAdd(this.deleteAttributeButton,5,true);
+
+		this.updateAttributeButton = new JButton("Mofifier attribut") ;
+		this.updateAttributeButton.addActionListener(this);
+		this.bindAndAdd(this.updateAttributeButton,6,true);
+		this.increaseLeft(60);
+
+		this.downPositionAttributeButton = new JButton("DOWN") ;
+		this.downPositionAttributeButton.addActionListener(this);
+		this.bindAndAdd(this.downPositionAttributeButton,10,true);
+
+		this.upPositionAttributeButton = new JButton("UP") ;
+		this.upPositionAttributeButton.addActionListener(this);
+		this.bindAndAdd(this.upPositionAttributeButton,10,true);
+		this.increaseLeft(180);
+
+		this.resetButton = new JButton("Reset") ;
+		this.resetButton.addActionListener(this);
+		this.bindAndAdd(this.resetButton,10,false);
+		this.increaseTop(10);
+
+		this.createTableButton = new JButton("Créer la Table") ;
+		this.createTableButton.addActionListener(this);
+		this.bindAndAdd(this.createTableButton,6,false);
+
 		this.setEnableButtonUpdateDeleteUpDown(false);
-	}
 
-	/**
-	 * Associe les boutons à this.
-	 */
-	private void addButtons()
-	{
-		for (JButton jb : this.buttons) {
-			jb.addActionListener(this);
-			this.add(jb);
-		}
-	}
-
-	/**
-	 * Instancie, positionne, dimensionne et associe les boutons.
-	 */
-	private void handleButtons()
-	{
-		this.createButtons();
-		this.initButtons();
-		this.bindButtons();
-		this.addButtons();
-	}
-
-
-
-	// ==========================FIELDS========================
-	/**
-	 * Instancie les boîtes de saisie.
-	 */
-	private void createFields()
-	{	
-		this.fields = new JTextField [this.fieldNumber];
-		this.fields[0] = this.attributeNameField = new JTextField();
-		this.fields[1] = this.attributeSizeField = new JTextField();
-		this.fields[2] = this.tableNameField = new JTextField();
-	}
-
-	KeyAdapter intKey = new KeyAdapter() {
-		public void keyTyped(KeyEvent evt) {
-			char c = evt.getKeyChar();
-			if (c >= '0' && c <= '9') {
-			} else {
-				evt.consume();
-			}
-		}
-	};
-
-	KeyAdapter stringKey = new KeyAdapter() {
-		public void keyTyped(KeyEvent evt) {
-			char c = evt.getKeyChar();
-			if ((c >= 'A' && c <= 'Z')||(c >= 'a' && c <= 'z')||(c == '_')||(c >= '0' && c <= '9')) {
-			} else {
-				evt.consume();
-			}
-		}
-	};
-
-	/**
-	 * Positionne et dimensionne les boîtes de saisie.
-	 */
-	private void bindFields()
-	{
-		this.tableNameField.setBounds((int)((1.35*this.margin)+140), (int)(0.09*height), 100, (int)(1.5*this.elementHeight));	
-		this.attributeNameField.setBounds((int)(1.35*this.margin), (int)(0.28*height), 100, (int)(1.5*this.elementHeight));	
-		this.attributeSizeField.setBounds((int)((1.35*this.margin)+210), (int)(0.28*height), 50, (int)(1.5*this.elementHeight));	
 	}
 
 	/**
@@ -401,9 +293,11 @@ implements ActionListener, ItemListener
 	 */
 	private void initFields()
 	{
-		this.attributeSizeField.addKeyListener(intKey);
-		this.tableNameField.addKeyListener(stringKey);
-		this.attributeNameField.addKeyListener(stringKey);	
+		this.intKey = new FieldsKeyAdapter("int");
+		this.stringKey = new FieldsKeyAdapter("String");
+		this.attributeSizeField.addKeyListener(this.intKey);
+		this.tableNameField.addKeyListener(this.stringKey);
+		this.attributeNameField.addKeyListener(this.stringKey);	
 		this.tableNameField.setDocument(fieldInputSize(30));
 		this.attributeNameField.setDocument(fieldInputSize(29));
 		this.attributeSizeField.setDocument(fieldInputSize(3));
@@ -412,262 +306,9 @@ implements ActionListener, ItemListener
 	}
 
 	/**
-	 * Associe les boîtes de saisie à this.
-	 */
-	private void addFields()
-	{
-		for (JTextField jtf : this.fields) {
-			this.add(jtf);
-		}
-	}
-
-
-	/**
-	 * Instancie, positionne, dimensionne et associe les boîtes de saisie.
-	 */
-	private void handleFields()
-	{
-		this.createFields();
-		this.initFields();
-		this.bindFields();
-		this.addFields();
-	}
-
-	// ==========================LABEL========================
-	/**
-	 * Instancie les labels.
-	 */
-	private void createLabels()
-	{
-		this.labels = new JLabel [this.labelNumber];
-		this.labels[0] = this.tableLabel = new JLabel("Table :");
-		this.labels[1] = this.attributeLabel = new JLabel("Attribut :");
-		this.labels[2] = this.tableNameLabel= new JLabel("Nom de la table :");
-		this.labels[3] = this.errorAttributesLabel= new JLabel("");
-	}
-
-	/**
-	 * Positionne et dimensionne les labels.
-	 */
-	private void bindLabels()
-	{
-		this.tableLabel.setBounds(this.margin, (int)(0.03*height), 100, (int)(1.5*this.elementHeight));
-		this.attributeLabel.setBounds(this.margin, (int)(0.20*height), 100, (int)(1.5*this.elementHeight));
-		this.tableNameLabel.setBounds((int)(1.35*this.margin), (int)(0.09*height), 140, (int)(1.5*this.elementHeight));
-		this.errorAttributesLabel.setBounds(300,(int)(0.37*height), 600, (int)(1.5*this.elementHeight));
-	}
-
-	/**
-	 * Gère les caractéristiques des Fields.
-	 */
-	private void initLabels()
-	{
-		this.tableLabel.setFont(new Font(FONT, Font.BOLD, 18));
-		this.attributeLabel.setFont(new Font(FONT, Font.BOLD, 18));
-		this.tableNameLabel.setFont(new Font(FONT, Font.CENTER_BASELINE, 14));
-		this.errorAttributesLabel.setFont(new Font(FONT, Font.CENTER_BASELINE, 14));
-	}
-
-	/**
-	 * Associe les labels à this.
-	 */
-	private void addLabels()
-	{
-		for (JLabel jl : this.labels) {
-			this.add(jl);
-		}
-	}
-
-	/**
-	 * Instancie, positionne, dimensionne et associe les labels.
-	 */
-	private void handleLabels()
-	{
-		this.createLabels();
-		this.initLabels();
-		this.bindLabels();
-		this.addLabels();
-	}
-
-	// ==========================PANELS========================
-	/**
-	 * Instancie les panels.
-	 */
-	private void createPanels()
-	{
-		this.panels = new JPanel[this.panelNumber];
-		this.panels[0] = this.panelAttributes = new JPanel(new BorderLayout());
-		this.tables = new JTable[1];
-		this.models = new AttributesAbstractTableModel[1];
-		this.models[0] = new AttributesAbstractTableModel();
-		this.tables[0] = new JTable(this.models[0]){
-			public boolean isCellEditable(int row, int col) {
-				return false;
-			}
-		};
-		this.tables[0].getSelectionModel().addListSelectionListener(new ControlTableResult(this));
-		this.scrollPanes = new JScrollPane[1];
-		this.scrollPanes[0] = new JScrollPane(this.tables[0]);
-	}
-
-	/**
-	 * Positionne, dimensionne et gère les caractéristiques des panels.
-	 */
-	private void bindPanels()
-	{
-		this.panels[0].setBounds(0, (int)(0.45*height), width-5,  (int)(0.5*height)-100);
-		this.tables[0].setFillsViewportHeight(true);
-		this.tables[0].setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		this.scrollPanes[0].setVisible(true);
-		this.panels[0].add(this.scrollPanes[0]);
-	}
-
-	/**
-	 * Associe les panels à this.
-	 */
-	private void addPanels()
-	{
-		for (JPanel jl : this.panels) {
-			this.add(jl);
-		}
-	}
-
-	/**
-	 * Instancie, positionne, dimensionne et associe les panels.
-	 */
-	private void handlePanels()
-	{
-		this.createPanels();
-		this.bindPanels();
-		this.addPanels();
-	}
-
-	// ==========================COMBOBOX========================
-	/**
-	 * Instancie les comboBoxs.
-	 */
-	private void createComboBox()
-	{
-		this.comboBox = new JComboBox [this.comboBoxNumber];
-		this.comboBox[0] = this.attributeTypeComboBox = new JComboBox(types);
-		this.foreignKeyAttributeComboBoxModel = new DefaultComboBoxModel();
-		this.foreignKeyAttributeComboBoxModel.addElement("Nom Attribut");
-		this.foreignKeyTableComboBoxModel = new DefaultComboBoxModel();
-		this.foreignKeyTableComboBoxModel.addElement("Nom Table");
-		this.comboBox[1] = this.fkTableNameComboBox = new JComboBox(foreignKeyTableComboBoxModel);
-		this.comboBox[2] = this.fkAtrributeNameComboBox = new JComboBox(foreignKeyAttributeComboBoxModel);
-	}
-
-
-	/**
-	 * Positionne et dimensionne les comboBoxs.
-	 */
-	private void bindComboBox()
-	{
-		this.attributeTypeComboBox.setBounds((int)((1.35*this.margin)+110), (int)(0.28*height), 85, (int)(1.5*this.elementHeight));
-		this.fkTableNameComboBox.setBounds((int)((1.35*this.margin)+670), (int)(0.28*height), 85, (int)(1.5*this.elementHeight));	
-		this.fkAtrributeNameComboBox.setBounds((int)((1.35*this.margin)+765), (int)(0.28*height), 85, (int)(1.5*this.elementHeight));
-	}
-
-	private void initComboBox(){
-		this.fkTableNameComboBox.setEnabled(false);
-		this.fkAtrributeNameComboBox.setEnabled(false);
-		this.fkTableNameComboBox.addActionListener(this);
-		this.attributeTypeComboBox.addActionListener(this);
-	}
-
-	/**
-	 * Associe les comboBoxs à this.
-	 */
-	private void addComboBox()
-	{
-		for (JComboBox jc : this.comboBox) {
-			this.add(jc);
-		}
-	}
-
-
-	/**
-	 * Instancie, positionne, dimensionne et associe les comboBoxs.
-	 */
-	private void handleComboBox()
-	{
-		this.createComboBox();
-		initComboBox();
-		this.bindComboBox();
-		this.addComboBox();
-	}
-
-	// ==========================CHECKBOX========================
-	/**
-	 * Instancie les checkBoxs.
-	 */
-	private void createCheckBox()
-	{
-		this.checkBoxs = new JCheckBox [this.checkBoxNumber];
-		this.checkBoxs[0] = this.notNullCheckBox = new JCheckBox("NOT NULL");
-		this.checkBoxs[1] = this.uniqueCheckBox = new JCheckBox("UNIQUE");
-		this.checkBoxs[2] = this.primaryKeyCheckBox = new JCheckBox("PRIMARY KEY");
-		this.checkBoxs[3] = this.foreignKeyCheckBox = new JCheckBox("FOREIGN KEY");
-	}
-
-	/**
-	 * Positionne et dimensionne les checkBoxs.
-	 */
-	private void bindCheckBox()
-	{
-		this.notNullCheckBox.setBounds((int)((1.35*this.margin)+265), (int)(0.28*height), 100, (int)(1.5*this.elementHeight));	
-		this.uniqueCheckBox.setBounds((int)((1.35*this.margin)+365), (int)(0.28*height), 80, (int)(1.5*this.elementHeight));	
-		this.primaryKeyCheckBox.setBounds((int)((1.35*this.margin)+442), (int)(0.28*height), 115, (int)(1.5*this.elementHeight));	
-		this.foreignKeyCheckBox.setBounds((int)((1.35*this.margin)+555), (int)(0.28*height), 115, (int)(1.5*this.elementHeight));	
-	}
-
-	/**
-	 * Gère les caractéristiques des checkBoxs.
-	 */
-	private void initCheckBox()
-	{
-		this.primaryKeyCheckBox.addItemListener(this);
-		this.foreignKeyCheckBox.addItemListener(this);
-	}
-
-	/**
-	 * Associe les checkBoxs à this.
-	 */
-	private void addCheckBox()
-	{
-		for (JCheckBox jl : this.checkBoxs) {
-			this.add(jl);
-		}
-	}
-
-	/**
-	 * Instancie, positionne, dimensionne et associe les checkBoxs.
-	 */
-	private void handleCheckBox()
-	{
-		this.createCheckBox();
-		this.initCheckBox();
-		this.bindCheckBox();
-		this.addCheckBox();
-	}
-
-	/**
-	 * Définit certaines propriétés de l'IHM.
-	 */
-	private void setProperties()
-	{	this.setAutoRequestFocus(true);
-	this.setSize(width, height);
-	this.setLocationRelativeTo(null); 
-	this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);  
-	this.setVisible(true);    
-	this.setResizable(false);
-	}
-
-	/**
 	 * Réinitialise les champs des attributs.
 	 */
-	private void clearAttribute()
+	public void clearAttribute()
 	{
 		this.attributeNameField.setText("");
 		this.attributeSizeField.setText("");
@@ -679,16 +320,6 @@ implements ActionListener, ItemListener
 	}
 
 	/**
-	 * Ecrit un message dans le label des messages d'erreurs.
-	 * 
-	 * @param message : une chaine String
-	 */
-	public void talk(String message){
-		this.errorAttributesLabel.setText("");
-		this.errorAttributesLabel.setText(message);
-	}
-
-	/**
 	 * Réinitialise tous les champs de la vue.
 	 */
 	public void resetView()
@@ -696,8 +327,8 @@ implements ActionListener, ItemListener
 		this.setAttributesValues("nomAttribut", "VARCHAR", "Taille", false, false, false, false, "nomTable", "nomAttribut");
 		this.tableNameField.setText("");
 		this.talk("");
-		this.initButtons();
-		this.models[0].removeAll();
+		this.setEnableButtonUpdateDeleteUpDown(false);;
+		this.models.removeAll();
 	}
 
 	/**
@@ -715,7 +346,7 @@ implements ActionListener, ItemListener
 	}
 
 	/**
-	 * Modifie l'état des attributs de modifications du tableau 
+	 * Modifie l'état des boutons de modifications du tableau 
 	 * en fonction du boolean .
 	 * 
 	 * @param b : un boolean
@@ -725,6 +356,20 @@ implements ActionListener, ItemListener
 		this.updateAttributeButton.setEnabled(b);
 		this.upPositionAttributeButton.setEnabled(b);
 		this.downPositionAttributeButton.setEnabled(b);
+	}
+
+	/**
+	 * Ajoute l'attribut passé en paramètre à la table 
+	 * contenant les attributs.
+	 * 
+	 * @param attribute : un objet Attribute
+	 */
+	private void addAttributeToTable(Attribute attribute){
+		if (this.isValidateAttribute(attribute)){
+			this.models.addAttribute(attribute);
+			this.talk(succesAttribute +"Attribut ajouté.");
+			this.clearAttribute();
+		}
 	}
 
 	/**
@@ -773,12 +418,35 @@ implements ActionListener, ItemListener
 	 */
 	private boolean isCompleteTable()
 	{
-		if(this.models[0].getRowCount()==0 || this.tableNameField.getText().equals("")){
+		if(this.models.getRowCount()==0 || this.tableNameField.getText().equals("")){
 			this.talk(errorAttribute+"Il n'y a pas d'Attribut OU Il manque le nom de la Table");
 			return false;
 		}else{
 			return true;
 		}
+	}
+
+	/**
+	 * Retourne vrai Si l'attribut a est un attribut Valide. C'est a dire 
+	 * Si les champs attributs sont complets,
+	 * Si la taille renseignées est correcte en fonction du type,
+	 * Si il n'y a pas de doublon au niveau du nom de l'attribut.
+	 * @param a
+	 * @return un boolean
+	 */
+	private boolean isValidateAttribute(Attribute a){
+		if(!(this.isCompleteAttribute())){
+			return false;
+		}else{
+			if(!(a.checkSizeAttributes()>=0)){
+				this.talk(this.errorAttribute +a.attributeSizeError(a.checkSizeAttributes()));
+				return false;
+			}else if(this.models.isDuplicateAttributeName(a) && !(this.updateState)){
+				this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -788,9 +456,26 @@ implements ActionListener, ItemListener
 	 */
 	private void setTableName(String tableName) {
 		this.tableNameField.setText(tableName);
-	
+
 	}
 
+	/**
+	 * Si bool est true Désactives tous les champs de saisies, les boutons et le tableau 
+	 * qui ne sont pas utilies pour la modification d'un attribut,
+	 * sinon les actives.
+	 * 
+	 * @param bool
+	 */
+	private void setDisableAllExceptAttribute(boolean bool){
+		this.tableNameField.setEnabled(bool);
+		this.attributeButton.setEnabled(bool);
+		this.panelAttributes.setEnabled(bool);
+		this.setEnableButtonUpdateDeleteUpDown(bool);
+		this.upPositionAttributeButton.setEnabled(bool);
+		this.downPositionAttributeButton.setEnabled(bool);
+		this.resetButton.setEnabled(bool);
+		this.createTableButton.setEnabled(bool);
+	}
 	/**
 	 * Definit l'état des checkBox Unique et NotNull.
 	 * 
@@ -814,7 +499,7 @@ implements ActionListener, ItemListener
 	 * @param b
 	 */
 	private void setEnabledSizeField(boolean b){
-		if(b==true){
+		if(b){
 			this.attributeSizeField.setEnabled(b);
 			this.attributeSizeField.setText("Taille");
 		}else{
@@ -822,8 +507,19 @@ implements ActionListener, ItemListener
 			this.attributeSizeField.setText("1");
 		}
 	}
-	
-	
+
+	/**
+	 * Rend visible les boutons de modification d'un attribut.
+	 * @param bool
+	 */
+	private void setVisibleEnabledUpdateButtons(boolean bool){
+		this.confirmUpdateAttributeButton.setVisible(bool);
+		this.confirmUpdateAttributeButton.setEnabled(bool);
+		this.cancelUpdateAttributeButton.setVisible(bool);
+		this.cancelUpdateAttributeButton.setEnabled(bool);
+	}
+
+
 	/**
 	 * Modfifie tous les champs d'un attribut.
 	 * 
@@ -848,8 +544,8 @@ implements ActionListener, ItemListener
 		this.uniqueCheckBox.setSelected(unique);
 		this.primaryKeyCheckBox.setSelected(pk);
 		this.foreignKeyCheckBox.setSelected(fk);
-		this.foreignKeyAttributeComboBoxModel.setSelectedItem(fkAttribute);
 		this.foreignKeyTableComboBoxModel.setSelectedItem(fkTable);
+		this.foreignKeyAttributeComboBoxModel.setSelectedItem(fkAttribute);
 	}
 
 	/**
@@ -892,7 +588,7 @@ implements ActionListener, ItemListener
 		this.fkAtrributeNameComboBox.setEnabled(bool);
 	}
 
-	
+
 	/**
 	 * Définit le nom de l'attribut dans la comboBox des clé étrangères
 	 * en fonction du nom de la table passé en paramètre.
@@ -910,74 +606,19 @@ implements ActionListener, ItemListener
 	}
 
 	/**
-	 * Ajoute l'attribut passé en paramètre à la table 
-	 * contenant les attributs.
-	 * 
-	 * @param attribute : un objet Attribute
-	 */
-	private void addAttributeToTable(Attribute attribute){
-		if (attribute.checkSizeAttributes()>=0){
-			int i = this.models[0].addAttribute(attribute);
-			if( i == 0){
-				this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
-			}else{
-				this.talk(succesAttribute +"Attribut ajouté.");
-				this.clearAttribute();
-			}
-		}else{
-			this.talk(this.errorAttribute +attribute.attributeSizeError(attribute.checkSizeAttributes()));							
-		}
-	}
-
-	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "UP" ou le bouton "DOWN".
 	 */
 	private void positionAttributButtonAction(String direction){
-		if(this.tables[0].getSelectedRow()!=-1){
-			int rowIndex = this.tables[0].getSelectedRow();
+		if(this.table.getSelectedRow()!=-1){
+			int rowIndex = this.table.getSelectedRow();
 			if(direction.equals("UP") && rowIndex!=0){
-				this.models[0].changeAttributePosition(direction, rowIndex);
-				this.tables[0].setRowSelectionInterval(rowIndex-1, rowIndex-1);
+				this.models.changeAttributePosition(direction, rowIndex);
+				this.table.setRowSelectionInterval(rowIndex-1, rowIndex-1);
 			}
-			if(direction.equals("DOWN") && rowIndex!=this.tables[0].getRowCount()-1){
-				this.models[0].changeAttributePosition(direction, rowIndex);
-				this.tables[0].setRowSelectionInterval(rowIndex+1, rowIndex+1);
-			}
-		}
-	}
-
-	/**
-	 * Détermine ce qu'il se passe lors d'une action sur
-	 * le bouton "Ajouter l'attribut".
-	 */
-	private void addAttributeButtonAction()
-	{
-		if(this.isCompleteAttribute()){
-			if(foreignKeyCheckBox.isSelected()){
-				Attribute a = new Attribute(attributeNameField.getText(),
-						(String)attributeTypeComboBox.getSelectedItem(), 
-						Integer.parseInt(attributeSizeField.getText()), 
-						this.notNullCheckBox.isSelected(), 
-						this.uniqueCheckBox.isSelected(),
-						this.primaryKeyCheckBox.isSelected(),
-						this.foreignKeyCheckBox.isSelected(),
-						this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
-						this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
-				if (a.checkSizeAttributes()>=0){
-					int i = this.models[0].addAttribute(a);
-					if( i == 0){
-						this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
-					}else{
-						this.talk(succesAttribute +"Attribut ajouté.");
-						this.clearAttribute();
-					}
-				}else{
-					this.talk(errorAttribute +a.attributeSizeError(a.checkSizeAttributes()));							
-				}
-			}else{
-				Attribute a = new Attribute(attributeNameField.getText(),(String)attributeTypeComboBox.getSelectedItem(), Integer.parseInt(attributeSizeField.getText()), notNullCheckBox.isSelected(), uniqueCheckBox.isSelected(),primaryKeyCheckBox.isSelected(),foreignKeyCheckBox.isSelected(),"N/A","N/A");	
-				this.addAttributeToTable(a);
+			if(direction.equals("DOWN") && rowIndex!=this.table.getRowCount()-1){
+				this.models.changeAttributePosition(direction, rowIndex);
+				this.table.setRowSelectionInterval(rowIndex+1, rowIndex+1);
 			}
 		}
 	}
@@ -1010,17 +651,24 @@ implements ActionListener, ItemListener
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
-	 * le bouton "Modifier l'attribut".
+	 * le bouton "Ajouter l'attribut".
 	 */
-	private void updateAttributeButtonAction()
+	private void addAttributeButtonAction()
 	{
-		this.talk("");
-		int rowIndex = this.tables[0].getSelectedRow();
-		Attribute a = this.models[0].getAttributeAt(rowIndex);
-		this.setAttributesValues(a.name, a.type, Integer.toString(a.size), a.notNull, a.unique, a.primaryKey, a.foreignKey, a.fkTable,a.fkAttribute);
-		this.tables[0].getSelectedRow();
-		this.models[0].removeAttributes(this.tables[0].getSelectedRow());
-		this.setEnableButtonUpdateDeleteUpDown(false);
+		Attribute a = this.models.createAttribute(
+				attributeNameField.getText(),
+				(String)attributeTypeComboBox.getSelectedItem(), 
+				attributeSizeField.getText(), 
+				this.notNullCheckBox.isSelected(), 
+				this.uniqueCheckBox.isSelected(),
+				this.primaryKeyCheckBox.isSelected(),
+				this.foreignKeyCheckBox.isSelected(),
+				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
+				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
+		if(isValidateAttribute(a)){
+			this.addAttributeToTable(a);
+
+		}
 	}
 
 	/**
@@ -1029,12 +677,61 @@ implements ActionListener, ItemListener
 	 */
 	private void deleteAttributeButtonAction()
 	{
-		this.models[0].removeAttributes(this.tables[0].getSelectedRow());
+		this.models.removeAttributes(this.table.getSelectedRow());
 		this.talk(succesAttribute+"Attribut supprimé");
 		this.setEnableButtonUpdateDeleteUpDown(false);
 	}
-	
 
+	/**
+	 * Détermine ce qu'il se passe lors d'une action sur
+	 * le bouton "Modifier l'attribut".
+	 */
+	private void updateAttributeButtonAction()
+	{
+		this.talk("");
+		int rowIndex = this.table.getSelectedRow();
+		Attribute a = this.models.getAttributeAt(rowIndex);
+		this.setAttributesValues(a.name, a.type, Integer.toString(a.size), a.notNull, a.unique, a.primaryKey, a.foreignKey, a.fkTable,a.fkAttribute);
+		this.updateState=true;
+		this.setDisableAllExceptAttribute(false);
+		this.setVisibleEnabledUpdateButtons(true);
+	}
+
+	/**
+	 * Détermine ce qu'il se passe lors d'une action sur
+	 * le bouton "Modifier".
+	 */
+	private void confirmUpdateAttributeButtonAction(){
+		Attribute a = this.models.createAttribute(this.attributeNameField.getText(),
+				(String)this.attributeTypeComboBox.getSelectedItem(), 
+				this.attributeSizeField.getText(), 
+				this.notNullCheckBox.isSelected(), 
+				this.uniqueCheckBox.isSelected(),
+				this.primaryKeyCheckBox.isSelected(),
+				this.foreignKeyCheckBox.isSelected(),
+				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
+				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
+		if(isValidateAttribute(a)){
+			this.models.setAttributeValueAt(this.table.getSelectedRow(),a);
+			this.talk(succesAttribute+"Attribut Modifé.");
+			this.updateState=false;
+			this.clearAttribute();
+			this.setDisableAllExceptAttribute(true);
+			this.setVisibleEnabledUpdateButtons(false);
+		}
+	}
+
+	/**
+	 * Détermine ce qu'il se passe lors d'une action sur
+	 * le bouton "Annuler les modifications".
+	 */
+
+	private void cancelUpdateAttributeButtonAction(){
+		this.clearAttribute();
+		this.setDisableAllExceptAttribute(true);
+		this.setVisibleEnabledUpdateButtons(false);
+
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
@@ -1046,7 +743,7 @@ implements ActionListener, ItemListener
 			if(this.isCompleteTable()){
 				this.control.createTable(new Table(
 						this.tableNameField.getText(),
-						this.models[0].getAttributes()));
+						this.models.getAttributes()));
 			}
 		}
 		if (o == this.deleteAttributeButton) {
@@ -1070,6 +767,12 @@ implements ActionListener, ItemListener
 		if (o == this.fkTableNameComboBox) {
 			selectForeignKeyTableComboBoxAction();
 		}
+		if (o== this.confirmUpdateAttributeButton){
+			this.confirmUpdateAttributeButtonAction();
+		}
+		if (o== this.cancelUpdateAttributeButton){
+			this.cancelUpdateAttributeButtonAction();
+		}
 	}
 
 	@Override
@@ -1091,6 +794,13 @@ implements ActionListener, ItemListener
 				this.initComboBoxFkTableAttributte(false);
 			}
 		}
+	}
+
+
+	@Override
+	public boolean isComplete() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -101,6 +101,19 @@ extends AbstractTableModel {
 		select.fkAttribute=fkAttribute;
 		
 	}
+	
+	public void setAttributeValueAt(int rowIndex, Attribute a){
+		Attribute select = this.getAttributeAt(rowIndex);
+		select.name=a.name;
+		select.type=a.type;
+		select.size=a.size;
+		select.notNull=a.notNull;
+		select.unique=a.unique;
+		select.primaryKey=a.primaryKey;
+		select.foreignKey=a.foreignKey;
+		select.fkTable=a.fkTable;
+		select.fkAttribute=a.fkAttribute;
+	}
 	/**
 	 * @param a
 	 * @return booleans
@@ -178,6 +191,17 @@ extends AbstractTableModel {
 		return this.attributes;
 	}
 	
+	public Attribute createAttribute(String name, String type, String size, boolean notNull, 
+			boolean unique, boolean pk, boolean fk, 
+			String fkTable, String fkAttribute){
+		Attribute a;
+		if(fk){
+			a = new Attribute(name,type,Integer.parseInt(size),notNull,unique,pk,fk,fkTable,fkAttribute);
+		}else{
+			a = new Attribute(name,type,Integer.parseInt(size),notNull,unique,pk,fk,"N/A","N/A");
+		}
+		return a;
+	}
 	/**
 	 * @return boolean
 	 */
