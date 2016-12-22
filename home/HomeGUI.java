@@ -152,7 +152,7 @@ implements ActionListener
 	}
 
 	
-	private void alterButtonAction() {
-		this.control.openModifyGUI();
+	private void alterButtonAction() 
+	{
 	}
 }

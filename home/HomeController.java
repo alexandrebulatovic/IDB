@@ -143,14 +143,6 @@ public class HomeController
 		this.ddlControl.openCreateGUI();
 	}
 	
-	/**
-	 * Ouvre l'IHM de modification des tables.
-	 */
-	public void openModifyGUI() 
-	{
-		this.createOrNotDDLControl();
-		this.ddlControl.openModifyGUI();
-	}
 	
 	/**
 	 * Ouvre l'IHM de suppression des tables.

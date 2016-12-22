@@ -10,8 +10,6 @@ import javax.swing.JFrame;
 import business.Attribute;
 import business.Table;
 
-import ddl.modify.ModifyTableChoiceGUI;
-import ddl.modify.ModifyTableGUI;
 import manager.DDLManager;
 import useful.Response;
 import useful.ResponseData;
@@ -34,10 +32,7 @@ public class DDLController
 	
 	/** Gère la communication avec un SGBD dans l'optique d'utiliser le LDD.*/
 	private DDLManager manager;
-	
-	
-	private ModifyTableChoiceGUI modifyGUI;
-	
+		
 	
 	//Contructeur
 	/**
@@ -62,13 +57,7 @@ public class DDLController
 			showGUI(this.createGUI);
 		}
 	}
-	
-	public void openModifyGUI() {
-		
-		this.modifyGUI = ModifyTableChoiceGUI.getInstance();
-//		this.modifyGUI.toFront();
-	}
-	
+
 	
 	/**
 	 * Ouvre l'IHM de création des tables si et seulement si 
@@ -136,27 +125,6 @@ public class DDLController
 	public ResponseData<String> getPrimaryKey(String table)
 	{
 		return this.manager.getPrimaryKey(table);
-	}
-
-
-	public void modifier(String tableName) {
-		ModifyTableGUI modify = new ModifyTableGUI();
-		
-		
-		List<Attribute> attributes = null;
-		try {
-			attributes = this.manager.getAttributes(tableName);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		if (attributes==null){
-			//TODO
-		}
-		
-		
-		//Attribute att = new Attribute(tableName, tableName, 0, false, false, false, false, tableName, tableName);
-		modify.setView(attributes, tableName);
-		
 	}
 	
 
