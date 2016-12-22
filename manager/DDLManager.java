@@ -22,27 +22,27 @@ public class DDLManager
 	//Statiques
 	/** Constante pour récupérer les tables de données.*/
 	private final static int TABLES = 0;
-	
+
 	/** Constante pour récupérer les clées primaires de la base.*/
 	private final static int PRIMARY_KEY = 1;
-	
+
 	/** Constante pour les clées étrangères DANS une table.*/
 	private final static int IN_FOREIGN_KEY = 2;
-	
+
 	/** Constante pour les attributs utilisés comme référence par une autre table.*/
 	private final static int OUT_FOREIGN_KEY = 3;
-	
+
 	//Attributs
 	/** Pour créer des requètes SQL.*/
 	private Statement statement;
-	
+
 	/** Pour obtenir des méta-données sur le SGBD.*/
 	private DatabaseMetaData metadata;
-	
+
 	/** Stocke les résultats d'une requête sur les meta-données.*/
 	private ResultSet metaDataResult;
-	
-	
+
+
 	//Constructeur
 	/**
 	 * Constructeur commun.
@@ -51,8 +51,8 @@ public class DDLManager
 	{
 		this.createStatementAndMetaData(connection);
 	}
-	
-	
+
+
 	//Méthodes
 	/**
 	 * Tente de créer une table dans la base de données.
@@ -66,8 +66,8 @@ public class DDLManager
 		System.out.println(sql);
 		return this.executeUpdate(sql, "Table créée.");
 	}
-	
-	
+
+
 	/**
 	 * Tente de supprimer une table dans la base de données.
 	 * 
@@ -81,8 +81,8 @@ public class DDLManager
 		return this.executeUpdate(sql, "Table supprimée.");
 
 	}
-	
-	
+
+
 	/**
 	 * @param table : nom de la table où chercher la clée, null interdit.
 	 * @return Une réponse personnalisée contenant les attributs membres
@@ -94,9 +94,9 @@ public class DDLManager
 		return this.procedureToGetMetadata(
 				PRIMARY_KEY, table, 4, "Clée primaire récupérée.");
 	}
-	
 
-	
+
+
 	/**
 	 * @return Une réponse personnalisée contenant le nom des tables de données
 	 * de la base si et seulement si la requête fonctionne, sinon détaillant
@@ -107,8 +107,8 @@ public class DDLManager
 		return this.procedureToGetMetadata(
 				TABLES, null, 3, "Tables récupérées");
 	}
-	
-	
+
+
 	/**
 	 * Ferme proprement les objets statements.
 	 * Ne fait rien en cas d'erreur et n'avertit pas l'utilisateur.
@@ -118,8 +118,8 @@ public class DDLManager
 		try{this.statement.close();}
 		catch(SQLException e){}
 	}
-	
-	
+
+
 	//Privées
 	/**
 	 * Fabrique des objets Statement et DataBaseMetaData  
@@ -135,8 +135,8 @@ public class DDLManager
 			this.metadata = connection.getMetaData();
 		}catch(SQLException e){}
 	}
-		
-	
+
+
 	/**
 	 * Exécute une requête SQL qui ne retourne rien.
 	 * 
@@ -166,7 +166,7 @@ public class DDLManager
 	 * @param what : les métadonnées voulues, parmi les variables statiques de la classe.
 	 * @param table : nom de la table qui contient $what, null autorisé si et seulement si 
 	 * les métadonnées $what ne se trouvent pas dans une table.
-	 * @param column : numéro de colonne où trouver les métadonnées.
+	 * @param column : numéro des colonnes où trouver les métadonnées, null interdit.
 	 * @param success : message en cas de réussite, null interdit.
 	 * @return Une réponse personnalisée contenant les métadonnées voulues avec 
 	 * un message de réussite $success si et seulement si
@@ -174,21 +174,21 @@ public class DDLManager
 	 * et aucune donnée. 
 	 */
 	private ResponseData<String> procedureToGetMetadata(
-			int what, String table, int column, String success)
+			int what, String table, int [] column, String success)
 	{
 		ResponseData<String> result;
 		try {
 			this.chooseMetaData(what, table);
 			result = new ResponseData<String>
-				(true, success, this.readMetaData(column));
+			(true, success, this.readMetaData(column));
 		}
 		catch(SQLException e){
 			result = new ResponseData<String>(e);
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Exécute une requête pour récupérer les métadonnées $what qui se trouvent
 	 * éventuellement dans $table.
@@ -199,7 +199,7 @@ public class DDLManager
 	 * @throws SQLException
 	 */
 	private void chooseMetaData(int what, String table) 
-	throws SQLException
+			throws SQLException
 	{
 		switch (what){
 		case TABLES : 
@@ -207,7 +207,7 @@ public class DDLManager
 			this.metaDataResult = this.metadata.getTables(
 					null, this.metadata.getUserName(), "%", tab);
 			break;
-			
+
 		case PRIMARY_KEY :
 			this.metaDataResult = this.metadata.getPrimaryKeys(
 					null, this.metadata.getUserName(), table);
@@ -219,16 +219,24 @@ public class DDLManager
 	/**
 	 * Lit les dernières métadonnées obtenues.
 	 * 
-	 * @param column : numéro de colonne où trouver les métadonnées.
+	 * @param columns : numéro des colonnes où trouver les métadonnées, null interdit.
 	 * @return Une liste contenant toutes les métadonnées lues.
 	 * @throws SQLException
 	 */
-	private List<String> readMetaData(int column)
-	throws SQLException
+	private List<String []> readMetaData(int [] columns)
+			throws SQLException
 	{
-		List<String> result = new ArrayList<String>();
+		List<String []> result = new ArrayList<String []>();
+		String [] row;
+		int column;
+		
 		while (this.metaDataResult.next()) {
-			result.add(this.metaDataResult.getString(column));
+			row = new String [columns.length];
+			for (int j=0; j < columns.length; j++) {
+				column = columns[j];
+				row[j] = this.metaDataResult.getString(column);
+			}
+			result.add(row);
 		}
 		this.metaDataResult.close();
 		return result;
