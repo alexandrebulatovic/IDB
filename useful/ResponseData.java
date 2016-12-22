@@ -1,6 +1,5 @@
 package useful;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,22 +35,14 @@ extends Response
 	
 	
 	/**
-	 * Constructeur pour ajouter les données au fur et à mesure.
+	 * Constructeur sur levée d'exceptions.
 	 * 
-	 * @param response vrai ssi la tentative a réussie, faux sinon.
-	 * @param msg : un message décrivant grossièrement la tentative, null interdit.
+	 * @param e : null interdit.
 	 */
-	public ResponseData(boolean response, String msg)
-	{
-		super(response, msg);
-		this.data = new ArrayList<T> ();
-	}
-	
-	
-	public ResponseData(SQLException e)
+	public ResponseData(Exception e)
 	{
 		super(e);
-		this.data = new ArrayList<>();
+		this.data = new ArrayList<T>();
 	}
 	
 	
