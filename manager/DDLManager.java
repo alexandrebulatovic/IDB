@@ -20,10 +20,10 @@ import useful.ForeinKey;
 public class DDLManager 
 {
 	//Statiques
-	/** Constante pour récupérer les tables de données.*/
+	/** Constante pour récupérer le nom des tables de données.*/
 	private final static int TABLES = 0;
 
-	/** Constante pour récupérer les clées primaires de la base.*/
+	/** Constante pour récupérer les membres de la clée primaire d'une table donnée.*/
 	private final static int PRIMARY_KEY = 1;
 
 	/** Constante pour les clées étrangères DANS une table.*/
@@ -86,28 +86,46 @@ public class DDLManager
 	/**
 	 * @param table : nom de la table où chercher la clée, null interdit.
 	 * @return Une réponse personnalisée contenant les attributs membres
-	 * de la clée primaire de $table si et seulement si la requête réussit,
-	 * sinon détaillant l'érreur survenue.
+	 * de la clée primaire de $table si et seulement si la requête fonctionne,
+	 * sinon une réponse personnalisée détaillant l'erreur survenue.
 	 */
 	public ResponseData<String> getPrimaryKey(String table)
 	{
-		return this.procedureToGetMetadata(
-				PRIMARY_KEY, table, 4, "Clée primaire récupérée.");
+		int [] columns = {4};
+		ResponseData<String []> r = this.procedureToGetMetadata
+				(PRIMARY_KEY, table, columns, "Clée primaire récupérée.");
+		return new ResponseData<String> (r) ;
+		
 	}
-
 
 
 	/**
 	 * @return Une réponse personnalisée contenant le nom des tables de données
-	 * de la base si et seulement si la requête fonctionne, sinon détaillant
-	 * l'erreur survenue.
+	 * de la base si et seulement si la requête fonctionne, sinon une réponse 
+	 * personnalisée détaillant l'erreur survenue.
 	 */
 	public ResponseData<String> getTables()
 	{
-		return this.procedureToGetMetadata(
-				TABLES, null, 3, "Tables récupérées");
+		int [] columns = {3};
+		ResponseData<String []> r = this.procedureToGetMetadata
+				(TABLES, null, columns, "Tables récupérées.");
+		return new ResponseData<String>(r);
 	}
 
+	
+	/**
+	 * @param table : table où chercher les clées étrangères.
+	 * @return Une réponse personnalisée qui contient les clées étrangères
+	 * de $table et leurs références si et seulement si la requête fonctionne,
+	 * sinon une réponse personnalisée détaillant l'erreur survenue.
+	 */
+	public ResponseData<String []> getImportedKey(String table)
+	{
+		int [] columns = {3,4,8};
+		return this.procedureToGetMetadata
+				(IN_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
+	}
+	
 
 	/**
 	 * Ferme proprement les objets statements.
@@ -166,24 +184,24 @@ public class DDLManager
 	 * @param what : les métadonnées voulues, parmi les variables statiques de la classe.
 	 * @param table : nom de la table qui contient $what, null autorisé si et seulement si 
 	 * les métadonnées $what ne se trouvent pas dans une table.
-	 * @param column : numéro des colonnes où trouver les métadonnées, null interdit.
+	 * @param column : numéros des colonnes où trouver les métadonnées, null interdit.
 	 * @param success : message en cas de réussite, null interdit.
 	 * @return Une réponse personnalisée contenant les métadonnées voulues avec 
 	 * un message de réussite $success si et seulement si
 	 * la requête a aboutie, sinon une réponse personnalisée détaillant l'erreur rencontrée
 	 * et aucune donnée. 
 	 */
-	private ResponseData<String> procedureToGetMetadata(
+	private ResponseData<String []> procedureToGetMetadata(
 			int what, String table, int [] column, String success)
 	{
-		ResponseData<String> result;
+		ResponseData<String []> result;
 		try {
 			this.chooseMetaData(what, table);
-			result = new ResponseData<String>
+			result = new ResponseData<String []>
 			(true, success, this.readMetaData(column));
 		}
 		catch(SQLException e){
-			result = new ResponseData<String>(e);
+			result = new ResponseData<String []>(e);
 		}
 		return result;
 	}
@@ -201,25 +219,31 @@ public class DDLManager
 	private void chooseMetaData(int what, String table) 
 			throws SQLException
 	{
+		String user = this.metadata.getUserName();
+		
 		switch (what){
 		case TABLES : 
-			String [] tab = {"TABLE"};
+			String [] tableType = {"TABLE"};
 			this.metaDataResult = this.metadata.getTables(
-					null, this.metadata.getUserName(), "%", tab);
+					null, user, "%", tableType);
 			break;
 
 		case PRIMARY_KEY :
 			this.metaDataResult = this.metadata.getPrimaryKeys(
-					null, this.metadata.getUserName(), table);
+					null, user, table);
 			break;
-		}
+		
+		case IN_FOREIGN_KEY :
+			this.metaDataResult = this.metadata.getImportedKeys(null, user, table);
+			break;
+		}	
 	}
 
 
 	/**
 	 * Lit les dernières métadonnées obtenues.
 	 * 
-	 * @param columns : numéro des colonnes où trouver les métadonnées, null interdit.
+	 * @param columns : numéros des colonnes où trouver les métadonnées, null interdit.
 	 * @return Une liste contenant toutes les métadonnées lues.
 	 * @throws SQLException
 	 */
@@ -241,4 +265,6 @@ public class DDLManager
 		this.metaDataResult.close();
 		return result;
 	}
+	
+
 }
