@@ -50,7 +50,7 @@ implements ActionListener
 			this.okButtonAction();
 		}
 	}
-	
+
 
 	@Override
 	public boolean isComplete() 
