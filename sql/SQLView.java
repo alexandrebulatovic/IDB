@@ -1,70 +1,42 @@
 package sql;
 
 import gui.BasicGUI;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-
 
 @SuppressWarnings("serial")
 public class SQLView 
 extends BasicGUI
 implements ActionListener
 {
-	//Attributs
-	/**
-	 * Controleur lié à l'IHM.
-	 */
-	private SQLController control;
+	/* ATTRIBUTS */
 
-	/**
-	 * Zone de texte pour écrire les requêtes.
-	 */
+	/** Controleur lié à l'IHM. */
+	private SQLController sql_controller;
+
+	/** Zone de texte pour écrire les requêtes. */
 	private JTextArea sqlArea;
 
-	/**
-	 * Bouton pour soumettre la requête
-	 */
+	/** Bouton pour soumettre la requête. */
 	private JButton okButton;
 
-	//Constructeurs
-	/**
-	 * Constructeur commun.
-	 */
-	public SQLView(SQLController control)
+	/* CONSTRUCTEUR */
+
+	/** Met en place les élements affichés et initialise le controller de la vue. */
+	public SQLView(SQLController control) 
 	{
 		super("Menu SQL", null, 400, 350, 20);
-		this.control = control;
+		this.sql_controller = control;
 		this.handleArea();
 		this.handleButtons();
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 
+	/* METHODES */
 
-	//Public
-	@Override
-	public void actionPerformed(ActionEvent event) 
-	{
-		if (event.getSource() == this.okButton) {
-			this.okButtonAction();
-		}
-	}
-
-
-	@Override
-	public boolean isComplete() 
-	{
-		String query = this.sqlArea.getText();
-		return query.endsWith(";") && query.length() > 1;
-	}
-
-
-	//Privates
-	/**
-	 * Instancie, dimensionne, positionne et associe les
-	 * zones de textes.
-	 */
+	/**Instancie, dimensionne, positionne et associe les
+	 * zones de textes. */
 	private void handleArea()
 	{
 		this.sqlArea = new JTextArea();
@@ -72,30 +44,64 @@ implements ActionListener
 		this.bindAndAdd(this.sqlArea, 200);
 	}
 
-	/**
-	 * Instancie, dimensionne, positionne et associe les
-	 * boutons.
-	 */
+	/** Instancie, dimensionne, positionne et associe les
+	 * boutons. */
 	private void handleButtons()
 	{
 		this.okButton = new JButton("Envoyer");
-		this.okButton.setActionCommand("send_sql_query");
 		this.okButton.addActionListener(this);
 		this.bindAndAdd(this.okButton, 40);
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent event)
+	{
+		if (event.getSource() == this.okButton) {
+			this.okButtonAction();
+		}
+	}
 
-	/**
-	 * Exécute l'action voulue par un clic sur le bouton 'ok'.
-	 */
+	/** Exécute l'action voulue par un clic sur le bouton "Envoyer". */
 	private void okButtonAction()
 	{
-		if (! this.isComplete()) {
+		if (!this.isComplete()) {
+
 			this.talk("Syntaxe attendue : ma_requête;");
-		}
-		else{
+
+		} else {
+
 			this.talk("Requete envoyée.");
-			this.control.sendSQL(this.sqlArea.getText().replaceAll(";", "")); // on envoie la requete au controleur sans le ";"
+
+			String qry = this.sqlArea.getText();
+			this.transmitSQL(qry);
 		}
+	}
+
+	/** Envoie la requête au controller.
+	 * @param qry : requête sous forme de chaîne de caractères à envoyer. */
+	private void transmitSQL(String qry) 
+	{
+		this.sql_controller.transmitSQL(qry);
+	}
+
+	@Override
+	public boolean isComplete() 
+	{
+		String qry = this.sqlArea.getText();
+		return qry.endsWith(";") && qry.length() > 1;
+	}
+
+	/** Pop-up pour afficher une table sous la forme d'un objet JTable.
+	 * @param table : {@code JTable} à afficher. */
+	public void showTable(JTable table)
+	{
+		JOptionPane.showMessageDialog(null, new JScrollPane(table), "Résultat", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	/** Pop-up pour afficher un message.
+	 * @param str : Message à afficher. */
+	public void showReply(String str)
+	{
+		JOptionPane.showMessageDialog(null, str, "Résultat", JOptionPane.INFORMATION_MESSAGE);
 	}
 }

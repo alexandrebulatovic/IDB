@@ -127,7 +127,6 @@ public class HomeController
 	 */
 	public void openSQLGUI()
 	{
-		//this.sqlControl.openSQL();
 		this.createOrNotSQLController();
 		this.sqlControl.openSQL();
 	}
