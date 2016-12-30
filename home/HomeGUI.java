@@ -1,6 +1,9 @@
 package home;
 
 import javax.swing.*;
+
+import crud.CRUDView;
+
 import java.awt.event.*;
 
 import gui.BasicGUI;
@@ -27,11 +30,14 @@ implements ActionListener
 
 	/** Bouton pour ouvrir l'IHM de modification des tables.*/
 	private JButton alterButton;
-	
+
 	/** Bouton pour ouvrir l'IHM de suppression des tables.*/
 	private JButton dropButton;
-	
-	
+
+	/** Bouton pour ouvrir l'IHM du CRUD.*/
+	private JButton crudButton;
+
+
 	//Constructeur
 	/**
 	 * Constructeur commun.
@@ -47,33 +53,34 @@ implements ActionListener
 
 
 	//Méthodes
-    @Override
+	@Override
 	public boolean isComplete() {return true;}
 
 
-    @Override
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		Object o = e.getSource();
 		if (o == this.sqlButton) this.sqlButtonAction();
 		else 
 			if (o == this.createButton) this.createButtonAction();
-		else 
-			if (o == this.dropButton) this.dropButtonAction();
-		else
-			if (o == this.alterButton)
-				this.alterButtonAction();
-				
+			else 
+				if (o == this.dropButton) this.dropButtonAction();
+				else
+					if (o == this.alterButton) this.alterButtonAction();
+					else
+						if (o == this.crudButton) this.crudButtonAction();
+
 	}
 
-    
-    @Override
-    public void windowClosing (WindowEvent e)
-    {
-    	this.control.disconnect();
-    }
-    
-    
+
+	@Override
+	public void windowClosing (WindowEvent e)
+	{
+		this.control.disconnect();
+	}
+
+
 	//Privates
 	/**
 	 * Instancie, positionne, dimensionne et associe
@@ -96,12 +103,15 @@ implements ActionListener
 
 		this.createButton = new JButton("LDD : créer tables");
 		this.createButton.setActionCommand("ldd_create_table");
-		
+
 		this.alterButton = new JButton("LDD : modifier tables");
 		this.alterButton.setActionCommand("ldd_alter_table");
-		
+
 		this.dropButton = new JButton("LDD : supprimer tables");
 		this.dropButton.setActionCommand("ldd_drop_table");
+
+		this.crudButton = new JButton("CRUD");
+		this.crudButton.setActionCommand("crud");
 
 		for (JComponent jc : this.components) {
 			if (jc.getClass().getName().endsWith("JButton")) {
@@ -120,6 +130,7 @@ implements ActionListener
 		this.bindAndAdd(this.createButton);
 		this.bindAndAdd(this.alterButton);
 		this.bindAndAdd(this.dropButton);
+		this.bindAndAdd(this.crudButton);
 		for (JComponent jc : this.components) {
 			if (jc.getClass().getName().endsWith("JButton")) {
 				((JButton)jc).addActionListener(this);
@@ -142,8 +153,8 @@ implements ActionListener
 	private void createButtonAction(){
 		this.control.openCreateGUI();
 	}
-	
-	
+
+
 	/**
 	 * Gère les actions sur l'appui du bouton 'Supprimer des tables'.
 	 */
@@ -151,8 +162,19 @@ implements ActionListener
 		this.control.openDropGUI();
 	}
 
-	
+	/**
+	 * Gère l'action du bouton 'LDD : modifier tables'.
+	 */
 	private void alterButtonAction() 
 	{
+	}
+
+	/**
+	 * Gère l'action du bouton 'CRUD'.
+	 */
+	private void crudButtonAction() 
+	{
+		// TODO : changer par la suite
+		new CRUDView(null);
 	}
 }

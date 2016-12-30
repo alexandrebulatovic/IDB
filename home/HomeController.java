@@ -19,17 +19,17 @@ public class HomeController
 	//Attributes
 	/** Gestionnaire de connexion. */
 	private ConnectionManager connector;
-	
+
 	/** Controleur du LDD.*/
 	private DDLController ddlControl;
-	
+
 	/** Controleur du SQL.*/
 	private SQLController sqlControl;
-	
+
 	/** Gestionnaire des valeurs de connexions par défaut.*/
 	private DefaultValueManager dvm;
-	
-	
+
+
 	//Constructeur
 	/**
 	 * Constructeur lambda.
@@ -38,8 +38,8 @@ public class HomeController
 	{
 		this.dvm = new DefaultValueManager();
 	}
-	
-	
+
+
 	/**
 	 * @return Les informations de la dernière connexion valide.
 	 */
@@ -57,7 +57,7 @@ public class HomeController
 					this.dvm.getDataBase(), 
 					this.dvm.getPort());
 		}
-		
+
 	}
 
 
@@ -87,7 +87,7 @@ public class HomeController
 	{
 		this.connector = this.chooseManager(parameters.driver);
 		return this.connector.connect(parameters);
-	
+
 	}
 
 
@@ -141,8 +141,8 @@ public class HomeController
 		this.createOrNotDDLControl();
 		this.ddlControl.openCreateGUI();
 	}
-	
-	
+
+
 	/**
 	 * Ouvre l'IHM de suppression des tables.
 	 */
@@ -151,8 +151,8 @@ public class HomeController
 		this.createOrNotDDLControl();
 		this.ddlControl.openDropGUI();
 	}
-	
-	
+
+
 	/**
 	 * Ferme proprement les objets liés à la connexion.
 	 */
@@ -178,8 +178,8 @@ public class HomeController
 		default : return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Définit le controleur de LDD pour $this si besoin.
 	 */
@@ -189,7 +189,7 @@ public class HomeController
 			this.ddlControl = new DDLController(this.connector.getConnection());
 		}
 	}
-	
+
 	/**
 	 * Définit le controleur de SQL pour $this si besoin.
 	 */
@@ -199,4 +199,5 @@ public class HomeController
 			this.sqlControl = new SQLController(this.connector.getConnection());
 		}
 	}
+
 }
