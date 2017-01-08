@@ -60,8 +60,10 @@ public class DDLController
 	
 	public void openModifyGUI() {
 		if (this.modifyGUI == null){
+			this.modifyGUI = new ModifyTableGUI(this);
 		}
 		else{
+			showGUI(this.modifyGUI);
 		}
 		
 	}
