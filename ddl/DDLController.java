@@ -99,6 +99,15 @@ public class DDLController
 		this.createGUI.talk(response.toString());
 	}
 	
+	/**
+	 * Modifie une table existante
+	 */
+	public void modifyTable(Table table) {
+		// TODO Auto-generated method stub
+		System.out.println("Je modifie la table"+table.getName());
+		this.createTable(table);
+	}
+	
 	
 	/**
 	 * Envoie $table au DDLManager dans l'optique de la supprimer.
@@ -155,6 +164,9 @@ public class DDLController
 		gui.setVisible(true);
 		gui.toFront();
 	}
+
+
+
 
 
 

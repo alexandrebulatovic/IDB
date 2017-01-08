@@ -35,7 +35,7 @@ implements ActionListener, ItemListener
 	private static final String FONT = null;
 
 	/** Controleur lié à l'IHM. */
-	private DDLController control;
+	protected DDLController control;
 
 	/** Préfixe des messages d'erreurs. */
 	private String errorAttribute = "ERREUR : ";
@@ -74,7 +74,7 @@ implements ActionListener, ItemListener
 	
 	// ==========================FIELDS========================
 	/** Boite de saisie du nom de la table. */
-	private JTextField tableNameField;
+	protected JTextField tableNameField;
 
 	/** Boite de saisie du nom de l'attribut. */
 	private JTextField attributeNameField;
@@ -108,7 +108,7 @@ implements ActionListener, ItemListener
 	private JButton attributeButton;
 
 	/** Bouton 'Créer la table'. */
-	private JButton createTableButton;
+	protected JButton createTableButton;
 
 	/** Bouton 'Modifier attribut'. */
 	private JButton updateAttributeButton;
@@ -741,9 +741,7 @@ implements ActionListener, ItemListener
 		}
 		if (o == this.createTableButton) {
 			if(this.isCompleteTable()){
-				this.control.createTable(new Table(
-						this.tableNameField.getText(),
-						this.models.getAttributes()));
+				createTableButtonAction();
 			}
 		}
 		if (o == this.deleteAttributeButton) {
@@ -773,6 +771,16 @@ implements ActionListener, ItemListener
 		if (o== this.cancelUpdateAttributeButton){
 			this.cancelUpdateAttributeButtonAction();
 		}
+	}
+
+	protected void createTableButtonAction() {
+		this.control.createTable(this.getTable());
+	}
+
+	protected Table getTable() {
+		return new Table(
+				this.tableNameField.getText(),
+				this.models.getAttributes());
 	}
 
 	@Override
