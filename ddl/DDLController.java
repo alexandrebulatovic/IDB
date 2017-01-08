@@ -24,6 +24,9 @@ public class DDLController
 	/** IHM pour créer une table et ses attributs.*/
 	private CreateTableGUI createGUI;
 	
+	/**IHM pour modifier une table et ses attributs.*/
+	private ModifyTableGUI modifyGUI;
+	
 	/** IHM pour supprimer une table.*/
 	private DropTableGUI dropGUI;
 	
@@ -53,6 +56,14 @@ public class DDLController
 		else {
 			showGUI(this.createGUI);
 		}
+	}
+	
+	public void openModifyGUI() {
+		if (this.modifyGUI == null){
+		}
+		else{
+		}
+		
 	}
 
 	
@@ -142,4 +153,7 @@ public class DDLController
 		gui.setVisible(true);
 		gui.toFront();
 	}
+
+
+
 }
