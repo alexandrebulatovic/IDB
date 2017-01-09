@@ -117,13 +117,6 @@ public class DDLManager
 	
 	public List<Attribute> getAttributes(String table) {
 		List<Attribute> attributes = new ArrayList<Attribute>();
-//		ResultSet rs = this.statement.executeQuery("SELECT a.* FROM "+table+" a");
-	
-		
-//		ResultSetMetaData rsmd = rs.getMetaData();
-//		int nbColumns = rsmd.getColumnCount();
-		
-//		this.createStatementAndMetaData(connection);
 		
 		List<String> pks = this.getPrimaryKey(table).getCollection();
 		List<String[]> fks = this.getImportedKey(table).getCollection();
@@ -147,7 +140,7 @@ public class DDLManager
 					
 					
 					for (String[] fk : fks){
-						if (fk[0] == nameAttribute){
+						if (fk[0].equals(nameAttribute)){
 							isFk = true;
 							fkTable = fk[1];
 							fkAttribute = fk[2];
@@ -157,7 +150,7 @@ public class DDLManager
 							nameAttribute, 
 							type, 
 							size, 
-							!nullable,//etonnament d'ailleurs 
+							!nullable,//etonnamment d'ailleurs 
 							unique, 
 							pk, 
 							isFk, 
@@ -177,25 +170,25 @@ public class DDLManager
 		}
 			
 
-	/**
-	 * Retourne nulle si l'attribut n'es pas clé étrangère
-	 * 
-	 * @return ForeinKey
-	 */
-	private ForeinKey getForeinKeyIfAttributeIsForeinKey(String attributeName,List<String[]> fks) {
-		if (fks.isEmpty()){
-			return null;
-		}
-		System.out.println("DEBUT");
-		for (String[] fk : fks){
-			
-			String tableDest = fk[0];
-			String attDest = fk[1];
-			
-		}
-		System.out.println("FIN");
-		return null;
-	}
+//	/**
+//	 * Retourne nulle si l'attribut n'es pas clé étrangère
+//	 * 
+//	 * @return ForeinKey
+//	 */
+//	private ForeinKey getForeinKeyIfAttributeIsForeinKey(String attributeName,List<String[]> fks) {
+//		if (fks.isEmpty()){
+//			return null;
+//		}
+//		System.out.println("DEBUT");
+//		for (String[] fk : fks){
+//			
+//			String tableDest = fk[0];
+//			String attDest = fk[1];
+//			
+//		}
+//		System.out.println("FIN");
+//		return null;
+//	}
 
 
 	private boolean isPk(String nameAttribute,List<String> pks) {
@@ -205,16 +198,6 @@ public class DDLManager
 			}
 		}
 		return false;
-//		this.getPrimaryKey(table).getCollection();
-//		List<String>pks = this.getPrimaryKeys(table);
-//		if (pks != null){ //s'il existe des clés primaires
-//			for (String pkString : pks){
-//				if (attributeName.equals(pkString)){
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
 	}
 
 

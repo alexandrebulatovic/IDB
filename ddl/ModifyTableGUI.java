@@ -128,7 +128,10 @@ public class ModifyTableGUI extends CreateTableGUI {
 				String tableSelected = this.comboChoiceTable.getSelectedItem().toString();
 				bug = !bug;
 				if (!bug){
+					
 					this.setValues();
+					this.tableNameField.setText(this.comboChoiceTable.getSelectedItem().toString());
+//					System.out.println(this.tableNameField.getText());
 				}
 			}
 

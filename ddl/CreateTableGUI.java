@@ -423,10 +423,13 @@ implements ActionListener, ItemListener
 	 */
 	private boolean isCompleteTable()
 	{
-		if(this.models.getRowCount()==0 || this.tableNameField.getText().equals("")){
-			this.talk(errorAttribute+"Il n'y a pas d'Attribut OU Il manque le nom de la Table");
+		if(this.models.getRowCount()==0){
+			this.talk(errorAttribute+"Il n'y a pas d'Attribut");
 			return false;
-		}else{
+		} else if (this.tableNameField.getText().equals("")) {
+			this.talk(errorAttribute+"Il manque le nom de la Table");
+			return false;
+		} else {
 			return true;
 		}
 	}
@@ -660,7 +663,7 @@ implements ActionListener, ItemListener
 	 */
 	private void addAttributeButtonAction()
 	{
-		System.out.println("Hello");
+		System.out.println("Ajout de l'attribut "+this.attributeNameField.getText());
 		Attribute a = this.models.createAttribute(
 				attributeNameField.getText(),
 				(String)attributeTypeComboBox.getSelectedItem(), 

@@ -109,8 +109,13 @@ public class DDLController
 	 */
 	public void modifyTable(Table table) {
 		// TODO Auto-generated method stub
-		System.out.println("Je modifie la table"+table.getName());
-		this.createTable(table);
+		System.out.println("Je modifie la table "+table.getName());
+		
+		Response response = this.manager.createTable(table.toCreate());
+		if (response.hasSuccess()) {
+			this.modifyGUI.resetView();
+		}
+		this.modifyGUI.talk(response.toString());
 	}
 	
 	
