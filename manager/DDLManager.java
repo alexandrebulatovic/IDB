@@ -121,17 +121,19 @@ public class DDLManager
 		List<String> pks = this.getPrimaryKey(table).getCollection();
 		List<String[]> fks = this.getImportedKey(table).getCollection();
 		
+		List<String> uniqueAttributes = this.getUnique(table);
+		
 
-			ResultSet rs;
+			ResultSet rsColumns;
+			ResultSet rsIndex;
 			try {
-				rs = this.metadata.getColumns(null, null, table, null);
-				
-				while(rs.next()){
-					String nameAttribute = rs.getString("COLUMN_NAME");
-					String type = rs.getString("TYPE_NAME");
-					int size = rs.getInt("COLUMN_SIZE");
-					boolean nullable = rs.getString("IS_NULLABLE").equals("YES");
-					boolean unique = false;
+				rsColumns = this.metadata.getColumns(null, null, table, null);
+				while(rsColumns.next()){
+					String nameAttribute = 	rsColumns.getString("COLUMN_NAME");
+					String type = 			rsColumns.getString("TYPE_NAME");
+					int size = 				rsColumns.getInt("COLUMN_SIZE");
+					boolean notNull = 		rsColumns.getString("IS_NULLABLE").equals("NO");
+					boolean unique = this.isUnique(nameAttribute,uniqueAttributes);
 					boolean pk = this.isPk(nameAttribute,pks);
 					
 					boolean isFk = false;
@@ -140,17 +142,17 @@ public class DDLManager
 					
 					
 					for (String[] fk : fks){
-						if (fk[0].equals(nameAttribute)){
+						if (fk[2].equals(nameAttribute)){
 							isFk = true;
-							fkTable = fk[1];
-							fkAttribute = fk[2];
+							fkTable = fk[0];
+							fkAttribute = fk[1];
 						}
 					}
 					attributes.add(new Attribute(
 							nameAttribute, 
 							type, 
 							size, 
-							!nullable,//etonnamment d'ailleurs 
+							notNull,
 							unique, 
 							pk, 
 							isFk, 
@@ -168,6 +170,35 @@ public class DDLManager
 
 			return attributes;
 		}
+
+
+	private boolean isUnique(String nameAttribute, List<String> uniqueAttributes) {
+		for (String unique : uniqueAttributes){
+			if (nameAttribute.equals(unique)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	private List<String> getUnique(String table) {
+		List<String> unique = new ArrayList<String>();
+		ResultSet rsIndex;
+		try {
+			rsIndex = this.metadata.getIndexInfo(null, null, table, true, false);
+			rsIndex.next();
+			while (rsIndex.next()){
+				unique.add(rsIndex.getString("COLUMN_NAME"));		
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+		return unique;
+	}
 			
 
 //	/**
@@ -213,6 +244,8 @@ public class DDLManager
 		return this.procedureToGetMetadata
 				(IN_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
 	}
+	
+
 	
 
 	/**
