@@ -341,4 +341,10 @@ public class Attribute
 		result.append(")");
 		return result.toString();
 	}
+
+
+	public String toSQL() {
+		return this.name+" "+this.type+" ("+this.size+")";
+
+	}
 }

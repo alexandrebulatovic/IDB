@@ -1,4 +1,6 @@
 package business;
+import java.awt.List;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 
@@ -119,7 +121,94 @@ public class Table {
 		return result.toString();
 	}
 	
+	/**
+	 * Retourne les requetes SQL qui modifient
+	 * La table avec des ALTER TABLE
+	 * @return String
+	 */
+	public ArrayList<String> toModify(Table tableSource) {
+		ArrayList<String> results = new ArrayList<String>();
+		
+		
+		for (Attribute attribute : attributesToAdd(tableSource)){
+			StringBuilder build = new StringBuilder();
+			build.append("ALTER TABLE ");
+			build.append(this.name);
+			build.append("\n");
+			build.append("ADD ");
+			build.append(attribute.toSQL());
+			results.add(build.toString());
+		}
+		
+		for (Attribute attribute : attributesToDrop(tableSource)){
+			StringBuilder build = new StringBuilder();
+			build.append("ALTER TABLE ");
+			build.append(this.name);
+			build.append("\n");
+			build.append("DROP COLUMN ");
+			build.append(attribute.name);
+			results.add(build.toString());
+		}
+	 
+		return results;
+	}
 	
+	/**
+	 * Retourne une liste d'attributs 
+	 * qui doivent etre supprimés
+	 * @param tableSource
+	 * @return
+	 */
+	private ArrayList<Attribute> attributesToDrop(Table tableSource) {
+		ArrayList<Attribute> attributesToDrop = new ArrayList<Attribute>();
+		for (Attribute att : tableSource.getAttributes()){
+			if (!estContenu(this.attributes,att)){
+				attributesToDrop.add(att);
+			}
+	
+		}
+		
+		return attributesToDrop;
+	}
+
+
+
+	/**
+	 * Retourne une liste d'attributs à ajouter
+	 * (attribtus qui n'existent pas dans une tableSource)
+	 * @return
+	 */
+	private ArrayList<Attribute> attributesToAdd(Table tableSource) {
+		ArrayList<Attribute> attributesToAdd = new ArrayList<Attribute>();
+		for (Attribute att : this.attributes){
+			if (!estContenu(tableSource.getAttributes(),att)){
+				attributesToAdd.add(att);
+			}
+	
+		}
+		
+		return attributesToAdd;
+	}
+
+
+	/**
+	 * Retourne true si l'attribut est contenu dans 
+	 * la liste passé en paramètres
+	 * @param ListOfAtributes
+	 * @param att
+	 * @return boolean
+	 */
+	private boolean estContenu(LinkedHashSet<Attribute> listAtributes, Attribute att) {
+		for (Attribute attribute : listAtributes){
+			if (attribute.name.equals(att.name)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
 	/**
 	 * Retourne une chaîne de caractères qui synthétise $this
 	 * en une requète SQL de suppression de table.
@@ -239,4 +328,8 @@ public class Table {
 			this.attributes.add(new Attribute(a));
 		}
 	}
+
+
+
+
 }

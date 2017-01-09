@@ -13,6 +13,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
 import business.Attribute;
+import business.Table;
 import useful.ResponseData;
 
 public class ModifyTableGUI extends CreateTableGUI {
@@ -21,7 +22,7 @@ public class ModifyTableGUI extends CreateTableGUI {
 	
 	private boolean bug = false;
 	
-	//private int numberOfItemComboChoiceTableTemp = 0;
+	private Table tableSource;
 	
 
 	public ModifyTableGUI(DDLController control) {
@@ -77,9 +78,6 @@ public class ModifyTableGUI extends CreateTableGUI {
 	 * selon la table entrée en Paramètre dans le comboBox
 	 */
 	private void setValues() {
-		//TODO
-//		this.resetView();
-		
 		this.setViewModify(
 				this.control.getAttributes(this.comboChoiceTable.getSelectedItem().toString()), 
 				this.comboChoiceTable.getSelectedItem().toString());
@@ -90,7 +88,6 @@ public class ModifyTableGUI extends CreateTableGUI {
 	public void setViewModify(List<Attribute> attributes, String tableName) {	
 		this.resetView();
 		for (Attribute a : attributes){
-//			System.out.println(a.toString());
 			this.models.addAttribute(a);
 		}
 		
@@ -98,8 +95,7 @@ public class ModifyTableGUI extends CreateTableGUI {
 	
 	@Override
 	protected void createTableButtonAction(){
-		System.out.println("createTableButtonAction");
-		this.control.modifyTable(this.getTable());
+		this.control.modifyTable(this.getTable(),this.tableSource);
 	}
 	
 	@Override
@@ -131,7 +127,7 @@ public class ModifyTableGUI extends CreateTableGUI {
 					
 					this.setValues();
 					this.tableNameField.setText(this.comboChoiceTable.getSelectedItem().toString());
-//					System.out.println(this.tableNameField.getText());
+					this.tableSource = this.getTable();
 				}
 			}
 

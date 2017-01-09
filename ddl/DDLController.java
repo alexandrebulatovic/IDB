@@ -107,15 +107,20 @@ public class DDLController
 	/**
 	 * Modifie une table existante
 	 */
-	public void modifyTable(Table table) {
+	public void modifyTable(Table table,Table tableSource) {
 		// TODO Auto-generated method stub
-		System.out.println("Je modifie la table "+table.getName());
-		
-		Response response = this.manager.createTable(table.toCreate());
-		if (response.hasSuccess()) {
+		ArrayList<Response> responses = this.manager.modifyTable(table.toModify(tableSource));
+		boolean error = false;
+		for (Response response : responses){
+			if (!response.hasSuccess()){
+				error = true;
+				this.modifyGUI.talk(response.toString());
+			}
+		}
+		if (!error) {
 			this.modifyGUI.resetView();
 		}
-		this.modifyGUI.talk(response.toString());
+		
 	}
 	
 	

@@ -69,6 +69,18 @@ public class DDLManager
 		System.out.println(sql);
 		return this.executeUpdate(sql, "Table créée.");
 	}
+	
+	public ArrayList<Response> modifyTable(ArrayList<String> sqls) {
+		
+		ArrayList<Response> rep = new ArrayList<Response>();
+		for (String sql : sqls){
+			System.out.println("=== Requete === : \n"+sql+"\n===");
+			rep.add(this.executeUpdate(sql, "Table Modifiée"));
+			
+		}
+		return rep;
+		
+	}
 
 
 	/**
@@ -192,34 +204,12 @@ public class DDLManager
 				unique.add(rsIndex.getString("COLUMN_NAME"));		
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 
 		return unique;
 	}
-			
-
-//	/**
-//	 * Retourne nulle si l'attribut n'es pas clé étrangère
-//	 * 
-//	 * @return ForeinKey
-//	 */
-//	private ForeinKey getForeinKeyIfAttributeIsForeinKey(String attributeName,List<String[]> fks) {
-//		if (fks.isEmpty()){
-//			return null;
-//		}
-//		System.out.println("DEBUT");
-//		for (String[] fk : fks){
-//			
-//			String tableDest = fk[0];
-//			String attDest = fk[1];
-//			
-//		}
-//		System.out.println("FIN");
-//		return null;
-//	}
 
 
 	private boolean isPk(String nameAttribute,List<String> pks) {
@@ -386,6 +376,9 @@ public class DDLManager
 		this.metaDataResult.close();
 		return result;
 	}
+
+
+
 
 
 
