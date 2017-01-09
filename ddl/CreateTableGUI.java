@@ -54,7 +54,7 @@ implements ActionListener, ItemListener
 	private DefaultComboBoxModel foreignKeyAttributeComboBoxModel;
 
 	/** Model de la Table pour gérer les lignes/colonnes. */
-	private AttributesAbstractTableModel  models;
+	protected AttributesAbstractTableModel  models;
 
 	/** Tableau contenant les attributs. */
 	private JTable table;
@@ -306,7 +306,7 @@ implements ActionListener, ItemListener
 	}
 
 	/**
-	 * Réinitialise les champs des attributs.
+	 * Réinitialise les champs de saisie des attributs.
 	 */
 	public void clearAttribute()
 	{
@@ -340,6 +340,7 @@ implements ActionListener, ItemListener
 	public void setView(List<Attribute> attributes, String tableName) {	
 		this.resetView();
 		for (Attribute a : attributes){
+//			System.out.println(a.toString());
 			this.addAttributeToTable(a);
 		}
 		this.setTableName(tableName);
@@ -364,13 +365,17 @@ implements ActionListener, ItemListener
 	 * 
 	 * @param attribute : un objet Attribute
 	 */
-	private void addAttributeToTable(Attribute attribute){
+	protected void addAttributeToTable(Attribute attribute){
 		if (this.isValidateAttribute(attribute)){
 			this.models.addAttribute(attribute);
 			this.talk(succesAttribute +"Attribut ajouté.");
 			this.clearAttribute();
 		}
+		else{
+			System.out.println("Attribut non valide");
+		}
 	}
+	
 
 	/**
 	 * Document permettant de limiter le nombre de caractères maximum saisis.
@@ -655,6 +660,7 @@ implements ActionListener, ItemListener
 	 */
 	private void addAttributeButtonAction()
 	{
+		System.out.println("Hello");
 		Attribute a = this.models.createAttribute(
 				attributeNameField.getText(),
 				(String)attributeTypeComboBox.getSelectedItem(), 

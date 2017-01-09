@@ -2,9 +2,14 @@ package ddl;
 
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 
+import business.Attribute;
 import business.Table;
 
 import manager.DDLManager;
@@ -163,6 +168,11 @@ public class DDLController
 	{
 		gui.setVisible(true);
 		gui.toFront();
+	}
+
+
+	public List<Attribute> getAttributes(String table) {
+		return manager.getAttributes(table);
 	}
 
 

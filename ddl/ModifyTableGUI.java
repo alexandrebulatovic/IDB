@@ -1,30 +1,34 @@
 package ddl;
 
-import java.util.ArrayList;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.Vector;
-import java.awt.Rectangle;
-import java.awt.event.WindowEvent;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 
+import business.Attribute;
 import useful.ResponseData;
 
 public class ModifyTableGUI extends CreateTableGUI {
 	
 	private JComboBox<String> comboChoiceTable;
 	
+	private boolean bug = false;
+	
 	//private int numberOfItemComboChoiceTableTemp = 0;
 	
 
 	public ModifyTableGUI(DDLController control) {
 		super(control);
-		this.setName("Modifier une table");
+		this.setTitle("Modifier une table");
 		this.changeComponents();
-		this.setValues();
+		
 		
 	}
 
@@ -47,6 +51,7 @@ public class ModifyTableGUI extends CreateTableGUI {
 	 * Possédant la liste des tables
 	 */
 	private void initComboBoxChoice() {
+		
 		Rectangle coords = this.tableNameField.getBounds();
 		ResponseData<String> tables = this.control.getTables();
 		Vector<String> vectTables = new Vector<String>(tables.getCollection());
@@ -54,12 +59,15 @@ public class ModifyTableGUI extends CreateTableGUI {
 		
 		if (this.comboChoiceTable == null)
 			this.comboChoiceTable = new JComboBox<String>();
+
 		
 		this.comboChoiceTable.setModel(boxModel);
 		this.comboChoiceTable.setBounds(coords);
 		this.add(this.comboChoiceTable);
+		this.comboChoiceTable.addActionListener(this);
 
 	}
+
 
 	
 
@@ -69,13 +77,28 @@ public class ModifyTableGUI extends CreateTableGUI {
 	 * selon la table entrée en Paramètre dans le comboBox
 	 */
 	private void setValues() {
+		//TODO
+//		this.resetView();
+		
+		this.setViewModify(
+				this.control.getAttributes(this.comboChoiceTable.getSelectedItem().toString()), 
+				this.comboChoiceTable.getSelectedItem().toString());
+		
+	}
+	
+	
+	public void setViewModify(List<Attribute> attributes, String tableName) {	
 		this.resetView();
-		//TODO ajouter les valeurs de la table sélectionné
+		for (Attribute a : attributes){
+//			System.out.println(a.toString());
+			this.models.addAttribute(a);
+		}
 		
 	}
 	
 	@Override
 	protected void createTableButtonAction(){
+		System.out.println("createTableButtonAction");
 		this.control.modifyTable(this.getTable());
 	}
 	
@@ -86,12 +109,33 @@ public class ModifyTableGUI extends CreateTableGUI {
 	}
 
 	private void acualiseComboBox() {
-		int time = this.comboChoiceTable.getSelectedIndex();
+		int index = this.comboChoiceTable.getSelectedIndex();
 		this.initComboBoxChoice();
 		try{
-			this.comboChoiceTable.setSelectedIndex(time);
+			this.comboChoiceTable.setSelectedIndex(index);
 		}
 		catch(IllegalArgumentException e){}
+	}
+	
+
+	@Override
+	public void actionPerformed(ActionEvent e){
+		super.actionPerformed(e);
+		
+		if (e.getSource() == this.comboChoiceTable && e.getModifiers() == 16 ){
+			
+			if (e.getSource() == this.comboChoiceTable){
+				String tableSelected = this.comboChoiceTable.getSelectedItem().toString();
+				bug = !bug;
+				if (!bug){
+					this.setValues();
+				}
+			}
+
+				
+			//TODO la résolution de se problème s'effectur en surchargant la classe JComboBox à priori...
+			//cette solution sera utilisé dans un premier temps pour palier à cette erreur
+		}
 	}
 
 
