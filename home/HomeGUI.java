@@ -1,10 +1,11 @@
 package home;
 
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
-import crud.CRUDView;
-
-import java.awt.event.*;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 
 import gui.BasicGUI;
 
@@ -174,7 +175,6 @@ implements ActionListener
 	 */
 	private void crudButtonAction() 
 	{
-		// TODO : changer par la suite
-		new CRUDView(null);
+		this.control.openCRUDGUI();
 	}
 }

@@ -5,9 +5,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+/** 
+ * IHM qui permet d'écrire des requêtes {@code SQL} et de les envoyer au serveur manuellement.
+ * <P>
+ * Elle intéragit également avec l'utilisateur en lui affichant une {@link JTable} ou
+ *  un pop-up de la réponse du serveur.
+ * <P>
+ *  
+ *  @see SQLController
+ *  */
+
 @SuppressWarnings("serial")
-public class SQLView 
-extends BasicGUI
+public class SQLView extends BasicGUI
 implements ActionListener
 {
 	/* ATTRIBUTS */

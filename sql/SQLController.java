@@ -20,7 +20,7 @@ public class SQLController {
 	 * @param conn : l'objet Connection résultant de la connexion à la base de données. */
 	public SQLController(Connection conn)
 	{
-		this.sql_manager = new SQLManager(conn);
+		this.sql_manager = new SQLManager(conn, SQLManager.TYPE_PLAIN_RESULTSET);
 	}
 
 	/* METHODES*/

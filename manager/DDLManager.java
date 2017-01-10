@@ -108,7 +108,7 @@ public class DDLManager
 	{
 		int [] columns = {3};
 		ResponseData<String []> r = this.procedureToGetMetadata
-				(TABLES, null, columns, "Tables récupérées.");
+				(TABLES, null, columns, "Tables récupérées");
 		return new ResponseData<String>(r);
 	}
 

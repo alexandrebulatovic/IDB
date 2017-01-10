@@ -4,6 +4,7 @@ import manager.ConnectionManager;
 import manager.DefaultValueManager;
 import manager.connection.MySQLConnectionManager;
 import manager.connection.OracleConnectionManager;
+import crud.CRUDController;
 import ddl.DDLController;
 import sql.SQLController;
 import useful.ConnectionStrings;
@@ -25,6 +26,9 @@ public class HomeController
 
 	/** Controleur du SQL.*/
 	private SQLController sqlControl;
+	
+	/** Controleur du CRUD.*/
+	private CRUDController crudControl;
 
 	/** Gestionnaire des valeurs de connexions par défaut.*/
 	private DefaultValueManager dvm;
@@ -151,6 +155,18 @@ public class HomeController
 		this.createOrNotDDLControl();
 		this.ddlControl.openDropGUI();
 	}
+	
+	/**
+	 *  Ouvre l'IHM pour les opérations {@code Create - Read - Update - Delete. }
+	 */
+	public void openCRUDGUI() 
+	{
+		this.createOrNotDDLControl();
+		this.createOrNotSQLController();
+		this.createOrNotCRUDControl();
+		this.crudControl.openCRUDGUI();
+		
+	}
 
 
 	/**
@@ -189,6 +205,16 @@ public class HomeController
 			this.ddlControl = new DDLController(this.connector.getConnection());
 		}
 	}
+	
+	/**
+	 * Définit le controleur du CRUD pour $this si besoin.
+	 */
+	private void createOrNotCRUDControl()
+	{
+		if (this.crudControl == null) {
+			this.crudControl = new CRUDController(this.connector.getConnection());
+		}
+	}
 
 	/**
 	 * Définit le controleur de SQL pour $this si besoin.
@@ -199,5 +225,8 @@ public class HomeController
 			this.sqlControl = new SQLController(this.connector.getConnection());
 		}
 	}
+
+
+
 
 }
