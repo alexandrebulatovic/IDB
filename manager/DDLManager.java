@@ -144,9 +144,14 @@ public class DDLManager
 					String nameAttribute = 	rsColumns.getString("COLUMN_NAME");
 					String type = 			rsColumns.getString("TYPE_NAME");
 					int size = 				rsColumns.getInt("COLUMN_SIZE");
-					boolean notNull = 		rsColumns.getString("IS_NULLABLE").equals("NO");
+					boolean notNull = 		(rsColumns.getInt("NULLABLE") == DatabaseMetaData.columnNoNulls) || (rsColumns.getString("IS_NULLABLE").equals("NO"));
+					//TODO ne fonctionne pas
 					boolean unique = this.isUnique(nameAttribute,uniqueAttributes);
 					boolean pk = this.isPk(nameAttribute,pks);
+					if (pk){
+						unique = false;
+						notNull = false;
+					}
 					
 					boolean isFk = false;
 					String fkTable = "";

@@ -1,5 +1,6 @@
 package business;
 
+import java.util.ArrayList;
 
 public class Attribute 
 {
@@ -341,10 +342,53 @@ public class Attribute
 		result.append(")");
 		return result.toString();
 	}
+	
 
 
-	public String toSQL() {
-		return this.name+" "+this.type+" ("+this.size+")";
+	/**
+	 * Retourne une liste de contraintes SQL représentant l'attribut
+	 * Il est à noter que le premier String représente l'attribut avec son type
+	 * du type "attribut TYPE(size)"
+	 * exemple "att1 VARCHAR (20)"
+	 * @author gael
+	 * @return
+	 */
+	public ArrayList<String> toSQL(String table) {
+		ArrayList<String> sql = new ArrayList<String>();
+		String constraint = "ADD CONSTRAINT ";
+		String endNameConstraint = table+"_"+this.name;
+		
+		sql.add(this.name+" "+this.type+" ("+this.size+")");
+		
+		if (this.unique){
+			sql.add(constraint+"un_"+endNameConstraint+"UNIQUE ("+this.name+")");
+		}
+		
+		if (this.notNull){
+			sql.add(constraint+"nn_"+endNameConstraint+"CHECK ("+this.name+" IS NOT NULL)");
+		}
+		if (this.primaryKey){
+			sql.add(constraint+"pk_"+endNameConstraint+"PRIMARY KEY ("+this.name+")");
+		}
+		if (this.foreignKey){
+			sql.add(constraint+"fk_"+endNameConstraint+"FOREIGN KEY ("+this.name+") REFERENCES "+this.fkTable+"("+this.fkAttribute+")");
+		}
+		
+		
+		return sql;
 
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

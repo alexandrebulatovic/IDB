@@ -143,13 +143,13 @@ public class Table {
 
 	private void modifyAttributes(Table tableSource, ArrayList<String> results) {
 		for (Attribute[] attribute : attributesToChange(tableSource)){
-			StringBuilder build = new StringBuilder();
-			build.append("ALTER TABLE ");
-			build.append(this.name);
-			build.append("\n");
-			build.append("DROP COLUMN ");
-			build.append(attribute[1].name);
-			results.add(build.toString());
+//			StringBuilder build = new StringBuilder();
+//			build.append("ALTER TABLE ");
+//			build.append(this.name);
+//			build.append("\n");
+//			build.append("DROP COLUMN ");
+//			build.append(attribute[1].name);
+//			results.add(build.toString());
 		}
 	}
 
@@ -180,13 +180,15 @@ public class Table {
 	 */
 	private void addAttributes(Table tableSource, ArrayList<String> results) {
 		for (Attribute attribute : attributesToAdd(tableSource)){
-			StringBuilder build = new StringBuilder();
-			build.append("ALTER TABLE ");
-			build.append(this.name);
-			build.append("\n");
-			build.append("ADD ");
-			build.append(attribute.toSQL());
-			results.add(build.toString());
+			for (String sql : attribute.toSQL(this.name)){
+				StringBuilder build = new StringBuilder();
+				build.append("ALTER TABLE ");
+				build.append(this.name);
+				build.append("\n");
+				build.append("ADD ");
+				build.append(sql);
+				results.add(build.toString());//on ajoute plusieures requetes pour un seul attribut
+			}
 		}
 	}
 	
@@ -228,7 +230,7 @@ public class Table {
 					Attribute[] attributes = new Attribute[2];
 					attributes[0] = attributeSrc;
 					attributes[1] = attributeDest;
-					System.out.println("\n\n\nà modifier : "+attributeSrc.name+"\n"+attributeDest+"\n\n\n");
+					System.out.println("\n\n\nà modifier : "+attributeSrc+"\n"+attributeDest+"\n\n\n");
 					
 					attributesToModify.add(attributes);
 				}
