@@ -35,7 +35,7 @@ implements ActionListener, ItemListener
 	private static final String FONT = null;
 
 	/** Controleur lié à l'IHM. */
-	private DDLController control;
+	protected DDLController control;
 
 	/** Préfixe des messages d'erreurs. */
 	private String errorAttribute = "ERREUR : ";
@@ -54,7 +54,7 @@ implements ActionListener, ItemListener
 	private DefaultComboBoxModel foreignKeyAttributeComboBoxModel;
 
 	/** Model de la Table pour gérer les lignes/colonnes. */
-	private AttributesAbstractTableModel  models;
+	protected AttributesAbstractTableModel  models;
 
 	/** Tableau contenant les attributs. */
 	private JTable table;
@@ -74,7 +74,7 @@ implements ActionListener, ItemListener
 	
 	// ==========================FIELDS========================
 	/** Boite de saisie du nom de la table. */
-	private JTextField tableNameField;
+	protected JTextField tableNameField;
 
 	/** Boite de saisie du nom de l'attribut. */
 	private JTextField attributeNameField;
@@ -108,7 +108,7 @@ implements ActionListener, ItemListener
 	private JButton attributeButton;
 
 	/** Bouton 'Créer la table'. */
-	private JButton createTableButton;
+	protected JButton createTableButton;
 
 	/** Bouton 'Modifier attribut'. */
 	private JButton updateAttributeButton;
@@ -306,7 +306,7 @@ implements ActionListener, ItemListener
 	}
 
 	/**
-	 * Réinitialise les champs des attributs.
+	 * Réinitialise les champs de saisie des attributs.
 	 */
 	public void clearAttribute()
 	{
@@ -340,6 +340,7 @@ implements ActionListener, ItemListener
 	public void setView(List<Attribute> attributes, String tableName) {	
 		this.resetView();
 		for (Attribute a : attributes){
+//			System.out.println(a.toString());
 			this.addAttributeToTable(a);
 		}
 		this.setTableName(tableName);
@@ -364,13 +365,17 @@ implements ActionListener, ItemListener
 	 * 
 	 * @param attribute : un objet Attribute
 	 */
-	private void addAttributeToTable(Attribute attribute){
+	protected void addAttributeToTable(Attribute attribute){
 		if (this.isValidateAttribute(attribute)){
 			this.models.addAttribute(attribute);
 			this.talk(succesAttribute +"Attribut ajouté.");
 			this.clearAttribute();
 		}
+		else{
+			System.out.println("Attribut non valide");
+		}
 	}
+	
 
 	/**
 	 * Document permettant de limiter le nombre de caractères maximum saisis.
@@ -418,10 +423,13 @@ implements ActionListener, ItemListener
 	 */
 	private boolean isCompleteTable()
 	{
-		if(this.models.getRowCount()==0 || this.tableNameField.getText().equals("")){
-			this.talk(errorAttribute+"Il n'y a pas d'Attribut OU Il manque le nom de la Table");
+		if(this.models.getRowCount()==0){
+			this.talk(errorAttribute+"Il n'y a pas d'Attribut");
 			return false;
-		}else{
+		} else if (this.tableNameField.getText().equals("")) {
+			this.talk(errorAttribute+"Il manque le nom de la Table");
+			return false;
+		} else {
 			return true;
 		}
 	}
@@ -655,6 +663,7 @@ implements ActionListener, ItemListener
 	 */
 	private void addAttributeButtonAction()
 	{
+		System.out.println("Ajout de l'attribut "+this.attributeNameField.getText());
 		Attribute a = this.models.createAttribute(
 				attributeNameField.getText(),
 				(String)attributeTypeComboBox.getSelectedItem(), 
@@ -741,9 +750,7 @@ implements ActionListener, ItemListener
 		}
 		if (o == this.createTableButton) {
 			if(this.isCompleteTable()){
-				this.control.createTable(new Table(
-						this.tableNameField.getText(),
-						this.models.getAttributes()));
+				createTableButtonAction();
 			}
 		}
 		if (o == this.deleteAttributeButton) {
@@ -773,6 +780,16 @@ implements ActionListener, ItemListener
 		if (o== this.cancelUpdateAttributeButton){
 			this.cancelUpdateAttributeButtonAction();
 		}
+	}
+
+	protected void createTableButtonAction() {
+		this.control.createTable(this.getTable());
+	}
+
+	protected Table getTable() {
+		return new Table(
+				this.tableNameField.getText(),
+				this.models.getAttributes());
 	}
 
 	@Override

@@ -145,6 +145,13 @@ public class HomeController
 		this.createOrNotDDLControl();
 		this.ddlControl.openCreateGUI();
 	}
+	
+	public void openModifyGui() {
+		this.createOrNotDDLControl();
+		this.ddlControl.openModifyGUI();
+		
+	}
+
 
 
 	/**
@@ -225,8 +232,4 @@ public class HomeController
 			this.sqlControl = new SQLController(this.connector.getConnection());
 		}
 	}
-
-
-
-
 }

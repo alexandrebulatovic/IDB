@@ -1,4 +1,6 @@
 package business;
+import java.awt.List;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 
@@ -119,7 +121,159 @@ public class Table {
 		return result.toString();
 	}
 	
+	/**
+	 * Retourne les requetes SQL qui modifient
+	 * La table avec des ALTER TABLE
+	 * @return String
+	 */
+	public ArrayList<String> toModify(Table tableSource) {
+		ArrayList<String> results = new ArrayList<String>();
+		
+		
+		addAttributes(tableSource, results);
+		
+		dropAttributes(tableSource, results);
+		
+		modifyAttributes(tableSource, results);
+	 
+		return results;
+	}
+
+
+
+	private void modifyAttributes(Table tableSource, ArrayList<String> results) {
+		for (Attribute[] attribute : attributesToChange(tableSource)){
+			StringBuilder build = new StringBuilder();
+			build.append("ALTER TABLE ");
+			build.append(this.name);
+			build.append("\n");
+			build.append("DROP COLUMN ");
+			build.append(attribute[1].name);
+			results.add(build.toString());
+		}
+	}
+
+
+
+	/**
+	 * Ajoute les requettes SQL des tables à supprimer
+	 * @param tableSource
+	 * @param results
+	 */
+	private void dropAttributes(Table tableSource, ArrayList<String> results) {
+		for (Attribute attribute : attributesToDrop(tableSource)){
+			StringBuilder build = new StringBuilder();
+			build.append("ALTER TABLE ");
+			build.append(this.name);
+			build.append("\n");
+			build.append("DROP COLUMN ");
+			build.append(attribute.name);
+			results.add(build.toString());
+		}
+	}
+
+
+	/**
+	 * Ajoute les requettes SQL des tables à ajouter
+	 * @param tableSource
+	 * @param results
+	 */
+	private void addAttributes(Table tableSource, ArrayList<String> results) {
+		for (Attribute attribute : attributesToAdd(tableSource)){
+			StringBuilder build = new StringBuilder();
+			build.append("ALTER TABLE ");
+			build.append(this.name);
+			build.append("\n");
+			build.append("ADD ");
+			build.append(attribute.toSQL());
+			results.add(build.toString());
+		}
+	}
 	
+	/**
+	 * Retourne une liste d'attributs 
+	 * qui doivent etre supprimés
+	 * @param tableSource
+	 * @return
+	 */
+	private ArrayList<Attribute> attributesToDrop(Table tableSource) {
+		ArrayList<Attribute> attributesToDrop = new ArrayList<Attribute>();
+		for (Attribute att : tableSource.getAttributes()){
+			if (!estContenu(this.attributes,att)){
+				attributesToDrop.add(att);
+			}
+	
+		}
+		
+		return attributesToDrop;
+	}
+
+	/**
+	 * Retourne une liste d'attributs
+	 * qui sont différents et qui doivent
+	 * donc être modifié
+	 * 
+	 * Le Attribute est composé de attribut source et attribut cible
+	 * Attribute[0] ==> attribut actuel
+	 * Attribute[1] ==> attribut à obtenir
+	 * @param tableSource
+	 * @return
+	 */
+	private ArrayList<Attribute[]> attributesToChange(Table tableSource) {
+		ArrayList<Attribute[]> attributesToModify = new ArrayList<Attribute[]>();
+		for (Attribute attributeSrc : tableSource.getAttributes()){
+			boolean contenu;
+			for (Attribute attributeDest : this.attributes){
+				if (!attributeDest.toString().equals(attributeSrc.toString())){
+					Attribute[] attributes = new Attribute[2];
+					attributes[0] = attributeSrc;
+					attributes[1] = attributeDest;
+					System.out.println("\n\n\nà modifier : "+attributeSrc.name+"\n"+attributeDest+"\n\n\n");
+					
+					attributesToModify.add(attributes);
+				}
+			}
+		}
+		return attributesToModify;
+	}
+
+
+	/**
+	 * Retourne une liste d'attributs à ajouter
+	 * (attribtus qui n'existent pas dans une tableSource)
+	 * @return
+	 */
+	private ArrayList<Attribute> attributesToAdd(Table tableSource) {
+		ArrayList<Attribute> attributesToAdd = new ArrayList<Attribute>();
+		for (Attribute att : this.attributes){
+			if (!estContenu(tableSource.getAttributes(),att)){
+				attributesToAdd.add(att);
+			}
+	
+		}
+		
+		return attributesToAdd;
+	}
+
+
+	/**
+	 * Retourne true si l'attribut est contenu dans 
+	 * la liste passé en paramètres
+	 * @param ListOfAtributes
+	 * @param att
+	 * @return boolean
+	 */
+	private boolean estContenu(LinkedHashSet<Attribute> listAtributes, Attribute att) {
+		for (Attribute attribute : listAtributes){
+			if (attribute.name.equals(att.name)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
 	/**
 	 * Retourne une chaîne de caractères qui synthétise $this
 	 * en une requète SQL de suppression de table.
@@ -239,4 +393,8 @@ public class Table {
 			this.attributes.add(new Attribute(a));
 		}
 	}
+
+
+
+
 }

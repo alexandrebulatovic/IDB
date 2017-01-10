@@ -42,6 +42,8 @@ public class DDLManager
 	/** Stocke les résultats d'une requête sur les meta-données.*/
 	private ResultSet metaDataResult;
 
+	private Connection connection;
+
 
 	//Constructeur
 	/**
@@ -49,6 +51,7 @@ public class DDLManager
 	 */
 	public DDLManager(Connection connection)
 	{
+		this.connection = connection;
 		this.createStatementAndMetaData(connection);
 	}
 
@@ -65,6 +68,18 @@ public class DDLManager
 	{	
 		System.out.println(sql);
 		return this.executeUpdate(sql, "Table créée.");
+	}
+	
+	public ArrayList<Response> modifyTable(ArrayList<String> sqls) {
+		
+		ArrayList<Response> rep = new ArrayList<Response>();
+		for (String sql : sqls){
+			System.out.println("=== Requete === : \n"+sql+"\n===");
+			rep.add(this.executeUpdate(sql, "Table Modifiée"));
+			
+		}
+		return rep;
+		
 	}
 
 
@@ -111,8 +126,102 @@ public class DDLManager
 				(TABLES, null, columns, "Tables récupérées");
 		return new ResponseData<String>(r);
 	}
-
 	
+	public List<Attribute> getAttributes(String table) {
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		
+		List<String> pks = this.getPrimaryKey(table).getCollection();
+		List<String[]> fks = this.getImportedKey(table).getCollection();
+		
+		List<String> uniqueAttributes = this.getUnique(table);
+		
+
+			ResultSet rsColumns;
+			ResultSet rsIndex;
+			try {
+				rsColumns = this.metadata.getColumns(null, null, table, null);
+				while(rsColumns.next()){
+					String nameAttribute = 	rsColumns.getString("COLUMN_NAME");
+					String type = 			rsColumns.getString("TYPE_NAME");
+					int size = 				rsColumns.getInt("COLUMN_SIZE");
+					boolean notNull = 		rsColumns.getString("IS_NULLABLE").equals("NO");
+					boolean unique = this.isUnique(nameAttribute,uniqueAttributes);
+					boolean pk = this.isPk(nameAttribute,pks);
+					
+					boolean isFk = false;
+					String fkTable = "";
+					String fkAttribute ="";
+					
+					
+					for (String[] fk : fks){
+						if (fk[2].equals(nameAttribute)){
+							isFk = true;
+							fkTable = fk[0];
+							fkAttribute = fk[1];
+						}
+					}
+					attributes.add(new Attribute(
+							nameAttribute, 
+							type, 
+							size, 
+							notNull,
+							unique, 
+							pk, 
+							isFk, 
+							fkTable, 
+							fkAttribute)
+							);
+					
+					
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+
+			return attributes;
+		}
+
+
+	private boolean isUnique(String nameAttribute, List<String> uniqueAttributes) {
+		for (String unique : uniqueAttributes){
+			if (nameAttribute.equals(unique)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	private List<String> getUnique(String table) {
+		List<String> unique = new ArrayList<String>();
+		ResultSet rsIndex;
+		try {
+			rsIndex = this.metadata.getIndexInfo(null, null, table, true, false);
+			rsIndex.next();
+			while (rsIndex.next()){
+				unique.add(rsIndex.getString("COLUMN_NAME"));		
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		return unique;
+	}
+
+
+	private boolean isPk(String nameAttribute,List<String> pks) {
+		for (String pk : pks){
+			if (pk.equals(nameAttribute)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	/**
 	 * @param table : table où chercher les clées étrangères.
 	 * @return Une réponse personnalisée qui contient les clées étrangères
@@ -125,6 +234,8 @@ public class DDLManager
 		return this.procedureToGetMetadata
 				(IN_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
 	}
+	
+
 	
 
 	/**
@@ -265,6 +376,12 @@ public class DDLManager
 		this.metaDataResult.close();
 		return result;
 	}
+
+
+
+
+
+
 	
 
 }

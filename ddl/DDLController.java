@@ -2,9 +2,14 @@ package ddl;
 
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 
+import business.Attribute;
 import business.Table;
 
 import manager.DDLManager;
@@ -23,6 +28,9 @@ public class DDLController
 	//Attributs
 	/** IHM pour créer une table et ses attributs.*/
 	private CreateTableGUI createGUI;
+	
+	/**IHM pour modifier une table et ses attributs.*/
+	private ModifyTableGUI modifyGUI;
 	
 	/** IHM pour supprimer une table.*/
 	private DropTableGUI dropGUI;
@@ -54,6 +62,16 @@ public class DDLController
 			showGUI(this.createGUI);
 		}
 	}
+	
+	public void openModifyGUI() {
+		if (this.modifyGUI == null){
+			this.modifyGUI = new ModifyTableGUI(this);
+		}
+		else{
+			showGUI(this.modifyGUI);
+		}
+		
+	}
 
 	
 	/**
@@ -84,6 +102,25 @@ public class DDLController
 			this.createGUI.resetView();
 		}
 		this.createGUI.talk(response.toString());
+	}
+	
+	/**
+	 * Modifie une table existante
+	 */
+	public void modifyTable(Table table,Table tableSource) {
+		// TODO Auto-generated method stub
+		ArrayList<Response> responses = this.manager.modifyTable(table.toModify(tableSource));
+		boolean error = false;
+		for (Response response : responses){
+			if (!response.hasSuccess()){
+				error = true;
+				this.modifyGUI.talk(response.toString());
+			}
+		}
+		if (!error) {
+			this.modifyGUI.resetView();
+		}
+		
 	}
 	
 	
@@ -142,4 +179,15 @@ public class DDLController
 		gui.setVisible(true);
 		gui.toFront();
 	}
+
+
+	public List<Attribute> getAttributes(String table) {
+		return manager.getAttributes(table);
+	}
+
+
+
+
+
+
 }
