@@ -3,6 +3,8 @@ import java.awt.List;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
+import manager.SQLManager;
+
 
 
 public class Table {
@@ -141,15 +143,71 @@ public class Table {
 
 
 
+	/**
+	 * TODO Disperser ce code dans des méthodes métier ou plus génériques
+	 * @param tableSource
+	 * @param results
+	 */
 	private void modifyAttributes(Table tableSource, ArrayList<String> results) {
 		for (Attribute[] attribute : attributesToChange(tableSource)){
-//			StringBuilder build = new StringBuilder();
-//			build.append("ALTER TABLE ");
-//			build.append(this.name);
-//			build.append("\n");
-//			build.append("DROP COLUMN ");
-//			build.append(attribute[1].name);
-//			results.add(build.toString());
+			Attribute attSrc = attribute[0];
+			Attribute attDest = attribute[1];
+			if (attSrc.foreignKey != attDest.foreignKey){
+				StringBuilder sql = new StringBuilder();
+				sql.append("ALTER TABLE ");
+				sql.append(this.name);
+				sql.append("\n");
+				if (attSrc.foreignKey){
+					sql.append("DROP ");
+					sql.append(attSrc.toSQLConstraintName("fk"));
+
+				}else{
+					sql.append("ADD ");
+					sql.append(attDest.toSQLConstraintName("fk"));
+					sql.append(attDest.toSQLConstraintType(" FOREIGN KEY", ""));
+					sql.append(" ");
+					sql.append(attDest.toSQLReferences());
+				}
+				results.add(sql.toString());
+			}
+			if (attSrc.unique != attDest.unique){
+				StringBuilder sql = new StringBuilder();
+				sql.append("ALTER TABLE ");
+				sql.append(this.name);
+				sql.append("\n");
+				if (attSrc.unique){
+					sql.append("DROP ");
+					sql.append(attSrc.toSQLConstraintName("un"));
+				}
+				else{
+					sql.append("ADD ");
+					sql.append(attSrc.toSQLConstraintName("un"));
+					sql.append(attDest.toSQLConstraintType(" UNIQUE",""));
+					sql.append(" ");
+				}
+				results.add(sql.toString());
+			}
+			if (attSrc.primaryKey != attDest.primaryKey){
+				StringBuilder sql = new StringBuilder();
+				if (this.hasPrimaryKey()){
+					sql.append("ALTER TABLE ");
+					sql.append(this.name);
+					sql.append("\nDROP CONSTRAINT pk_");
+					sql.append(this.name);
+					results.add(sql.toString());
+				}
+				
+				if (this.hasPrimaryKey()){
+					sql = new StringBuilder();
+					sql.append("ALTER TABLE ");
+					sql.append(this.name);
+					sql.append("\nADD ");
+					sql.append(this.primaryKeyToSQL());
+					results.add(sql.toString());
+				}
+
+				
+			}
 		}
 	}
 
@@ -224,15 +282,14 @@ public class Table {
 	private ArrayList<Attribute[]> attributesToChange(Table tableSource) {
 		ArrayList<Attribute[]> attributesToModify = new ArrayList<Attribute[]>();
 		for (Attribute attributeSrc : tableSource.getAttributes()){
-			boolean contenu;
 			for (Attribute attributeDest : this.attributes){
-				if (!attributeDest.toString().equals(attributeSrc.toString())){
-					Attribute[] attributes = new Attribute[2];
-					attributes[0] = attributeSrc;
-					attributes[1] = attributeDest;
-					System.out.println("\n\n\nà modifier : "+attributeSrc+"\n"+attributeDest+"\n\n\n");
-					
-					attributesToModify.add(attributes);
+				if (attributeSrc.name.equals(attributeDest.name)){
+					if (!attributeSrc.toString().equals(attributeDest.toString())){// on cherche les memes attributs mais différents
+						attributesToModify.add(new Attribute[]{
+								attributeSrc,
+								attributeDest
+						});
+					}
 				}
 			}
 		}
@@ -359,7 +416,7 @@ public class Table {
 	 * 
 	 * Retourne une chaîne de caractères qui synthétise les attributs
 	 * de la clée primaire de $this sous la forme d'une clause CONSTRAINT.
-	 * 
+	 * CONTRAINT pk_table PRIMARY KEY (noms)
 	 * @return String
 	 */
 	private String primaryKeyToSQL()
@@ -400,3 +457,4 @@ public class Table {
 
 
 }
+

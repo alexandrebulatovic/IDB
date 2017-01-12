@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Attribute 
 {
 
+	
 	/** Nom de l'attribut.*/
 	public String name;
 
@@ -160,10 +161,10 @@ public class Attribute
 	public String toCreate()
 	{
 		StringBuilder result = new StringBuilder();
-		result.append(this.declarationToSQL());
-		result.append(this.notNullToSQL());
-		result.append(this.uniqueToSQL());
-		result.append(this.foreignKeyToSQL());
+		result.append(this.toSQLDeclaration());
+		result.append(this.toSQLNotNull());
+		result.append(this.toSQLUnique());
+		result.append(this.toSQLForeinKey());
 		return result.toString();
 	}
 	
@@ -209,7 +210,7 @@ public class Attribute
 	 * 
 	 * @return String
 	 */
-	private String declarationToSQL()
+	private String toSQLDeclaration()
 	{
 		StringBuilder result = new StringBuilder();
 		result.append(this.name + " " + this.type);
@@ -223,13 +224,13 @@ public class Attribute
 	 * une déclaration de contrainte NOT NULL pour $this,
 	 * si et seulement si $this possède cette contrainte.
 	 * Retourne une chaîne vide sinon.
-	 * 
+	 * exemple : "ADD CONTRAINT nn_nomTable_nomAttribut CHECK(attribut IS NOT NULL)"
 	 * @return String
 	 */
-	private String notNullToSQL()
+	private String toSQLNotNull()
 	{
 		return this.notNull 
-				? this.concatToSQL("nn", "CHECK", "IS NOT NULL")
+				? this.toConcatSQL("nn", "CHECK", "IS NOT NULL")
 				: "";
 	}
 	
@@ -242,10 +243,10 @@ public class Attribute
 	 * 
 	 * @return String
 	 */
-	private String uniqueToSQL()
+	private String toSQLUnique()
 	{
 		return this.unique 
-				? this.concatToSQL("un", "UNIQUE", null)
+				? this.toConcatSQL("un", "UNIQUE", null)
 				: "";
 	}
 	
@@ -258,12 +259,15 @@ public class Attribute
 	 * 
 	 * @return String
 	 */
-	private String foreignKeyToSQL()
+	public String toSQLForeinKey()
 	{
 		return this.foreignKey
-				? this.concatToSQL("fk", "FOREIGN KEY", null)
+				? this.toConcatSQL("fk", "FOREIGN KEY", null)
 				: "";
 	}
+	
+
+	
 	
 	
 	/**
@@ -273,23 +277,26 @@ public class Attribute
 	 * 
 	 * @param prefix : pk, fk, nn, un, ck.
 	 * @param keyword : UNIQUE, CHECK, FOREIGN KEY.
-	 * @param condition : null ssi $constraintType != "CHECK", représente une condition booléenne sinon.
+	 * @param condition : condition à concaténer dans un CHECK (doit être null si la contrainte n'est pas un CHECK)
 	 * @return String
 	 */
-	private String concatToSQL(
+	private String toConcatSQL(
 			String prefix, String keyword,
-			String condition)
+			String condition
+			)
 	{
 		StringBuilder result = new StringBuilder();
-		result.append(",\n" + this.constraintNameToSQL(prefix));
+		result.append(",\n" + this.toSQLConstraintName(prefix));
 		result.append(" ");
-		result.append(this.constraintTypeToSQL(keyword, condition));
+		result.append(this.toSQLConstraintType(keyword, condition));
 		if (keyword.equals("FOREIGN KEY")) {
 			result.append(" ");
-			result.append(this.referencesToSQL());
+			result.append(this.toSQLReferences());
 		}
 		return result.toString();
 	}
+	
+
 
 
 	/**
@@ -300,7 +307,7 @@ public class Attribute
 	 * @param prefix : préfixe du nom de la contrainte (pk, fk, nn, un, ck)
 	 * @return String
 	 */
-	private String constraintNameToSQL(String prefix)
+	public String toSQLConstraintName(String prefix)
 	{
 		return "CONSTRAINT " + prefix + "_" 
 				+ this.tableName + "_" + this.name;
@@ -315,7 +322,7 @@ public class Attribute
 	 * @param condition : null ssi $constraintType != "CHECK", expression booléenne sinon.
 	 * @return String
 	 */
-	private String constraintTypeToSQL(String constraintType, String condition)
+	public String toSQLConstraintType(String constraintType, String condition)
 	{
 		StringBuilder result = new StringBuilder();
 		result.append(constraintType + " (" + this.name);
@@ -332,7 +339,7 @@ public class Attribute
 	 * 
 	 * @return String
 	 */
-	private String referencesToSQL()
+	public String toSQLReferences()
 	{
 		StringBuilder result = new StringBuilder();
 		result.append("REFERENCES ");
@@ -355,13 +362,13 @@ public class Attribute
 	 */
 	public ArrayList<String> toSQL(String table) {
 		ArrayList<String> sql = new ArrayList<String>();
-		String constraint = "ADD CONSTRAINT ";
+		String constraint = "CONSTRAINT ";
 		String endNameConstraint = table+"_"+this.name;
 		
 		sql.add(this.name+" "+this.type+" ("+this.size+")");
 		
 		if (this.unique){
-			sql.add(constraint+"un_"+endNameConstraint+"UNIQUE ("+this.name+")");
+			sql.add(constraint+"un_"+endNameConstraint+" UNIQUE ("+this.name+")");
 		}
 		
 		if (this.notNull){
