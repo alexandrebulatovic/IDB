@@ -165,7 +165,7 @@ public class DDLManager
 							fkAttribute = fk[1];
 						}
 					}
-					attributes.add(new Attribute(
+					Attribute attribute = new Attribute(
 							nameAttribute, 
 							type, 
 							size, 
@@ -174,8 +174,10 @@ public class DDLManager
 							pk, 
 							isFk, 
 							fkTable, 
-							fkAttribute)
+							fkAttribute
 							);
+					attribute.setTableName(table);
+					attributes.add(attribute);
 					
 					
 				}

@@ -40,7 +40,7 @@ public class ModifyTableGUI extends CreateTableGUI {
 	 * de modifications
 	 */
 	private void changeComponents() {
-		this.tableNameField.setVisible(false);
+//		this.tableNameField.setVisible(false);
 		
 		
 		initComboBoxChoice();
@@ -73,9 +73,12 @@ public class ModifyTableGUI extends CreateTableGUI {
 		 * TODO : peut être instancié en une seule ligne :
 		 * this.comboChoiceTable = new JComboBox(tables.getCollection().toArray());
 		 */
-		this.comboChoiceTable.setBounds(coords);
+		this.comboChoiceTable.setBounds(new Rectangle(coords.x,coords.y,coords.width,coords.height));
 		this.add(this.comboChoiceTable);
-		//TODO : this.remove(la boite de saisie dans laquelle on écrivait le nom de la table dans l'IHM de création)
+
+		coords.x+=coords.width;
+		this.tableNameField.setBounds(coords);
+		
 		this.comboChoiceTable.addActionListener(this); //TODO : ItemListener pour les listes déroulantes
 
 	}
