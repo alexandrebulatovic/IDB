@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -26,14 +27,11 @@ public class CRUDView extends BasicGUI implements ActionListener {
 
 	/* CONSTANTES */ 
 
-	/** Indique que la méthode appelante est {@code updateButtonAction()}. */
-	public static final int FROM_UPDATE = 0;
+	public static final int PREVIOUS = 0;
 
-	/** Indique que la méthode appelante est {@code insertButtonAction()}. */
-	public static final int FROM_DELETE = 1;
+	public static final int LAST = 1;
 
-	/** Indique que la méthode appelante est {@code deleteButtonAction()}. */
-	public static final int FROM_INSERT = 2;
+	public static final int SAME = 2;
 
 
 	/* ATTRIBUTS */
@@ -67,14 +65,9 @@ public class CRUDView extends BasicGUI implements ActionListener {
 
 	/** Modèle de données pour la {@code JTable}. */
 	private DefaultTableModel tableModel;
-	
-	/** Buffer de la position et de la valeur pour la modification d'un tuple.
-	 * <P>
-	 * Dans l'ordre: {{@code index}, {@code colonne}, {@code valeur}}. */
-	private Vector<Object> updateBuffer;
 
 	/** Un état pour savoir si une insertion de tuple est en cours. */
-	boolean INSERTING;
+	private boolean INSERTING;
 
 
 	/* CONSTRUCTEUR */
@@ -88,6 +81,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 		this.disableComboBoxListener(); // on désactive avant de peupler la combobox pour ne pas déclencher l'event listener
 		this.fillComboBox();
 		this.enableComboBoxListener();
+		this.INSERTING = false;
 
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
 	}
@@ -115,15 +109,15 @@ public class CRUDView extends BasicGUI implements ActionListener {
 		if (this.INSERTING == false)
 		{
 			this.INSERTING = true;
-			this.tableModel.addRow(new Vector[this.tableModel.getColumnCount()-1]);
-			this.fireSelectionChange(FROM_INSERT);
+			this.tableModel.addRow(new Vector[this.tableModel.getColumnCount()]);
+			this.fireSelectionChange(CRUDView.LAST);
 		} 
 		else
 		{ // on ajoute à la base de données le dernier tuple de la table, c-à-d celui qui vient d'être ajouté
 			int index = this.tableModel.getRowCount()-1;
 			String table_name = (String)this.tableComboBox.getSelectedItem();
 
-			this.crud_controller.addRow(index, table_name);
+			System.out.println(this.crud_controller.addRow(index, table_name));
 
 			this.INSERTING = false;								
 		}
@@ -135,10 +129,15 @@ public class CRUDView extends BasicGUI implements ActionListener {
 
 	private void deleteButtonAction() 
 	{
-		int row_to_delete = this.tableJTable.convertRowIndexToModel(this.currentIndex);
-		tableModel.removeRow(row_to_delete);
-		this.crud_controller.deleteRow(row_to_delete);
-		this.fireSelectionChange(CRUDView.FROM_DELETE);
+		// on essaie de l'effacer de la base de données et
+		String reply = this.crud_controller.deleteRow(this.currentIndex);
+
+		if (reply.equals("OK"))
+		{
+			tableModel.removeRow(this.currentIndex); // si ça marche on le vire de l'affichage
+			this.fireSelectionChange(CRUDView.PREVIOUS); // on replace la selection
+		} else
+			JOptionPane.showMessageDialog(null, reply, "	Erreur", JOptionPane.ERROR_MESSAGE);
 	}
 
 	/** Permet de garder la scrollbar dans la zone du tuple sélectionnée après 
@@ -146,21 +145,21 @@ public class CRUDView extends BasicGUI implements ActionListener {
 	 * @param caller : identifiant de la méthode appelante. */
 	private void fireSelectionChange(int caller) 
 	{
-		if (this.tableJTable.getRowCount() > 1)
+		if (this.tableJTable.getRowCount() > 1 && this.currentIndex > 0)
 		{
 			switch (caller)
 			{
-			case CRUDView.FROM_DELETE: 
+			case CRUDView.PREVIOUS: 
 				int rowAfterDelete = this.currentIndex-1; // on se repositionne sur le tuple précédent
 				this.tableJTable.changeSelection(rowAfterDelete, 0, false, false);
 				break;
 
-			case CRUDView.FROM_INSERT: 
+			case CRUDView.LAST: 
 				int lastRow = this.tableModel.getRowCount()-1; // on se repositionne sur le dernier tuple
 				this.tableJTable.changeSelection(lastRow, 0, false, false);
 				break;
 
-			case CRUDView.FROM_UPDATE: 
+			case CRUDView.SAME: 
 				int currentRow = this.currentIndex; // on se repositionne sur le même tuple
 				this.tableJTable.changeSelection(currentRow, 0, false, false);
 				break;
@@ -236,7 +235,8 @@ public class CRUDView extends BasicGUI implements ActionListener {
 	private void revealJButtons() 
 	{
 		this.insertButton.setEnabled(true);
-		this.updateButton.setEnabled(true);
+		// TODO : décommenter quand la modification sera bien implementée
+		//		this.updateButton.setEnabled(true);
 		this.deleteButton.setEnabled(true);
 	}
 
@@ -299,16 +299,17 @@ public class CRUDView extends BasicGUI implements ActionListener {
 		});
 	}
 
+	/*
 	/** Crée et assigne un {@code TableModelListener} à notre modèle de données {@code DefaultTableModel} ce qui
 	 * permet de capter la cellule où les modifications ont été effectuées et de mettre à jour 
 	 * la base de données dynamiquement en conséquence. */
-	private void initTableModelListener() {
+	/*private void initTableModelListener() {
 		this.tableModel.addTableModelListener(new TableModelListener() 
 		{
-			
-// TODO : voir comment ne pas declencher le tableChanged() quand on clique sur "ajout tuple"
-			// --> eventuellement supprimer la methode addRow() du controller & manager et tout gerer par "UpdateRow";
-			
+
+			// TODO : probleme : tableChanged est déclenché a chaque ajout ou suppression d'un tuple
+			// plusieurs solutions possibles mais choix de conception à faire
+
 			public void tableChanged(TableModelEvent event) 
 			{
 				int eventType = event.getType();
@@ -320,7 +321,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 					Object value = tableModel.getValueAt(row, column);
 
 					CRUDView.this.updateBuffer = new Vector<Object>();
-					
+
 					CRUDView.this.updateBuffer.addElement(row);
 					CRUDView.this.updateBuffer.addElement(column);
 					CRUDView.this.updateBuffer.addElement(value);
@@ -328,7 +329,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 
 			}
 		});
-	}
+	}*/
 
 	/** Initialise et paramètre la {@code JTable} et son modèle de données {@code DefaultTableModel}. 
 	 * @param table : {@code JTable} correspondant au choix de la combobox. */
@@ -338,7 +339,8 @@ public class CRUDView extends BasicGUI implements ActionListener {
 		this.tableModel = (DefaultTableModel)this.tableJTable.getModel();
 		this.tableJTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // une seule ligne sélectionnée autorisée
 		this.initSelectionListener();
-		this.initTableModelListener();
+		// TODO : decommentez quand les update seront OK ou à supprimer si plus besoin
+		//		this.initTableModelListener();
 	}
 
 	/** Initialise et affiche la {@code JScrollpane} composé de la {@code JTable}. */

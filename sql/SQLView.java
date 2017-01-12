@@ -90,7 +90,7 @@ implements ActionListener
 	 * @param qry : requête sous forme de chaîne de caractères à envoyer. */
 	private void transmitSQL(String qry) 
 	{
-		this.sql_controller.transmitSQL(qry);
+		this.sql_controller.transmitQuery(qry);
 	}
 
 	@Override
@@ -100,7 +100,7 @@ implements ActionListener
 		return qry.endsWith(";") && qry.length() > 1;
 	}
 
-	/** Pop-up pour afficher une table sous la forme d'un objet JTable.
+	/** Pop-up pour afficher une table sous la forme d'un objet {@code JTable}.
 	 * @param table : {@code JTable} à afficher. */
 	public void showTable(JTable table)
 	{

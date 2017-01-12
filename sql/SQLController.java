@@ -4,6 +4,11 @@ import java.sql.Connection;
 import javax.swing.JTable;
 import manager.SQLManager;
 
+/** Effectue la communication entre la {@code SQLView} et le {@code SQLController}.
+ * 
+ * @see SQLManager
+ * @see SQLView
+ */
 public class SQLController {
 
 	/* ATTRIBUTS */
@@ -16,7 +21,7 @@ public class SQLController {
 
 	/* CONSTRUCTEUR */
 
-	/** Initialise le {@code SQLManager}.
+	/** Instancie le {@code SQLManager}.
 	 * @param conn : l'objet Connection résultant de la connexion à la base de données. */
 	public SQLController(Connection conn)
 	{
@@ -25,7 +30,8 @@ public class SQLController {
 
 	/* METHODES*/
 
-	/** Affiche l'IHM pour taper du code SQL en la créant si nécessaire. */
+	/** Affiche au premier plan l'IHM pour taper du code SQL,
+	 *  la créée si elle n'existe pas. */
 	public void openSQL()
 	{
 		if (this.sql_view == null) {
@@ -36,26 +42,24 @@ public class SQLController {
 		}
 	}
 
-	/** Envoie la requête au manager.
-	 * @param qry : requête sous forme de chaîne de caractères à envoyer. */
-	public void transmitSQL(String qry)
+	/** Demande au {@code SQLManager} d'exécuter la requête SQL.
+	 * @param qry : requête sous forme de {@code String} à transmettre au SGBD. */
+	public void transmitQuery(String qry)
 	{
 		Object reply = this.sql_manager.sendSQL(qry);
 		transmitReply(reply);
 	}
 
-	/** Envoie la réponse retournée par la requête SQL à la view.
-	 * @param reply : un {@code Object} de la réponse à envoyer.	 */
+	/** Demande à {@code SQLView} d'afficher un message d'information ou 
+	 * une {@code JTable} en fonction de la réponse du {@code SQLManager}.
+	 * @param reply : la réponse du serveur, un {@code String} ou un {@code JTable}. */
 	private void transmitReply(Object reply) 
 	{
-		if (reply instanceof String){
-
+		if (reply instanceof String)
 			this.sql_view.showReply((String) reply);
 
-		} else if (reply instanceof JTable)	{
-
+		else if (reply instanceof JTable)
 			this.sql_view.showTable((JTable) reply);
-		}
 	}
 
 }

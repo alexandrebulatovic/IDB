@@ -79,8 +79,8 @@ public class CRUDController
 	 * Supprime le tuple situé à {@code index} de la base de données.
 	 * @param index : position du tuple à supprimer.
 	 */
-	public void deleteRow(int index) {
-		System.out.println(this.sql_manager.removeTuple(index));
+	public String deleteRow(int index) {
+		return (this.sql_manager.removeTuple(index));
 	}
 
 	/**
@@ -88,12 +88,12 @@ public class CRUDController
 	 * @param index : position du tuple à ajouter. 
 	 * @param tableName : nom de la table concernée.
 	 */
-	public void addRow(int index, String tableName) 
+	public String addRow(int index, String tableName) 
 	{
 		Vector dataVector = this.crud_view.getTableModel().getDataVector();
-		Vector<Object> row_to_add =  (Vector<Object>) dataVector.get(index);
+		Vector<Object> row_to_add =  (Vector<Object>) dataVector.elementAt(index); // on récupere la ligne concernée
 
-		this.sql_manager.addTuple(row_to_add);
+		return (this.sql_manager.addTuple(row_to_add));
 	}
 
 	/** Met à jour une valeur d'un tuple.

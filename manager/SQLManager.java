@@ -1,5 +1,6 @@
 package manager;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -53,15 +54,18 @@ public class SQLManager {
 	/* METHODES*/
 
 	/** Initialise l'attribut {@code Statement} nécessaire pour envoyer les requêtes SQL. 
-	 * @param conn : {@code Connection} à partir duquel initialiser le {@code Statement}. */
+	 * @param conn : {@code Connection} à partir duquel initialiser le {@code Statement}.
+	 * @param statementType : constantes parmi {@code TYPE_UPDATABLE_RESULTSET} pour avoir un {@code ResultSet} dynamique, 
+	 * {@code TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe et optimisé. */
 	private void initStatement(Connection conn, int statementType)
 	{
 		try {
 
 			if (statementType==TYPE_UPDATABLE_RESULTSET)
+			{
 				this.stat = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-
-			else if (statementType==TYPE_UPDATABLE_RESULTSET)
+			}
+			else if (statementType==TYPE_PLAIN_RESULTSET)
 			{
 				conn.setAutoCommit(false);
 				this.stat = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -195,7 +199,7 @@ public class SQLManager {
 
 	public JTable requestJTable(String tableName) 
 	{
-		String qry = "SELECT * FROM "+ tableName;
+		String qry = "SELECT T.* FROM "+ tableName+" T";
 		JTable table = (JTable)this.sendSQL(qry);
 
 		return table;
@@ -205,25 +209,40 @@ public class SQLManager {
 	 * @param vector : {@code Vector} représentant les données à insérer dans l'ordre.
 	 * @return "OK" si l'insertion réussie, sinon un message d'erreur.
 	 */
-	public String addTuple(Vector<?> vector)
+	public String addTuple(Vector<Object> vector)
 	{
 
 		try {
 			rs.moveToInsertRow();
 
-			for (int i=0; i < vector.size() ; i++) 
+			int columnPosition = 1;
+			for (int i = 0; i < vector.size() ; i++, columnPosition++) 
 			{ 
-				// TODO : implémenter d'autres types
-				switch (this.rsmd.getColumnClassName(i+1))
+				switch (this.rsmd.getColumnClassName(columnPosition)) // on récupère la classe de l'objet utilisé pour l'affichage
 				{
-				case "java.lang.String":
-					rs.updateString(i+1, (String) vector.get(i));
+				case "java.lang.String": // type sql : CHAR, VARCHAR, LONGVARCHAR
+					rs.updateString(columnPosition, (String) vector.get(i));
 					break;
-				case "java.lang.Integer":
-					rs.updateInt(i+1, (int) vector.get(i));
+				case "java.lang.Integer": // INTEGER
+					rs.updateInt(columnPosition, (int) vector.get(i));
 					break;
-				case "java.sql.Date":
-					rs.updateDate(i+1, (Date) vector.get(i));
+				case "java.sql.Date": // DATE
+					rs.updateDate(columnPosition, (Date) vector.get(i));
+					break;
+				/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
+					rs.updateBigDecimal(columnPosition, (BigDecimal) vector.get(i));
+					break;*/
+				case "java.lang.Boolean": // BIT
+					rs.updateBoolean(columnPosition, (boolean) vector.get(i));
+					break;
+				case "java.lang.Long": // BIGINT
+					rs.updateLong(columnPosition, (long) vector.get(i));
+					break;
+				case "java.lang.Float": // REAL
+					rs.updateFloat(columnPosition,  (float) vector.get(i));
+					break;
+				case "java.lang.Double": // DOUBLE, FLOAT
+					rs.updateDouble(columnPosition,  (double) vector.get(i));
 					break;
 				}
 			}
@@ -239,14 +258,15 @@ public class SQLManager {
 	}
 
 	/** Supprime un tuple de la base de données.
-	 * @param index : index du tuple à supprimer affiché dans la {@code JTable}.
+	 * @param index : index du tuple à supprimer affiché dans la {@code JTable} (commence à 0).
 	 * @return "OK" si la suppression réussie, sinon un message d'erreur.
 	 */
 	public String removeTuple(int index) 
 	{
+		index++; // conversion entre index du TableModel et la methode absolute() où l'index commence à 1
 		try 
 		{
-			rs.absolute(index+1);
+			rs.absolute(index);
 			rs.deleteRow();
 			return "OK";
 
@@ -255,26 +275,37 @@ public class SQLManager {
 		}
 	}
 
-	/** Met à jour un tuple de la base de données.
-	 * @param index : index du tuple de la valeur à mettre à jour.
-	 * @param column : colonne de la valeur à mettre à jour.
-	 * @param value : nouvelle valeur.
+	/** Met à jour un attribut d'un tuple de la table courante.
+	 * @param index : numéro d'index du tuple de la valeur à mettre à jour, commence à 0.
+	 * @param column : numéro de colonne de la valeur à mettre à jour, commence à 0.
+	 * @param value : nouvelle valeur de l'attribut.
 	 * @return : "OK" si la modification réussie, sinon un message d'erreur.
 	 */
 	public String updateTuple(int index, int column, Object value)
 	{
-		column++; //correspondance entre la TableModel (index commence à 0) et le ResultSet (index commence à 1..)
+		//correspondance entre la TableModel (index commence à 0) et le ResultSet (index commence à 1..)
+		column++; 
 		index++;
 
 		try {
 			rs.absolute(index);
-			// TODO : implémenter d'autres types
+
 			if (value instanceof Integer)
 				rs.updateInt(column, (int) value);
 			else if (value instanceof String)
 				rs.updateString(column, (String) value);
 			else if (value instanceof Date)
 				rs.updateDate(column, (Date) value);
+			else if (value instanceof Float)
+				rs.updateFloat(column, (float) value);
+			else if (value instanceof Double)
+				rs.updateDouble(column, (double) value);
+			else if (value instanceof Boolean)
+				rs.updateBoolean(column, (boolean) value);
+			else if (value instanceof Long)
+				rs.updateLong(column,  (long) value);
+			else if (value instanceof BigDecimal)
+				rs.updateBigDecimal(column, (BigDecimal) value);
 
 			rs.updateRow();
 
