@@ -1,27 +1,20 @@
 package ddl;
 
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.util.List;
-import java.util.Vector;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
 import business.Attribute;
 import business.Table;
 import useful.ResponseData;
 
+@SuppressWarnings("serial")
 public class ModifyTableGUI extends CreateTableGUI {
 	
 	private JComboBox<String> comboChoiceTable;
-	
-	private boolean bug = false;
 	
 	private Table tableSource;
 	
@@ -65,7 +58,7 @@ public class ModifyTableGUI extends CreateTableGUI {
 		
 		Rectangle coords = new Rectangle(this.tableNameField.getBounds());
 		
-		this.comboChoiceTable = new JComboBox();
+		this.comboChoiceTable = new JComboBox<String>();
 		 
 		this.comboChoiceTable.setBounds(coords);
 
