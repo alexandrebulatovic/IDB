@@ -137,8 +137,25 @@ public class Table {
 		dropAttributes(tableSource, results);
 		
 		modifyAttributes(tableSource, results);
+		
+		modifyName(tableSource, results);
+		
+
 	 
 		return results;
+	}
+
+
+
+	/**
+	 * TODO uniquement valable sur Oracle
+	 * @param tableSource
+	 * @param results
+	 */
+	private void modifyName(Table tableSource, ArrayList<String> results) {
+		if (!tableSource.name.equals(this.name)){
+			results.add("RENAME "+tableSource.name+" TO "+this.name);	
+		}		
 	}
 
 
@@ -206,6 +223,25 @@ public class Table {
 					results.add(sql.toString());
 				}
 
+				
+			}
+			if ((attSrc.size != attDest.size) || (!attSrc.type.equals(attDest.type))){
+				StringBuilder sql = new StringBuilder();
+				//ALTER TABLE this.name
+				//ALTER COLUMN attSrc.name
+				sql.append("ALTER TABLE ");
+				sql.append(this.name);
+				sql.append("\nMODIFY ");
+				sql.append(attSrc.name);
+				sql.append(" ");
+				sql.append(attDest.type);
+				if (!attDest.type.equals("DATE")){
+					sql.append(" (");
+					sql.append(attDest.size);
+					sql.append(")");
+				}
+
+				results.add(sql.toString());
 				
 			}
 		}
