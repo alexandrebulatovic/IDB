@@ -77,7 +77,7 @@ public class ModifyTableGUI extends CreateTableGUI {
 	
 	private void setComboBoxChoixValues(){
 		this.comboChoiceTable.removeAllItems();
-		this.comboChoiceTable.addItem("");
+//		this.comboChoiceTable.addItem("");
 		
 		
 		ResponseData<String> tables = this.control.getTables();
