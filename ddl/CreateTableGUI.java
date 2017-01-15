@@ -797,14 +797,14 @@ implements ActionListener, ItemListener
 	{
 		Object obj = item.getItem();
 		int status = item.getStateChange();
-		if((JCheckBox)obj==this.primaryKeyCheckBox){
+		if(obj==this.primaryKeyCheckBox){
 			if (status == ItemEvent.SELECTED){
 				this.setEnabledSelectedUniqueNotNullCheckBox(false);
 			}else if(status == ItemEvent.DESELECTED){
 				this.setEnabledSelectedUniqueNotNullCheckBox(true);
 			}
 		}
-		if((JCheckBox)obj==this.foreignKeyCheckBox){
+		if(obj==this.foreignKeyCheckBox){
 			if (status == ItemEvent.SELECTED){
 				this.initComboBoxFkTableAttributte(true);
 			}else if(status == ItemEvent.DESELECTED){
