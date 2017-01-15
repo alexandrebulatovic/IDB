@@ -59,19 +59,35 @@ public class ModifyTableGUI extends CreateTableGUI {
 	private void initComboBoxChoice() 
 	{
 
+		
 		Rectangle coords = new Rectangle(this.tableNameField.getBounds());
 		
-		ResponseData<String> tables = this.control.getTables();
-		this.talk(tables.getMessage());
-
-		this.comboChoiceTable = new JComboBox(tables.getCollection().toArray());
+		this.comboChoiceTable = new JComboBox();
 		 
 		this.comboChoiceTable.setBounds(coords);
 
+		this.setComboBoxChoixValues();
+		
+		
 		this.add(this.comboChoiceTable);
 		
 		comboChoiceTable.addItemListener(this);
 
+	}
+	
+	private void setComboBoxChoixValues(){
+		this.comboChoiceTable.removeAllItems();
+		this.comboChoiceTable.addItem("");
+		
+		
+		ResponseData<String> tables = this.control.getTables();
+		this.talk(tables.getMessage());
+		
+		for (String item : tables.getCollection()){
+			this.comboChoiceTable.addItem(item);
+		}
+		
+		
 	}
 
 
@@ -108,7 +124,7 @@ public class ModifyTableGUI extends CreateTableGUI {
 	
 	private void acualiseComboBox() {
 		int index = this.comboChoiceTable.getSelectedIndex();
-		this.initComboBoxChoice();
+		this.setComboBoxChoixValues();
 		try{
 			this.comboChoiceTable.setSelectedIndex(index);
 		}
@@ -121,10 +137,15 @@ public class ModifyTableGUI extends CreateTableGUI {
     public void itemStateChanged(ItemEvent e) {
     	super.itemStateChanged(e);
        if (e.getStateChange() == ItemEvent.SELECTED) {
-			String tableSelected = e.getItem().toString();
-			this.setValues(tableSelected);
-			this.tableNameField.setText(tableSelected);
-			this.tableSource = this.getTable();
+    	   if (e.getSource() == this.comboChoiceTable){
+    		   if (!e.getItem().toString().equals("")){
+    				String tableSelected = e.getItem().toString();
+    				this.setValues(tableSelected);
+    				this.tableNameField.setText(tableSelected);
+    				this.tableSource = this.getTable();
+    		   }
+    	   }
+
        }
     }
 
