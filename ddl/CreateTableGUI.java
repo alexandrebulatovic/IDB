@@ -786,6 +786,11 @@ implements ActionListener, ItemListener
 		this.control.createTable(this.getTable());
 	}
 
+	/**
+	 * Retourne un objet de type Table qui contient tous
+	 * les éléments de la vue
+	 * @return
+	 */
 	protected Table getTable() {
 		return new Table(
 				this.tableNameField.getText(),

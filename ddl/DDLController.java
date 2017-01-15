@@ -108,7 +108,6 @@ public class DDLController
 	 * Modifie une table existante
 	 */
 	public void modifyTable(Table table,Table tableSource) {
-		// TODO Auto-generated method stub
 		ArrayList<Response> responses = this.manager.modifyTable(table.toModify(tableSource));
 		boolean error = false;
 		for (Response response : responses){
