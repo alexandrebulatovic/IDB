@@ -25,6 +25,9 @@ public class ModifyTableGUI extends CreateTableGUI {
 	
 	private Table tableSource;
 	
+	
+	private String tableSelected;
+	
 
 	public ModifyTableGUI(DDLController control) {
 		super(control);
@@ -86,18 +89,15 @@ public class ModifyTableGUI extends CreateTableGUI {
 		for (String item : tables.getCollection()){
 			this.comboChoiceTable.addItem(item);
 		}
-		
-		
 	}
 
 
 	/**
-	 * Cette méthode va initialiser toutes les valeurs TODO : on sait que c'est une méthode
-	 * selon la table entrée en Paramètre dans le comboBox //TODO : Paramètre n'est pas un Dieu :p
+	 * initialise toutes les valeurs
+	 * selon la table entrée en paramètre dans le comboBox
 	 */
-	private void setValues(String table) {
+	private void setValuesView(String table) {
 		this.setViewModify(this.control.getAttributes(table), table);
-		
 	}
 	
 	
@@ -115,32 +115,32 @@ public class ModifyTableGUI extends CreateTableGUI {
 	}
 	
 	
-	@Override
-	public void windowActivated(WindowEvent e)
-	{
-		acualiseComboBox();
-	}
-
-	
-	private void acualiseComboBox() {
-		int index = this.comboChoiceTable.getSelectedIndex();
+	/**
+	 * Resélectionn le bon Item et recalcule les valeurs du comboBoxChoice
+	 */
+	private void acualiseComboBoxChoice() {
+		this.tableSelected = this.comboChoiceTable.getSelectedItem().toString();
 		this.setComboBoxChoixValues();
-		try{
-			this.comboChoiceTable.setSelectedIndex(index);
-		}
-		catch(IllegalArgumentException e){}
+		this.comboChoiceTable.setSelectedItem(this.tableSelected);
 	}
 	
 
 	
     @Override
+	public void windowActivated(WindowEvent e)
+	{
+		acualiseComboBoxChoice();
+	}
+
+
+	@Override
     public void itemStateChanged(ItemEvent e) {
     	super.itemStateChanged(e);
        if (e.getStateChange() == ItemEvent.SELECTED) {
     	   if (e.getSource() == this.comboChoiceTable){
     		   if (!e.getItem().toString().equals("")){
     				String tableSelected = e.getItem().toString();
-    				this.setValues(tableSelected);
+    				this.setValuesView(tableSelected);
     				this.tableNameField.setText(tableSelected);
     				this.tableSource = this.getTable();
     		   }
