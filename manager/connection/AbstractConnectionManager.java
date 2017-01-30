@@ -1,8 +1,10 @@
-package manager;
+package manager.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import manager.I_ConnectionManager;
 
 import useful.ConnectionStrings;
 import useful.Response;
@@ -14,7 +16,8 @@ import useful.Response;
  * 
  * @author UGOLINI Romain
  */
-public abstract class ConnectionManager 
+public abstract class AbstractConnectionManager 
+implements I_ConnectionManager 
 {
 	//Attributes
 	/** Nom du driver java pour utiliser la base de données.*/
@@ -41,7 +44,6 @@ public abstract class ConnectionManager
 	/** Un objet qui représente la connexion à un SGBD.*/
 	protected Connection dbms;
 
-
 	/** Contient tous les paramètres d'une connexion réussie.*/
 	protected ConnectionStrings parameters;
 	
@@ -52,40 +54,27 @@ public abstract class ConnectionManager
 	 * 
 	 * @param driverName : Nom du driver java pour utiliser la base de données.
 	 */
-	protected ConnectionManager(String driverName)
+	protected AbstractConnectionManager(String driverName)
 	{
 		this.driverName = driverName;
 	}
 	
 	
 	//Accesseurs
-	/**
-	 * @return Le nom de l'utilisateur connecté.
-	 */
+	@Override
 	public String getUser(){return this.user;}
 
-
-	/**
-	 * @return Le SGBD avec lequel est connecté $this, null si n'est pas connecté.
-	 */
+	
+	@Override
 	public Connection getConnection() {return this.dbms;}
 	
 	
-	/**
-	 * @return Vrai si et seulement si $this est connecté à un SGBD,
-	 * faux sinon.
-	 */
+	@Override
 	public boolean isConnected() {return this.dbms != null;}
 
 
 	//Methods
-	/**
-	 * Tente d'établir une connexion vers un SGBD en fonction
-	 * des informations de connexions de $param.
-	 * 
-	 * @param param : un objet ConnectionStrings
-	 * @return un objet qui décrit la tentative de connexion.
-	 */
+	@Override
 	public Response connect(ConnectionStrings param)
 	{
 		Response result;
@@ -104,25 +93,14 @@ public abstract class ConnectionManager
 	}
 	
 	
-	/**
-	 * Tente de re-établir une connexion vers le SGBD précédement
-	 * atteint avec succès, et dont les paramètres de connexions 
-	 * sont toujours enregistrés.
-	 * 
-	 * Ne doit être utilisé que si $this s'est déjà connecté avec succès
-	 * au cours de l'exécution de l'application.
-	 * 
-	 * @return Un objet qui décrit la tentative de connexion.
-	 */
+	@Override
 	public Response reconnect()
 	{
 		return this.connect(this.parameters);
 	}
 	
 	
-	/**
-	 * Ferme proprement la connexion.
-	 */
+	@Override
 	public void disconnect()
 	{
 		try {this.dbms.close();} 

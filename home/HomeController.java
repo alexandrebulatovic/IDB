@@ -1,7 +1,7 @@
 package home;
 
-import manager.ConnectionManager;
 import manager.DefaultValueManager;
+import manager.I_ConnectionManager;
 import manager.connection.MySQLConnectionManager;
 import manager.connection.OracleConnectionManager;
 import crud.CRUDController;
@@ -19,7 +19,7 @@ public class HomeController
 {
 	//Attributes
 	/** Gestionnaire de connexion. */
-	private ConnectionManager connector;
+	private I_ConnectionManager connector;
 
 	/** Controleur du LDD.*/
 	private DDLController ddlControl;
@@ -192,7 +192,7 @@ public class HomeController
 	 * @return Un objet pour se connecter vers un SGBD
 	 * en fonction du nom de $driver passé en paramètre.
 	 */
-	private ConnectionManager chooseManager(String driver)
+	private I_ConnectionManager chooseManager(String driver)
 	{
 		//TODO : à mettre dans une fabrique
 		switch (driver){

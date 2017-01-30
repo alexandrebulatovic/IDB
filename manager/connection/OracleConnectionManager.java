@@ -4,7 +4,6 @@ import java.sql.SQLException;
 
 import useful.ConnectionStrings;
 
-import manager.ConnectionManager;
 
 
 
@@ -14,7 +13,7 @@ import manager.ConnectionManager;
  * @author UGOLINI Romain
  */
 public class OracleConnectionManager 
-extends ConnectionManager
+extends AbstractConnectionManager
 {	
 	//Constructor
 	/**
