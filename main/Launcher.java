@@ -1,6 +1,7 @@
 
 package main;
 
+import home.HomeController;
 import connection.ConnectionGUI;
 
 /**
@@ -9,11 +10,17 @@ import connection.ConnectionGUI;
 public class Launcher {
 
 	/**
-	 * @param args
+	 * @param args : aucun argument.
 	 */
 	public static void main(String[] args) 
 	{
-		new ConnectionGUI();
+		launchApplication();
 	}
 
+	
+	private static void launchApplication()
+	{
+		HomeController control = new HomeController();
+		new ConnectionGUI(control);
+	}
 }

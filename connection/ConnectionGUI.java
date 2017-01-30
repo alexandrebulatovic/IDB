@@ -101,10 +101,10 @@ implements ActionListener, ItemListener
 	/**
 	 * Constructeur commun.
 	 */
-	public ConnectionGUI()
+	public ConnectionGUI(HomeController control)
 	{
 		super("Connexion", null, 450, 410, 20);
-		this.control = new HomeController();
+		this.control = control;
 		this.createAndBindComponents();
 		this.handleFieldsSize();
 		this.limitCharacters();
