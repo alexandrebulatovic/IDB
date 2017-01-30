@@ -12,7 +12,8 @@ import javax.swing.JFrame;
 import business.Attribute;
 import business.Table;
 
-import manager.DDLManager;
+import manager.I_DDLManager;
+import manager.ddl.OracleDDLManager;
 import useful.Response;
 import useful.ResponseData;
 
@@ -36,7 +37,7 @@ public class DDLController
 	private DropTableGUI dropGUI;
 	
 	/** Gère la communication avec un SGBD dans l'optique d'utiliser le LDD.*/
-	private DDLManager manager;
+	private I_DDLManager manager;
 		
 	
 	//Contructeur
@@ -45,7 +46,7 @@ public class DDLController
 	 */
 	public DDLController(Connection connection)
 	{
-		this.manager = new DDLManager(connection);
+		this.manager = new OracleDDLManager(connection);
 	}
 	
 	

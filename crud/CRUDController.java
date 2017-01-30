@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JTable;
-import manager.DDLManager;
+
+import manager.I_DDLManager;
 import manager.SQLManager;
+import manager.ddl.OracleDDLManager;
 import useful.ResponseData;
 
 public class CRUDController 
@@ -15,7 +17,7 @@ public class CRUDController
 	/** IHM du CRUD.*/
 	private CRUDView crud_view;
 
-	private DDLManager ddl_manager;
+	private I_DDLManager ddl_manager;
 
 	private SQLManager sql_manager;
 
@@ -25,7 +27,7 @@ public class CRUDController
 
 	public CRUDController(Connection connection) 
 	{
-		this.ddl_manager = new DDLManager(connection);
+		this.ddl_manager = new OracleDDLManager(connection);
 		this.sql_manager = new SQLManager(connection, SQLManager.TYPE_UPDATABLE_RESULTSET);
 	}
 

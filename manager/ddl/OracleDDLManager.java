@@ -1,4 +1,4 @@
-package manager;
+package manager.ddl;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import manager.I_DDLManager;
+
 import business.Attribute;
 import business.Table;
 
@@ -17,7 +19,8 @@ import useful.ResponseData;
 import useful.ForeinKey;
 
 
-public class DDLManager 
+public class OracleDDLManager 
+implements I_DDLManager 
 {
 	//Statiques
 	/** Constante pour récupérer le nom des tables de données.*/
@@ -49,7 +52,7 @@ public class DDLManager
 	/**
 	 * Constructeur commun.
 	 */
-	public DDLManager(Connection connection)
+	public OracleDDLManager(Connection connection)
 	{
 		this.connection = connection;
 		this.createStatementAndMetaData(connection);
@@ -57,19 +60,15 @@ public class DDLManager
 
 
 	//Méthodes
-	/**
-	 * Tente de créer une table dans la base de données.
-	 * 
-	 * @param sql : une requête SQL pour créer une table, null interdit.
-	 * @return Une réponse personnalisée avec un message de succès si et seulement si
-	 * la table est créée, un message détaillant l'erreur sinon.
-	 */
+	@Override
 	public Response createTable(String sql)
 	{	
 		System.out.println(sql);
 		return this.executeUpdate(sql, "Table créée.");
 	}
 	
+	
+	@Override
 	public ArrayList<Response> modifyTable(ArrayList<String> sqls) {
 		
 		ArrayList<Response> rep = new ArrayList<Response>();
@@ -83,13 +82,7 @@ public class DDLManager
 	}
 
 
-	/**
-	 * Tente de supprimer une table dans la base de données.
-	 * 
-	 * @param table : une requête SQL pour supprimer une table, null interdit.
-	 * @return Une réponse personnalisée avec un message de succès si et seulement si
-	 * la table est supprimée, un message détaillant l'erreur sinon.
-	 */
+	@Override
 	public Response dropTable(String table, boolean cascade)
 	{
 		String sql = "DROP TABLE " + table + (cascade ? " CASCADE CONSTRAINT" : "");
@@ -98,12 +91,7 @@ public class DDLManager
 	}
 
 
-	/**
-	 * @param table : nom de la table où chercher la clée, null interdit.
-	 * @return Une réponse personnalisée contenant les attributs membres
-	 * de la clée primaire de $table si et seulement si la requête fonctionne,
-	 * sinon une réponse personnalisée détaillant l'erreur survenue.
-	 */
+	@Override
 	public ResponseData<String> getPrimaryKey(String table)
 	{
 		int [] columns = {4};
@@ -114,11 +102,7 @@ public class DDLManager
 	}
 
 
-	/**
-	 * @return Une réponse personnalisée contenant le nom des tables de données
-	 * de la base si et seulement si la requête fonctionne, sinon une réponse 
-	 * personnalisée détaillant l'erreur survenue.
-	 */
+	@Override
 	public ResponseData<String> getTables()
 	{
 		int [] columns = {3};
@@ -127,6 +111,8 @@ public class DDLManager
 		return new ResponseData<String>(r);
 	}
 	
+
+	@Override
 	public List<Attribute> getAttributes(String table) {
 		List<Attribute> attributes = new ArrayList<Attribute>();
 		
@@ -229,12 +215,7 @@ public class DDLManager
 	}
 
 
-	/**
-	 * @param table : table où chercher les clées étrangères.
-	 * @return Une réponse personnalisée qui contient les clées étrangères
-	 * de $table et leurs références si et seulement si la requête fonctionne,
-	 * sinon une réponse personnalisée détaillant l'erreur survenue.
-	 */
+	@Override
 	public ResponseData<String []> getImportedKey(String table)
 	{
 		int [] columns = {3,4,8};
@@ -243,12 +224,7 @@ public class DDLManager
 	}
 	
 
-	
-
-	/**
-	 * Ferme proprement les objets statements.
-	 * Ne fait rien en cas d'erreur et n'avertit pas l'utilisateur.
-	 */
+	@Override
 	public void closeStatement()
 	{
 		try{this.statement.close();}
@@ -383,12 +359,4 @@ public class DDLManager
 		this.metaDataResult.close();
 		return result;
 	}
-
-
-
-
-
-
-	
-
 }
