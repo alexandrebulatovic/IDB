@@ -3,18 +3,16 @@ package manager.ddl;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import manager.I_DDLManager;
+
 import business.Attribute;
-import business.Table;
 import useful.Response;
 import useful.ResponseData;
-import useful.ForeinKey;
+
 
 
 public class OracleDDLManager 
@@ -47,8 +45,6 @@ extends AbstractDLLManager
 	/** Stocke les résultats d'une requête sur les meta-données.*/
 	private ResultSet metaDataResult;
 
-	private Connection connection;
-
 
 	//Constructeur
 	/**
@@ -56,7 +52,6 @@ extends AbstractDLLManager
 	 */
 	public OracleDDLManager(Connection connection)
 	{
-		this.connection = connection;
 		this.createStatementAndMetaData(connection);
 	}
 
@@ -179,16 +174,6 @@ extends AbstractDLLManager
 		}
 
 
-	private boolean isUnique(String nameAttribute, List<String> uniqueAttributes) {
-		//TODO : cette méthode n'a rien à faire dans cette classe.
-		for (String unique : uniqueAttributes){
-			if (nameAttribute.equals(unique)){
-				return true;
-			}
-		}
-		return false;
-	}
-
 	@Override
 	public ResponseData<String> getUniqueAttribute(String table) {
 		int [] columns = {9};
@@ -206,7 +191,15 @@ extends AbstractDLLManager
 				(IN_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
 	}
 	
-
+	
+	@Override
+	public ResponseData<String []> getExportedKey(String table)
+	{
+		//TODO
+		return null;
+	}
+	
+	
 	@Override
 	public void closeStatement()
 	{
@@ -352,6 +345,17 @@ extends AbstractDLLManager
 		//TODO : cette méthode n'a rien à faire dans cette classe-ci.
 		for (String pk : pks){
 			if (pk.equals(nameAttribute)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	private boolean isUnique(String nameAttribute, List<String> uniqueAttributes) {
+		//TODO : cette méthode n'a rien à faire dans cette classe.
+		for (String unique : uniqueAttributes){
+			if (nameAttribute.equals(unique)){
 				return true;
 			}
 		}

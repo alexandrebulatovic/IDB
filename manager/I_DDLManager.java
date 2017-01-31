@@ -52,22 +52,38 @@ public interface I_DDLManager {
 	
 	public abstract List<Attribute> getAttributes(String table);
 
-	/**
-	 * @param table : table où chercher les clées étrangères.
-	 * @return Une réponse personnalisée qui contient les clées étrangères
-	 * de $table et leurs références si et seulement si la requête fonctionne,
-	 * sinon une réponse personnalisée détaillant l'erreur survenue.
-	 */
-	public abstract ResponseData<String[]> getImportedKey(String table);
-
 	
 	/**
 	 * @param table : table où chercher les attributs avec contrainte unique, null interdit.
-	 * @return une réponse personnalisée contenant le nom des attributs de contrainte unique
-	 * contenus dans $table, ou une réponse vide si la récupration a échouée.
+	 * @return une réponse personnalisée contenant le nom des attributs de $table
+	 * qui sont soumis à une contrainte UNIQUE.
 	 */
 	public ResponseData<String> getUniqueAttribute(String table);
 	
+	
+	/**
+	 * TODO : voir s'il faut ajouter le nom de la contrainte dans le résultat.
+	 * @param table : table où se trouve les clées étrangères.
+	 * @return une réponse personnalisée.
+	 * Lorsque la récupération réussit, la réponse contient dans l'ordre : <br/>
+	 * - le nom d'une table $t,<br/>
+	 * - le nom d'un attribut $a, clée primaire de $t,<br/>
+	 * - le nom d'un attribut de $table soumit à une contrainte FOREIGN KEY
+	 * qui utilise $t($a) comme référence. <br/>
+	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée. 
+	 */ 
+	public abstract ResponseData<String[]> getImportedKey(String table);
+
+
+	/**
+	 * @param table : table où chercher les clées primaires.
+	 * @return une réponse personnalisée.
+	 * Lorsque la récupération réussit, la réponse contient dans l'ordre :<br/>
+	 * - le nom d'une table $t, <br/>
+	 * - le nom d'un attribut $a, clée étrangère de $t
+	 */
+	public ResponseData<String []> getExportedKey(String table);
+
 	
 	/**
 	 * Ferme proprement les objets statements.
