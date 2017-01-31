@@ -186,6 +186,7 @@ extends AbstractDLLManager
 	@Override
 	public ResponseData<String []> getImportedKey(String table)
 	{
+		//TODO : tester ce qui est retourné
 		int [] columns = {3,4,8};
 		return this.procedureToGetMetadata
 				(IN_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
@@ -195,7 +196,7 @@ extends AbstractDLLManager
 	@Override
 	public ResponseData<String []> getExportedKey(String table)
 	{
-		//TODO
+		//TODO : faire ce code
 		return null;
 	}
 	
