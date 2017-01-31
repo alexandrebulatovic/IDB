@@ -39,10 +39,10 @@ implements ActionListener, ItemListener
 	private HomeController control;
 
 	/**Etiquette des pilotes.*/
-	private JLabel driverLabel;
+	private JLabel dbmsLabel;
 	
 	/**Liste déroulante des différents pilotes de SGBD.*/
-	private JComboBox<String> driverCombo;
+	private JComboBox<String> dbmsCombo;
 	
 	/**Etiquette de l'adresse IP.*/
 	private JLabel ipLabel;
@@ -106,6 +106,7 @@ implements ActionListener, ItemListener
 		super("Connexion", null, 450, 410, 20);
 		this.control = control;
 		this.createAndBindComponents();
+		this.loadAvailableDBMS();
 		this.handleFieldsSize();
 		this.limitCharacters();
 		this.listenFields();
@@ -136,7 +137,7 @@ implements ActionListener, ItemListener
 	
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		if (e.getSource() == this.driverCombo) this.setDefaultValues(true);
+		if (e.getSource() == this.dbmsCombo) this.setDefaultValues(true);
 	}
 
 
@@ -148,16 +149,12 @@ implements ActionListener, ItemListener
 	private void createAndBindComponents()
 	{
 		//pilotes.
-		this.driverLabel = new JLabel("Pilote :");
-		this.bindAndAdd(this.driverLabel);
+		this.dbmsLabel = new JLabel("Pilote :");
+		this.bindAndAdd(this.dbmsLabel);
 		
-		this.driverCombo = new JComboBox<String>();
-		//TODO : ajouter d'autres pilotes
-		//TODO : créer une classe statique avec des constantes sur les nom des pilotes.
-		this.driverCombo.addItem("Oracle");
-		this.driverCombo.addItem("MySQL");
-		this.bindAndAdd(this.driverCombo);
-		this.driverCombo.addItemListener(this);
+		this.dbmsCombo = new JComboBox<String>();
+		this.bindAndAdd(this.dbmsCombo);
+		this.dbmsCombo.addItemListener(this);
 		
 		//Adresse IP
 		this.ipLabel = new JLabel("Adesse IP du serveur :");
@@ -211,7 +208,7 @@ implements ActionListener, ItemListener
 		}
 		else {
 			ConnectionStrings parameters = new ConnectionStrings(
-					this.driverCombo.getSelectedItem().toString(),
+					this.dbmsCombo.getSelectedItem().toString(),
 					this.ipField.getText(),
 					this.userField.getText().trim(), 
 					this.rawPassword(), 
@@ -281,7 +278,7 @@ implements ActionListener, ItemListener
 				jc.addKeyListener(keylistener);			
 			}
 		}
-		this.driverCombo.addKeyListener(keylistener);
+		this.dbmsCombo.addKeyListener(keylistener);
 	}
 	
 	
@@ -300,11 +297,11 @@ implements ActionListener, ItemListener
 		if (combo) {
 			
 			cs = this.control.getDefaultValues(
-					this.driverCombo.getSelectedItem().toString());
+					this.dbmsCombo.getSelectedItem().toString());
 		}
 		else {
 			cs = this.control.getDefaultValues();
-			this.driverCombo.setSelectedItem(cs.driver);
+			this.dbmsCombo.setSelectedItem(cs.driver);
 		}
 		
 		this.ipField.setText(cs.url);
@@ -329,6 +326,19 @@ implements ActionListener, ItemListener
 	}
 	
 	
+	/**
+	 * Remplit la liste déroulante contenant le nom des SGBD
+	 * disponibles, avec les SGBD disponibles.
+	 */
+	private void loadAvailableDBMS() 
+	{
+		String [] dbms = this.control.getAvailableDBMS();
+		for (String s : dbms) {
+			this.dbmsCombo.addItem(s);
+		}
+	}
+
+
 	/**
 	 * Limite le nombre de caractères saisissables dans $field à $size. 
 	 * 

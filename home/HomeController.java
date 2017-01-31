@@ -6,6 +6,7 @@ import manager.connection.MySQLConnectionManager;
 import manager.connection.OracleConnectionManager;
 import crud.CRUDController;
 import ddl.DDLController;
+import factory.MainFactory;
 import sql.SQLController;
 import useful.ConnectionStrings;
 import useful.Response;
@@ -33,7 +34,10 @@ public class HomeController
 	/** Gestionnaire des valeurs de connexions par défaut.*/
 	private DefaultValueManager dvm;
 
-
+	/** Fabrique principale et unique de l'application.*/
+	private MainFactory factory;
+	
+	
 	//Constructeur
 	/**
 	 * Constructeur lambda.
@@ -41,6 +45,7 @@ public class HomeController
 	public HomeController()
 	{
 		this.dvm = new DefaultValueManager();
+		this.factory = new MainFactory();
 	}
 
 
@@ -61,7 +66,6 @@ public class HomeController
 					this.dvm.getDataBase(), 
 					this.dvm.getPort());
 		}
-
 	}
 
 
@@ -79,7 +83,7 @@ public class HomeController
 	}
 
 
-	//Methods de coonnexion
+	//Methodes de connexion
 	/**
 	 * Tente d'établir une connexion vers un SGBD
 	 * en utilisant les informations de connexion de $parameters.
@@ -91,7 +95,6 @@ public class HomeController
 	{
 		this.connector = this.chooseManager(parameters.driver);
 		return this.connector.connect(parameters);
-
 	}
 
 
@@ -125,7 +128,13 @@ public class HomeController
 	 */
 	public String getUser(){return this.connector.getUser();}
 
-
+	
+	/**
+	 * @return la liste des SGBD disponibles.
+	 */
+	public String [] getAvailableDBMS() {return this.factory.getAvailableDBMS();}
+	
+	
 	/**
 	 * Ouvre l'IHM pour rentrer des requetes SQL.
 	 */
@@ -136,7 +145,6 @@ public class HomeController
 	}
 
 
-	//Méthodes
 	/**
 	 * Ouvre l'IHM pour créer des tables.
 	 */
@@ -231,5 +239,16 @@ public class HomeController
 		if (this.sqlControl == null) {
 			this.sqlControl = new SQLController(this.connector.getConnection());
 		}
+	}
+
+
+	/**
+	 * Configure la fabrique pour retourner des objets conçus pour $dbms.
+	 * 
+	 * @param dbms : parmi les variables statiques de MainFactory, null inetrdit.
+	 */
+	private void setFactory(String dbms)
+	{
+		this.factory.setDBMS(dbms);
 	}
 }

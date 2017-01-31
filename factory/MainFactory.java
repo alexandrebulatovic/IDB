@@ -17,6 +17,7 @@ public class MainFactory
 	/** Mot clé pour passer sur la fabrique de MySQL.*/
 	public static final String MYSQL = "MySQL";
 	
+	
 	//Attributs
 	/** Fabrique choisie pour l'exécution de l'application.*/
 	private I_DBMSFactory factory;
