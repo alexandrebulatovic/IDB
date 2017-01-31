@@ -2,8 +2,6 @@ package ddl;
 
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -168,6 +166,11 @@ public class DDLController
 	public void closeStatement(){this.manager.closeStatement();}
 
 	
+	public List<Attribute> getAttributes(String table) {
+		return manager.getAttributes(table);
+	}
+
+
 	//Privées
 	/**
 	 * Affiche $gui au premier plan.
@@ -178,11 +181,6 @@ public class DDLController
 	{
 		gui.setVisible(true);
 		gui.toFront();
-	}
-
-
-	public List<Attribute> getAttributes(String table) {
-		return manager.getAttributes(table);
 	}
 
 

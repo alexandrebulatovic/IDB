@@ -2,8 +2,7 @@ package home;
 
 import manager.DefaultValueManager;
 import manager.I_ConnectionManager;
-import manager.connection.MySQLConnectionManager;
-import manager.connection.OracleConnectionManager;
+import manager.I_DDLManager;
 import crud.CRUDController;
 import ddl.DDLController;
 import factory.MainFactory;
@@ -62,7 +61,7 @@ public class HomeController
 					this.dvm.getDriver(), 
 					this.dvm.getUrl(), 
 					this.dvm.getUser(), 
-					"", 
+					"", //mot de passe
 					this.dvm.getDataBase(), 
 					this.dvm.getPort());
 		}
@@ -93,7 +92,7 @@ public class HomeController
 	 */
 	public Response connect(ConnectionStrings parameters)
 	{
-		this.connector = this.chooseManager(parameters.driver);
+		this.connector = this.createConnectionManager(parameters.driver);
 		return this.connector.connect(parameters);
 	}
 
@@ -194,23 +193,19 @@ public class HomeController
 	}
 
 
-	//Privates
 	/**
-	 * @param driver : parmi "Oracle", "MySQL", null interdit.
+	 * @param dbms : parmi ce qu'il se trouve dans getAvailableDBMS(), null interdit.
 	 * @return Un objet pour se connecter vers un SGBD
-	 * en fonction du nom de $driver passé en paramètre.
+	 * en fonction du $dbms passé en paramètre.
 	 */
-	private I_ConnectionManager chooseManager(String driver)
+	public I_ConnectionManager createConnectionManager(String dbms)
 	{
-		//TODO : à mettre dans une fabrique
-		switch (driver){
-		case "Oracle" : return new OracleConnectionManager();
-		case "MySQL" : return new  MySQLConnectionManager();
-		default : return null;
-		}
+		this.setFactory(dbms);
+		return this.factory.getConnectionManager();
 	}
+	
 
-
+	//Privates
 	/**
 	 * Définit le controleur de LDD pour $this si besoin.
 	 */
@@ -220,6 +215,7 @@ public class HomeController
 			this.ddlControl = new DDLController(this.connector.getConnection());
 		}
 	}
+	
 	
 	/**
 	 * Définit le controleur du CRUD pour $this si besoin.
@@ -231,6 +227,7 @@ public class HomeController
 		}
 	}
 
+	
 	/**
 	 * Définit le controleur de SQL pour $this si besoin.
 	 */
@@ -245,7 +242,7 @@ public class HomeController
 	/**
 	 * Configure la fabrique pour retourner des objets conçus pour $dbms.
 	 * 
-	 * @param dbms : parmi les variables statiques de MainFactory, null inetrdit.
+	 * @param dbms : parmi les variables statiques de MainFactory, null interdit.
 	 */
 	private void setFactory(String dbms)
 	{
