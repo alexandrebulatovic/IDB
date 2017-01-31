@@ -10,17 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import manager.I_DDLManager;
-
 import business.Attribute;
 import business.Table;
-
 import useful.Response;
 import useful.ResponseData;
 import useful.ForeinKey;
 
 
 public class OracleDDLManager 
-implements I_DDLManager 
+extends AbstractDLLManager
 {
 	//Statiques
 	/** Constante pour récupérer le nom des tables de données.*/
@@ -35,6 +33,10 @@ implements I_DDLManager
 	/** Constante pour les attributs utilisés comme référence par une autre table.*/
 	private final static int OUT_FOREIGN_KEY = 3;
 
+	/** Constante pour récupérer les champs de contrainte unique.*/
+	private final static int UNIQUE = 4;
+	
+	
 	//Attributs
 	/** Pour créer des requètes SQL.*/
 	private Statement statement;
@@ -119,7 +121,7 @@ implements I_DDLManager
 		List<String> pks = this.getPrimaryKey(table).getCollection();
 		List<String[]> fks = this.getImportedKey(table).getCollection();
 		
-		List<String> uniqueAttributes = this.getUnique(table);
+		ResponseData<String> uniqueAttributes = this.getUniqueAttribute(table);
 		
 
 			ResultSet rsColumns;
@@ -132,7 +134,7 @@ implements I_DDLManager
 					int size = 				rsColumns.getInt("COLUMN_SIZE");
 					boolean notNull = 		(rsColumns.getInt("NULLABLE") == DatabaseMetaData.columnNoNulls) || (rsColumns.getString("IS_NULLABLE").equals("NO"));
 					//TODO ne fonctionne pas
-					boolean unique = this.isUnique(nameAttribute,uniqueAttributes);
+					boolean unique = this.isUnique(nameAttribute,uniqueAttributes.getCollection());
 					boolean pk = this.isPk(nameAttribute,pks);
 					if (pk){
 						unique = false;
@@ -178,6 +180,7 @@ implements I_DDLManager
 
 
 	private boolean isUnique(String nameAttribute, List<String> uniqueAttributes) {
+		//TODO : cette méthode n'a rien à faire dans cette classe.
 		for (String unique : uniqueAttributes){
 			if (nameAttribute.equals(unique)){
 				return true;
@@ -186,32 +189,12 @@ implements I_DDLManager
 		return false;
 	}
 
-
-	private List<String> getUnique(String table) {
-		List<String> unique = new ArrayList<String>();
-		ResultSet rsIndex;
-		try {
-			rsIndex = this.metadata.getIndexInfo(null, null, table, true, false);
-			rsIndex.next();
-			while (rsIndex.next()){
-				unique.add(rsIndex.getString("COLUMN_NAME"));		
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-
-		return unique;
-	}
-
-
-	private boolean isPk(String nameAttribute,List<String> pks) {
-		for (String pk : pks){
-			if (pk.equals(nameAttribute)){
-				return true;
-			}
-		}
-		return false;
+	@Override
+	public ResponseData<String> getUniqueAttribute(String table) {
+		int [] columns = {9};
+		 ResponseData<String[]> r = 
+				 this.procedureToGetMetadata(UNIQUE, table, columns, "Attributs uniques récupérés.");
+		 return new ResponseData<String>(r);
 	}
 
 
@@ -330,6 +313,10 @@ implements I_DDLManager
 		case IN_FOREIGN_KEY :
 			this.metaDataResult = this.metadata.getImportedKeys(null, user, table);
 			break;
+			
+		case UNIQUE :
+			this.metaDataResult = this.metadata.getIndexInfo(null, null, table, true, false);
+			break;
 		}	
 	}
 
@@ -358,5 +345,16 @@ implements I_DDLManager
 		}
 		this.metaDataResult.close();
 		return result;
+	}
+
+
+	private boolean isPk(String nameAttribute,List<String> pks) {
+		//TODO : cette méthode n'a rien à faire dans cette classe-ci.
+		for (String pk : pks){
+			if (pk.equals(nameAttribute)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

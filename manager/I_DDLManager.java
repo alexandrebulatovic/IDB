@@ -19,8 +19,10 @@ public interface I_DDLManager {
 	 */
 	public abstract Response createTable(String sql);
 
+	
 	public abstract ArrayList<Response> modifyTable(ArrayList<String> sqls);
 
+	
 	/**
 	 * Tente de supprimer une table dans la base de données.
 	 * 
@@ -30,6 +32,7 @@ public interface I_DDLManager {
 	 */
 	public abstract Response dropTable(String table, boolean cascade);
 
+	
 	/**
 	 * @param table : nom de la table où chercher la clée, null interdit.
 	 * @return Une réponse personnalisée contenant les attributs membres
@@ -38,6 +41,7 @@ public interface I_DDLManager {
 	 */
 	public abstract ResponseData<String> getPrimaryKey(String table);
 
+	
 	/**
 	 * @return Une réponse personnalisée contenant le nom des tables de données
 	 * de la base si et seulement si la requête fonctionne, sinon une réponse 
@@ -45,6 +49,7 @@ public interface I_DDLManager {
 	 */
 	public abstract ResponseData<String> getTables();
 
+	
 	public abstract List<Attribute> getAttributes(String table);
 
 	/**
@@ -55,6 +60,15 @@ public interface I_DDLManager {
 	 */
 	public abstract ResponseData<String[]> getImportedKey(String table);
 
+	
+	/**
+	 * @param table : table où chercher les attributs avec contrainte unique, null interdit.
+	 * @return une réponse personnalisée contenant le nom des attributs de contrainte unique
+	 * contenus dans $table, ou une réponse vide si la récupration a échouée.
+	 */
+	public ResponseData<String> getUniqueAttribute(String table);
+	
+	
 	/**
 	 * Ferme proprement les objets statements.
 	 * Ne fait rien en cas d'erreur et n'avertit pas l'utilisateur.
