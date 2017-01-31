@@ -62,7 +62,7 @@ public class HomeController
 					this.dvm.getDriver(), 
 					this.dvm.getUrl(), 
 					this.dvm.getUser(), 
-					"", 
+					"", //mot de passe
 					this.dvm.getDataBase(), 
 					this.dvm.getPort());
 		}
@@ -196,18 +196,14 @@ public class HomeController
 
 	//Privates
 	/**
-	 * @param driver : parmi "Oracle", "MySQL", null interdit.
+	 * @param dbms : parmi ce qu'il se trouve dans getAvailableDBMS(), null interdit.
 	 * @return Un objet pour se connecter vers un SGBD
-	 * en fonction du nom de $driver passé en paramètre.
+	 * en fonction du $dbms passé en paramètre.
 	 */
-	private I_ConnectionManager chooseManager(String driver)
+	private I_ConnectionManager chooseManager(String dbms)
 	{
-		//TODO : à mettre dans une fabrique
-		switch (driver){
-		case "Oracle" : return new OracleConnectionManager();
-		case "MySQL" : return new  MySQLConnectionManager();
-		default : return null;
-		}
+		this.setFactory(dbms);
+		return this.factory.getConnectionManager();
 	}
 
 
