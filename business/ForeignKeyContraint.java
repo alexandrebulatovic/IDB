@@ -14,11 +14,12 @@ public class ForeignKeyContraint extends Contraints {
 	
 	public ForeignKeyContraint(){
 		this.keyWord = "FOREIGN KEY";
+		this.prefix = "fk";
 	}
 	
 	@Override
-	protected String getNameSQL() {
-		return this.keyWord+" ("+this.name+") REFERENCES "+this.tableDestination.getName()+"("+attributeDestination.name+") "+(this.deleteCascade?"ON DELETE CASCADE":"");
+	public String getNameSQL() {
+		return this.getEntete()+" ("+this.name+") REFERENCES "+this.tableDestination.getName()+"("+attributeDestination.name+") "+(this.deleteCascade?"ON DELETE CASCADE":"");
 	}
 
 }
