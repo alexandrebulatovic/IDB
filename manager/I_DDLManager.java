@@ -11,6 +11,12 @@ public interface I_DDLManager {
 
 	//Méthodes
 	/**
+	 * @return la liste des types disponibles dans le SGBD.
+	 */
+	public String [] getAttributeTypes();
+	
+	
+	/**
 	 * Tente de créer une table dans la base de données.
 	 * 
 	 * @param sql : une requête SQL pour créer une table, null interdit.

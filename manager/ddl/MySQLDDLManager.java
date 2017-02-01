@@ -21,24 +21,37 @@ extends AbstractDLLManager
 		super(connection);
 	}
 
+	
+	//Méthodes
 	@Override
-	public Response createTable(String sql) {
-		// TODO Auto-generated method stub
-		return null;
+	public String[] getAttributeTypes() 
+	{
+		String [] result = {"char", "varchar", "date", "numeric"};
+		return result;
 	}
 
+	
+	@Override
+	public Response createTable(String sql) 
+	{
+		return this.executeUpdate(sql+"ENGINE=InnoDB", "Table créée");
+	}
+
+	
 	@Override
 	public ArrayList<Response> modifyTable(ArrayList<String> sqls) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	
 	@Override
 	public Response dropTable(String table, boolean cascade) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	
 	@Override
 	public List<Attribute> getAttributes(String table) {
 		// TODO Auto-generated method stub

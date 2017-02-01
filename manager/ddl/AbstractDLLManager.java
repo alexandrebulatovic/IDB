@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import useful.Response;
 import useful.ResponseData;
 
 import manager.I_DDLManager;
@@ -110,6 +111,29 @@ implements I_DDLManager
 	{
 		try{this.statement.close();}
 		catch(SQLException e){}
+	}
+	
+	
+	//Protected
+	/**
+	 * Exécute une requête SQL qui ne retourne rien.
+	 * 
+	 * @param sql : une requête sql qui ne retourne rien, null interdit.
+	 * @param success : message en cas de succès, null interdit.
+	 * @return une réponse personnalisée avec un message de succès $success
+	 * si et seulement si la requête aboutie, un message détaillant l'erreur sinon.
+	 */
+	protected Response executeUpdate(String sql, String success)
+	{
+		Response result;
+		try{
+			this.statement.executeUpdate(sql);
+			result = new Response(true, success);
+		}
+		catch(SQLException e){
+			result = new Response(e);
+		}
+		return result;
 	}
 	
 	

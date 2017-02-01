@@ -30,6 +30,14 @@ extends AbstractDLLManager
 	}
 
 
+	@Override
+	public String[] getAttributeTypes() 
+	{
+		String [] result = {"char", "varchar2", "date", "number"};
+		return result;
+	}
+
+
 	//Méthodes
 	@Override
 	public Response createTable(String sql)
@@ -125,31 +133,6 @@ extends AbstractDLLManager
 
 
 	//Privées
-
-
-
-	/**
-	 * Exécute une requête SQL qui ne retourne rien.
-	 * 
-	 * @param sql : une requête sql qui ne retourne rien, null interdit.
-	 * @param success : message en cas de succès, null interdit.
-	 * @return une réponse personnalisée avec un message de succès $success
-	 * si et seulement si la requête aboutie, un message détaillant l'erreur sinon.
-	 */
-	private Response executeUpdate(String sql, String success)
-	{
-		Response result;
-		try{
-			this.statement.executeUpdate(sql);
-			result = new Response(true, success);
-		}
-		catch(SQLException e){
-			result = new Response(e);
-		}
-		return result;
-	}
-
-
 	private boolean isPk(String nameAttribute,List<String> pks) {
 		//TODO : cette méthode n'a rien à faire dans cette classe-ci.
 		for (String pk : pks){
