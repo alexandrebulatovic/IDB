@@ -3,7 +3,8 @@ package business;
 public class NotNullContraint extends CheckConstraint {
 
 	public NotNullContraint(Table tableSource, Attribute attributeSource) {
-		super(tableSource, attributeSource, attributeSource.name+" IS NOT NULL");
+		super(attributeSource.name+" IS NOT NULL");
+		this.attributes.add(attributeSource);
 	}
 
 }

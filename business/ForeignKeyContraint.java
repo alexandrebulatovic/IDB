@@ -1,5 +1,8 @@
 package business;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ForeignKeyContraint extends Contraints {
 
 	
@@ -10,30 +13,45 @@ public class ForeignKeyContraint extends Contraints {
 	 */
 	private Table tableDestination;
 	
-	private Attribute attributeDestination;
+	private List<Attribute> attributesDestination;
 	
 	public ForeignKeyContraint(){
+		this.attributesDestination = new ArrayList<Attribute>();
+		
 		this.keyWord = "FOREIGN KEY";
 		this.prefix = "fk";
 	}
 	
 	@Override
 	public String getNameSQL() {
-		return this.getEntete()+" ("+this.attributes.get(0).name+") REFERENCES "+this.tableDestination.getName()+"("+getAttributeDestination().name+")";
+		String attDest = "";
+
+		
+		int i=0;
+		for (Attribute dest : attributesDestination){
+			if (i!=0){
+				attDest+=",";
+			}
+			attDest+=dest.name;
+			i++;
+		}
+
+
+		return this.getEntete()+" ("+this.attributes.get(0).name+") REFERENCES "+this.tableDestination.getName()+"("+attDest+")";
 	}
 
 	/**
 	 * @return the attributeDestination
 	 */
-	public Attribute getAttributeDestination() {
-		return attributeDestination;
+	public List<Attribute> getAttributesDestination() {
+		return attributesDestination;
 	}
 
 	/**
 	 * @param attributeDestination the attributeDestination to set
 	 */
-	public void setAttributeDestination(Attribute attributeDestination) {
-		this.attributeDestination = attributeDestination;
+	public void addAttributeDestination(Attribute attributeDestination) {
+		this.attributesDestination.add(attributeDestination);
 	}
 
 	public void setTableDestination(Table table) {

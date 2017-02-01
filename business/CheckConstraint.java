@@ -18,18 +18,12 @@ public class CheckConstraint extends Contraints{
 	 * @param attributeSource
 	 * @param contraints
 	 */
-	public CheckConstraint(Table tableSource,Attribute attributeSource,String constraint){
-		this.addAttribute(attributeSource);
+	public CheckConstraint(String constraint){
 		this.constraint = constraint;
 		this.keyWord = "CHECK";
 		this.prefix = "ck";
 	}
 	
-	@Override
-	public String getNameSQL(){
-		return this.getEntete()+"("+getConstraint()+")";
-	}
-
 	/**
 	 * @return the constraint
 	 */
@@ -42,6 +36,11 @@ public class CheckConstraint extends Contraints{
 	 */
 	public void setConstraint(String constraint) {
 		this.constraint = constraint;
+	}
+
+	@Override
+	public String getNameSQL(){
+		return this.getEntete()+"("+getConstraint()+")";
 	}
 
 	

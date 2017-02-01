@@ -60,9 +60,9 @@ public abstract class Contraints {
 	 * exemple pk_table_att1_att2
 	 */
 	public void createName(){
-		String att = "_";
+		String att = "";
 		for (Attribute attribute : this.attributes){
-			att = "_"+ attribute.name;  
+			att += "_"+ attribute.name;  
 		}
 		this.setName(this.prefix+"_"+this.getTable().getName()+att);
 	}
