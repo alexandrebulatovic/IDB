@@ -30,6 +30,7 @@ extends AbstractDLLManager
 	}
 
 
+	//Méthodes
 	@Override
 	public String[] getAttributeTypes() 
 	{
@@ -38,7 +39,10 @@ extends AbstractDLLManager
 	}
 
 
-	//Méthodes
+	@Override
+	public boolean allowsDropCascade() {return true;}
+	
+	
 	@Override
 	public Response createTable(String sql)
 	{	

@@ -17,6 +17,13 @@ public interface I_DDLManager {
 	
 	
 	/**
+	 * @return vrai si et seulement si le SGBD permet de "droper" une 
+	 * table avec l'option "CASCADE"
+	 */
+	public boolean allowsDropCascade();
+	
+	
+	/**
 	 * Tente de créer une table dans la base de données.
 	 * 
 	 * @param sql : une requête SQL pour créer une table, null interdit.

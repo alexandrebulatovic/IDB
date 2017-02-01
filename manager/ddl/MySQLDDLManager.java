@@ -32,6 +32,10 @@ extends AbstractDLLManager
 
 	
 	@Override
+	public boolean allowsDropCascade() {return false;}
+	
+	
+	@Override
 	public Response createTable(String sql) 
 	{
 		return this.executeUpdate(sql+"\nENGINE=InnoDB", "Table créée");

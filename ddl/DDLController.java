@@ -135,6 +135,16 @@ public class DDLController
 	
 	
 	/**
+	 * @return vrai si et seulement si le SGBD permet de "droper" une 
+	 * table avec l'option "CASCADE"
+	 */
+	public boolean dbmsAllowsDropCascade()
+	{
+		return this.manager.allowsDropCascade();
+	}
+	
+	
+	/**
 	 * Retourne une réponse personnalisée contenant le nom des tables
 	 * de la base, si et seulement si (ces dernières existent et 
 	 * il n'y a pas eu d'exceptions).

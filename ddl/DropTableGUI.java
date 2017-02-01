@@ -91,9 +91,11 @@ implements ActionListener
 		this.bindAndAdd(this.tableComboBox);
 		
 		//Case à cocher
-		this.cascadeCheckBox = new JCheckBox
-				("Tenter de supprimer malgré les références.");
-		this.bindAndAdd(this.cascadeCheckBox);
+		if (this.control.dbmsAllowsDropCascade()) {
+			this.cascadeCheckBox = new JCheckBox
+					("Supprimer malgré les références.");
+			this.bindAndAdd(this.cascadeCheckBox);
+		}
 
 		//Bouton
 		this.okButton = new JButton("Supprimer");
@@ -131,8 +133,8 @@ implements ActionListener
 		if (this.isComplete()) {
 			String table = (String)this.tableComboBox.getSelectedItem();
 
-			Response response = this.control.dropTable(
-					table, this.cascadeCheckBox.isSelected());
+			Response response = this.control.dropTable(table, 
+					this.cascadeCheckBox != null ? this.cascadeCheckBox.isSelected() : false);
 			this.talk(response); 
 			if (response.hasSuccess()) {
 				this.tableComboBox.removeItem(table);
