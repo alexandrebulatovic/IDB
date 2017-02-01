@@ -1,5 +1,8 @@
 package business;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Contraints {
 	
 
@@ -13,24 +16,55 @@ public abstract class Contraints {
 	/**
 	 * Une contrainte est appliqué à un attribut
 	 */
-	protected Attribute attribute;
+	protected List<Attribute> attributes;
+	
+	/**
+	 * Une contrainte appartient à une table
+	 */
+	protected Table table;
+	
 	
 	/**
 	 * C'est le nom de la contrainte contenue dans la bdd 
 	 * comme pk_machin_truc
 	 */
 	protected String name;
+
+	/**
+	 * Préfixe du type nn ou ck seulon la contrainte
+	 */
+	protected String prefix;
+	
+	
+	protected Contraints(){
+		this.attributes = new ArrayList<Attribute>();
+	}
+	
 	
 	/**
 	 *
 	 * @return String nom
 	 */
-	protected String getName(){
+	public String getName(){
 		return this.name;
 	}
 	
-	protected void setName(String name){
+	public void setName(String name){
 		this.name = name;
+	}
+	
+	
+	/**
+	 * Créé le nom de la contrainte selon ses attributs
+	 * et l'ajoute dans les attributs !
+	 * exemple pk_table_att1_att2
+	 */
+	public void createName(){
+		String att = "_";
+		for (Attribute attribute : this.attributes){
+			att = "_"+ attribute.name;  
+		}
+		this.setName(this.prefix+"_"+this.getTable().getName()+att);
 	}
 	
 
@@ -38,30 +72,39 @@ public abstract class Contraints {
 	 * Retourne un type CHECK(machin IS NOT NULL)
 	 * @return String CHECK(machin IS NOT NULL)
 	 */
-	protected abstract String getNameSQL();
+	public abstract String getNameSQL();
 	
 	
-	protected void setAttribute(Attribute att){
-		this.attribute = att;
-	}
-	
-	
-	protected Attribute getAttribute(){
-		return this.attribute;
+	/**
+	 * Un exemple sera plus parlant : 
+	 * exemple retourne 'nn_table_att CHECK'
+	 * l'entete de la contrainte
+	 * @return 
+	 */
+	protected String getEntete(){
+		return this.name+" "+this.keyWord;
 	}
 
 	/**
-	 * @return the keyWord
+	 * @return the table
 	 */
-	public String getKeyWord() {
-		return keyWord;
+	public Table getTable() {
+		return table;
 	}
 
 	/**
-	 * @param keyWord the keyWord to set
+	 * @param table the table to set
 	 */
-	public void setKeyWord(String keyWord) {
-		this.keyWord = keyWord;
+	public void setTable(Table table) {
+		this.table = table;
+	}
+
+	public List<Attribute> getAttributes(){
+		return this.attributes;
+	}
+
+	public void addAttribute(Attribute att){
+		this.attributes.add(att);
 	}
 	
 	

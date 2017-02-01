@@ -8,14 +8,26 @@ public class CheckConstraint extends Contraints{
 	private String constraint;
 	
 	
-	public CheckConstraint(String constraint){
+	/**
+	 * Nous devons préciser le table et l'attribut 
+	 * d'ou s'applique la contrainte
+	 * 
+	 * il faut préciser aussi la contrainte à appliquer
+	 * exemple : machin<5
+	 * @param tableSource
+	 * @param attributeSource
+	 * @param contraints
+	 */
+	public CheckConstraint(Table tableSource,Attribute attributeSource,String constraint){
+		this.addAttribute(attributeSource);
 		this.constraint = constraint;
-		this.setKeyWord("CHECK");
+		this.keyWord = "CHECK";
+		this.prefix = "ck";
 	}
 	
 	@Override
-	protected String getNameSQL(){
-		return "CHECK("+getConstraint()+")";
+	public String getNameSQL(){
+		return this.getEntete()+"("+getConstraint()+")";
 	}
 
 	/**
@@ -31,6 +43,7 @@ public class CheckConstraint extends Contraints{
 	public void setConstraint(String constraint) {
 		this.constraint = constraint;
 	}
+
 	
 
 }
