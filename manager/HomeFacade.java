@@ -20,17 +20,11 @@ public class HomeFacade
 	
 	/** Gestionnaire de connexion.*/
 	private I_ConnectionManager connector;
-
-	/** Gestionnaire de définition des données.*/
-	private I_DDLManager ddl;
-	
-	/** Gestionnaire de code SQL.*/
-	private SQLManager sql;
 	
 	
 	//Constructeurs
 	/**
-	 * Constructeur vide.
+	 * Constructeur lambda.
 	 * 
 	 * @param dvm : null interdit.
 	 * @param factory : null interdit.
@@ -84,7 +78,9 @@ public class HomeFacade
 	
 	/**
 	 * Tente d'établir une connexion vers un SGBD
-	 * en utilisant les informations de connexion de $parameters.
+	 * en utilisant les informations de connexion de $parameters. <br/>
+	 * Lorsque la connexion est établie, la fabrique de la façade est mutée
+	 * pour correspondre au SGBD connecté.
 	 * 
 	 * @param parameters : un objet ConnectionStrings, null interdit.
 	 * @return Une réponse personnalisée qui décrit la tentative de connexion.
@@ -145,5 +141,19 @@ public class HomeFacade
 	public void disconnect()
 	{
 		if (this.connector != null) this.connector.disconnect();
+	}
+	
+	
+	/**
+	 * Pré-requis : utilisation de la méthode connect(), avec pour retour
+	 * une réponse personnalisée décrivant le succès de la connexion.
+	 * 
+	 * @return une façade pour gérer les définitons des données.
+	 */
+	public DDLFacade getDDLFacade()
+	{
+		I_DDLManager ddlmanager = 
+				this.factory.getDDLManager(this.getConnection());
+		return new DDLFacade(ddlmanager);
 	}
 }
