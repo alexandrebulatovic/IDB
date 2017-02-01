@@ -34,7 +34,7 @@ extends AbstractDLLManager
 	@Override
 	public Response createTable(String sql) 
 	{
-		return this.executeUpdate(sql+"ENGINE=InnoDB", "Table créée");
+		return this.executeUpdate(sql+"\nENGINE=InnoDB", "Table créée");
 	}
 
 	
@@ -46,9 +46,10 @@ extends AbstractDLLManager
 
 	
 	@Override
-	public Response dropTable(String table, boolean cascade) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response dropTable(String table, boolean cascade) 
+	{
+		String sql = "DROP TABLE " + table + (cascade ? " CASCADE" : "");
+		return this.executeUpdate(sql, "Table supprimée.");
 	}
 
 	

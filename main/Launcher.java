@@ -33,7 +33,7 @@ public class Launcher {
 //		ConnectionStrings parameters = control.getDefaultValues();
 //		parameters.password = "";
 //		control.connect(parameters);
-//		
+		
 //		I_DDLManager ddlmanager = facade.getDDLManager();
 //		System.out.println("lol");
 		new ConnectionGUI(control);

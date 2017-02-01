@@ -91,7 +91,8 @@ implements ActionListener
 		this.bindAndAdd(this.tableComboBox);
 		
 		//Case à cocher
-		this.cascadeCheckBox = new JCheckBox("supprimer malgré les références");
+		this.cascadeCheckBox = new JCheckBox
+				("Tenter de supprimer malgré les références.");
 		this.bindAndAdd(this.cascadeCheckBox);
 
 		//Bouton
