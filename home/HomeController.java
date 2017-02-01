@@ -18,9 +18,6 @@ public class HomeController
 	//Attributes
 	/** Facade pour utiliser les différents gestionnaires.*/
 	private Facade facade;
-	
-	/** Gestionnaire de connexion. */
-	private I_ConnectionManager connector;
 
 	/** Controleur du LDD.*/
 	private DDLController ddlControl;
@@ -30,13 +27,6 @@ public class HomeController
 	
 	/** Controleur du CRUD.*/
 	private CRUDController crudControl;
-
-	/** Gestionnaire des valeurs de connexions par défaut.*/
-	private DefaultValueManager dvm;
-
-	/** Fabrique principale et unique de l'application.*/
-	private MainFactory factory;
-	
 	
 	//Constructeur
 	/**
@@ -44,8 +34,7 @@ public class HomeController
 	 */
 	public HomeController()
 	{
-		this.dvm = new DefaultValueManager();
-		this.factory = new MainFactory();
+		this.facade = new Facade();
 	}
 
 
@@ -54,32 +43,20 @@ public class HomeController
 	 */
 	public ConnectionStrings getDefaultValues() 
 	{
-		if (this.dvm == null) { 
-			return new ConnectionStrings();
-		}
-		else {
-			return new ConnectionStrings(
-					this.dvm.getDriver(), 
-					this.dvm.getUrl(), 
-					this.dvm.getUser(), 
-					"", //mot de passe
-					this.dvm.getDataBase(), 
-					this.dvm.getPort());
-		}
+		return this.facade.getDefaultValues();
 	}
 
 
 	/**
 	 * Enregistre $driver comme étant le dernier SGBD connecté.
 	 * 
-	 * @param driver : nom du pilote de SGBD, null interdit.
+	 * @param dbms : nom du pilote de SGBD, null interdit.
 	 * @return Les informations de la dernière connexion valide
-	 * avec le pilote $driver.
+	 * avec le SGBD $dbms.
 	 */
-	public ConnectionStrings getDefaultValues(String driver) 
+	public ConnectionStrings getDefaultValues(String dbms) 
 	{
-		if (this.dvm != null) this.dvm.setDriver(driver);
-		return this.getDefaultValues();
+		return this.facade.getDefaultValues(dbms);
 	}
 
 
@@ -93,8 +70,7 @@ public class HomeController
 	 */
 	public Response connect(ConnectionStrings parameters)
 	{
-		this.connector = this.createConnectionManager(parameters.driver);
-		return this.connector.connect(parameters);
+		return this.facade.connect(parameters);
 	}
 
 
@@ -110,15 +86,7 @@ public class HomeController
 	 */
 	public void saveDefaultValue(ConnectionStrings param)
 	{
-		if (this.dvm != null) {
-			this.dvm.setDriver(param.driver);
-			this.dvm.setUrl(param.url);
-			this.dvm.setUser(param.user);
-			this.dvm.setPort(param.port);
-			this.dvm.setDataBase(param.baseName);
-			this.dvm.save();
-			this.dvm = null;
-		}
+		this.facade.saveDefaultValue(param);
 	}
 
 
@@ -126,15 +94,28 @@ public class HomeController
 	 * @return Le nom de l'utilisateur si et seulement si l'application
 	 * est connectée à un SGBD, null sinon.
 	 */
-	public String getUser(){return this.connector.getUser();}
+	public String getUser(){return this.facade.getUser();}
 
 	
 	/**
 	 * @return la liste des SGBD disponibles.
 	 */
-	public String [] getAvailableDBMS() {return this.factory.getAvailableDBMS();}
+	public String [] getAvailableDBMS() 
+	{
+		return this.facade.getAvailableDBMS();
+	}
 	
 	
+	/**
+	 * Ferme proprement les objets liés à la connexion.
+	 */
+	public void disconnect()
+	{
+		if (this.ddlControl != null) this.ddlControl.closeStatement();
+		this.facade.disconnect();
+	}
+
+
 	/**
 	 * Ouvre l'IHM pour rentrer des requetes SQL.
 	 */
@@ -162,7 +143,6 @@ public class HomeController
 	}
 
 
-
 	/**
 	 * Ouvre l'IHM de suppression des tables.
 	 */
@@ -181,29 +161,6 @@ public class HomeController
 		this.createOrNotSQLController();
 		this.createOrNotCRUDControl();
 		this.crudControl.openCRUDGUI();
-		
-	}
-
-
-	/**
-	 * Ferme proprement les objets liés à la connexion.
-	 */
-	public void disconnect()
-	{
-		if (this.ddlControl != null) this.ddlControl.closeStatement();
-		if (this.connector != null)  this.connector.disconnect();
-	}
-
-
-	/**
-	 * @param dbms : parmi ce qu'il se trouve dans getAvailableDBMS(), null interdit.
-	 * @return Un objet pour se connecter vers un SGBD
-	 * en fonction du $dbms passé en paramètre.
-	 */
-	public I_ConnectionManager createConnectionManager(String dbms)
-	{
-		this.setFactory(dbms);
-		return this.factory.getConnectionManager();
 	}
 	
 
@@ -214,7 +171,7 @@ public class HomeController
 	private void createOrNotDDLControl()
 	{
 		if (this.ddlControl == null) {
-			this.ddlControl = new DDLController(this.connector.getConnection());
+			this.ddlControl = new DDLController(this.facade.getConnection());
 		}
 	}
 	
@@ -225,7 +182,7 @@ public class HomeController
 	private void createOrNotCRUDControl()
 	{
 		if (this.crudControl == null) {
-			this.crudControl = new CRUDController(this.connector.getConnection());
+			this.crudControl = new CRUDController(this.facade.getConnection());
 		}
 	}
 
@@ -236,18 +193,7 @@ public class HomeController
 	private void createOrNotSQLController()
 	{
 		if (this.sqlControl == null) {
-			this.sqlControl = new SQLController(this.connector.getConnection());
+			this.sqlControl = new SQLController(this.facade.getConnection());
 		}
-	}
-
-
-	/**
-	 * Configure la fabrique pour retourner des objets conçus pour $dbms.
-	 * 
-	 * @param dbms : parmi les variables statiques de MainFactory, null interdit.
-	 */
-	private void setFactory(String dbms)
-	{
-		this.factory.setDBMS(dbms);
 	}
 }

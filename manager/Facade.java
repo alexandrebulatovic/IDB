@@ -115,15 +115,13 @@ public class Facade
 	 */
 	public void saveDefaultValue(ConnectionStrings param)
 	{
-		if (this.dvm != null) {
-			this.dvm.setDriver(param.driver);
-			this.dvm.setUrl(param.url);
-			this.dvm.setUser(param.user);
-			this.dvm.setPort(param.port);
-			this.dvm.setDataBase(param.baseName);
-			this.dvm.save();
-			this.dvm = null;
-		}
+		this.dvm.setDriver(param.driver);
+		this.dvm.setUrl(param.url);
+		this.dvm.setUser(param.user);
+		this.dvm.setPort(param.port);
+		this.dvm.setDataBase(param.baseName);
+		this.dvm.save();
+		this.dvm = null; //Détruit l'objet
 	}
 	
 	
@@ -141,5 +139,8 @@ public class Facade
 	 * Ferme proprement la connexion.<br/>
 	 * Ne soulève pas d'erreur s'il n'existe aucune connexion.
 	 */
-	public void disconnect(){this.connector.disconnect();}
+	public void disconnect()
+	{
+		if (this.connector != null) this.connector.disconnect();
+	}
 }
