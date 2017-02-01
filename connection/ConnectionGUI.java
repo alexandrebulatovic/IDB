@@ -110,6 +110,7 @@ implements ActionListener, ItemListener
 		this.handleFieldsSize();
 		this.limitCharacters();
 		this.listenFields();
+		this.control.reloadDefaultValue();
 		this.setDefaultValues(false);
 		this.setProperties(EXIT_ON_CLOSE);
 	}

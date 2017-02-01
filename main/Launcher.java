@@ -1,6 +1,7 @@
 
 package main;
 
+import useful.ConnectionStrings;
 import manager.DefaultValueManager;
 import manager.HomeFacade;
 import factory.MainFactory;
@@ -30,6 +31,8 @@ public class Launcher {
 		MainFactory factory = new MainFactory();
 		HomeFacade facade = new HomeFacade(dvm, factory);
 		HomeController control = new HomeController(facade);
+		ConnectionStrings parameters = control.getDefaultValues();
+		
 		new ConnectionGUI(control);
 	}
 }

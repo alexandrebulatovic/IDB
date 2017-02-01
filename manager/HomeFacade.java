@@ -47,6 +47,15 @@ public class HomeFacade
 	
 	
 	/**
+	 * Force à relire le fichier XML.
+	 */
+	public void reloadDefaultValue()
+	{
+		this.dvm.reload();
+	}
+	
+	
+	/**
 	 * @return les informations de la dernière connexion valide
 	 * du SGBD actuellement référencé dans les paramètres de connexion par défaut.
 	 */

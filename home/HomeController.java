@@ -1,11 +1,8 @@
 package home;
 
-import manager.DefaultValueManager;
 import manager.HomeFacade;
-import manager.I_ConnectionManager;
 import crud.CRUDController;
 import ddl.DDLController;
-import factory.MainFactory;
 import sql.SQLController;
 import useful.ConnectionStrings;
 import useful.Response;
@@ -40,6 +37,15 @@ public class HomeController
 	}
 
 
+	/**
+	 * Force le gestionnaire à relire le fichier XML.
+	 */
+	public void reloadDefaultValue()
+	{
+		this.facade.reloadDefaultValue();
+	}
+	
+	
 	/**
 	 * @return Les informations de la dernière connexion valide.
 	 */

@@ -169,6 +169,15 @@ public class DefaultValueManager
 	
 	
 	/**
+	 * Force le gestionnaire à relire le fichier XML.
+	 */
+	public void reload()
+	{
+		this.loadDefaultValue();
+	}
+	
+	
+	/**
 	 * Enregistre les informations par défaut dans le répertoire en cours.
 	 */
 	public void save()
