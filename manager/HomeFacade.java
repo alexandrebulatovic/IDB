@@ -148,12 +148,10 @@ public class HomeFacade
 	 * Pré-requis : utilisation de la méthode connect(), avec pour retour
 	 * une réponse personnalisée décrivant le succès de la connexion.
 	 * 
-	 * @return une façade pour gérer les définitons des données.
+	 * @return un gestionnaire de définition des données.
 	 */
-	public DDLFacade getDDLFacade()
+	public I_DDLManager getDDLManager()
 	{
-		I_DDLManager ddlmanager = 
-				this.factory.getDDLManager(this.getConnection());
-		return new DDLFacade(ddlmanager);
+		return this.factory.getDDLManager(this.getConnection());
 	}
 }

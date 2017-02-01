@@ -173,7 +173,7 @@ public class HomeController
 	private void createOrNotDDLControl()
 	{
 		if (this.ddlControl == null) {
-			this.ddlControl = new DDLController(this.facade.getConnection());
+			this.ddlControl = new DDLController(this.facade.getDDLManager());
 		}
 	}
 	

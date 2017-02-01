@@ -42,9 +42,9 @@ public class DDLController
 	/**
 	 * Constructeur commun.
 	 */
-	public DDLController(Connection connection)
+	public DDLController(I_DDLManager manager)
 	{
-		this.manager = new OracleDDLManager(connection);
+		this.manager = manager;
 	}
 	
 	
