@@ -26,7 +26,6 @@ public class testContraints {
 		
 		fk.createName();
 		assertEquals("fk_tableSrc_test FOREIGN KEY (test) REFERENCES tableDest(testDest,testDest2)",fk.getNameSQL());
-		System.out.println(fk.getNameSQL());
 	}
 	
 	@Test
@@ -41,6 +40,17 @@ public class testContraints {
 		pk.createName();
 		assertEquals("pk_tableTest_a1_a2 PRIMARY KEY PRIMARY KEY(a1,a2)",pk.getNameSQL());
 		
+	}
+	
+	
+	@Test 
+	public void testCheck(){
+		CheckConstraint ck = new CheckConstraint("machin<(autre+3)");
+//		ck.setTable(getTable("tableTest"));
+		ck.createName();
+		assertEquals("ck CHECK(machin<(autre+3))",ck.getNameSQL());
+		ck.setName("ma_check_perso");
+		assertEquals("ma_check_perso CHECK(machin<(autre+3))",ck.getNameSQL());
 	}
 	
 	public Attribute getAttribute(String name){

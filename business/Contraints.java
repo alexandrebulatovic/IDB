@@ -64,7 +64,18 @@ public abstract class Contraints {
 		for (Attribute attribute : this.attributes){
 			att += "_"+ attribute.name;  
 		}
-		this.setName(this.prefix+"_"+this.getTable().getName()+att);
+//		if (this.attributes.size() == 0){
+//			att
+//		}
+		String tableName ="_";
+		if (table == null){
+			tableName = "";
+		}
+		else{
+			tableName += table.getName();
+		}
+		
+		this.setName(this.prefix+tableName+att);
 	}
 	
 
