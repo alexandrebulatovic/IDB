@@ -4,28 +4,26 @@ import java.sql.Connection;
 
 import manager.I_ConnectionManager;
 import manager.I_DDLManager;
-import manager.connection.MySQLConnectionManager;
-import manager.ddl.MySQLDDLManager;
 
-public class MySQLDBMSFactory 
+public class VoidDBMSFactory 
 implements I_DBMSFactory {
 
 	@Override
 	public I_ConnectionManager getConnectionManager() 
 	{
-		return new MySQLConnectionManager();
+		return null;
 	}
 
 	@Override
 	public I_DDLManager getDDLManager(Connection connection) 
 	{
-		return new MySQLDDLManager(connection);
+		return null;
 	}
 
 	
 	@Override
 	public String toString()
 	{
-		return "Fabrique pour MySQL.";
+		return "Fabrique inactive.";
 	}
 }

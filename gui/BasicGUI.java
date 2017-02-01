@@ -195,6 +195,7 @@ implements IDBGUI, WindowListener, ActionListener
 	{
 		this.messageLabel.setForeground(Color.BLACK);
 		this.messageLabel.setText(msg);
+		this.messageLabel.setToolTipText(msg);
 	}
 	
 	
@@ -203,7 +204,8 @@ implements IDBGUI, WindowListener, ActionListener
 	{
 		this.messageLabel.setForeground(
 				response.hasSuccess() ? Color.BLUE : Color.RED);
-		this.messageLabel.setText(response.toString());	
+		this.messageLabel.setText(response.toString());
+		this.messageLabel.setToolTipText(response.toString());
 	}
 	
 	

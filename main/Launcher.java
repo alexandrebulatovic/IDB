@@ -4,9 +4,11 @@ package main;
 import useful.ConnectionStrings;
 import manager.DefaultValueManager;
 import manager.HomeFacade;
+import manager.I_DDLManager;
 import factory.MainFactory;
 import home.HomeController;
 import connection.ConnectionGUI;
+import ddl.DDLController;
 
 /**
  * Initialise l'application.
@@ -18,21 +20,33 @@ public class Launcher {
 	 */
 	public static void main(String[] args) 
 	{
-		launchApplication();
+		HomeController control = initApplication();
+		launchApplication(control);
 	}
 
 	
 	/**
-	 * Initialise l'application.
+	 * Lance l'application.
 	 */
-	private static void launchApplication()
+	private static void launchApplication(HomeController control)
+	{
+//		ConnectionStrings parameters = control.getDefaultValues();
+//		parameters.password = "";
+//		control.connect(parameters);
+//		
+//		I_DDLManager ddlmanager = facade.getDDLManager();
+//		System.out.println("lol");
+		new ConnectionGUI(control);
+	}
+	
+	/**
+	 * Initialise le backend de l'application.
+	 */
+	private static HomeController initApplication()
 	{
 		DefaultValueManager dvm = new DefaultValueManager();
 		MainFactory factory = new MainFactory();
 		HomeFacade facade = new HomeFacade(dvm, factory);
-		HomeController control = new HomeController(facade);
-		ConnectionStrings parameters = control.getDefaultValues();
-		
-		new ConnectionGUI(control);
+		return new HomeController(facade);
 	}
 }

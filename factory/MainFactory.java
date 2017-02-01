@@ -6,7 +6,8 @@ import manager.I_ConnectionManager;
 import manager.I_DDLManager;
 
 /**
- * Fabrique concrète de fabriques de SGBD.
+ * Fabrique concrète de fabriques de SGBD.<br/>
+ * Utilise le pattern stratégie pour chacune de ses méthodes.
  */
 public class MainFactory 
 {
@@ -29,7 +30,7 @@ public class MainFactory
 	 */
 	public MainFactory()
 	{
-		this.factory = null;
+		this.factory = new VoidDBMSFactory();
 	}
 	
 	
@@ -40,12 +41,7 @@ public class MainFactory
 	 */
 	public I_ConnectionManager getConnectionManager()
 	{
-		if (this.isLinked()) {
-			return this.factory.getConnectionManager();
-		}
-		else {
-			return null;
-		}
+		return this.factory.getConnectionManager();
 	}
 	
 	
@@ -56,12 +52,7 @@ public class MainFactory
 	 */
 	public I_DDLManager getDDLManager(Connection connection)
 	{
-		if (this.isLinked()) {
-			return this.factory.getDDLManager(connection);
-		}
-		else {
-			return null;
-		}
+		return this.factory.getDDLManager(connection);
 	}
 	
 	
@@ -93,16 +84,8 @@ public class MainFactory
 	
 	
 	@Override
-	public String toString() {return "Fabrique principale.";}
-	
-	
-	//Privées
-	/**
-	 * A supprimer si volonté d'un design pattern "ETAT", mais 
-	 * ça me semble un peu lourd pour deux méthodes et deux états.
-	 * 
-	 * @return vrai si et seulement si la fabrique est associée à une
-	 * fabrique de SGBD, faux sinon.
-	 */
-	private boolean isLinked() {return this.factory != null;}
+	public String toString() 
+	{
+		return this.factory.toString();
+	}
 }
