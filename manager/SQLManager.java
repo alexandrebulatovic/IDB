@@ -14,7 +14,8 @@ import javax.swing.table.DefaultTableModel;
 /**
  * Gère la communication avec le serveur à partir de la requête reçue par la {@code SQLView}.
  * <P>
- * Elle génére une {@code JTable} ou un message à partir de la réponse du serveur et lui renvoie.
+ * Elle génére une {@code JTable} ou un message à partir de la réponse du serveur et l'envoie à 
+ * la classe appelante.
  */
 
 public class SQLManager {
@@ -25,7 +26,7 @@ public class SQLManager {
 	public static final int TYPE_PLAIN_RESULTSET = 0;
 
 	/** Indique une création du {@code Statement} permettant un {@code ResultSet} modifiable et
-	 * à positionnement absolue. 
+	 * au positionnement absolue. 
 	 * <P>
 	 * <strong>Note:</strong> ce choix désactive l'optimisation du {@code Statement}. */
 	public static final int TYPE_UPDATABLE_RESULTSET = 1;
@@ -229,7 +230,7 @@ public class SQLManager {
 				case "java.sql.Date": // DATE
 					rs.updateDate(columnPosition, (Date) vector.get(i));
 					break;
-				/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
+					/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
 					rs.updateBigDecimal(columnPosition, (BigDecimal) vector.get(i));
 					break;*/
 				case "java.lang.Boolean": // BIT
@@ -279,7 +280,7 @@ public class SQLManager {
 	 * @param index : numéro d'index du tuple de la valeur à mettre à jour, commence à 0.
 	 * @param column : numéro de colonne de la valeur à mettre à jour, commence à 0.
 	 * @param value : nouvelle valeur de l'attribut.
-	 * @return : "OK" si la modification réussie, sinon un message d'erreur.
+	 * @return "OK" si la modification réussie, sinon un message d'erreur.
 	 */
 	public String updateTuple(int index, int column, Object value)
 	{
