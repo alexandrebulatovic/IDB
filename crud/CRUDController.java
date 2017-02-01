@@ -80,6 +80,7 @@ public class CRUDController
 	/**
 	 * Supprime le tuple situé à {@code index} de la base de données.
 	 * @param index : position du tuple à supprimer.
+	 * @return "OK" si la suppression a réussie, un message d'erreur sinon.
 	 */
 	public String deleteRow(int index) {
 		return (this.sql_manager.removeTuple(index));
@@ -89,6 +90,7 @@ public class CRUDController
 	 * Insère dans la base de données le tuple situé à {@code index} dans la {@code JTable}.
 	 * @param index : position du tuple à ajouter. 
 	 * @param tableName : nom de la table concernée.
+	 * @return "OK" si la modification a réussie, un message d'erreur sinon.
 	 */
 	public String addRow(int index, String tableName) 
 	{
@@ -102,9 +104,10 @@ public class CRUDController
 	 * @param index : position du tuple.
 	 * @param column : colonne de la valeur.
 	 * @param updateBuffer : nouvelle valeur.
+	 * @return "OK" si la modification a réussie, un message d'erreur sinon.
 	 */
-	public void updateRow(int index, int column, Object updateBuffer)
+	public String updateRow(int index, int column, Object updateBuffer)
 	{
-		System.out.println(this.sql_manager.updateTuple(index, column, updateBuffer));
+		return this.sql_manager.updateTuple(index, column, updateBuffer);
 	}
 }
