@@ -9,10 +9,10 @@ import factory.MainFactory;
 /**
  * Façade entre les différents controleurs et les gestionnaires.
  */
-public class Facade 
+public class HomeFacade 
 {
 	// Attributs
-	/** Gestionnaire de paramètres de connecion par défaut.*/
+	/** Gestionnaire de paramètres de connexion par défaut.*/
 	private DefaultValueManager dvm;
 	
 	/** Fabrique principale de l'application.*/
@@ -35,7 +35,7 @@ public class Facade
 	 * @param dvm : null interdit.
 	 * @param factory : null interdit.
 	 */
-	public Facade(DefaultValueManager dvm, MainFactory factory)
+	public HomeFacade(DefaultValueManager dvm, MainFactory factory)
 	{
 		this.dvm = dvm;
 		this.factory = factory;

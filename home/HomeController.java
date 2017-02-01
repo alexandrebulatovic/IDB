@@ -1,7 +1,7 @@
 package home;
 
 import manager.DefaultValueManager;
-import manager.Facade;
+import manager.HomeFacade;
 import manager.I_ConnectionManager;
 import crud.CRUDController;
 import ddl.DDLController;
@@ -17,7 +17,7 @@ public class HomeController
 {
 	//Attributes
 	/** Facade pour utiliser les différents gestionnaires.*/
-	private Facade facade;
+	private HomeFacade facade;
 
 	/** Controleur du LDD.*/
 	private DDLController ddlControl;
@@ -34,7 +34,7 @@ public class HomeController
 	 * 
 	 * @param facade : null interdit.
 	 */
-	public HomeController(Facade facade)
+	public HomeController(HomeFacade facade)
 	{
 		this.facade = facade;
 	}

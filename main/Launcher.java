@@ -2,7 +2,7 @@
 package main;
 
 import manager.DefaultValueManager;
-import manager.Facade;
+import manager.HomeFacade;
 import factory.MainFactory;
 import home.HomeController;
 import connection.ConnectionGUI;
@@ -28,7 +28,7 @@ public class Launcher {
 	{
 		DefaultValueManager dvm = new DefaultValueManager();
 		MainFactory factory = new MainFactory();
-		Facade facade = new Facade(dvm, factory);
+		HomeFacade facade = new HomeFacade(dvm, factory);
 		HomeController control = new HomeController(facade);
 		new ConnectionGUI(control);
 	}
