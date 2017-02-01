@@ -15,10 +15,11 @@ public class CheckConstraint extends Contraints{
 	 * il faut préciser aussi la contrainte à appliquer
 	 * exemple : machin<5
 	 * @param tableSource
-	 * @param AttributeSource
+	 * @param attributeSource
 	 * @param contraints
 	 */
-	public CheckConstraint(Table tableSource,Attribute AttributeSource,String constraint){
+	public CheckConstraint(Table tableSource,Attribute attributeSource,String constraint){
+		this.addAttribute(attributeSource);
 		this.constraint = constraint;
 		this.keyWord = "CHECK";
 		this.prefix = "ck";

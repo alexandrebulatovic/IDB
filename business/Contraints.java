@@ -1,5 +1,8 @@
 package business;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Contraints {
 	
 
@@ -13,7 +16,7 @@ public abstract class Contraints {
 	/**
 	 * Une contrainte est appliqué à un attribut
 	 */
-	protected Attribute attribute;
+	protected List<Attribute> attributes;
 	
 	/**
 	 * Une contrainte appartient à une table
@@ -32,6 +35,12 @@ public abstract class Contraints {
 	 */
 	protected String prefix;
 	
+	
+	protected Contraints(){
+		this.attributes = new ArrayList<Attribute>();
+	}
+	
+	
 	/**
 	 *
 	 * @return String nom
@@ -48,9 +57,14 @@ public abstract class Contraints {
 	/**
 	 * Créé le nom de la contrainte selon ses attributs
 	 * et l'ajoute dans les attributs !
+	 * exemple pk_table_att1_att2
 	 */
 	public void createName(){
-		this.setName(this.prefix+"_"+this.getTable().getName()+"_"+this.attribute.name);
+		String att = "_";
+		for (Attribute attribute : this.attributes){
+			att = "_"+ attribute.name;  
+		}
+		this.setName(this.prefix+"_"+this.getTable().getName()+att);
 	}
 	
 
@@ -85,12 +99,12 @@ public abstract class Contraints {
 		this.table = table;
 	}
 
-	public Attribute getAttribute(){
-		return this.attribute;
+	public List<Attribute> getAttributes(){
+		return this.attributes;
 	}
 
-	public void setAttribute(Attribute att){
-		this.attribute = att;
+	public void addAttribute(Attribute att){
+		this.attributes.add(att);
 	}
 	
 	

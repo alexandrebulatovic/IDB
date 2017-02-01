@@ -3,14 +3,14 @@ package business;
 public class ForeignKeyContraint extends Contraints {
 
 	
-	boolean deleteCascade = false;
+	public boolean deleteCascade = false;
 	
 	/**
 	 * La table ou pointe la clé étrangère
 	 */
-	Table tableDestination;
+	private Table tableDestination;
 	
-	Attribute attributeDestination;
+	private Attribute attributeDestination;
 	
 	public ForeignKeyContraint(){
 		this.keyWord = "FOREIGN KEY";
@@ -19,7 +19,26 @@ public class ForeignKeyContraint extends Contraints {
 	
 	@Override
 	public String getNameSQL() {
-		return this.getEntete()+" ("+this.name+") REFERENCES "+this.tableDestination.getName()+"("+attributeDestination.name+") "+(this.deleteCascade?"ON DELETE CASCADE":"");
+		return this.getEntete()+" ("+this.attributes.get(0).name+") REFERENCES "+this.tableDestination.getName()+"("+getAttributeDestination().name+")";
+	}
+
+	/**
+	 * @return the attributeDestination
+	 */
+	public Attribute getAttributeDestination() {
+		return attributeDestination;
+	}
+
+	/**
+	 * @param attributeDestination the attributeDestination to set
+	 */
+	public void setAttributeDestination(Attribute attributeDestination) {
+		this.attributeDestination = attributeDestination;
+	}
+
+	public void setTableDestination(Table table) {
+		this.tableDestination = table;
+		
 	}
 
 }
