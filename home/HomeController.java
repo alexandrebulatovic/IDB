@@ -1,6 +1,7 @@
 package home;
 
 import manager.DefaultValueManager;
+import manager.Facade;
 import manager.I_ConnectionManager;
 import crud.CRUDController;
 import ddl.DDLController;
@@ -11,12 +12,13 @@ import useful.Response;
 
 /**
  * Controleur principal de l'application.
- * 
- * @author UGOLINI Romain.
  */
 public class HomeController 
 {
 	//Attributes
+	/** Facade pour utiliser les différents gestionnaires.*/
+	private Facade facade;
+	
 	/** Gestionnaire de connexion. */
 	private I_ConnectionManager connector;
 
@@ -143,7 +145,8 @@ public class HomeController
 	}
 
 
-	/**
+	/**	 * Pré-requis : utilisation de la méthode connect(), avec pour retour
+	 * une réponse personnalisée décrivant le succès de la connexion.
 	 * Ouvre l'IHM pour créer des tables.
 	 */
 	public void openCreateGUI()
