@@ -131,7 +131,6 @@ public class Table {
 	public ArrayList<String> toModify(Table tableSource) {
 		ArrayList<String> results = new ArrayList<String>();
 		
-		
 		addAttributes(tableSource, results);
 		
 		dropAttributes(tableSource, results);

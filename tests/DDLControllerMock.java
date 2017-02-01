@@ -3,11 +3,12 @@ package tests;
 import java.sql.Connection;
 
 import ddl.DDLController;
+import manager.I_DDLManager;
 
 public class DDLControllerMock extends DDLController {
 
-	public DDLControllerMock(Connection connection) {
-		super(connection);
+	public DDLControllerMock(I_DDLManager manager) {
+		super(manager);
 	}
 
 }
