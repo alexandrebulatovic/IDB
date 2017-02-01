@@ -1,10 +1,11 @@
 
 package main;
 
-import useful.ConnectionStrings;
+import manager.DefaultValueManager;
+import manager.Facade;
+import factory.MainFactory;
 import home.HomeController;
 import connection.ConnectionGUI;
-import ddl.DDLController;
 
 /**
  * Initialise l'application.
@@ -17,25 +18,18 @@ public class Launcher {
 	public static void main(String[] args) 
 	{
 		launchApplication();
-//		testKey();
 	}
 
 	
+	/**
+	 * Initialise l'application.
+	 */
 	private static void launchApplication()
 	{
-		HomeController control = new HomeController();
+		DefaultValueManager dvm = new DefaultValueManager();
+		MainFactory factory = new MainFactory();
+		Facade facade = new Facade(dvm, factory);
+		HomeController control = new HomeController(facade);
 		new ConnectionGUI(control);
 	}
-	
-	
-//	private static void testKey()
-//	{
-//		HomeController control = new HomeController();
-//		ConnectionStrings cs = new ConnectionStrings("Oracle",
-//				"162.38.222.142", "ugolinir", "2302017000S", "IUT", "1521");
-//		control.connect(cs);
-//		DDLController ddl = new DDLController(control.connector.getConnection());
-//		ddl.getPrimaryKey("un");
-//		control.disconnect();
-//	}
 }

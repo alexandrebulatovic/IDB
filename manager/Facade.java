@@ -31,11 +31,14 @@ public class Facade
 	//Constructeurs
 	/**
 	 * Constructeur vide.
+	 * 
+	 * @param dvm : null interdit.
+	 * @param factory : null interdit.
 	 */
-	public Facade()
+	public Facade(DefaultValueManager dvm, MainFactory factory)
 	{
-		this.dvm = new DefaultValueManager();
-		this.factory = new MainFactory();
+		this.dvm = dvm;
+		this.factory = factory;
 	}
 	
 	

@@ -31,10 +31,12 @@ public class HomeController
 	//Constructeur
 	/**
 	 * Constructeur lambda.
+	 * 
+	 * @param facade : null interdit.
 	 */
-	public HomeController()
+	public HomeController(Facade facade)
 	{
-		this.facade = new Facade();
+		this.facade = facade;
 	}
 
 
