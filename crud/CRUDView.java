@@ -17,6 +17,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
 import gui.BasicGUI;
 import useful.ResponseData;
 
@@ -69,7 +71,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 	/** Un état pour savoir si une insertion de tuple est en cours. */
 	private boolean INSERTING;
 
-	/** Un état pour savoir si la {@code CRUDView} autorise la modification des tuples ou non */
+	/** Un état pour savoir si la {@code CRUDView} autorise la modification des tuples ou non. */
 	private boolean ALLOW_EDITS;
 
 
@@ -86,7 +88,6 @@ public class CRUDView extends BasicGUI implements ActionListener {
 		this.enableComboBoxListener();
 		this.INSERTING = false;
 		this.ALLOW_EDITS = false;
-
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 
@@ -112,24 +113,34 @@ public class CRUDView extends BasicGUI implements ActionListener {
 	{
 		if (!this.INSERTING)
 		{
+			this.deleteButton.setEnabled(false);
+			this.updateButton.setEnabled(false);
 			this.INSERTING = true;
 
 			int columnCount = this.tableModel.getColumnCount();
 
 			this.tableModel.addRow(new Vector[columnCount]);
 			this.changeSelection(CRUDView.LAST);
+			this.comboBoxListener = false; // on empeche l'utilisateur de changer de table pendant une insertion
 		} 
 		else
 		{ // on ajoute à la base de données le dernier tuple de la table, c-à-d celui qui vient d'être ajouté
+			this.deleteButton.setEnabled(true);
+			this.updateButton.setEnabled(true);
+
 			int new_row_index = this.tableModel.getRowCount()-1;
 			String table_name = (String)this.tableComboBox.getSelectedItem();
 
 			String reply = this.crud_controller.addRow(new_row_index, table_name);
 
-			if (!reply.equals("OK"))
+			if (!reply.equals("OK")) // en cas d'echec d'insertion
+			{
 				this.showError(reply);
+				this.tableModel.removeRow(new_row_index); // on enlève de la JTable le tuple qui a échoué
+			}
 
-			this.INSERTING = false;								
+			this.INSERTING = false;
+			this.comboBoxListener = true;
 		}
 	}
 
@@ -183,7 +194,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 	/** Crée un pop-up du message d'erreur.
 	 * @param errorMessage : message d'erreur à afficher. */
 	private void showError(String errorMessage) {
-		JOptionPane.showMessageDialog(null, errorMessage, "	Erreur", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, errorMessage, "		Erreur", JOptionPane.ERROR_MESSAGE);
 	}
 
 	/** Permet de replacer manuellement la nouvelle ligne sélectionnée de 
@@ -217,7 +228,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 	 * @param tableName : nom de la table demandée. */
 	private void requestTable(String tableName) 
 	{
-		JTable table = this.crud_controller.requestTable(tableName);
+		DefaultTableModel table = this.crud_controller.requestTable(tableName);
 
 		this.tableDisplay(table);
 	}
@@ -244,6 +255,10 @@ public class CRUDView extends BasicGUI implements ActionListener {
 						CRUDView.this.requestTable(selectedTable);
 						CRUDView.this.revealJButtons();
 					}
+
+					if (ALLOW_EDITS) 
+						// si on change de table alors qu'on est en mode "edition", on desactive le mode
+						CRUDView.this.updateButtonAction();
 				}
 			}
 		});
@@ -282,8 +297,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 	private void revealJButtons() 
 	{
 		this.insertButton.setEnabled(true);
-		// TODO : changer quand la modification sera fonctionnelle
-		//		this.updateButton.setEnabled(true); 
+		this.updateButton.setEnabled(true); 
 		this.deleteButton.setEnabled(true);
 	}
 
@@ -308,10 +322,10 @@ public class CRUDView extends BasicGUI implements ActionListener {
 	}
 
 	/** Affiche une table dans l'IHM.
-	 * @param table : {@code JTable} à afficher. */
-	private void tableDisplay(JTable table)
+	 * @param tableModel : un objet {@code DefaultTableModel} avec les données à afficher. */
+	private void tableDisplay(DefaultTableModel tableModel)
 	{
-		this.initJTable(table);
+		this.initJTable(tableModel);
 		this.displayJTable();
 	}
 
@@ -346,47 +360,44 @@ public class CRUDView extends BasicGUI implements ActionListener {
 		});
 	}
 
+	/** Initialise et paramètre la {@code JTable} avec le modèle de données fourni.
+	 * @param tableModel : {@code DefaultTableModel} correspondant au choix de la combobox. */
+	private void initJTable(DefaultTableModel tableModel) 
+	{
+		this.tableModel = tableModel;
 
-	/** Crée et assigne un {@code TableModelListener} à notre modèle de données {@code DefaultTableModel} ce qui
-	 * permet de capter la cellule où les modifications ont été effectuées et de mettre à jour 
-	 * la base de données dynamiquement en conséquence. */
-	private void initTableModelListener() {
-		this.tableModel.addTableModelListener(new TableModelListener() 
-		{
+		this.tableJTable = new JTable(this.tableModel){
 
-			public void tableChanged(TableModelEvent event) 
-			{
+			@Override
+			public boolean isCellEditable(int row, int col) {
+				if (CRUDView.this.INSERTING && row == this.getRowCount()-1)
+					return true;
+				else
+					return CRUDView.this.ALLOW_EDITS;
+			}
+
+			@Override
+			public void setValueAt(Object aValue, int row, int column) {
+
 				if (CRUDView.this.ALLOW_EDITS) // si le mode "modification" est actif
 				{
+					String reply = CRUDView.this.crud_controller.updateRow(row, column, aValue);
 
-					int eventType = event.getType();
-
-					if (eventType == TableModelEvent.UPDATE)
-					{
-						int row = event.getFirstRow();  
-						int column = event.getColumn();  
-						Object value = tableModel.getValueAt(row, column);
-
-						String reply = CRUDView.this.crud_controller.updateRow(row, column, value);
-
-						if (!reply.equals("OK"))
-							CRUDView.this.showError(reply);
-					}
-
+					if (!reply.equals("OK"))
+						CRUDView.this.showError(reply);
+					else
+						super.setValueAt(aValue, row, column);
+				}
+				else // sinon on réplique les modifications sans vérifier (mode insertion)
+				{
+					super.setValueAt(aValue, row, column);
 				}
 			}
-		});
-	}
+		};
 
-	/** Initialise et paramètre la {@code JTable} et son modèle de données {@code DefaultTableModel}. 
-	 * @param table : {@code JTable} correspondant au choix de la combobox. */
-	private void initJTable(JTable table) 
-	{
-		this.tableJTable = table;
-		this.tableModel = (DefaultTableModel)this.tableJTable.getModel();
+		this.tableJTable.getTableHeader().setReorderingAllowed(false);
 		this.tableJTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // une seule ligne sélectionnée autorisée
 		this.initSelectionListener();
-		this.initTableModelListener();
 	}
 
 	/** Initialise et affiche la {@code JScrollpane} composé de la {@code JTable}. */

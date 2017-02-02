@@ -443,16 +443,12 @@ implements ActionListener, ItemListener
 	 * @return un boolean
 	 */
 	private boolean isValidateAttribute(Attribute a){
-		if(!(this.isCompleteAttribute())){
-			return false;
-		}else{
 			if(!(a.checkSizeAttributes()>=0)){
 				this.talk(this.errorAttribute +a.attributeSizeError(a.checkSizeAttributes()));
 				return false;
 			}else if(this.models.isDuplicateAttributeName(a) && !(this.updateState)){
 				this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
 				return false;
-			}
 		}
 		return true;
 	}
@@ -663,6 +659,7 @@ implements ActionListener, ItemListener
 	 */
 	private void addAttributeButtonAction()
 	{
+		if(isCompleteAttribute()){
 		System.out.println("Ajout de l'attribut "+this.attributeNameField.getText());
 		Attribute a = this.models.createAttribute(
 				attributeNameField.getText(),
@@ -676,7 +673,7 @@ implements ActionListener, ItemListener
 				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
 		if(isValidateAttribute(a)){
 			this.addAttributeToTable(a);
-
+		}
 		}
 	}
 
@@ -711,6 +708,7 @@ implements ActionListener, ItemListener
 	 * le bouton "Modifier".
 	 */
 	private void confirmUpdateAttributeButtonAction(){
+		if(isCompleteAttribute()){
 		Attribute a = this.models.createAttribute(this.attributeNameField.getText(),
 				(String)this.attributeTypeComboBox.getSelectedItem(), 
 				this.attributeSizeField.getText(), 
@@ -727,6 +725,7 @@ implements ActionListener, ItemListener
 			this.clearAttribute();
 			this.setDisableAllExceptAttribute(true);
 			this.setVisibleEnabledUpdateButtons(false);
+		}
 		}
 	}
 
