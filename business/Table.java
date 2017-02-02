@@ -16,6 +16,8 @@ public class Table {
 	/** Un ensemble d'attributs (pas de doublons).*/
 	private LinkedHashSet<Attribute> attributes;
 	
+	private ArrayList<Constraint> constraints;
+	
 	/**
 	 * Vrai si et seulement si la table doit être supprimée
 	 * en cascade, faux sinon.
@@ -42,8 +44,10 @@ public class Table {
 	 * @param name : le nom de la table.
 	 * @param attributes : un ensemble d'attributs, peut être vide.
 	 */
-	public Table(String name, LinkedHashSet<Attribute> attributes){
+	public Table(String name, LinkedHashSet<Attribute> attributes,ArrayList<Constraint> constraint){
 		this();
+		this.constraints = constraint;
+		//TODO copie défensive
 		this.name=name;	
 		this.copyAttributes(attributes);
 	}
@@ -390,8 +394,8 @@ public class Table {
 	private int countPrimaryKey()
 	{
 		int result = 0;
-		for (Attribute a : this.attributes) {
-			if (a.primaryKey) result++;
+		for (Constraint c : this.constraints) {
+			if (c instanceof PrimaryKeyConstraint) result++;
 		}
 		return result;
 	}
@@ -434,14 +438,15 @@ public class Table {
 	private String attributesToSQL()
 	{
 		StringBuilder result = new StringBuilder();
-		for (Attribute a : this.attributes) {
-			a.setTableName(this.name);
-			result.append(a.toCreate());
-			result.append(",\n");
+		
+		int i=0;
+		for (Attribute a : this.attributes){
+			if (i!=0){
+				result.append(",\n");
+			}
+			result.append(a.toSQL());
+			i++;
 		}
-		int resultLength = result.length();
-		result.deleteCharAt(resultLength-1);
-		result.deleteCharAt(resultLength-2);
 		return result.toString();
 	}
 	

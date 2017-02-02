@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import business.Attribute;
 import business.*;
 
 public class testConstraints {
@@ -38,7 +37,7 @@ public class testConstraints {
 		pk.addAttribute(a1);
 		pk.addAttribute(a2);
 		pk.createName();
-		assertEquals("pk_tableTest_a1_a2 PRIMARY KEY PRIMARY KEY(a1,a2)",pk.getNameSQL());
+		assertEquals("pk_tableTest_a1_a2 PRIMARY KEY(a1,a2)",pk.getNameSQL());
 		
 	}
 	
@@ -53,6 +52,15 @@ public class testConstraints {
 		assertEquals("ma_check_perso CHECK(machin<(autre+3))",ck.getNameSQL());
 	}
 	
+	@Test
+	public void testUnique(){
+		UniqueConstraint unique = new UniqueConstraint();
+		unique.setTable(getTable("tableTest"));
+		unique.addAttribute(getAttribute("testAtt"));
+		unique.createName();
+		assertEquals("un_tableTest_testAtt UNIQUE(testAtt)",unique.getNameSQL());
+	}
+
 	@Test
 	public void testNotNull(){
 		NotNullConstraint nn = new NotNullConstraint();
@@ -71,13 +79,13 @@ public class testConstraints {
 		pk.addAttribute(a1);
 		pk.addAttribute(a2);
 		pk.setName("pk_pers_php");
-		assertEquals("ALTER TABLE tableTest\nADD CONSTRAINT pk_pers_php",pk.toAddConstraintSQL());
+		assertEquals("ALTER TABLE tableTest\nADD CONSTRAINT pk_pers_php PRIMARY KEY(a1,a2)",pk.toAddConstraintSQL());
 		assertEquals("ALTER TABLE tableTest\nDROP CONSTRAINT pk_pers_php",pk.toDropConstraintSQL());
 	}
-	
+
 	
 	public Attribute getAttribute(String name){
-		return new Attribute(name, null, 0, false, false, false, false, null, null);
+		return new Attribute(name, null, 0, null, null);
 	}
 	public Table getTable(String name){
 		return new Table(name, false);

@@ -1,6 +1,6 @@
 package business;
 
-public class CheckConstraint extends Contraints{
+public class CheckConstraint extends Constraint{
 	
 	/**
 	 * Décrit la contrainte SQL

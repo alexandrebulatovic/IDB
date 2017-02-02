@@ -2,7 +2,7 @@ package business;
 
 import java.util.List;
 
-public class PrimaryKeyConstraint extends Contraints{
+public class PrimaryKeyConstraint extends Constraint{
 
 	public PrimaryKeyConstraint(){
 		this.prefix = "pk";
@@ -20,7 +20,7 @@ public class PrimaryKeyConstraint extends Contraints{
 			lesPks+=att.name;
 			i++;
 		}
-		return this.getEntete()+" "+this.keyWord+"("+lesPks+")";
+		return this.getEntete()+"("+lesPks+")";
 	}
 
 }

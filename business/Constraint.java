@@ -3,10 +3,12 @@ package business;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Contraints 
+
+public abstract class Constraint
 {
 	//Attributs
 	/** Mot clé définissant la contrainte exemple : PRIMARY KEY.*/
+
 	protected String keyWord;
 	
 	/** Attributs ciblés par la contrainte.*/
@@ -23,11 +25,12 @@ public abstract class Contraints
 	protected String prefix; //TODO : inutile puisque déterminable depuis keyword.
 	
 	
+
 	//Constrcuteur
 	/**
 	 * Constructeur vide.
 	 */
-	protected Contraints()
+	protected Constraint()
 	{
 		this.attributes = new ArrayList<Attribute>();
 	}
@@ -71,8 +74,10 @@ public abstract class Contraints
 	public abstract String getNameSQL();
 	
 	
-	/**
-	 * @return la table visée par la contrainte.
+	/** 
+	 * exemple retourne 'nn_table_att UNIQUE'
+	 * l'entete de la contrainte
+	 * @return 
 	 */
 	public Table getTable() {return table;}
 
@@ -81,13 +86,20 @@ public abstract class Contraints
 	 * TODO : confirmer que null est interdit.
 	 * @param table : la table visée par la contrainte, null interdit.
 	 */
-	public void setTable(Table table) {this.table = table;}
+	public void setTable(Table table) {
+		this.table = table;
+		}
 
-	
 	/**
 	 * @return la liste des attributs visés par la contrainte.
 	 */
-	public List<Attribute> getAttributes(){return this.attributes;}
+	public List<Attribute> getAttributes(){
+		if (this.attributes == null){
+			this.attributes = new ArrayList<Attribute>();
+		}
+		return this.attributes;
+	}
+
 
 	/**
 	 * TODO : empécher les doublons.
@@ -104,11 +116,11 @@ public abstract class Contraints
 	 * TODO : préciser exactement ce qu'il ressort.
 	 * exemple : 
 	 * ALTER TABLE tableTest
-	 * ADD CONSTRAINT pk_pers_php
+	 * ADD CONSTRAINT pk_pers_php UNIQUE(att)
 	 * @return String
 	 */
 	public String toAddConstraintSQL(){
-		return this.toAlterSQL()+"ADD CONSTRAINT "+this.name;
+		return this.toAlterSQL()+"ADD CONSTRAINT "+this.getNameSQL();
 	}
 	
 	/**
@@ -139,7 +151,7 @@ public abstract class Contraints
 	 * - sa table, <br/>
 	 * - la liste de ses attributs.
 	 */
-	private String createName()
+	public String createName()
 	{
 		StringBuilder result = new StringBuilder();
 		

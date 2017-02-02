@@ -12,5 +12,12 @@ public class NotNullConstraint extends CheckConstraint {
 		this.setConstraint(att.name+" IS NOT NULL");
 	}
 
+	public Attribute getAttribute() {
+		if (this.getAttributes().size()==1){
+			return this.attributes.get(0);
+		}
+		return null;
+	}
+
 
 }
