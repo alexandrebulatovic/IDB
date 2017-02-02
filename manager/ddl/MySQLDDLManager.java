@@ -26,7 +26,7 @@ extends AbstractDLLManager
 	@Override
 	public String[] getAttributeTypes() 
 	{
-		String [] result = {"char", "varchar", "date", "numeric"};
+		String [] result = {"VARCHAR", "NUMERIC", "DATE", "CHAR"};
 		return result;
 	}
 
