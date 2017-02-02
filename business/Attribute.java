@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Attribute 
 {
 
-	
 	/** Nom de l'attribut.*/
 	public String name;
 
