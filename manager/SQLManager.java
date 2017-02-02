@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  * Gère la communication avec le serveur à partir de la requête reçue par la {@code SQLView}.
@@ -156,7 +157,7 @@ public class SQLManager {
 		case 942: str = "Cette table ou cette vue n'existe pas.";
 		case 900: str = "Veuillez saisir la requête correctement !";
 		case 955: str =  "Ce nom est déjà pris.";
-		default: str = "ECHEC! erreur: "+ exception.getErrorCode() + " " + exception.getMessage();
+		default: str = "ECHEC ! Erreur: "+ exception.getErrorCode() + " " + exception.getMessage();
 		}
 
 		return str;
@@ -195,15 +196,22 @@ public class SQLManager {
 			System.out.println(errorHandling(exception));
 		}
 
-		return new JTable(new DefaultTableModel(data, columnNames));
+		return new JTable(new DefaultTableModel(data, columnNames)){
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+
+		};
 	}
 
-	public JTable requestJTable(String tableName) 
+	public DefaultTableModel requestTableModel(String tableName) 
 	{
 		String qry = "SELECT T.* FROM "+ tableName+" T";
 		JTable table = (JTable)this.sendSQL(qry);
 
-		return table;
+		return (DefaultTableModel) table.getModel();
 	}
 
 	/** Insère un nouveau tuple dans la base de données.
