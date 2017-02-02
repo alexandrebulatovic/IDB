@@ -7,7 +7,8 @@ import useful.Response;
 import useful.ResponseData;
 import business.Attribute;
 
-public interface I_DDLManager {
+public interface I_DDLManager 
+{
 
 	//Méthodes
 	/**
@@ -18,7 +19,7 @@ public interface I_DDLManager {
 	
 	/**
 	 * @return vrai si et seulement si le SGBD permet de "droper" une 
-	 * table avec l'option "CASCADE"
+	 * table avec l'option "CASCADE", faux sinon.
 	 */
 	public boolean allowsDropCascade();
 	
@@ -75,25 +76,37 @@ public interface I_DDLManager {
 	
 	
 	/**
-	 * TODO : voir s'il faut ajouter le nom de la contrainte dans le résultat.
-	 * @param table : table où se trouve les clées étrangères.
-	 * @return une réponse personnalisée.
-	 * Lorsque la récupération réussit, la réponse contient dans l'ordre : <br/>
+	 * @param table : table où se trouve les clées étrangères, null interdit.
+	 * @return une réponse personnalisée.<br/>
+	 * 
+	 * Lorsque la récupération réussi, la réponse contient dans l'ordre : <br/>
 	 * - le nom d'une table $t,<br/>
 	 * - le nom d'un attribut $a, clée primaire de $t,<br/>
-	 * - le nom d'un attribut de $table soumit à une contrainte FOREIGN KEY
-	 * qui utilise $t($a) comme référence. <br/>
+	 * - le nom de la contrainte de clée primaire $t($a),<br/>
+	 * - l'argument $table,<br/>
+	 * - le nom d'un attribut $a2, clée étrangère de $table, qui référence $t($a),<br/>
+	 * - le nom de la contrainte de clée étrangère de $table($a2).<br/><br/>
+	 * 
+	 * Pour résumer : FOREIGN KEY ($a2) REFERENCES $t($a) <br/>
 	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée. 
 	 */ 
 	public abstract ResponseData<String[]> getImportedKey(String table);
 
 
 	/**
-	 * @param table : table où chercher les clées primaires.
-	 * @return une réponse personnalisée.
+	 * @param table : table où se les membres de la clée primaire, null interdit.
+	 * @return une réponse personnalisée.<br/>
+	 * 
 	 * Lorsque la récupération réussit, la réponse contient dans l'ordre :<br/>
-	 * - le nom d'une table $t, <br/>
-	 * - le nom d'un attribut $a, clée étrangère de $t
+	 * - l'argument $table, <br/>
+	 * - le nom d'un attribut $a2, membre de la clée primaire de $table,<br/>
+	 * - le nom de la contrainte de clée primaire de $table,<br/>
+	 * - le nom d'une table $t,<br/>
+	 * - le nom d'un attribut $a, clée étrangère de $t, qui référence $table($a2),<br/>
+	 * - le nom de la contrainte de clée étrangère de $t($a).<br/><br/>
+	 * 
+	 * Pour résumer : FOREIGN KEY($a) REFERENCES $table($a2)
+	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée.
 	 */
 	public ResponseData<String []> getExportedKey(String table);
 
