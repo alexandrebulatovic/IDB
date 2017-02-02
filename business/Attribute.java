@@ -177,7 +177,7 @@ public class Attribute
 	 * @return int : -3 <= result <= 3
 	 */
 	public int checkSizeAttributes(){
-		if(this.type.equals("VARCHAR")){
+		if(this.type.equals("VARCHAR2")){
 			if(this.size == 0 || this.size > 255){
 				return -1;
 			}else{
