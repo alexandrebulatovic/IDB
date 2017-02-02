@@ -7,11 +7,11 @@ import org.junit.Test;
 import business.Attribute;
 import business.*;
 
-public class testContraints {
+public class testConstraints {
 
 	@Test
 	public void testFk() {
-		ForeignKeyContraint fk = new ForeignKeyContraint();
+		ForeignKeyConstraint fk = new ForeignKeyConstraint();
 		Attribute a1 = getAttribute("test");
 		Attribute dest1 = getAttribute("testDest");
 		Attribute dest2 = getAttribute("testDest2");
@@ -52,6 +52,29 @@ public class testContraints {
 		ck.setName("ma_check_perso");
 		assertEquals("ma_check_perso CHECK(machin<(autre+3))",ck.getNameSQL());
 	}
+	
+	@Test
+	public void testNotNull(){
+		NotNullConstraint nn = new NotNullConstraint();
+		nn.addAttribute(getAttribute("attTest"));
+		nn.createName();
+		assertEquals("ck_attTest CHECK(attTest IS NOT NULL)",nn.getNameSQL());
+	}
+	
+	@Test
+	public void testToAddConstraintSQL(){
+		Attribute a1 = getAttribute("a1");
+		Attribute a2 = getAttribute("a2");
+		
+		PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
+		pk.setTable(getTable("tableTest"));
+		pk.addAttribute(a1);
+		pk.addAttribute(a2);
+		pk.setName("pk_pers_php");
+		assertEquals(pk.toAddConstraintSQL(),"ALTER TABLE tableTest\nADD CONSTRAINT pk_pers_php");
+		assertEquals(pk.toDropConstraintSQL(),"ALTER TABLE tableTest\nDROP CONSTRAINT pk_pers_php");
+	}
+	
 	
 	public Attribute getAttribute(String name){
 		return new Attribute(name, null, 0, false, false, false, false, null, null);
