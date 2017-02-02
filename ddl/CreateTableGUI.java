@@ -45,7 +45,7 @@ implements ActionListener, ItemListener
 
 	private ResponseData<String> res;
 	/** Contenu de la comboBox du type d'un attribut. */
-	private Object[] types = new Object[]{"VARCHAR2", "NUMBER", "DATE", "CHAR"};
+	private Object[] types;
 
 	/** Model de ComboBox pour les tables des clés étrangères. */
 	private DefaultComboBoxModel foreignKeyTableComboBoxModel;
@@ -190,7 +190,7 @@ implements ActionListener, ItemListener
 
 		this.attributeNameField = new JTextField();
 		this.bindAndAdd(this.attributeNameField,10,true);
-
+		this.types = this.control.getAttributeTypes();
 		this.attributeTypeComboBox = new JComboBox(types);
 		this.attributeTypeComboBox.addActionListener(this);
 		this.bindAndAdd(this.attributeTypeComboBox,10,true);
@@ -400,8 +400,8 @@ implements ActionListener, ItemListener
 	 */
 	private boolean isCompleteAttribute()
 	{
-		if(this.attributeNameField.getText().equals((String)"") 
-				|| this.attributeSizeField.getText().equals((String)"") 
+		if(("").equals(this.attributeNameField.getText()) 
+				|| ("").equals(this.attributeSizeField.getText()) 
 				|| (this.foreignKeyCheckBox.isSelected() && (this.foreignKeyAttributeComboBoxModel.getSize()==0 
 				|| this.foreignKeyTableComboBoxModel.getSize()==0)))
 		{
@@ -426,7 +426,7 @@ implements ActionListener, ItemListener
 		if(this.models.getRowCount()==0){
 			this.talk(errorAttribute+"Il n'y a pas d'Attribut");
 			return false;
-		} else if (this.tableNameField.getText().equals("")) {
+		} else if ("".equals(this.tableNameField.getText())) {
 			this.talk(errorAttribute+"Il manque le nom de la Table");
 			return false;
 		} else {
@@ -562,11 +562,11 @@ implements ActionListener, ItemListener
 	 */
 	private int getIndexAttributeTypeComboBox(String type)
 	{
-		if(type.equals("VARCHAR2")){
+		if("VARCHAR2".equals(type)){
 			return 0;
-		}else if(type.equals("NUMBER")){
+		}else if("NUMBER".equals(type)){
 			return 1;
-		}else if(type.equals("DATE")){
+		}else if("DATE".equals(type)){
 			return 2;
 		}else{
 			return 3;
@@ -616,11 +616,11 @@ implements ActionListener, ItemListener
 	private void positionAttributButtonAction(String direction){
 		if(this.table.getSelectedRow()!=-1){
 			int rowIndex = this.table.getSelectedRow();
-			if(direction.equals("UP") && rowIndex!=0){
+			if("UP".equals(direction) && rowIndex!=0){
 				this.models.changeAttributePosition(direction, rowIndex);
 				this.table.setRowSelectionInterval(rowIndex-1, rowIndex-1);
 			}
-			if(direction.equals("DOWN") && rowIndex!=this.table.getRowCount()-1){
+			if("DOWN".equals(direction) && rowIndex!=this.table.getRowCount()-1){
 				this.models.changeAttributePosition(direction, rowIndex);
 				this.table.setRowSelectionInterval(rowIndex+1, rowIndex+1);
 			}
@@ -633,7 +633,7 @@ implements ActionListener, ItemListener
 	 */
 	private void selectSizeDateComboBoxAction() {
 		Object selected = this.attributeTypeComboBox.getSelectedItem();
-		if(selected.toString().equals("DATE")){
+		if("DATE".equals(selected.toString())){
 			setEnabledSizeField(false);
 		}else{
 			setEnabledSizeField(true);
@@ -647,7 +647,7 @@ implements ActionListener, ItemListener
 	private void selectForeignKeyTableComboBoxAction() {
 		Object selected = this.fkTableNameComboBox.getSelectedItem();
 		if(!(selected==null)){
-			if(!(selected.toString().equals("Nom Attribut"))){
+			if(!("Nom Attribut".equals(selected.toString()))){
 				this.initComboBoxFkAttributeName(selected.toString());
 			}
 		}
@@ -660,7 +660,6 @@ implements ActionListener, ItemListener
 	private void addAttributeButtonAction()
 	{
 		if(isCompleteAttribute()){
-		System.out.println("Ajout de l'attribut "+this.attributeNameField.getText());
 		Attribute a = this.models.createAttribute(
 				attributeNameField.getText(),
 				(String)attributeTypeComboBox.getSelectedItem(), 

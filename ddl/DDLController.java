@@ -193,6 +193,9 @@ public class DDLController
 		gui.toFront();
 	}
 
+	public String[] getAttributeTypes(){
+		return manager.getAttributeTypes();
+	}
 
 
 
