@@ -10,8 +10,8 @@ import javax.swing.JFrame;
  * 
  * Cette classe implémente WindowListener et redéfinit toutes les méthodes
  * de cette interface comme si elle ne faisaient rien.
- * 
- * De ce fait créer une classe qui spécialise ceLle-ci permet de créer une JFrame 
+ * <P>
+ * De ce fait créer une classe qui spécialise celle-ci permet de créer une JFrame 
  * possèdant déjà des méthodes pour gérer le comportement de l'IHM :
  * plus besoins de toutes les réécrire dans son code si elles ne sont pas nécessaires.
  */
