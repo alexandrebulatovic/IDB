@@ -111,6 +111,9 @@ public abstract class Constraint {
 	}
 
 	public List<Attribute> getAttributes(){
+		if (this.attributes == null){
+			this.attributes = new ArrayList<Attribute>();
+		}
 		return this.attributes;
 	}
 

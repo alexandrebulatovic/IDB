@@ -16,5 +16,12 @@ public class UniqueConstraint extends Constraint {
 		}
 		return this.getEntete()+" "+this.prefix+"("+lesUniques+")";
 	}
+	
+	Attribute getAttribute(){
+		if (this.getAttributes().size()==1){
+			return this.attributes.get(0);
+		}
+		return null;
+	}
 
 }

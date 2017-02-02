@@ -51,9 +51,15 @@ public class Attribute
 	}
 	
 	public boolean isUnique(){
-		for (Constraint c : constraints){
-			if (c instanceof UniqueConstraint){
-				return true;
+		for (Constraint constraint : constraints){
+			if (constraint instanceof UniqueConstraint){
+				UniqueConstraint unique = (UniqueConstraint) constraint;
+				Attribute att = unique.getAttribute();
+				if (att==this){
+					return true;
+				}
+
+				
 			}
 		}
 		return false;
