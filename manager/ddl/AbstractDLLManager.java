@@ -82,8 +82,7 @@ implements I_DDLManager
 	@Override
 	public ResponseData<String []> getImportedKey(String table)
 	{
-		//TODO : tester ce qui est retourné
-		int [] columns = {3,4,8};
+		int [] columns = {3, 4, 13, 7, 8, 12};
 		return this.procedureToGetMetadata
 				(IN_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
 	}
@@ -101,8 +100,9 @@ implements I_DDLManager
 	@Override
 	public ResponseData<String []> getExportedKey(String table)
 	{
-		//TODO : faire ce code
-		return null;
+		int columns [] = {3, 4, 13, 7, 8, 12};
+		return this.procedureToGetMetadata
+				(OUT_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
 	}
 	
 	
@@ -218,7 +218,11 @@ implements I_DDLManager
 		case UNIQUE :
 			this.metaDataResult = this.metadata.getIndexInfo(null, null, table, true, false);
 			break;
-		}	
+		
+		case OUT_FOREIGN_KEY :
+			this.metaDataResult = this.metadata.getExportedKeys(null, user, table);
+			break;
+		}
 	}
 	
 	

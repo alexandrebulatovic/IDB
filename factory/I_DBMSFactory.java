@@ -11,7 +11,7 @@ import manager.I_DDLManager;
 public interface I_DBMSFactory 
 {
 	/**
-	 * @return un manager de connexion vers un SGBD.
+	 * @return un gestionnaire de connexion vers un SGBD.
 	 */
 	public I_ConnectionManager getConnectionManager();
 	
