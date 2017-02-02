@@ -71,8 +71,8 @@ public class testConstraints {
 		pk.addAttribute(a1);
 		pk.addAttribute(a2);
 		pk.setName("pk_pers_php");
-		assertEquals(pk.toAddConstraintSQL(),"ALTER TABLE tableTest\nADD CONSTRAINT pk_pers_php");
-		assertEquals(pk.toDropConstraintSQL(),"ALTER TABLE tableTest\nDROP CONSTRAINT pk_pers_php");
+		assertEquals("ALTER TABLE tableTest\nADD CONSTRAINT pk_pers_php",pk.toAddConstraintSQL());
+		assertEquals("ALTER TABLE tableTest\nDROP CONSTRAINT pk_pers_php",pk.toDropConstraintSQL());
 	}
 	
 	
