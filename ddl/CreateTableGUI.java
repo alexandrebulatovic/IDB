@@ -45,7 +45,7 @@ implements ActionListener, ItemListener
 
 	private ResponseData<String> res;
 	/** Contenu de la comboBox du type d'un attribut. */
-	private Object[] types = new Object[]{"VARCHAR", "NUMBER", "DATE", "CHAR"};
+	private Object[] types = new Object[]{"VARCHAR2", "NUMBER", "DATE", "CHAR"};
 
 	/** Model de ComboBox pour les tables des clés étrangères. */
 	private DefaultComboBoxModel foreignKeyTableComboBoxModel;
@@ -324,7 +324,7 @@ implements ActionListener, ItemListener
 	 */
 	public void resetView()
 	{
-		this.setAttributesValues("nomAttribut", "VARCHAR", "Taille", false, false, false, false, "nomTable", "nomAttribut");
+		this.setAttributesValues("nomAttribut", "VARCHAR2", "Taille", false, false, false, false, "nomTable", "nomAttribut");
 		this.tableNameField.setText("");
 		this.talk("");
 		this.setEnableButtonUpdateDeleteUpDown(false);;
@@ -555,14 +555,14 @@ implements ActionListener, ItemListener
 	/**
 	 * Retourne l'index de String dans la ComboBox des types
 	 * d'un attribut. 
-	 * 0 si VARCHAR, 1 si NUMBER, 2 si DATE, 3 si CHAR.
+	 * 0 si VARCHAR2, 1 si NUMBER, 2 si DATE, 3 si CHAR.
 	 * 
 	 * @param type : une chaine String corespondant au type d'un attribut
 	 * @return int
 	 */
 	private int getIndexAttributeTypeComboBox(String type)
 	{
-		if(type.equals("VARCHAR")){
+		if(type.equals("VARCHAR2")){
 			return 0;
 		}else if(type.equals("NUMBER")){
 			return 1;
