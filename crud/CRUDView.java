@@ -121,7 +121,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 
 			this.tableModel.addRow(new Vector[columnCount]);
 			this.changeSelection(CRUDView.LAST);
-			//			this.comboBoxListener = false; // on empeche l'utilisateur de changer de table pendant une insertion
+			this.comboBoxListener = false; // on empeche l'utilisateur de changer de table pendant une insertion
 		} 
 		else
 		{ // on ajoute à la base de données le dernier tuple de la table, c-à-d celui qui vient d'être ajouté
@@ -140,7 +140,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 			}
 
 			this.INSERTING = false;
-			//			this.comboBoxListener = true;
+			this.comboBoxListener = true;
 		}
 	}
 
