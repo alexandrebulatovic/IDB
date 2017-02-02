@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import business.Attribute;
 import business.*;
 
 public class testConstraints {
@@ -54,6 +53,15 @@ public class testConstraints {
 	}
 	
 	@Test
+	public void testUnique(){
+		UniqueConstraint unique = new UniqueConstraint();
+		unique.setTable(getTable("tableTest"));
+		unique.addAttribute(getAttribute("testAtt"));
+		System.out.println(unique.getNameSQL());
+		fail();
+	}
+
+	@Test
 	public void testNotNull(){
 		NotNullConstraint nn = new NotNullConstraint();
 		nn.addAttribute(getAttribute("attTest"));
@@ -75,9 +83,8 @@ public class testConstraints {
 		assertEquals("ALTER TABLE tableTest\nDROP CONSTRAINT pk_pers_php",pk.toDropConstraintSQL());
 	}
 	
-	
 	public Attribute getAttribute(String name){
-		return new Attribute(name, null, 0, false, false, false, false, null, null);
+		return new Attribute(name, null, 0, null, null);
 	}
 	public Table getTable(String name){
 		return new Table(name, false);

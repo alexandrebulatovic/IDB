@@ -2,7 +2,7 @@ package business;
 
 import java.util.List;
 
-public class PrimaryKeyConstraint extends Contraints{
+public class PrimaryKeyConstraint extends Constraint{
 
 	public PrimaryKeyConstraint(){
 		this.prefix = "pk";

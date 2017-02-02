@@ -3,7 +3,7 @@ package business;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Contraints {
+public abstract class Constraint {
 	
 
 	
@@ -36,7 +36,7 @@ public abstract class Contraints {
 	protected String prefix;
 	
 	
-	protected Contraints(){
+	protected Constraint(){
 		this.attributes = new ArrayList<Attribute>();
 	}
 	

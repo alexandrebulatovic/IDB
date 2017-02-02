@@ -3,7 +3,7 @@ package business;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForeignKeyConstraint extends Contraints {
+public class ForeignKeyConstraint extends Constraint {
 
 	
 	public boolean deleteCascade = false;
