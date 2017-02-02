@@ -37,7 +37,7 @@ public class testConstraints {
 		pk.addAttribute(a1);
 		pk.addAttribute(a2);
 		pk.createName();
-		assertEquals("pk_tableTest_a1_a2 PRIMARY KEY PRIMARY KEY(a1,a2)",pk.getNameSQL());
+		assertEquals("pk_tableTest_a1_a2 PRIMARY KEY(a1,a2)",pk.getNameSQL());
 		
 	}
 	
@@ -57,8 +57,8 @@ public class testConstraints {
 		UniqueConstraint unique = new UniqueConstraint();
 		unique.setTable(getTable("tableTest"));
 		unique.addAttribute(getAttribute("testAtt"));
-		System.out.println(unique.getNameSQL());
-		fail();
+		unique.createName();
+		assertEquals("un_tableTest_testAtt UNIQUE(testAtt)",unique.getNameSQL());
 	}
 
 	@Test
@@ -79,9 +79,10 @@ public class testConstraints {
 		pk.addAttribute(a1);
 		pk.addAttribute(a2);
 		pk.setName("pk_pers_php");
-		assertEquals("ALTER TABLE tableTest\nADD CONSTRAINT pk_pers_php",pk.toAddConstraintSQL());
+		assertEquals("ALTER TABLE tableTest\nADD CONSTRAINT pk_pers_php PRIMARY KEY(a1,a2)",pk.toAddConstraintSQL());
 		assertEquals("ALTER TABLE tableTest\nDROP CONSTRAINT pk_pers_php",pk.toDropConstraintSQL());
 	}
+
 	
 	public Attribute getAttribute(String name){
 		return new Attribute(name, null, 0, null, null);

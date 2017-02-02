@@ -88,7 +88,7 @@ public abstract class Constraint {
 	
 	/**
 	 * Un exemple sera plus parlant : 
-	 * exemple retourne 'nn_table_att CHECK'
+	 * exemple retourne 'nn_table_att UNIQUE'
 	 * l'entete de la contrainte
 	 * @return 
 	 */
@@ -124,11 +124,11 @@ public abstract class Constraint {
 	/**
 	 * exemple : 
 	 * ALTER TABLE tableTest
-	 * ADD CONSTRAINT pk_pers_php
+	 * ADD CONSTRAINT pk_pers_php UNIQUE(att)
 	 * @return String
 	 */
 	public String toAddConstraintSQL(){
-		return this.toAlterSQL()+"ADD CONSTRAINT "+this.name;
+		return this.toAlterSQL()+"ADD CONSTRAINT "+this.getNameSQL();
 	}
 	
 	/**

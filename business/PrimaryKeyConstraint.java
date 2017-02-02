@@ -20,7 +20,7 @@ public class PrimaryKeyConstraint extends Constraint{
 			lesPks+=att.name;
 			i++;
 		}
-		return this.getEntete()+" "+this.keyWord+"("+lesPks+")";
+		return this.getEntete()+"("+lesPks+")";
 	}
 
 }

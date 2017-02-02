@@ -2,6 +2,12 @@ package business;
 
 public class UniqueConstraint extends Constraint {
 
+	public UniqueConstraint(){
+		this.prefix = "un";
+		
+		this.keyWord = "UNIQUE";
+	}
+	
 	@Override
 	public String getNameSQL() {
 		
@@ -14,7 +20,7 @@ public class UniqueConstraint extends Constraint {
 			lesUniques+=att.name;
 			i++;
 		}
-		return this.getEntete()+" "+this.prefix+"("+lesUniques+")";
+		return this.getEntete()+"("+lesUniques+")";
 	}
 	
 	Attribute getAttribute(){

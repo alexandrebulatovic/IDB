@@ -43,8 +43,12 @@ public class Attribute
 	
 	public boolean isNotNull(){
 		for (Constraint c : constraints){
-			if (c instanceof ForeignKeyConstraint){
-				return true;
+			if (c instanceof NotNullConstraint){
+				NotNullConstraint nulll = (NotNullConstraint) c;
+				if (nulll.getAttribute()==this){
+					return true;
+				}
+				
 			}
 		}
 		return false;
@@ -54,8 +58,7 @@ public class Attribute
 		for (Constraint constraint : constraints){
 			if (constraint instanceof UniqueConstraint){
 				UniqueConstraint unique = (UniqueConstraint) constraint;
-				Attribute att = unique.getAttribute();
-				if (att==this){
+				if (unique.getAttribute()==this){
 					return true;
 				}
 
@@ -67,18 +70,31 @@ public class Attribute
 	
 	
 	public boolean isPk(){
-		for (Constraint c : constraints){
-			if (c instanceof PrimaryKeyConstraint){
-				return true;
+		for (Constraint constraint : constraints){
+			if (constraint instanceof PrimaryKeyConstraint){
+				for ( Attribute pk : constraint.getAttributes()){
+					if (pk==this){
+						return true;
+					}
+				}
 			}
 		}
 		return false;
 	}
 	
+	/**
+	 * Retourne vrai si l'attribut est clé étrangère
+	 * @return
+	 */
 	public boolean isFk(){
 		for (Constraint c : constraints){
 			if (c instanceof ForeignKeyConstraint){
-				return true;
+				ForeignKeyConstraint fk = (ForeignKeyConstraint)c;
+				for (Attribute att : fk.getAttributes()){
+					if (att == this){
+						return true;
+					}
+				}
 			}
 		}
 		return false;
@@ -122,7 +138,7 @@ public class Attribute
 	@Override
 	public String toString()
 	{
-		return "TODO";
+		return this.toSQL();
 		//TODO
 //		StringBuilder result = new StringBuilder();
 //		result.append(this.name + " : ");
@@ -161,13 +177,14 @@ public class Attribute
 	 * ALTER TABLE $nomTable
 	 * ADD CONSTRAINT $nom CHECK($condition)
 	 * (ceci est un exemple)
+	 * 
 	 * @return liste de requettes
 	 */
-	public List<String> toCreateConstraints()
+	public List<String> toCreateConstraintsSQL()
 	{
 		List<String> sqls = new ArrayList<String>();
-		for (Constraint c : this.constraints){
-			sqls.add(c.toAddConstraintSQL());
+		for (Constraint constraint : this.constraints){
+			sqls.add(constraint.toAddConstraintSQL());
 		}
 //		StringBuilder result = new StringBuilder();
 //		result.append(this.toSQLDeclaration());
