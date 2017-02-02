@@ -64,7 +64,18 @@ public abstract class Contraints {
 		for (Attribute attribute : this.attributes){
 			att += "_"+ attribute.name;  
 		}
-		this.setName(this.prefix+"_"+this.getTable().getName()+att);
+//		if (this.attributes.size() == 0){
+//			att
+//		}
+		String tableName ="_";
+		if (table == null){
+			tableName = "";
+		}
+		else{
+			tableName += table.getName();
+		}
+		
+		this.setName(this.prefix+tableName+att);
 	}
 	
 
@@ -105,6 +116,37 @@ public abstract class Contraints {
 
 	public void addAttribute(Attribute att){
 		this.attributes.add(att);
+	}
+	
+	/**
+	 * exemple : 
+	 * ALTER TABLE tableTest
+	 * ADD CONSTRAINT pk_pers_php
+	 * @return String
+	 */
+	public String toAddConstraintSQL(){
+		return this.toAlterSQL()+"ADD CONSTRAINT "+this.name;
+	}
+	
+	/**
+	 * exemple :
+	 * ALTER TABLE tableTest
+	 * ADD CONSTRAINT pk_pers_php
+	 * @return String
+	 */
+	public String toDropConstraintSQL(){
+		return this.toAlterSQL()+"DROP CONSTRAINT "+this.name;
+	}
+	
+	/**
+	 * Retourne ALTER TABLE {nomTable}\n
+	 * @return String
+	 */
+	private String toAlterSQL(){
+		if (this.table == null){
+			return "spécifiez le nom de la table svp";
+		}
+		return "ALTER TABLE "+this.table.getName()+"\n";
 	}
 	
 	

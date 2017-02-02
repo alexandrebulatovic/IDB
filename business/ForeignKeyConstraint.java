@@ -3,7 +3,7 @@ package business;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForeignKeyContraint extends Contraints {
+public class ForeignKeyConstraint extends Contraints {
 
 	
 	public boolean deleteCascade = false;
@@ -15,7 +15,7 @@ public class ForeignKeyContraint extends Contraints {
 	
 	private List<Attribute> attributesDestination;
 	
-	public ForeignKeyContraint(){
+	public ForeignKeyConstraint(){
 		this.attributesDestination = new ArrayList<Attribute>();
 		
 		this.keyWord = "FOREIGN KEY";

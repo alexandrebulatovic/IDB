@@ -1,8 +1,14 @@
 package sql;
 
 import gui.BasicGUI;
+
+import java.awt.Dialog;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
+
 import javax.swing.*;
 
 /** 
@@ -104,6 +110,18 @@ implements ActionListener
 	 * @param table : {@code JTable} à afficher. */
 	public void showTable(JTable table)
 	{
+		// cette portion de code sert à rendre la JOptionPane redimensionnable
+		table.addHierarchyListener(new HierarchyListener() { 
+			public void hierarchyChanged(HierarchyEvent e) {
+				Window window = SwingUtilities.getWindowAncestor(table);
+				if (window instanceof Dialog) {
+					Dialog dialog = (Dialog)window;
+					if (!dialog.isResizable()) {
+						dialog.setResizable(true);
+					}
+				}
+			}
+		});
 		JOptionPane.showMessageDialog(null, new JScrollPane(table), "Résultat", JOptionPane.INFORMATION_MESSAGE);
 	}
 
