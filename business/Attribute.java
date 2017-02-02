@@ -157,7 +157,7 @@ public class Attribute
 	 * (ceci est un exemple)
 	 * @return liste de requettes
 	 */
-	public List<String> toCreate()
+	public List<String> toCreateConstraints()
 	{
 		List<String> sqls = new ArrayList<String>();
 		for (Constraint c : this.constraints){
@@ -359,9 +359,12 @@ public class Attribute
 
 	/**
 	 * exemple nomProduit VARCHAR (30)
-	 * @return
+	 * @return String
 	 */
 	public String toSQL() {
+		if (this.type.equals("DATE")){
+			return this.name+" "+this.type;
+		}
 		return this.name+" "+this.type+" ("+this.size+")";
 	}
 	
