@@ -38,13 +38,17 @@ public interface I_DDLManager
 
 	
 	/**
-	 * Tente de supprimer une table dans la base de données.
+	 * Supprime $table, si c'est possible.
 	 * 
-	 * @param table : une requête SQL pour supprimer une table, null interdit.
-	 * @return Une réponse personnalisée avec un message de succès si et seulement si
-	 * la table est supprimée, un message détaillant l'erreur sinon.
+	 * @param table : une table à supprimer, null interdit.
+	 * @param cascade : vrai si et seulement si $table peut être supprimée 
+	 * alors qu'elle est référencée par d'autres tables, faux sinon.
+	 * @param chain : vrai si et seulement si toutes les tables qui référencent
+	 * $table doivent être supprimées aussi.
+	 * @return une réponse personnalisée décrivant si la suppression de toutes
+	 * les tables a réussi ou non.
 	 */
-	public abstract Response dropTable(String table, boolean cascade);
+	public abstract Response dropTable(String table, boolean cascade, boolean chain);
 
 	
 	/**
@@ -72,7 +76,7 @@ public interface I_DDLManager
 	 * @return une réponse personnalisée contenant le nom des attributs de $table
 	 * qui sont soumis à une contrainte UNIQUE.
 	 */
-	public ResponseData<String> getUniqueAttribute(String table);
+	public abstract ResponseData<String> getUniqueAttribute(String table);
 	
 	
 	/**
@@ -108,7 +112,7 @@ public interface I_DDLManager
 	 * Pour résumer : FOREIGN KEY($a) REFERENCES $table($a2)
 	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée.
 	 */
-	public ResponseData<String []> getExportedKey(String table);
+	public abstract ResponseData<String []> getExportedKey(String table);
 
 	
 	/**

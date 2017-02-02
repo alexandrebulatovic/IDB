@@ -33,8 +33,11 @@ implements ActionListener
 	/** Liste déroulantes contenant les tables disponibles.*/
 	private JComboBox<String> tableComboBox;
 	
-	/** Case à cocher pour forcer la suppression en cascade.*/
+	/** Case à cocher pour forcer la suppression malgré les références.*/
 	private JCheckBox cascadeCheckBox;
+	
+	/** Case à cocher pour forcer la suppression en chaine.*/
+	private JCheckBox chainCheckBox;
 	
 	/** Bouton pour envoyer la requête de suppression.*/
 	private JButton okButton;
@@ -74,9 +77,7 @@ implements ActionListener
 	@Override
 	public void windowActivated(WindowEvent e)
 	{
-		this.tableComboBox.removeAllItems();
-		this.fillComboBox();
-		this.enableOrDisableComponent();
+		this.refreshView();
 	}
 	
 	
@@ -97,6 +98,9 @@ implements ActionListener
 			this.bindAndAdd(this.cascadeCheckBox);
 		}
 
+		this.chainCheckBox = new JCheckBox("Réaction en chaîne.");
+		this.bindAndAdd(this.chainCheckBox);
+		
 		//Bouton
 		this.okButton = new JButton("Supprimer");
 		this.okButton.addActionListener(this);
@@ -133,13 +137,21 @@ implements ActionListener
 		if (this.isComplete()) {
 			String table = (String)this.tableComboBox.getSelectedItem();
 
-			Response response = this.control.dropTable(table, 
-					this.cascadeCheckBox != null ? this.cascadeCheckBox.isSelected() : false);
-			this.talk(response); 
+			Response response = this.control.dropTable(
+					table, 
+					this.cascadeCheckBox != null ? this.cascadeCheckBox.isSelected() : false,
+							this.chainCheckBox.isSelected());
+			
 			if (response.hasSuccess()) {
-				this.tableComboBox.removeItem(table);
-				this.enableOrDisableComponent();
+				if (this.chainCheckBox.isSelected()) {
+					this.refreshView();
+				}
+				else {
+					this.tableComboBox.removeItem(table);
+					this.enableOrDisableComponent();
+				}
 			}
+			this.talk(response); 
 		}
 	}
 
@@ -167,4 +179,14 @@ implements ActionListener
 		}
 	}
 	
+	
+	/**
+	 * Rafraichit l'IHM.
+	 */
+	private void refreshView()
+	{
+		this.tableComboBox.removeAllItems();
+		this.fillComboBox();
+		this.enableOrDisableComponent();
+	}
 }

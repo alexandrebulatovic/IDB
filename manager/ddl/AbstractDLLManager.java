@@ -1,6 +1,5 @@
 package manager.ddl;
 
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -105,6 +104,19 @@ implements I_DDLManager
 				(OUT_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
 	}
 	
+	@Override
+	public Response dropTable(String table, boolean cascade, boolean chain)
+	{
+		Response domino = null;
+		if (chain) {
+			domino = this.dropTableRecursive(table);
+		}
+		if (domino != null && ! domino.hasSuccess())
+			return domino;
+		else 
+			return this.dbmsDropTable(table, cascade);
+	}
+	
 	
 	@Override
 	public void closeStatement()
@@ -135,6 +147,37 @@ implements I_DDLManager
 		}
 		return result;
 	}
+	
+
+	/**
+	 * Supprime récursivement toutes les tables qui référencent $table.<br/>
+	 * $table n'est pas supprimée.
+	 * 
+	 * @param table : la table référencées par d'autres tables, null interdit.
+	 * @return une réponse personnalisée décrivant la suppression des tables
+	 * qui référencent $table.
+	 */
+	protected Response dropTableRecursive(String table) {
+		Response result = null; //Compilateur chiale
+		ResponseData<String []> exported = this.getExportedKey(table);
+		
+		if (! exported.hasSuccess())
+			result = exported;
+		else {
+			String [] tables = extractTableExported(exported.getCollection());
+			
+			for (String t : tables) {
+				result = this.dropTable(t, false, true);
+				if (! result.hasSuccess()) return result;
+			}
+			if (result == null) 
+				result = new Response(true, "Pas de table qui référence.");
+		}
+		return result;
+	}
+	
+	
+	protected abstract Response dbmsDropTable(String table, boolean cascade);
 	
 	
 	//Privées
@@ -249,6 +292,28 @@ implements I_DDLManager
 			result.add(row);
 		}
 		this.metaDataResult.close();
+		return result;
+	}
+	
+	
+	/**
+	 * @param list : collection obtenu sur l'appel de getExportedKey().
+	 * @return un ensemble de tables.
+	 */
+	private static String [] extractTableExported(List<String []> list)
+	{
+		List<String> sort = new ArrayList<String>();
+		
+		for (String [] tab : list) {
+			if (! sort.contains(tab[3]))
+				sort.add(tab[3]);
+		}
+		String [] result = new String [sort.size()];
+		int i = 0;
+		for (String table : sort) {
+			result[i] = table;
+			i++;
+		}
 		return result;
 	}
 }

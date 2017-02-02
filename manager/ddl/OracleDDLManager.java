@@ -62,14 +62,6 @@ extends AbstractDLLManager
 		}
 		return rep;
 	}
-
-
-	@Override
-	public Response dropTable(String table, boolean cascade)
-	{
-		String sql = "DROP TABLE " + table + (cascade ? " CASCADE CONSTRAINT" : "");
-		return this.executeUpdate(sql, "Table supprimée.");
-	}
 	
 
 	@Override
@@ -135,6 +127,15 @@ extends AbstractDLLManager
 
 			return attributes;
 		}
+
+	
+	
+	@Override
+	protected Response dbmsDropTable(String table, boolean cascade) 
+	{
+		String sql = "DROP TABLE " + table + (cascade ? " CASCADE CONSTRAINT" : "");
+		return this.executeUpdate(sql, "Table supprimée.");
+	}
 
 
 	//Privées

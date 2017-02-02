@@ -1,7 +1,5 @@
 package ddl;
 
-
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +9,6 @@ import business.Attribute;
 import business.Table;
 
 import manager.I_DDLManager;
-import manager.ddl.OracleDDLManager;
 import useful.Response;
 import useful.ResponseData;
 
@@ -125,14 +122,19 @@ public class DDLController
 	
 	
 	/**
-	 * Envoie $table au DDLManager dans l'optique de la supprimer.
+	 * Supprime $table, si c'est possible.
 	 * 
-	 * @param table : une table à supprimé. L'objet peut être erroné.
-	 * @return CustomizedResponse
+	 * @param table : une table à supprimer, null interdit.
+	 * @param cascade : vrai si et seulement si $table peut être supprimée 
+	 * alors qu'elle est référencée par d'autres tables, faux sinon.
+	 * @param chain : vrai si et seulement si toutes les tables qui référencent
+	 * $table doivent être supprimées aussi.
+	 * @return une réponse personnalisée décrivant si la suppression de toutes
+	 * les tables a réussi ou non.
 	 */
-	public Response dropTable(String table, boolean cascade)
+	public Response dropTable(String table, boolean cascade, boolean chain)
 	{
-		return this.manager.dropTable(table, cascade);
+		return this.manager.dropTable(table, cascade, chain);
 	}
 	
 	

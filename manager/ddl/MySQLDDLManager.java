@@ -50,16 +50,16 @@ extends AbstractDLLManager
 
 	
 	@Override
-	public Response dropTable(String table, boolean cascade) 
-	{
-		String sql = "DROP TABLE " + table + (cascade ? " CASCADE" : "");
-		return this.executeUpdate(sql, "Table supprimée.");
-	}
-
-	
-	@Override
 	public List<Attribute> getAttributes(String table) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	protected Response dbmsDropTable(String table, boolean cascade) 
+	{
+		String sql = "DROP TABLE " + table + (cascade ? "CASCADE" : "") ;
+		return this.executeUpdate(sql, "Table supprimée.");
 	}
 }
