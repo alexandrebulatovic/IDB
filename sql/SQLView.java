@@ -108,7 +108,7 @@ implements ActionListener
 
 	/** Pop-up pour afficher une table sous la forme d'un objet {@code JTable}.
 	 * @param table : {@code JTable} à afficher. */
-	public void showTable(JTable table)
+	public void showTable(final JTable table)
 	{
 		// cette portion de code sert à rendre la JOptionPane redimensionnable
 		table.addHierarchyListener(new HierarchyListener() { 
