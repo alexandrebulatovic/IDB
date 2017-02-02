@@ -96,23 +96,25 @@ public class DDLController
 	 */
 	public void createTable(Table table)
 	{
+		//TODO : déplacer le talk vers l'IHM
 		Response response = this.manager.createTable(table.toCreate());
 		if (response.hasSuccess()) {
 			this.createGUI.resetView();
 		}
-		this.createGUI.talk(response.toString());
+		this.createGUI.talk(response);
 	}
 	
 	/**
 	 * Modifie une table existante
 	 */
 	public void modifyTable(Table table,Table tableSource) {
+		//TODO : déplacer le talk vers l'IHM
 		ArrayList<Response> responses = this.manager.modifyTable(table.toModify(tableSource));
 		boolean error = false;
 		for (Response response : responses){
 			if (!response.hasSuccess()){
 				error = true;
-				this.modifyGUI.talk(response.toString());
+				this.modifyGUI.talk(response);
 			}
 		}
 		if (!error) {
