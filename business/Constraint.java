@@ -94,9 +94,6 @@ public abstract class Constraint
 	 * @return la liste des attributs visés par la contrainte.
 	 */
 	public List<Attribute> getAttributes(){
-		if (this.attributes == null){
-			this.attributes = new ArrayList<Attribute>();
-		}
 		return this.attributes;
 	}
 
