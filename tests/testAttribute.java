@@ -65,10 +65,10 @@ public class testAttribute {
 		nn1.addAttribute(attPrincipal);
 		un1.addAttribute(attPrincipal);
 		
-		fk1.createName();
-		pk1.createName();
-		nn1.createName();
-		un1.createName();
+		fk1.createAndSetName();
+		pk1.createAndSetName();
+		nn1.createAndSetName();
+		un1.createAndSetName();
 		String lesRequettes = "";
 		String lesRequettesAttendus = "ALTER TABLE tableBidon\n"
 				+ "ADD CONSTRAINT un_tableBidon_attTest UNIQUE(attTest);\n"
