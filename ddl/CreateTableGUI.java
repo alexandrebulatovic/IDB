@@ -27,130 +27,12 @@ import useful.MaxLengthTextDocument;
  * @author MAURY Adrian
  */
 public class CreateTableGUI
-extends BasicGUI
+extends CreateModifyProperties
 implements ActionListener, ItemListener
 {
 	// ==========================VARIABLES========================
 
-	private static final String FONT = null;
-
-	/** Controleur lié à l'IHM. */
-	protected DDLController control;
-
-	/** Préfixe des messages d'erreurs. */
-	private String errorAttribute = "ERREUR : ";
-
-	/** Préfixe des messages de succès. */
-	private String succesAttribute = "SUCCES : ";
-
-	private ResponseData<String> res;
-	/** Contenu de la comboBox du type d'un attribut. */
-	private Object[] types;
-
-	/** Model de ComboBox pour les tables des clés étrangères. */
-	private DefaultComboBoxModel foreignKeyTableComboBoxModel;
-
-	/** Model de ComboBox pour les attributs des clés étrangères. */
-	private DefaultComboBoxModel foreignKeyAttributeComboBoxModel;
-
-	/** Model de la Table pour gérer les lignes/colonnes. */
-	protected AttributesAbstractTableModel  models;
-
-	/** Tableau contenant les attributs. */
-	private JTable table;
-
-	/** ScrollPane du Tableau. */
-	private JScrollPane scrollPane;
 	
-	/** Etat de la modification */
-	private boolean updateState;
-
-	/** Bloquage de caractères interdits pour les String */
-	private KeyAdapter stringKey;
-
-	/** Bloquage de caractères interdits pour les int */
-	private KeyAdapter intKey;
-
-	
-	// ==========================FIELDS========================
-	/** Boite de saisie du nom de la table. */
-	protected JTextField tableNameField;
-
-	/** Boite de saisie du nom de l'attribut. */
-	private JTextField attributeNameField;
-
-	/** Boite de saisie de la taille de l'attribut. */
-	private JTextField attributeSizeField;
-
-	
-	// ==========================LABELS========================
-	/** Etiquette pour le nom de la Table. */
-	private JLabel tableNameLabel;
-
-	/** Etiquette pour le titre Table. */
-	private JLabel tableLabel;
-
-	/** Etiquette pour le titre Attribut. */
-	private JLabel attributeLabel;
-
-
-	// ==========================BUTTONS========================
-	/** Bouton 'Reset'. */
-	private JButton resetButton;
-
-	/** Bouton "UP". */
-	private JButton upPositionAttributeButton;
-
-	/** Bouton "DOWN". */
-	private JButton downPositionAttributeButton;
-	
-	/** Bouton 'Ajouter l'attribut'. */
-	private JButton attributeButton;
-
-	/** Bouton 'Créer la table'. */
-	protected JButton createTableButton;
-
-	/** Bouton 'Modifier attribut'. */
-	private JButton updateAttributeButton;
-
-	/** Bouton 'Supprimer attribut'. */
-	private JButton deleteAttributeButton;
-
-	/** Bouton "Modifier". */
-	private JButton confirmUpdateAttributeButton;
-
-	/** Bouton "Annuler la modification". */
-	private JButton cancelUpdateAttributeButton;
-
-
-	// ==========================PANELS========================
-	/** Panel Contenant le tableau. */
-	private JPanel panelAttributes;
-
-
-	// ==========================COMBOBOX========================
-	/** ComboBox du choix du type de l'attribut. */
-	private JComboBox<String> attributeTypeComboBox;
-
-	/** ComboBox du choix de la table pour les clés etrangères. */
-	private JComboBox<String> fkAtrributeNameComboBox;
-
-	/** ComboBox du choix du nom de l'attribut pour les clés etrangères. */
-	private JComboBox<String> fkTableNameComboBox;
-
-
-	// ==========================CHECKBOXS========================
-	/** Case à cocher pour la contrainte NotNull */
-	private JCheckBox notNullCheckBox;
-
-	/** Case à cocher pour la contrainte Unique */
-	private JCheckBox uniqueCheckBox;
-
-	/** Case à cocher pour la contrainte PrimaryKey */
-	private JCheckBox primaryKeyCheckBox;
-
-	/** Case à cocher pour la contrainte ForeignKey */
-	private JCheckBox foreignKeyCheckBox;
 
 	
 
@@ -161,7 +43,7 @@ implements ActionListener, ItemListener
 	 */
 	public CreateTableGUI(DDLController control)
 	{
-		super("Création de table",null, 900, 550, 20);
+		super();
 		this.control = control;
 		this.handleComponents();
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
