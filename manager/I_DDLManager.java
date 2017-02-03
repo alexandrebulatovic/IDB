@@ -46,7 +46,7 @@ public interface I_DDLManager
 	 * @param chain : vrai si et seulement si toutes les tables qui référencent
 	 * $table doivent être supprimées aussi.
 	 * @return une réponse personnalisée décrivant si la suppression de toutes
-	 * les tables a réussi ou non.
+	 * les tables concernées a réussi ou non.
 	 */
 	public abstract Response dropTable(String table, boolean cascade, boolean chain);
 

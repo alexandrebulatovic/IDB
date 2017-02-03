@@ -107,14 +107,14 @@ implements I_DDLManager
 	@Override
 	public Response dropTable(String table, boolean cascade, boolean chain)
 	{
-		Response domino = null;
 		if (chain) {
+			Response domino;
 			domino = this.dropTableRecursive(table);
+			if (! domino.hasSuccess()) {
+				return domino;
+			}
 		}
-		if (domino != null && ! domino.hasSuccess())
-			return domino;
-		else 
-			return this.dbmsDropTable(table, cascade);
+		return this.dbmsDropTable(table, cascade);
 	}
 	
 	
@@ -177,6 +177,14 @@ implements I_DDLManager
 	}
 	
 	
+	/**
+	 * Supprime $table de la base de données.
+	 * 
+	 * @param table : la table à supprimer, null interdit.
+	 * @param cascade : vrai si et seulement si $table peut être supprimée 
+	 * alors qu'elle est référencée par d'autres tables, faux sinon.
+	 * @return une réponse personnalisée décrivant si $table a pu être supprimée ou non.
+	 */
 	protected abstract Response dbmsDropTable(String table, boolean cascade);
 	
 	
