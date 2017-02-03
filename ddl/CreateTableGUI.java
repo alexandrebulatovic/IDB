@@ -1,8 +1,5 @@
 package ddl;
 
-import gui.BasicGUI;
-import gui.ListeningGUI;
-
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.util.List;
@@ -11,10 +8,8 @@ import java.awt.Font;
 import javax.swing.*;
 
 import business.Attribute;
-import business.Table;
 import useful.FieldsKeyAdapter;
-import useful.Response;
-import useful.ResponseData;
+
 import useful.MaxLengthTextDocument;
 
 /**
@@ -184,7 +179,7 @@ implements ActionListener, ItemListener
 	 */
 	public void resetView()
 	{
-		this.setAttributesValues("nomAttribut", "VARCHAR2", "Taille", false, false, false, false, "nomTable", "nomAttribut");
+		this.setAttributesValues("nomAttribut", "VARCHAR2", "Taille", false, false);
 		this.tableNameField.setText("");
 		this.talk("");
 		this.setEnableButtonUpdateDeleteUpDown(false);;
@@ -200,7 +195,6 @@ implements ActionListener, ItemListener
 	public void setView(List<Attribute> attributes, String tableName) {	
 		this.resetView();
 		for (Attribute a : attributes){
-//			System.out.println(a.toString());
 			this.addAttributeToTable(a);
 		}
 		this.setTableName(tableName);
@@ -303,7 +297,7 @@ implements ActionListener, ItemListener
 	 */
 	private boolean isValidateAttribute(Attribute a){
 			if(!(a.checkSizeAttributes()>=0)){
-				this.talk(this.ERROR_ATTRIBUTE +a.attributeSizeError(a.checkSizeAttributes()));
+				this.talk(ERROR_ATTRIBUTE +a.attributeSizeError(a.checkSizeAttributes()));
 				return false;
 			}else if(this.models.isDuplicateAttributeName(a) && !(this.updateState)){
 				this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
@@ -383,15 +377,11 @@ implements ActionListener, ItemListener
 	/**
 	 * Modfifie tous les champs d'un attribut.
 	 * 
-	 * @param name : une chaine String
-	 * @param type : une chaine String
-	 * @param size : une chaine String
-	 * @param notNull : un boolean
-	 * @param unique : un boolean
-	 * @param pk : un boolean
-	 * @param fk : un boolean
-	 * @param fkTable : une chaine String
-	 * @param fkAttribute : une chaine String
+	 * @param name
+	 * @param type
+	 * @param size
+	 * @param notNull
+	 * @param pk
 	 */
 	private void setAttributesValues(String name, String type, String size, boolean notNull, boolean pk)
 	{
@@ -457,40 +447,28 @@ implements ActionListener, ItemListener
 	}
 
 	/**
-	 * Détermine ce qu'il se passe lors de la sélection d'une Table
-	 * dans la ComboBox de sélection des tables pour une clé étrangère.
-	 */
-	private void selectForeignKeyTableComboBoxAction() {
-		Object selected = this.fkTableNameComboBox.getSelectedItem();
-		if(!(selected==null)){
-			if(!("Nom Attribut".equals(selected.toString()))){
-				this.initComboBoxFkAttributeName(selected.toString());
-			}
-		}
-	}
-
-	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "Ajouter l'attribut".
 	 */
-	private void addAttributeButtonAction()
-	{
-		if(isCompleteAttribute()){
-		Attribute a = this.models.createAttribute(
-				attributeNameField.getText(),
-				(String)attributeTypeComboBox.getSelectedItem(), 
-				attributeSizeField.getText(), 
-				this.notNullCheckBox.isSelected(), 
-				this.uniqueCheckBox.isSelected(),
-				this.primaryKeyCheckBox.isSelected(),
-				this.foreignKeyCheckBox.isSelected(),
-				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
-				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
-		if(isValidateAttribute(a)){
-			this.addAttributeToTable(a);
-		}
-		}
-	}
+	//TODO
+//	private void addAttributeButtonAction()
+//	{
+//		if(isCompleteAttribute()){
+//		Attribute a = this.models.createAttribute(
+//				attributeNameField.getText(),
+//				(String)attributeTypeComboBox.getSelectedItem(), 
+//				attributeSizeField.getText(), 
+//				this.notNullCheckBox.isSelected(), 
+//				this.uniqueCheckBox.isSelected(),
+//				this.primaryKeyCheckBox.isSelected(),
+//				this.foreignKeyCheckBox.isSelected(),
+//				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
+//				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
+//		if(isValidateAttribute(a)){
+//			this.addAttributeToTable(a);
+//		}
+//		}
+//	}
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
@@ -503,46 +481,48 @@ implements ActionListener, ItemListener
 		this.setEnableButtonUpdateDeleteUpDown(false);
 	}
 
-	/**
-	 * Détermine ce qu'il se passe lors d'une action sur
-	 * le bouton "Modifier l'attribut".
-	 */
-	private void updateAttributeButtonAction()
-	{
-		this.talk("");
-		int rowIndex = this.table.getSelectedRow();
-		Attribute a = this.models.getAttributeAt(rowIndex);
-		this.setAttributesValues(a.name, a.type, Integer.toString(a.size), a.notNull, a.unique, a.primaryKey, a.foreignKey, a.fkTable,a.fkAttribute);
-		this.updateState=true;
-		this.setDisableAllExceptAttribute(false);
-		this.setVisibleEnabledUpdateButtons(true);
-	}
+	//TODO
+//	/**
+//	 * Détermine ce qu'il se passe lors d'une action sur
+//	 * le bouton "Modifier l'attribut".
+//	 */
+//	private void updateAttributeButtonAction()
+//	{
+//		this.talk("");
+//		int rowIndex = this.table.getSelectedRow();
+//		Attribute a = this.models.getAttributeAt(rowIndex);
+//		this.setAttributesValues(a.name, a.type, Integer.toString(a.size), a.notNull, a.unique, a.primaryKey, a.foreignKey, a.fkTable,a.fkAttribute);
+//		this.updateState=true;
+//		this.setDisableAllExceptAttribute(false);
+//		this.setVisibleEnabledUpdateButtons(true);
+//	}
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "Modifier".
 	 */
-	private void confirmUpdateAttributeButtonAction(){
-		if(isCompleteAttribute()){
-		Attribute a = this.models.createAttribute(this.attributeNameField.getText(),
-				(String)this.attributeTypeComboBox.getSelectedItem(), 
-				this.attributeSizeField.getText(), 
-				this.notNullCheckBox.isSelected(), 
-				this.uniqueCheckBox.isSelected(),
-				this.primaryKeyCheckBox.isSelected(),
-				this.foreignKeyCheckBox.isSelected(),
-				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
-				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
-		if(isValidateAttribute(a)){
-			this.models.setAttributeValueAt(this.table.getSelectedRow(),a);
-			this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
-			this.updateState=false;
-			this.clearAttribute();
-			this.setDisableAllExceptAttribute(true);
-			this.setVisibleEnabledUpdateButtons(false);
-		}
-		}
-	}
+	//TODO
+//	private void confirmUpdateAttributeButtonAction(){
+//		if(isCompleteAttribute()){
+//		Attribute a = this.models.createAttribute(this.attributeNameField.getText(),
+//				(String)this.attributeTypeComboBox.getSelectedItem(), 
+//				this.attributeSizeField.getText(), 
+//				this.notNullCheckBox.isSelected(), 
+//				this.uniqueCheckBox.isSelected(),
+//				this.primaryKeyCheckBox.isSelected(),
+//				this.foreignKeyCheckBox.isSelected(),
+//				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
+//				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
+//		if(isValidateAttribute(a)){
+//			this.models.setAttributeValueAt(this.table.getSelectedRow(),a);
+//			this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
+//			this.updateState=false;
+//			this.clearAttribute();
+//			this.setDisableAllExceptAttribute(true);
+//			this.setVisibleEnabledUpdateButtons(false);
+//		}
+//		}
+//	}
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
@@ -560,7 +540,7 @@ implements ActionListener, ItemListener
 	{
 		Object o = e.getSource();
 		if (o == this.attributeButton) {
-			this.addAttributeButtonAction();
+		//	this.addAttributeButtonAction();
 		}
 		if (o == this.createTableButton) {
 			if(this.isCompleteTable()){
@@ -571,7 +551,7 @@ implements ActionListener, ItemListener
 			this.deleteAttributeButtonAction();
 		}
 		if (o == this.updateAttributeButton) {
-			this.updateAttributeButtonAction();
+		//	this.updateAttributeButtonAction();
 		}
 		if (o == this.resetButton) {
 			this.resetView();
@@ -585,11 +565,8 @@ implements ActionListener, ItemListener
 		if (o == this.attributeTypeComboBox) {
 			selectSizeDateComboBoxAction();
 		}
-		if (o == this.fkTableNameComboBox) {
-			selectForeignKeyTableComboBoxAction();
-		}
 		if (o== this.confirmUpdateAttributeButton){
-			this.confirmUpdateAttributeButtonAction();
+			//TODO this.confirmUpdateAttributeButtonAction();
 		}
 		if (o== this.cancelUpdateAttributeButton){
 			this.cancelUpdateAttributeButtonAction();
@@ -597,7 +574,7 @@ implements ActionListener, ItemListener
 	}
 
 	protected void createTableButtonAction() {
-		this.control.createTable(this.getTable());
+		//TODO this.control.createTable(this.getTable());
 	}
 
 	/**
@@ -605,11 +582,12 @@ implements ActionListener, ItemListener
 	 * les éléments de la vue
 	 * @return
 	 */
-	protected Table getTable() {
-		return new Table(
-				this.tableNameField.getText(),
-				this.models.getAttributes());
-	}
+	//TODO
+//	protected Table getTable() {
+//		return new Table(
+//				this.tableNameField.getText(),
+//				this.models.getAttributes());
+//	}
 
 	@Override
 	public void itemStateChanged(ItemEvent item)
@@ -621,13 +599,6 @@ implements ActionListener, ItemListener
 				this.setEnabledSelectedNotNullCheckBox(false);
 			}else if(status == ItemEvent.DESELECTED){
 				this.setEnabledSelectedNotNullCheckBox(true);
-			}
-		}
-		if(obj==this.foreignKeyCheckBox){
-			if (status == ItemEvent.SELECTED){
-				this.initComboBoxFkTableAttributte(true);
-			}else if(status == ItemEvent.DESELECTED){
-				this.initComboBoxFkTableAttributte(false);
 			}
 		}
 	}
