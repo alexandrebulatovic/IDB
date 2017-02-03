@@ -13,6 +13,7 @@ import javax.swing.*;
 import business.Attribute;
 import business.Table;
 import useful.FieldsKeyAdapter;
+import useful.Response;
 import useful.ResponseData;
 import useful.MaxLengthTextDocument;
 
@@ -72,8 +73,8 @@ implements ActionListener, ItemListener
 
 		this.attributeNameField = new JTextField();
 		this.bindAndAdd(this.attributeNameField,10,true);
-		this.types = this.control.getAttributeTypes();
-		this.attributeTypeComboBox = new JComboBox<String>((String[])types);
+		String [] types = this.control.getAttributeTypes();
+		this.attributeTypeComboBox = new JComboBox<String>(types);
 		this.attributeTypeComboBox.addActionListener(this);
 		this.bindAndAdd(this.attributeTypeComboBox,10,true);
 
@@ -464,7 +465,10 @@ implements ActionListener, ItemListener
 	 */
 	private void initComboBoxFkTableAttributte(boolean bool) {
 		if (bool){
-			this.res = control.getTables();
+			/*
+			 * TODO : peut être pas au bon endroit
+			 */
+			ResponseData<String> res = control.getTables();
 			this.foreignKeyTableComboBoxModel.removeAllElements();
 			for (String s : res.getCollection()) {
 				this.foreignKeyTableComboBoxModel.addElement(s);
