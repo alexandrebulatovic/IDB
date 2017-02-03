@@ -11,8 +11,8 @@ public class ForeignKeyConstraint extends Constraint {
 	/**
 	 * La table ou pointe la clé étrangère
 	 */
-	private Table tableDestination;
 	
+	private Table tableDestination;
 	private List<Attribute> attributesDestination;
 	
 	public ForeignKeyConstraint(){
@@ -57,6 +57,10 @@ public class ForeignKeyConstraint extends Constraint {
 	public void setTableDestination(Table table) {
 		this.tableDestination = table;
 		
+	}
+	
+	public Table getTableDestination(){
+		return this.tableDestination;
 	}
 
 }

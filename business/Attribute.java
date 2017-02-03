@@ -122,6 +122,18 @@ public class Attribute
 		return false;
 	}
 	
+	public ForeignKeyConstraint getFk(){
+		if (this.isFk()){
+			for (Constraint c : constraints){
+				if (c instanceof ForeignKeyConstraint){
+					return (ForeignKeyConstraint) c;
+				}
+			}
+		}
+		return null;
+
+	}
+	
 	
 	/** 
 	 * Définit le nom de la table de $this comme étant $name.

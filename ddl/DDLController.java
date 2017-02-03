@@ -192,7 +192,7 @@ public class DDLController
 		for (String[] att : manager.getAttributes(table).getCollection()){
 			
 			attributs.add(new Attribute(att[0], att[2], Integer.parseInt(att[1])));
-		}TODO
+		}
 		return attributs;
 	}
 
