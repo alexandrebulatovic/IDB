@@ -34,12 +34,6 @@ public class CreateModifyProperties extends BasicGUI{
 	/** Préfixe des messages de succès. */
 	protected static final String SUCCES_ATTRIBUTE = "SUCCES : ";
 
-	/** Model de ComboBox pour les tables des clés étrangères. */
-	protected DefaultComboBoxModel<String> foreignKeyTableComboBoxModel;
-
-	/** Model de ComboBox pour les attributs des clés étrangères. */
-	protected DefaultComboBoxModel<String> foreignKeyAttributeComboBoxModel;
-
 	/** Model de la Table pour gérer les lignes/colonnes. */
 	protected AttributesAbstractTableModel  models;
 
@@ -119,25 +113,13 @@ public class CreateModifyProperties extends BasicGUI{
 	/** ComboBox du choix du type de l'attribut. */
 	protected JComboBox<String> attributeTypeComboBox;
 
-	/** ComboBox du choix de la table pour les clés etrangères. */
-	protected JComboBox<String> fkAtrributeNameComboBox;
-
-	/** ComboBox du choix du nom de l'attribut pour les clés etrangères. */
-	protected JComboBox<String> fkTableNameComboBox;
-
-
 	// ==========================CHECKBOXS========================
 	/** Case à cocher pour la contrainte NotNull */
 	protected JCheckBox notNullCheckBox;
 
-	/** Case à cocher pour la contrainte Unique */
-	protected JCheckBox uniqueCheckBox;
-
 	/** Case à cocher pour la contrainte PrimaryKey */
 	protected JCheckBox primaryKeyCheckBox;
 
-	/** Case à cocher pour la contrainte ForeignKey */
-	protected JCheckBox foreignKeyCheckBox;
 
 	@Override
 	public boolean isComplete() {

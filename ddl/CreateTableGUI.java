@@ -84,31 +84,10 @@ implements ActionListener, ItemListener
 		this.notNullCheckBox = new JCheckBox("NOT NULL");
 		this.bindAndAdd(this.notNullCheckBox,9,true);
 
-		this.uniqueCheckBox = new JCheckBox("UNIQUE");
-		this.bindAndAdd(this.uniqueCheckBox,11,true);
-
 		this.primaryKeyCheckBox = new JCheckBox("PRIMARY KEY");
 		this.primaryKeyCheckBox.addItemListener(this);
 		this.bindAndAdd(this.primaryKeyCheckBox,7,true);
 
-		this.foreignKeyCheckBox = new JCheckBox("FOREIGN KEY");
-		this.foreignKeyCheckBox.addItemListener(this);
-		this.bindAndAdd(this.foreignKeyCheckBox,7,true);
-
-		this.foreignKeyTableComboBoxModel = new DefaultComboBoxModel<String>();
-		this.foreignKeyTableComboBoxModel.addElement("Nom Table");
-		this.fkTableNameComboBox = new JComboBox<String>(foreignKeyTableComboBoxModel);
-		this.fkTableNameComboBox.addActionListener(this);
-		this.fkTableNameComboBox.setEnabled(false);
-		this.bindAndAdd(this.fkTableNameComboBox,10,true);
-
-		this.foreignKeyAttributeComboBoxModel = new DefaultComboBoxModel<String>();
-		this.foreignKeyAttributeComboBoxModel.addElement("Nom Attribut");
-		this.fkAtrributeNameComboBox = new JComboBox<String>(foreignKeyAttributeComboBoxModel);
-		this.fkAtrributeNameComboBox.addActionListener(this);
-		this.fkAtrributeNameComboBox.setEnabled(false);
-		this.bindAndAdd(this.fkAtrributeNameComboBox,10,false);
-		this.increaseTop(10);
 
 		this.attributeButton = new JButton("Ajouter l'attribut") ;
 		this.attributeButton.addActionListener(this);
