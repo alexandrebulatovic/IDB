@@ -1,6 +1,5 @@
 package ddl;
 
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 
@@ -17,6 +16,7 @@ import javax.swing.JTextField;
 import gui.BasicGUI;
 import useful.ResponseData;
 
+@SuppressWarnings("serial")
 public class CreateModifyProperties extends BasicGUI{
 	
 	protected CreateModifyProperties() {
@@ -39,10 +39,10 @@ public class CreateModifyProperties extends BasicGUI{
 	protected Object[] types;
 
 	/** Model de ComboBox pour les tables des clés étrangères. */
-	protected DefaultComboBoxModel foreignKeyTableComboBoxModel;
+	protected DefaultComboBoxModel<String> foreignKeyTableComboBoxModel;
 
 	/** Model de ComboBox pour les attributs des clés étrangères. */
-	protected DefaultComboBoxModel foreignKeyAttributeComboBoxModel;
+	protected DefaultComboBoxModel<String> foreignKeyAttributeComboBoxModel;
 
 	/** Model de la Table pour gérer les lignes/colonnes. */
 	protected AttributesAbstractTableModel  models;
