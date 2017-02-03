@@ -29,10 +29,10 @@ public class CreateModifyProperties extends BasicGUI{
 	protected DDLController control;
 
 	/** Préfixe des messages d'erreurs. */
-	protected String errorAttribute = "ERREUR : ";
+	protected static final String ERROR_ATTRIBUTE = "ERREUR : ";
 
 	/** Préfixe des messages de succès. */
-	protected String succesAttribute = "SUCCES : ";
+	protected static final String SUCCES_ATTRIBUTE = "SUCCES : ";
 
 	protected ResponseData<String> res;
 	/** Contenu de la comboBox du type d'un attribut. */
