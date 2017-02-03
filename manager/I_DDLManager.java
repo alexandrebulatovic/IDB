@@ -126,8 +126,6 @@ public interface I_DDLManager
 	 */
 	public abstract ResponseData<String[]> getAttributes(String table);
 	
-	
-	public abstract List<Attribute> getAttributess(String table);
 
 
 	/**

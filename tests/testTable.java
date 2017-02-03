@@ -1,10 +1,15 @@
-package business;
+package tests;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
 import org.junit.*;
+
+import business.Attribute;
+import business.Constraint;
+import business.PrimaryKeyConstraint;
+import business.Table;
 
 public class testTable {
 

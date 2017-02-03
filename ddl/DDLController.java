@@ -93,12 +93,19 @@ public class DDLController
 	 */
 	public void createTable(Table table)
 	{
-		//TODO : déplacer le talk vers l'IHM
-		Response response = this.manager.createTable(table.toCreate());
-		if (response.hasSuccess()) {
+		boolean erreur = false;
+		for (String sql : table.toCreate()){
+			Response response = this.manager.createTable(sql);
+			if (!response.hasSuccess()){
+				erreur = true;
+			}
+			this.createGUI.talk(response);
+		}
+		
+		if (!erreur) {
 			this.createGUI.resetView();
 		}
-		this.createGUI.talk(response);
+		
 	}
 	
 	/**
@@ -181,7 +188,12 @@ public class DDLController
 
 	
 	public List<Attribute> getAttributes(String table) {
-		return manager.getAttributess(table);
+		ArrayList<Attribute> attributs = new ArrayList<Attribute>();
+		for (String[] att : manager.getAttributes(table).getCollection()){
+			
+			attributs.add(new Attribute(att[0], att[2], Integer.parseInt(att[1])));
+		}TODO
+		return attributs;
 	}
 
 

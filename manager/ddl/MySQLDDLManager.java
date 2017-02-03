@@ -48,12 +48,6 @@ extends AbstractDLLManager
 		return null;
 	}
 
-	
-	@Override
-	public List<Attribute> getAttributess(String table) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 	@Override
