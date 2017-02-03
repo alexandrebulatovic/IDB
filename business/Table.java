@@ -33,6 +33,7 @@ public class Table {
 	 */
 	protected Table(){
 		this.attributes = new LinkedHashSet<Attribute>();
+		this.constraints = new ArrayList<Constraint>();
 	}
 	
 	
@@ -91,6 +92,10 @@ public class Table {
 	}
 	
 	
+	public void setConstraints(ArrayList<Constraint> constraints){
+		this.constraints = constraints;
+	}
+	
 	//Méthodes
 	@Override
 	public String toString()
@@ -112,20 +117,28 @@ public class Table {
 	 * 
 	 * @return String
 	 */
-	public String toCreate()
-	{
-		StringBuilder result = new StringBuilder();
-
-		result.append(this.tableNameToSQL());
-		result.append("\n(\n");
-		result.append(this.attributesToSQL());
-		if (this.hasPrimaryKey()) {
-			result.append(",\n");
-			result.append(this.primaryKeyToSQL());
+	public ArrayList<String> toCreate(){
+		ArrayList<String> sqls = new ArrayList<String>();
+		
+		String sql = this.tableNameToSQL() + "\n(\n";
+		int i=0;
+		for (Attribute att : attributes){
+			if (i!=0){
+				sql+=",\n";
+			}
+			sql += att.toString();
+			i++;
 		}
-		result.append("\n)");
-		return result.toString();
+		sqls.add(sql+"\n);");
+		
+		for (Constraint constraint : constraints){
+			sqls.add(constraint.toAddConstraintSQL()+";\n");
+		}
+		return sqls;
 	}
+	
+	
+	
 	
 	/**
 	 * Retourne les requetes SQL qui modifient
@@ -169,85 +182,86 @@ public class Table {
 	 * @param results
 	 */
 	private void modifyAttributes(Table tableSource, ArrayList<String> results) {
-		for (Attribute[] attribute : attributesToChange(tableSource)){
-			Attribute attSrc = attribute[0];
-			Attribute attDest = attribute[1];
-			if (attSrc.foreignKey != attDest.foreignKey){
-				StringBuilder sql = new StringBuilder();
-				sql.append("ALTER TABLE ");
-				sql.append(this.name);
-				sql.append("\n");
-				if (attSrc.foreignKey){
-					sql.append("DROP ");
-					sql.append(attSrc.toSQLConstraintName("fk"));
-
-				}else{
-					sql.append("ADD ");
-					sql.append(attDest.toSQLConstraintName("fk"));
-					sql.append(attDest.toSQLConstraintType(" FOREIGN KEY", ""));
-					sql.append(" ");
-					sql.append(attDest.toSQLReferences());
-				}
-				results.add(sql.toString());
-			}
-			if (attSrc.unique != attDest.unique){
-				StringBuilder sql = new StringBuilder();
-				sql.append("ALTER TABLE ");
-				sql.append(this.name);
-				sql.append("\n");
-				if (attSrc.unique){
-					sql.append("DROP ");
-					sql.append(attSrc.toSQLConstraintName("un"));
-				}
-				else{
-					sql.append("ADD ");
-					sql.append(attSrc.toSQLConstraintName("un"));
-					sql.append(attDest.toSQLConstraintType(" UNIQUE",""));
-					sql.append(" ");
-				}
-				results.add(sql.toString());
-			}
-			if (attSrc.primaryKey != attDest.primaryKey){
-				StringBuilder sql = new StringBuilder();
-				if (this.hasPrimaryKey()){
-					sql.append("ALTER TABLE ");
-					sql.append(this.name);
-					sql.append("\nDROP CONSTRAINT pk_");
-					sql.append(this.name);
-					results.add(sql.toString());
-				}
-				
-				if (this.hasPrimaryKey()){
-					sql = new StringBuilder();
-					sql.append("ALTER TABLE ");
-					sql.append(this.name);
-					sql.append("\nADD ");
-					sql.append(this.primaryKeyToSQL());
-					results.add(sql.toString());
-				}
-
-				
-			}
-			if ((attSrc.size != attDest.size) || (!attSrc.type.equals(attDest.type))){
-				StringBuilder sql = new StringBuilder();
-				//ALTER TABLE this.name
-				//ALTER COLUMN attSrc.name
-				sql.append("ALTER TABLE ");
-				sql.append(this.name);
-				sql.append("\nMODIFY ");
-				sql.append(attSrc.name);
-				sql.append(" ");
-				sql.append(attDest.type);
-				if (!attDest.type.equals("DATE")){
-					sql.append(" (");
-					sql.append(attDest.size);
-					sql.append(")");
-				}
-
-				results.add(sql.toString());
-				
-			}
-		}
+		
+//		for (Attribute[] attribute : attributesToChange(tableSource)){
+//			Attribute attSrc = attribute[0];
+//			Attribute attDest = attribute[1];
+//			if (attSrc.foreignKey != attDest.foreignKey){
+//				StringBuilder sql = new StringBuilder();
+//				sql.append("ALTER TABLE ");
+//				sql.append(this.name);
+//				sql.append("\n");
+//				if (attSrc.foreignKey){
+//					sql.append("DROP ");
+//					sql.append(attSrc.toSQLConstraintName("fk"));
+//
+//				}else{
+//					sql.append("ADD ");
+//					sql.append(attDest.toSQLConstraintName("fk"));
+//					sql.append(attDest.toSQLConstraintType(" FOREIGN KEY", ""));
+//					sql.append(" ");
+//					sql.append(attDest.toSQLReferences());
+//				}
+//				results.add(sql.toString());
+//			}
+//			if (attSrc.unique != attDest.unique){
+//				StringBuilder sql = new StringBuilder();
+//				sql.append("ALTER TABLE ");
+//				sql.append(this.name);
+//				sql.append("\n");
+//				if (attSrc.unique){
+//					sql.append("DROP ");
+//					sql.append(attSrc.toSQLConstraintName("un"));
+//				}
+//				else{
+//					sql.append("ADD ");
+//					sql.append(attSrc.toSQLConstraintName("un"));
+//					sql.append(attDest.toSQLConstraintType(" UNIQUE",""));
+//					sql.append(" ");
+//				}
+//				results.add(sql.toString());
+//			}
+//			if (attSrc.primaryKey != attDest.primaryKey){
+//				StringBuilder sql = new StringBuilder();
+//				if (this.hasPrimaryKey()){
+//					sql.append("ALTER TABLE ");
+//					sql.append(this.name);
+//					sql.append("\nDROP CONSTRAINT pk_");
+//					sql.append(this.name);
+//					results.add(sql.toString());
+//				}
+//				
+//				if (this.hasPrimaryKey()){
+//					sql = new StringBuilder();
+//					sql.append("ALTER TABLE ");
+//					sql.append(this.name);
+//					sql.append("\nADD ");
+//					sql.append(this.primaryKeyToSQL());
+//					results.add(sql.toString());
+//				}
+//
+//				
+//			}
+//			if ((attSrc.size != attDest.size) || (!attSrc.type.equals(attDest.type))){
+//				StringBuilder sql = new StringBuilder();
+//				//ALTER TABLE this.name
+//				//ALTER COLUMN attSrc.name
+//				sql.append("ALTER TABLE ");
+//				sql.append(this.name);
+//				sql.append("\nMODIFY ");
+//				sql.append(attSrc.name);
+//				sql.append(" ");
+//				sql.append(attDest.type);
+//				if (!attDest.type.equals("DATE")){
+//					sql.append(" (");
+//					sql.append(attDest.size);
+//					sql.append(")");
+//				}
+//
+//				results.add(sql.toString());
+//				
+//			}
+//		}
 	}
 
 
@@ -276,17 +290,17 @@ public class Table {
 	 * @param results
 	 */
 	private void addAttributes(Table tableSource, ArrayList<String> results) {
-		for (Attribute attribute : attributesToAdd(tableSource)){
-			for (String sql : attribute.toSQL(this.name)){
-				StringBuilder build = new StringBuilder();
-				build.append("ALTER TABLE ");
-				build.append(this.name);
-				build.append("\n");
-				build.append("ADD ");
-				build.append(sql);
-				results.add(build.toString());//on ajoute plusieures requetes pour un seul attribut
-			}
-		}
+//		for (Attribute attribute : attributesToAdd(tableSource)){
+//			for (String sql : attribute.toSQL(this.name)){
+//				StringBuilder build = new StringBuilder();
+//				build.append("ALTER TABLE ");
+//				build.append(this.name);
+//				build.append("\n");
+//				build.append("ADD ");
+//				build.append(sql);
+//				results.add(build.toString());//on ajoute plusieures requetes pour un seul attribut
+//			}
+//		}
 	}
 	
 	/**
@@ -419,6 +433,8 @@ public class Table {
 	 * 
 	 * La chaîne retournée s'arrête après le nom de la table.
 	 * 
+	 * @Exemple CREATE TABLE tableTest
+	 * 
 	 * @return String
 	 */
 	private String tableNameToSQL()
@@ -461,22 +477,23 @@ public class Table {
 	 */
 	private String primaryKeyToSQL()
 	{
-		StringBuilder result = new StringBuilder();
-		if (this.hasPrimaryKey()) {
-			result.append("CONSTRAINT pk_");
-			result.append(this.name);
-			result.append(" PRIMARY KEY (");
-			for (Attribute a : this.attributes) {
-				if (a.primaryKey) {
-					result.append(a.name);
-					result.append(", ");
-				}
-			}
-			result.deleteCharAt(result.length()-1);
-			result.deleteCharAt(result.length()-1);
-			result.append(")");
-		}
-		return result.toString();
+		return null;
+//		StringBuilder result = new StringBuilder();
+//		if (this.hasPrimaryKey()) {
+//			result.append("CONSTRAINT pk_");
+//			result.append(this.name);
+//			result.append(" PRIMARY KEY (");
+//			for (Attribute a : this.attributes) {
+//				if (a.primaryKey) {
+//					result.append(a.name);
+//					result.append(", ");
+//				}
+//			}
+//			result.deleteCharAt(result.length()-1);
+//			result.deleteCharAt(result.length()-1);
+//			result.append(")");
+//		}
+//		return result.toString();
 	}
 	
 	
@@ -491,6 +508,16 @@ public class Table {
 		for (Attribute a : attributes) {
 			this.attributes.add(new Attribute(a));
 		}
+	}
+
+
+
+	public boolean addAttribute(Attribute attributes) {
+		if (!this.attributes.contains(attributes)){
+			return this.attributes.add(attributes);
+		}
+		return false;
+		
 	}
 
 
