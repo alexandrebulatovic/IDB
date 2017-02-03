@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import business.Attribute;
 import useful.FieldsKeyAdapter;
+import useful.Response;
 
 import useful.MaxLengthTextDocument;
 
@@ -41,10 +42,143 @@ implements ActionListener, ItemListener
 		this.initFields();
 	}
 
+	
 	/**
-	 * Instancie, positionne et dimensionne les différents composants de $this.
+	 * Réinitialise tous les champs de la vue.
 	 */
-	private void handleComponents()
+	public void resetView()
+	{
+		this.setAttributesValues("nomAttribut", "VARCHAR2", "Taille", false, false);
+		this.tableNameField.setText("");
+		this.talk("");
+		this.setEnableButtonUpdateDeleteUpDown(false);;
+		this.models.removeAll();
+	}
+
+	/**
+	 * Affiche les arguments passés en paramètres dans la table.
+	 * 
+	 * @param attributes
+	 * @param string
+	 */
+	public void setView(List<Attribute> attributes, String tableName) {	
+		this.resetView();
+		for (Attribute a : attributes){
+			this.addAttributeToTable(a);
+		}
+		this.setTableName(tableName);
+	}
+
+	/**
+	 * Modifie l'état des boutons de modifications du tableau 
+	 * en fonction du boolean .
+	 * 
+	 * @param b : un boolean
+	 */
+	public void setEnableButtonUpdateDeleteUpDown(boolean b){
+		this.deleteAttributeButton.setEnabled(b);
+		this.updateAttributeButton.setEnabled(b);
+		this.upPositionAttributeButton.setEnabled(b);
+		this.downPositionAttributeButton.setEnabled(b);
+	}
+
+	
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		Object o = e.getSource();
+		if (o == this.attributeButton) {
+			//	this.addAttributeButtonAction();
+		}
+		if (o == this.createTableButton) {
+			if(this.isCompleteTable()){
+				createTableButtonAction();
+			}
+		}
+		if (o == this.deleteAttributeButton) {
+			this.deleteAttributeButtonAction();
+		}
+		if (o == this.updateAttributeButton) {
+			//	this.updateAttributeButtonAction();
+		}
+		if (o == this.resetButton) {
+			this.resetView();
+		}
+		if (o == this.upPositionAttributeButton) {
+			this.positionAttributButtonAction("UP");
+		}
+		if (o == this.downPositionAttributeButton) {
+			this.positionAttributButtonAction("DOWN");
+		}
+		if (o == this.attributeTypeComboBox) {
+			selectSizeDateComboBoxAction();
+		}
+		if (o== this.confirmUpdateAttributeButton){
+			//TODO this.confirmUpdateAttributeButtonAction();
+		}
+		if (o== this.cancelUpdateAttributeButton){
+			this.cancelUpdateAttributeButtonAction();
+		}
+	}
+
+
+	/**
+	 * Retourne un objet de type Table qui contient tous
+	 * les éléments de la vue
+	 * @return
+	 */
+	//TODO
+	//	protected Table getTable() {
+	//		return new Table(
+	//				this.tableNameField.getText(),
+	//				this.models.getAttributes());
+	//	}
+	
+	@Override
+	public void itemStateChanged(ItemEvent item)
+	{
+		Object obj = item.getItem();
+		int status = item.getStateChange();
+		if(obj==this.primaryKeyCheckBox){
+			if (status == ItemEvent.SELECTED){
+				this.setEnabledSelectedNotNullCheckBox(false);
+			}else if(status == ItemEvent.DESELECTED){
+				this.setEnabledSelectedNotNullCheckBox(true);
+			}
+		}
+	}
+
+
+	@Override
+	public boolean isComplete() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	/**
+	 * Ajoute l'attribut passé en paramètre à la table 
+	 * contenant les attributs.
+	 * 
+	 * @param attribute : un objet Attribute
+	 */
+	protected void addAttributeToTable(Attribute attribute){
+		if (this.isValidateAttribute(attribute)){
+			this.models.addAttribute(attribute);
+			this.talk(SUCCES_ATTRIBUTE +"Attribut ajouté.");
+			this.clearAttribute();
+		}
+		else{
+			this.talk("Attribut non valide");
+		}
+	}
+
+
+	/**
+	 * Instancie, positionne et dimensionne les composants s'occupant
+	 * de la table ciblée.
+	 */
+	protected void handleTableComponent()
 	{
 		this.tableLabel = new JLabel("Table :");
 		this.tableLabel.setFont(new Font(FONT, Font.BOLD, 18));
@@ -52,37 +186,65 @@ implements ActionListener, ItemListener
 
 		this.tableNameLabel= new JLabel("Nom de la table :");
 		this.bindAndAdd(this.tableNameLabel,7,true);
+	}
 
+
+	/**
+	 * Instancie, positionne et dimensionne les différents composants de l'IHM.
+	 */
+	private void handleComponents()
+	{
+		this.handleTableComponent();
 		this.tableNameField = new JTextField();
-		this.bindAndAdd(this.tableNameField,10,false);
+		this.bindAndAdd(this.tableNameField, 6, false);
+		this.handleAttributesComponent();
+		this.handleRestComponent();
+	}
 
+
+	/**
+	 * Instancie, dimensionne et positionne les composants s'occupant
+	 * d'ajouter un nouvel attribut.
+	 */
+	private void handleAttributesComponent()
+	{
 		this.increaseTop(10);
 		this.attributeLabel = new JLabel("Attribut :");
 		this.attributeLabel.setFont(new Font(FONT, Font.BOLD, 18));
 		this.bindAndAdd(this.attributeLabel);
 
+		int b = 6;
 		this.attributeNameField = new JTextField();
-		this.bindAndAdd(this.attributeNameField,10,true);
+		this.bindAndAdd(this.attributeNameField, b,true);
+
 		String [] types = this.control.getAttributeTypes();
 		this.attributeTypeComboBox = new JComboBox<String>(types);
 		this.attributeTypeComboBox.addActionListener(this);
-		this.bindAndAdd(this.attributeTypeComboBox,10,true);
+		this.bindAndAdd(this.attributeTypeComboBox, b,true);
 
 		this.attributeSizeField = new JTextField();
-		this.bindAndAdd(this.attributeSizeField,21,true);
+		this.attributeSizeField.setToolTipText("Taille de l'attribut.");
+		this.bindAndAdd(this.attributeSizeField, b, false);
 
 		this.notNullCheckBox = new JCheckBox("NOT NULL");
-		this.bindAndAdd(this.notNullCheckBox,7,true);
+		this.bindAndAdd(this.notNullCheckBox,b,true);
 
 		this.primaryKeyCheckBox = new JCheckBox("PRIMARY KEY");
 		this.primaryKeyCheckBox.addItemListener(this);
-		this.bindAndAdd(this.primaryKeyCheckBox,7,true);
+		this.bindAndAdd(this.primaryKeyCheckBox,b,true);
 
 
 		this.attributeButton = new JButton("Ajouter l'attribut") ;
 		this.attributeButton.addActionListener(this);
-		this.bindAndAdd(this.attributeButton,6,true);
+		this.bindAndAdd(this.attributeButton,b,true);
+	}
 
+	
+	/**
+	 * Instancie, dimensionne et positionne beaucoup de composants.
+	 */
+	private void handleRestComponent()
+	{
 		this.confirmUpdateAttributeButton = new JButton("Modifier l'attribut") ;
 		this.confirmUpdateAttributeButton.addActionListener(this);
 		this.bindAndAdd(this.confirmUpdateAttributeButton,6,true);
@@ -137,30 +299,32 @@ implements ActionListener, ItemListener
 		this.bindAndAdd(this.createTableButton,6,false);
 
 		this.setEnableButtonUpdateDeleteUpDown(false);
-
 	}
-
+	
+	
 	/**
 	 * Gère les caractéristiques des Fields.
 	 */
 	private void initFields()
 	{
-		this.intKey = new FieldsKeyAdapter("int");
-		this.stringKey = new FieldsKeyAdapter("String");
-		this.attributeSizeField.addKeyListener(this.intKey);
-		this.tableNameField.addKeyListener(this.stringKey);
-		this.attributeNameField.addKeyListener(this.stringKey);	
-		this.tableNameField.setDocument(fieldInputSize(30));
-		this.attributeNameField.setDocument(fieldInputSize(29));
+		KeyAdapter intKey = new FieldsKeyAdapter("int");
+		this.attributeSizeField.addKeyListener(intKey);
 		this.attributeSizeField.setDocument(fieldInputSize(3));
+
+		KeyAdapter stringKey = new FieldsKeyAdapter("String");
+		this.tableNameField.addKeyListener(stringKey);
+		this.tableNameField.setDocument(fieldInputSize(30));
+
+		this.attributeNameField.addKeyListener(stringKey);	
+		this.attributeNameField.setDocument(fieldInputSize(29));
 		this.attributeNameField.setText("nomAttribut");
-		this.attributeSizeField.setText("Taille");
 	}
 
+	
 	/**
 	 * Réinitialise les champs de saisie des attributs.
 	 */
-	public void clearAttribute()
+	private void clearAttribute()
 	{
 		this.attributeNameField.setText("");
 		this.attributeSizeField.setText("");
@@ -169,77 +333,6 @@ implements ActionListener, ItemListener
 		this.attributeTypeComboBox.setSelectedIndex(0);
 	}
 
-	/**
-	 * Réinitialise tous les champs de la vue.
-	 */
-	public void resetView()
-	{
-		this.setAttributesValues("nomAttribut", "VARCHAR2", "Taille", false, false);
-		this.tableNameField.setText("");
-		this.talk("");
-		this.setEnableButtonUpdateDeleteUpDown(false);;
-		this.models.removeAll();
-	}
-
-	/**
-	 * Affiche les arguments passés en paramètres dans la table.
-	 * 
-	 * @param attributes
-	 * @param string
-	 */
-	public void setView(List<Attribute> attributes, String tableName) {	
-		this.resetView();
-		for (Attribute a : attributes){
-			this.addAttributeToTable(a);
-		}
-		this.setTableName(tableName);
-	}
-
-	/**
-	 * Modifie l'état des boutons de modifications du tableau 
-	 * en fonction du boolean .
-	 * 
-	 * @param b : un boolean
-	 */
-	public void setEnableButtonUpdateDeleteUpDown(boolean b){
-		this.deleteAttributeButton.setEnabled(b);
-		this.updateAttributeButton.setEnabled(b);
-		this.upPositionAttributeButton.setEnabled(b);
-		this.downPositionAttributeButton.setEnabled(b);
-	}
-
-	/**
-	 * Ajoute l'attribut passé en paramètre à la table 
-	 * contenant les attributs.
-	 * 
-	 * @param attribute : un objet Attribute
-	 */
-	protected void addAttributeToTable(Attribute attribute){
-		if (this.isValidateAttribute(attribute)){
-			this.models.addAttribute(attribute);
-			this.talk(SUCCES_ATTRIBUTE +"Attribut ajouté.");
-			this.clearAttribute();
-		}
-		else{
-			System.out.println("Attribut non valide");
-		}
-	}
-	
-
-	/**
-	 * Document permettant de limiter le nombre de caractères maximum saisis.
-	 * Retourne un Document pouvant être passé en paramètre 
-	 * de la fonction Component.setDocument(Document).
-	 * 
-	 * @param size : un entier int
-	 * @return MaxLengthTextDocument
-	 */
-	private MaxLengthTextDocument fieldInputSize(int size)
-	{
-		MaxLengthTextDocument maxLengthNameAtt = new MaxLengthTextDocument();
-		maxLengthNameAtt.setMaxChars(size);
-		return maxLengthNameAtt;
-	}
 
 	/**
 	 *  Retourne vrai si tous les champs de l'attributs sont 
@@ -291,12 +384,12 @@ implements ActionListener, ItemListener
 	 * @return un boolean
 	 */
 	private boolean isValidateAttribute(Attribute a){
-			if(!(a.checkSizeAttributes()>=0)){
-				this.talk(ERROR_ATTRIBUTE +a.attributeSizeError(a.checkSizeAttributes()));
-				return false;
-			}else if(this.models.isDuplicateAttributeName(a) && !(this.updateState)){
-				this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
-				return false;
+		if(!(a.checkSizeAttributes()>=0)){
+			this.talk(ERROR_ATTRIBUTE +a.attributeSizeError(a.checkSizeAttributes()));
+			return false;
+		}else if(this.models.isDuplicateAttributeName(a) && !(this.updateState)){
+			this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
+			return false;
 		}
 		return true;
 	}
@@ -446,24 +539,24 @@ implements ActionListener, ItemListener
 	 * le bouton "Ajouter l'attribut".
 	 */
 	//TODO
-//	private void addAttributeButtonAction()
-//	{
-//		if(isCompleteAttribute()){
-//		Attribute a = this.models.createAttribute(
-//				attributeNameField.getText(),
-//				(String)attributeTypeComboBox.getSelectedItem(), 
-//				attributeSizeField.getText(), 
-//				this.notNullCheckBox.isSelected(), 
-//				this.uniqueCheckBox.isSelected(),
-//				this.primaryKeyCheckBox.isSelected(),
-//				this.foreignKeyCheckBox.isSelected(),
-//				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
-//				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
-//		if(isValidateAttribute(a)){
-//			this.addAttributeToTable(a);
-//		}
-//		}
-//	}
+	//	private void addAttributeButtonAction()
+	//	{
+	//		if(isCompleteAttribute()){
+	//		Attribute a = this.models.createAttribute(
+	//				attributeNameField.getText(),
+	//				(String)attributeTypeComboBox.getSelectedItem(), 
+	//				attributeSizeField.getText(), 
+	//				this.notNullCheckBox.isSelected(), 
+	//				this.uniqueCheckBox.isSelected(),
+	//				this.primaryKeyCheckBox.isSelected(),
+	//				this.foreignKeyCheckBox.isSelected(),
+	//				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
+	//				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
+	//		if(isValidateAttribute(a)){
+	//			this.addAttributeToTable(a);
+	//		}
+	//		}
+	//	}
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
@@ -477,47 +570,47 @@ implements ActionListener, ItemListener
 	}
 
 	//TODO
-//	/**
-//	 * Détermine ce qu'il se passe lors d'une action sur
-//	 * le bouton "Modifier l'attribut".
-//	 */
-//	private void updateAttributeButtonAction()
-//	{
-//		this.talk("");
-//		int rowIndex = this.table.getSelectedRow();
-//		Attribute a = this.models.getAttributeAt(rowIndex);
-//		this.setAttributesValues(a.name, a.type, Integer.toString(a.size), a.notNull, a.unique, a.primaryKey, a.foreignKey, a.fkTable,a.fkAttribute);
-//		this.updateState=true;
-//		this.setDisableAllExceptAttribute(false);
-//		this.setVisibleEnabledUpdateButtons(true);
-//	}
+	//	/**
+	//	 * Détermine ce qu'il se passe lors d'une action sur
+	//	 * le bouton "Modifier l'attribut".
+	//	 */
+	//	private void updateAttributeButtonAction()
+	//	{
+	//		this.talk("");
+	//		int rowIndex = this.table.getSelectedRow();
+	//		Attribute a = this.models.getAttributeAt(rowIndex);
+	//		this.setAttributesValues(a.name, a.type, Integer.toString(a.size), a.notNull, a.unique, a.primaryKey, a.foreignKey, a.fkTable,a.fkAttribute);
+	//		this.updateState=true;
+	//		this.setDisableAllExceptAttribute(false);
+	//		this.setVisibleEnabledUpdateButtons(true);
+	//	}
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "Modifier".
 	 */
 	//TODO
-//	private void confirmUpdateAttributeButtonAction(){
-//		if(isCompleteAttribute()){
-//		Attribute a = this.models.createAttribute(this.attributeNameField.getText(),
-//				(String)this.attributeTypeComboBox.getSelectedItem(), 
-//				this.attributeSizeField.getText(), 
-//				this.notNullCheckBox.isSelected(), 
-//				this.uniqueCheckBox.isSelected(),
-//				this.primaryKeyCheckBox.isSelected(),
-//				this.foreignKeyCheckBox.isSelected(),
-//				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
-//				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
-//		if(isValidateAttribute(a)){
-//			this.models.setAttributeValueAt(this.table.getSelectedRow(),a);
-//			this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
-//			this.updateState=false;
-//			this.clearAttribute();
-//			this.setDisableAllExceptAttribute(true);
-//			this.setVisibleEnabledUpdateButtons(false);
-//		}
-//		}
-//	}
+	//	private void confirmUpdateAttributeButtonAction(){
+	//		if(isCompleteAttribute()){
+	//		Attribute a = this.models.createAttribute(this.attributeNameField.getText(),
+	//				(String)this.attributeTypeComboBox.getSelectedItem(), 
+	//				this.attributeSizeField.getText(), 
+	//				this.notNullCheckBox.isSelected(), 
+	//				this.uniqueCheckBox.isSelected(),
+	//				this.primaryKeyCheckBox.isSelected(),
+	//				this.foreignKeyCheckBox.isSelected(),
+	//				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
+	//				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
+	//		if(isValidateAttribute(a)){
+	//			this.models.setAttributeValueAt(this.table.getSelectedRow(),a);
+	//			this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
+	//			this.updateState=false;
+	//			this.clearAttribute();
+	//			this.setDisableAllExceptAttribute(true);
+	//			this.setVisibleEnabledUpdateButtons(false);
+	//		}
+	//		}
+	//	}
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
@@ -530,79 +623,28 @@ implements ActionListener, ItemListener
 		this.setVisibleEnabledUpdateButtons(false);
 
 	}
-	@Override
-	public void actionPerformed(ActionEvent e) 
-	{
-		Object o = e.getSource();
-		if (o == this.attributeButton) {
-		//	this.addAttributeButtonAction();
-		}
-		if (o == this.createTableButton) {
-			if(this.isCompleteTable()){
-				createTableButtonAction();
-			}
-		}
-		if (o == this.deleteAttributeButton) {
-			this.deleteAttributeButtonAction();
-		}
-		if (o == this.updateAttributeButton) {
-		//	this.updateAttributeButtonAction();
-		}
-		if (o == this.resetButton) {
-			this.resetView();
-		}
-		if (o == this.upPositionAttributeButton) {
-			this.positionAttributButtonAction("UP");
-		}
-		if (o == this.downPositionAttributeButton) {
-			this.positionAttributButtonAction("DOWN");
-		}
-		if (o == this.attributeTypeComboBox) {
-			selectSizeDateComboBoxAction();
-		}
-		if (o== this.confirmUpdateAttributeButton){
-			//TODO this.confirmUpdateAttributeButtonAction();
-		}
-		if (o== this.cancelUpdateAttributeButton){
-			this.cancelUpdateAttributeButtonAction();
-		}
-	}
-
-	protected void createTableButtonAction() {
-		//TODO this.control.createTable(this.getTable());
-	}
-
 	/**
-	 * Retourne un objet de type Table qui contient tous
-	 * les éléments de la vue
-	 * @return
+	 * Document permettant de limiter le nombre de caractères maximum saisis.
+	 * Retourne un Document pouvant être passé en paramètre 
+	 * de la fonction Component.setDocument(Document).
+	 * 
+	 * @param size : un entier int
+	 * @return MaxLengthTextDocument
 	 */
-	//TODO
-//	protected Table getTable() {
-//		return new Table(
-//				this.tableNameField.getText(),
-//				this.models.getAttributes());
-//	}
-
-	@Override
-	public void itemStateChanged(ItemEvent item)
+	private static MaxLengthTextDocument fieldInputSize(int size)
 	{
-		Object obj = item.getItem();
-		int status = item.getStateChange();
-		if(obj==this.primaryKeyCheckBox){
-			if (status == ItemEvent.SELECTED){
-				this.setEnabledSelectedNotNullCheckBox(false);
-			}else if(status == ItemEvent.DESELECTED){
-				this.setEnabledSelectedNotNullCheckBox(true);
-			}
-		}
+		MaxLengthTextDocument maxLengthNameAtt = new MaxLengthTextDocument();
+		maxLengthNameAtt.setMaxChars(size);
+		return maxLengthNameAtt;
 	}
 
 
-	@Override
-	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return false;
+	protected void createTableButtonAction() 
+	{
+		/**
+		 * TODO : envoyer appeller le controleur
+		 * afficher la Response retournée.
+		 */
 	}
 
 }
