@@ -40,6 +40,29 @@ public class Attribute
 		this.tableName = tableName;
 	}
 	
+	/**
+	 * Constructeur par recopie.
+	 * 
+	 * @param copy : un attribut à recopier.
+	 */
+	public Attribute(Attribute copy)
+	{
+		this.name = copy.name;
+		this.type = copy.type;
+		this.size = copy.size;
+		this.tableName = copy.tableName;
+		
+		this.constraints = new ArrayList<Constraint>();
+		for (Constraint c : copy.constraints){
+			this.constraints.add(c);
+		}
+	}
+
+	public Attribute(String name,String type, int size) {
+		this(name,type,size,new ArrayList<Constraint>(),null);
+	}
+
+
 	public boolean isNotNull(){
 		for (Constraint c : constraints){
 			if (c instanceof NotNullConstraint){
@@ -100,30 +123,24 @@ public class Attribute
 	}
 	
 	
-	/**
-	 * Constructeur par recopie.
-	 * 
-	 * @param copy : un attribut à recopier.
-	 */
-	public Attribute(Attribute copy)
-	{
-		this.name = copy.name;
-		this.type = copy.type;
-		this.size = copy.size;
-		this.tableName = copy.tableName;
-		
-		this.constraints = new ArrayList<Constraint>();
-		for (Constraint c : copy.constraints){
-			this.constraints.add(c);
-		}
-	}
-	
-	
 	/** 
 	 * Définit le nom de la table de $this comme étant $name.
 	 */
 	public void setTableName(String name){this.tableName = name;}
 
+	
+	/**
+	 * Ajoute une contrainte si elle n'existe pas
+	 * 
+	 * et retourne true si elle à bien été ajouté
+	 * @param constraint
+	 */
+	public boolean addConstraint(Constraint constraint){
+		if (!this.constraints.contains(constraint)){
+			return this.constraints.add(constraint);
+		}
+		return false;
+	}
 
 	//Méthodes
 	@Override
@@ -134,23 +151,14 @@ public class Attribute
 	}
 	
 	
+	/**
+	 * Retourne une représentation de l'attribut
+	 * exemple att1 NUMBER(8)
+	 */
 	@Override
 	public String toString()
 	{
 		return this.toSQL();
-		//TODO
-//		StringBuilder result = new StringBuilder();
-//		result.append(this.name + " : ");
-//		result.append(this.type + ", ");
-//		result.append(this.size + ", ");
-//		if (this.unique) result.append("unique, ");
-//		if (this.primaryKey) result.append("clef primaire, ");
-//		if (this.foreignKey) {
-//			result.append("clef étrangère : ");
-//			result.append(this.fkTable + "(");
-//			result.append(this.fkAttribute + ")");
-//		}
-//		return result.toString();
 	}
 	
 	
@@ -185,12 +193,6 @@ public class Attribute
 		for (Constraint constraint : this.constraints){
 			sqls.add(constraint.toAddConstraintSQL());
 		}
-//		StringBuilder result = new StringBuilder();
-//		result.append(this.toSQLDeclaration());
-//		result.append(this.toSQLNotNull());
-//		result.append(this.toSQLUnique());
-//		result.append(this.toSQLForeinKey());
-//		return result.toString();
 		return sqls;
 	}
 	
