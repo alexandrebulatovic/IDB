@@ -49,7 +49,7 @@ implements ActionListener
 	 */
 	public DropTableGUI(DDLController control)
 	{
-		super("Suppression de table", null, 400, 180, 30);
+		super("Suppression de table", null, 400, 250, 30);
 		this.control = control;
 		this.handleComponents();
 		this.fillComboBox();
