@@ -50,7 +50,7 @@ extends AbstractDLLManager
 
 	
 	@Override
-	public List<Attribute> getAttributes(String table) {
+	public List<Attribute> getAttributess(String table) {
 		// TODO Auto-generated method stub
 		return null;
 	}

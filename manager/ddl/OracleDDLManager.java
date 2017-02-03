@@ -65,11 +65,11 @@ extends AbstractDLLManager
 	
 
 	@Override
-	public List<Attribute> getAttributes(String table) {
+	public List<Attribute> getAttributess(String table) {
 		List<Attribute> attributes = new ArrayList<Attribute>();
 		
 		List<String> pks = this.getPrimaryKey(table).getCollection();
-		List<String[]> fks = this.getImportedKey(table).getCollection();
+		List<String[]> fks = this.getPrimaryFromForeign(table).getCollection();
 		
 		ResponseData<String> uniqueAttributes = this.getUniqueAttribute(table);
 		

@@ -181,7 +181,7 @@ public class DDLController
 
 	
 	public List<Attribute> getAttributes(String table) {
-		return manager.getAttributes(table);
+		return manager.getAttributess(table);
 	}
 
 

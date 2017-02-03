@@ -52,6 +52,14 @@ public interface I_DDLManager
 
 	
 	/**
+	 * @return Une réponse personnalisée contenant le nom des tables de données
+	 * de la base si et seulement si la requête fonctionne, sinon une réponse 
+	 * personnalisée détaillant l'erreur survenue.
+	 */
+	public abstract ResponseData<String> getTables();
+
+
+	/**
 	 * @param table : nom de la table où chercher la clée, null interdit.
 	 * @return Une réponse personnalisée contenant les attributs membres
 	 * de la clée primaire de $table si et seulement si la requête fonctionne,
@@ -59,25 +67,6 @@ public interface I_DDLManager
 	 */
 	public abstract ResponseData<String> getPrimaryKey(String table);
 
-	
-	/**
-	 * @return Une réponse personnalisée contenant le nom des tables de données
-	 * de la base si et seulement si la requête fonctionne, sinon une réponse 
-	 * personnalisée détaillant l'erreur survenue.
-	 */
-	public abstract ResponseData<String> getTables();
-
-	
-	public abstract List<Attribute> getAttributes(String table);
-
-	
-	/**
-	 * @param table : table où chercher les attributs avec contrainte unique, null interdit.
-	 * @return une réponse personnalisée contenant le nom des attributs de $table
-	 * qui sont soumis à une contrainte UNIQUE.
-	 */
-	public abstract ResponseData<String> getUniqueAttribute(String table);
-	
 	
 	/**
 	 * @param table : table où se trouve les clées étrangères, null interdit.
@@ -94,7 +83,7 @@ public interface I_DDLManager
 	 * Pour résumer : FOREIGN KEY ($a2) REFERENCES $t($a) <br/>
 	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée. 
 	 */ 
-	public abstract ResponseData<String[]> getImportedKey(String table);
+	public abstract ResponseData<String[]> getPrimaryFromForeign(String table);
 
 
 	/**
@@ -112,9 +101,35 @@ public interface I_DDLManager
 	 * Pour résumer : FOREIGN KEY($a) REFERENCES $table($a2)
 	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée.
 	 */
-	public abstract ResponseData<String []> getExportedKey(String table);
+	public abstract ResponseData<String []> getForeignFromPrimary(String table);
 
+
+	/**
+	 * TODO : ne gère pas les groupes d'uniques...
+	 * @param table : table où chercher les attributs avec contrainte unique, null interdit.
+	 * @return une réponse personnalisée contenant le nom des attributs de $table
+	 * qui sont soumis à une contrainte UNIQUE.
+	 */
+	public abstract ResponseData<String> getUniqueAttribute(String table);
 	
+	
+	/**
+	 * @param table : nom de la table où récupérer les attributs, null interdit.
+	 * @return une réponse personnalisée.<br/>
+	 * Lorsque la récupération réussi, la réponse contient dans l'ordre :<br/>
+	 * -le nom d'un attribut de $table,<br/>
+	 * -la taille de cet attribut,<br/>
+	 * -le nom de son type SQL,<br/>
+	 * -"NO" si et seulement si cet attribut est NOT NULL.<br/><br/>
+	 * 
+	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée.
+	 */
+	public abstract ResponseData<String[]> getAttributes(String table);
+	
+	
+	public abstract List<Attribute> getAttributess(String table);
+
+
 	/**
 	 * Ferme proprement les objets statements.
 	 * Ne fait rien en cas d'erreur et n'avertit pas l'utilisateur.

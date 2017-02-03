@@ -32,6 +32,9 @@ implements I_DDLManager
 	/** Constante pour récupérer les champs de contrainte unique.*/
 	private final static int UNIQUE = 4;
 	
+	/** Constante pour récupérer les attributs d'une table.*/
+	private final static int COLUMNS = 5;
+	
 	
 	//Attributs
 	/** Pour créer des requètes SQL.*/
@@ -79,7 +82,7 @@ implements I_DDLManager
 	
 
 	@Override
-	public ResponseData<String []> getImportedKey(String table)
+	public ResponseData<String []> getPrimaryFromForeign(String table)
 	{
 		int [] columns = {3, 4, 13, 7, 8, 12};
 		return this.procedureToGetMetadata
@@ -97,12 +100,21 @@ implements I_DDLManager
 	
 	
 	@Override
-	public ResponseData<String []> getExportedKey(String table)
+	public ResponseData<String []> getForeignFromPrimary(String table)
 	{
 		int columns [] = {3, 4, 13, 7, 8, 12};
 		return this.procedureToGetMetadata
 				(OUT_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
 	}
+	
+	
+	@Override
+	public ResponseData<String[]> getAttributes(String table)
+	{
+		int columns [] = {4, 6, 7, 18};
+		return this.procedureToGetMetadata(COLUMNS, table, columns, "Attributs récupérés.");
+	}
+	
 	
 	@Override
 	public Response dropTable(String table, boolean cascade, boolean chain)
@@ -159,7 +171,7 @@ implements I_DDLManager
 	 */
 	protected Response dropTableRecursive(String table) {
 		Response result = null; //Compilateur chiale
-		ResponseData<String []> exported = this.getExportedKey(table);
+		ResponseData<String []> exported = this.getForeignFromPrimary(table);
 		
 		if (! exported.hasSuccess())
 			result = exported;
@@ -258,8 +270,7 @@ implements I_DDLManager
 			break;
 
 		case PRIMARY_KEY :
-			this.metaDataResult = this.metadata.getPrimaryKeys(
-					null, user, table);
+			this.metaDataResult = this.metadata.getPrimaryKeys(null, user, table);
 			break;
 		
 		case IN_FOREIGN_KEY :
@@ -272,6 +283,10 @@ implements I_DDLManager
 		
 		case OUT_FOREIGN_KEY :
 			this.metaDataResult = this.metadata.getExportedKeys(null, user, table);
+			break;
+		
+		case COLUMNS :
+			this.metaDataResult = this.metadata.getColumns(null, null, table, null);
 			break;
 		}
 	}
