@@ -85,21 +85,16 @@ public class DDLController
 	}
 
 
-	
 	/**
 	 * Envoie $table au DDLManager dans l'optique de la créer.
 	 * 
 	 * @param table : une table à créer. L'objet peut être erroné;
 	 */
-	public void createTable(Table table)
+	public Response createTable(Table table)
 	{
-		//TODO : déplacer le talk vers l'IHM
-		Response response = this.manager.createTable(table.toCreate());
-		if (response.hasSuccess()) {
-			this.createGUI.resetView();
-		}
-		this.createGUI.talk(response);
+		return this.manager.createTable(table.toCreate());
 	}
+	
 	
 	/**
 	 * Modifie une table existante

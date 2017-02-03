@@ -46,12 +46,6 @@ public class CreateModifyProperties extends BasicGUI{
 	/** Etat de la modification */
 	protected boolean updateState;
 
-	/** Bloquage de caractères interdits pour les String */
-	protected KeyAdapter stringKey;
-
-	/** Bloquage de caractères interdits pour les int */
-	protected KeyAdapter intKey;
-
 	
 	// ==========================FIELDS========================
 	/** Boite de saisie du nom de la table. */
