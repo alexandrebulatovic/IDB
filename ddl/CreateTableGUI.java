@@ -73,7 +73,7 @@ implements ActionListener, ItemListener
 		this.attributeNameField = new JTextField();
 		this.bindAndAdd(this.attributeNameField,10,true);
 		this.types = this.control.getAttributeTypes();
-		this.attributeTypeComboBox = new JComboBox(types);
+		this.attributeTypeComboBox = new JComboBox<String>((String[])types);
 		this.attributeTypeComboBox.addActionListener(this);
 		this.bindAndAdd(this.attributeTypeComboBox,10,true);
 
@@ -94,16 +94,16 @@ implements ActionListener, ItemListener
 		this.foreignKeyCheckBox.addItemListener(this);
 		this.bindAndAdd(this.foreignKeyCheckBox,7,true);
 
-		this.foreignKeyTableComboBoxModel = new DefaultComboBoxModel();
+		this.foreignKeyTableComboBoxModel = new DefaultComboBoxModel<String>();
 		this.foreignKeyTableComboBoxModel.addElement("Nom Table");
-		this.fkTableNameComboBox = new JComboBox(foreignKeyTableComboBoxModel);
+		this.fkTableNameComboBox = new JComboBox<String>(foreignKeyTableComboBoxModel);
 		this.fkTableNameComboBox.addActionListener(this);
 		this.fkTableNameComboBox.setEnabled(false);
 		this.bindAndAdd(this.fkTableNameComboBox,10,true);
 
-		this.foreignKeyAttributeComboBoxModel = new DefaultComboBoxModel();
+		this.foreignKeyAttributeComboBoxModel = new DefaultComboBoxModel<String>();
 		this.foreignKeyAttributeComboBoxModel.addElement("Nom Attribut");
-		this.fkAtrributeNameComboBox = new JComboBox(foreignKeyAttributeComboBoxModel);
+		this.fkAtrributeNameComboBox = new JComboBox<String>s(foreignKeyAttributeComboBoxModel);
 		this.fkAtrributeNameComboBox.addActionListener(this);
 		this.fkAtrributeNameComboBox.setEnabled(false);
 		this.bindAndAdd(this.fkAtrributeNameComboBox,10,false);
