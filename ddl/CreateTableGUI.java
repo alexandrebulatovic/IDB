@@ -26,16 +26,11 @@ public class CreateTableGUI
 extends CreateModifyProperties
 implements ActionListener, ItemListener
 {
-	// ==========================VARIABLES========================
 
-	
-
-	
-
-	
 	/**
-	 * Constructeur commun pour l'ihm de création de table.
-	 * @param cm : objet ConnectionManager obtenu lors de la connexion.
+	 * Constructeur commun.
+	 * 
+	 * @param control : null interdit.
 	 */
 	public CreateTableGUI(DDLController control)
 	{
@@ -77,7 +72,7 @@ implements ActionListener, ItemListener
 		this.bindAndAdd(this.attributeSizeField,21,true);
 
 		this.notNullCheckBox = new JCheckBox("NOT NULL");
-		this.bindAndAdd(this.notNullCheckBox,9,true);
+		this.bindAndAdd(this.notNullCheckBox,7,true);
 
 		this.primaryKeyCheckBox = new JCheckBox("PRIMARY KEY");
 		this.primaryKeyCheckBox.addItemListener(this);
