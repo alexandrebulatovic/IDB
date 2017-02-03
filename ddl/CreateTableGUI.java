@@ -175,8 +175,6 @@ implements ActionListener, ItemListener
 		this.attributeNameField.setText("");
 		this.attributeSizeField.setText("");
 		this.notNullCheckBox.setSelected(false);
-		this.uniqueCheckBox.setSelected(false);
-		this.foreignKeyCheckBox.setSelected(false);
 		this.primaryKeyCheckBox.setSelected(false);
 		this.attributeTypeComboBox.setSelectedIndex(0);
 	}
@@ -264,8 +262,7 @@ implements ActionListener, ItemListener
 	{
 		if(("").equals(this.attributeNameField.getText()) 
 				|| ("").equals(this.attributeSizeField.getText()) 
-				|| (this.foreignKeyCheckBox.isSelected() && (this.foreignKeyAttributeComboBoxModel.getSize()==0 
-				|| this.foreignKeyTableComboBoxModel.getSize()==0)))
+				)
 		{
 			this.talk(ERROR_ATTRIBUTE + "Tous les champs Attributs doivent être renseignés.");
 			return false;
@@ -347,15 +344,12 @@ implements ActionListener, ItemListener
 	 * 
 	 * @param bool
 	 */
-	private void setEnabledSelectedUniqueNotNullCheckBox(boolean bool) {
+	private void setEnabledSelectedNotNullCheckBox(boolean bool) {
 		if(!bool){
 			this.notNullCheckBox.setSelected(false);
 			this.notNullCheckBox.setEnabled(false);
-			this.uniqueCheckBox.setSelected(false);
-			this.uniqueCheckBox.setEnabled(false);
 		}else{
 			this.notNullCheckBox.setEnabled(true);
-			this.uniqueCheckBox.setEnabled(true);
 		}
 	}
 
@@ -399,19 +393,13 @@ implements ActionListener, ItemListener
 	 * @param fkTable : une chaine String
 	 * @param fkAttribute : une chaine String
 	 */
-	private void setAttributesValues(String name, String type, String size, boolean notNull, 
-			boolean unique, boolean pk, boolean fk, 
-			String fkTable, String fkAttribute)
+	private void setAttributesValues(String name, String type, String size, boolean notNull, boolean pk)
 	{
 		this.attributeNameField.setText(name);
 		this.attributeTypeComboBox.setSelectedIndex(getIndexAttributeTypeComboBox(type));
 		this.attributeSizeField.setText(size);
 		this.notNullCheckBox.setSelected(notNull);
-		this.uniqueCheckBox.setSelected(unique);
-		this.primaryKeyCheckBox.setSelected(pk);
-		this.foreignKeyCheckBox.setSelected(fk);
-		this.foreignKeyTableComboBoxModel.setSelectedItem(fkTable);
-		this.foreignKeyAttributeComboBoxModel.setSelectedItem(fkAttribute);
+		this.primaryKeyCheckBox.setSelected(pk);;
 	}
 
 	/**
@@ -435,44 +423,7 @@ implements ActionListener, ItemListener
 		}
 	}
 
-	/**
-	 * Initialise les tables dans la ComboBox des tables
-	 * lorsque la clé étrangère est selectionnée si bool est vrai,
-	 * sinon désative les ComboBox des Clés etrangères.
-	 * 
-	 * @param bool : un boolean
-	 */
-	private void initComboBoxFkTableAttributte(boolean bool) {
-		if (bool){
-			/*
-			 * TODO : peut être pas au bon endroit
-			 */
-			ResponseData<String> res = control.getTables();
-			this.foreignKeyTableComboBoxModel.removeAllElements();
-			for (String s : res.getCollection()) {
-				this.foreignKeyTableComboBoxModel.addElement(s);
-			}
-		}
-		this.fkTableNameComboBox.setEnabled(bool);
-		this.fkAtrributeNameComboBox.setEnabled(bool);
-	}
 
-
-	/**
-	 * Définit le nom de l'attribut dans la comboBox des clé étrangères
-	 * en fonction du nom de la table passé en paramètre.
-	 * 
-	 * @param table
-	 */
-	private void initComboBoxFkAttributeName(String table){
-		this.foreignKeyAttributeComboBoxModel.removeAllElements();
-		ResponseData<String> result = control.getPrimaryKey(table);
-		//TODO : Il faut controler qu'il n'y ait pas eu d'erreur ! 
-		//TODO : le for each boucle sur un null si erreur !
-		for (String s : result.getCollection()) {
-			this.foreignKeyAttributeComboBoxModel.addElement(s);
-		}
-	}
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
@@ -667,9 +618,9 @@ implements ActionListener, ItemListener
 		int status = item.getStateChange();
 		if(obj==this.primaryKeyCheckBox){
 			if (status == ItemEvent.SELECTED){
-				this.setEnabledSelectedUniqueNotNullCheckBox(false);
+				this.setEnabledSelectedNotNullCheckBox(false);
 			}else if(status == ItemEvent.DESELECTED){
-				this.setEnabledSelectedUniqueNotNullCheckBox(true);
+				this.setEnabledSelectedNotNullCheckBox(true);
 			}
 		}
 		if(obj==this.foreignKeyCheckBox){
