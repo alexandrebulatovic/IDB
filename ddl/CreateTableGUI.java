@@ -103,7 +103,7 @@ implements ActionListener, ItemListener
 
 		this.foreignKeyAttributeComboBoxModel = new DefaultComboBoxModel<String>();
 		this.foreignKeyAttributeComboBoxModel.addElement("Nom Attribut");
-		this.fkAtrributeNameComboBox = new JComboBox<String>s(foreignKeyAttributeComboBoxModel);
+		this.fkAtrributeNameComboBox = new JComboBox<String>(foreignKeyAttributeComboBoxModel);
 		this.fkAtrributeNameComboBox.addActionListener(this);
 		this.fkAtrributeNameComboBox.setEnabled(false);
 		this.bindAndAdd(this.fkAtrributeNameComboBox,10,false);
@@ -250,7 +250,7 @@ implements ActionListener, ItemListener
 	protected void addAttributeToTable(Attribute attribute){
 		if (this.isValidateAttribute(attribute)){
 			this.models.addAttribute(attribute);
-			this.talk(succesAttribute +"Attribut ajouté.");
+			this.talk(SUCCES_ATTRIBUTE +"Attribut ajouté.");
 			this.clearAttribute();
 		}
 		else{
@@ -287,7 +287,7 @@ implements ActionListener, ItemListener
 				|| (this.foreignKeyCheckBox.isSelected() && (this.foreignKeyAttributeComboBoxModel.getSize()==0 
 				|| this.foreignKeyTableComboBoxModel.getSize()==0)))
 		{
-			this.talk(errorAttribute + "Tous les champs Attributs doivent être renseignés.");
+			this.talk(ERROR_ATTRIBUTE + "Tous les champs Attributs doivent être renseignés.");
 			return false;
 		}
 		else
@@ -306,10 +306,10 @@ implements ActionListener, ItemListener
 	private boolean isCompleteTable()
 	{
 		if(this.models.getRowCount()==0){
-			this.talk(errorAttribute+"Il n'y a pas d'Attribut");
+			this.talk(ERROR_ATTRIBUTE+"Il n'y a pas d'Attribut");
 			return false;
 		} else if ("".equals(this.tableNameField.getText())) {
-			this.talk(errorAttribute+"Il manque le nom de la Table");
+			this.talk(ERROR_ATTRIBUTE+"Il manque le nom de la Table");
 			return false;
 		} else {
 			return true;
@@ -326,10 +326,10 @@ implements ActionListener, ItemListener
 	 */
 	private boolean isValidateAttribute(Attribute a){
 			if(!(a.checkSizeAttributes()>=0)){
-				this.talk(this.errorAttribute +a.attributeSizeError(a.checkSizeAttributes()));
+				this.talk(this.ERROR_ATTRIBUTE +a.attributeSizeError(a.checkSizeAttributes()));
 				return false;
 			}else if(this.models.isDuplicateAttributeName(a) && !(this.updateState)){
-				this.talk(errorAttribute +"Un attribut existant a déja le même nom.");
+				this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
 				return false;
 		}
 		return true;
@@ -565,7 +565,7 @@ implements ActionListener, ItemListener
 	private void deleteAttributeButtonAction()
 	{
 		this.models.removeAttributes(this.table.getSelectedRow());
-		this.talk(succesAttribute+"Attribut supprimé");
+		this.talk(SUCCES_ATTRIBUTE+"Attribut supprimé");
 		this.setEnableButtonUpdateDeleteUpDown(false);
 	}
 
@@ -601,7 +601,7 @@ implements ActionListener, ItemListener
 				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
 		if(isValidateAttribute(a)){
 			this.models.setAttributeValueAt(this.table.getSelectedRow(),a);
-			this.talk(succesAttribute+"Attribut Modifé.");
+			this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
 			this.updateState=false;
 			this.clearAttribute();
 			this.setDisableAllExceptAttribute(true);
