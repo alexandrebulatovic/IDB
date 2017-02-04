@@ -2,6 +2,7 @@ package factory;
 
 import java.sql.Connection;
 
+import ddl.I_Attribute;
 import manager.I_ConnectionManager;
 import manager.I_DDLManager;
 import manager.connection.MySQLConnectionManager;

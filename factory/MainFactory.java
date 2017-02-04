@@ -2,6 +2,7 @@ package factory;
 
 import java.sql.Connection;
 
+import ddl.I_Attribute;
 import manager.I_ConnectionManager;
 import manager.I_DDLManager;
 
@@ -71,7 +72,7 @@ public class MainFactory
 	 */
 	public I_Attribute getAttributeModel()
 	{
-		this.factory.getAttributeModel();
+		return this.factory.getAttributeModel();
 	}
 	
 	
