@@ -1,32 +1,21 @@
 package ddl;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import gui.BasicGUI;
-import useful.ResponseData;
 
 @SuppressWarnings("serial")
-public abstract class CreateModifyProperties extends BasicGUI{
-	
-	protected CreateModifyProperties() {
-		super("Création de table",null, 900, 550, 20);
-	}
-
+public abstract class CreateModifyProperties 
+extends BasicGUI
+{
+	//Statique
+	/** Police d'écriture de l'IHM.*/
 	protected static final String FONT = null;
-
-	/** Controleur lié à l'IHM. */
-	protected DDLController control;
 
 	/** Préfixe des messages d'erreurs. */
 	protected static final String ERROR_ATTRIBUTE = "ERREUR : ";
@@ -34,18 +23,22 @@ public abstract class CreateModifyProperties extends BasicGUI{
 	/** Préfixe des messages de succès. */
 	protected static final String SUCCES_ATTRIBUTE = "SUCCES : ";
 
+	
+	//Attributs
+	/** Controleur lié à l'IHM. */
+	protected DDLController control;
+
 	/** Model de la Table pour gérer les lignes/colonnes. */
 	protected AttributesAbstractTableModel  models;
-
-	/** Tableau contenant les attributs. */
-	protected JTable table;
-
-	/** ScrollPane du Tableau. */
-	protected JScrollPane scrollPane;
 	
 	/** Etat de la modification */
 	protected boolean updateState;
 
+	
+	// ==========================TABLE=========================
+	/** Tableau contenant les attributs. */
+	protected JTable table;
+	
 	
 	// ==========================FIELDS========================
 	/** Boite de saisie du nom de la table. */
@@ -56,17 +49,6 @@ public abstract class CreateModifyProperties extends BasicGUI{
 
 	/** Boite de saisie de la taille de l'attribut. */
 	protected JTextField attributeSizeField;
-
-	
-	// ==========================LABELS========================
-	/** Etiquette pour le nom de la Table. */
-	protected JLabel tableNameLabel;
-
-	/** Etiquette pour le titre Table. */
-	protected JLabel tableLabel;
-
-	/** Etiquette pour le titre Attribut. */
-	protected JLabel attributeLabel;
 
 
 	// ==========================BUTTONS========================
@@ -107,10 +89,21 @@ public abstract class CreateModifyProperties extends BasicGUI{
 	/** ComboBox du choix du type de l'attribut. */
 	protected JComboBox<String> attributeTypeComboBox;
 
+	
 	// ==========================CHECKBOXS========================
 	/** Case à cocher pour la contrainte NotNull */
 	protected JCheckBox notNullCheckBox;
 
 	/** Case à cocher pour la contrainte PrimaryKey */
 	protected JCheckBox primaryKeyCheckBox;
+
+	
+	//Constructeur
+	/**
+	 * Constructeur vide.
+	 */
+	protected CreateModifyProperties() 
+	{
+		super("Création de table",null, 900, 550, 20);
+	}
 }
