@@ -179,12 +179,7 @@ public class DDLController
 	
 	
 	public List<Attribute> getAttributes(String table) {
-		ArrayList<Attribute> attributs = new ArrayList<Attribute>();
-		for (String[] att : manager.getAttributes(table).getCollection()){
-			
-			attributs.add(new Attribute(att[0], att[2], Integer.parseInt(att[1])));
-		}
-		return attributs;
+		return manager.getAttributes(table);
 	}
 
 
@@ -198,5 +193,11 @@ public class DDLController
 	{
 		gui.setVisible(true);
 		gui.toFront();
+	}
+
+
+	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
