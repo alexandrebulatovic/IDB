@@ -42,7 +42,7 @@ implements ActionListener, ItemListener
 		this.initFields();
 	}
 
-	
+
 	/**
 	 * TODO : appellée nulle part
 	 * Affiche les arguments passés en paramètres dans la table.
@@ -58,7 +58,7 @@ implements ActionListener, ItemListener
 		this.setTableName(tableName);
 	}
 
-	
+
 	/**
 	 * Active les boutons de suppression, de modification et de 
 	 * déplacement des attributs si et seulement si $b est vrai, 
@@ -73,7 +73,7 @@ implements ActionListener, ItemListener
 		this.downPositionAttributeButton.setEnabled(b);
 	}
 
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
@@ -124,7 +124,7 @@ implements ActionListener, ItemListener
 	//				this.tableNameField.getText(),
 	//				this.models.getAttributes());
 	//	}
-	
+
 	@Override
 	public void itemStateChanged(ItemEvent item)
 	{
@@ -236,7 +236,7 @@ implements ActionListener, ItemListener
 		this.bindAndAdd(this.attributeButton,b,true);
 	}
 
-	
+
 	/**
 	 * Instancie, dimensionne et positionne beaucoup de composants.
 	 */
@@ -297,8 +297,8 @@ implements ActionListener, ItemListener
 
 		this.setEnableButtonUpdateDeleteUpDown(false);
 	}
-	
-	
+
+
 	/**
 	 * Gère les caractéristiques des Fields.
 	 */
@@ -317,7 +317,7 @@ implements ActionListener, ItemListener
 		this.attributeNameField.setText("nomAttribut");
 	}
 
-	
+
 	/**
 	 * Réinitialise les champs de saisie des attributs.<br/>
 	 * Décoche les cases à cocher.<br/>
@@ -331,7 +331,7 @@ implements ActionListener, ItemListener
 		this.primaryKeyCheckBox.setSelected(false);
 		this.attributeTypeComboBox.setSelectedIndex(0);
 	}
-	
+
 
 	/**
 	 * Retourne vrai si la table est complète, c'est à dire si elle
@@ -490,26 +490,23 @@ implements ActionListener, ItemListener
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "Ajouter l'attribut".
+	 * TODO
 	 */
-	//TODO
-	//	private void addAttributeButtonAction()
-	//	{
-	//		if(isCompleteAttribute()){
-	//		Attribute a = this.models.createAttribute(
-	//				attributeNameField.getText(),
-	//				(String)attributeTypeComboBox.getSelectedItem(), 
-	//				attributeSizeField.getText(), 
-	//				this.notNullCheckBox.isSelected(), 
-	//				this.uniqueCheckBox.isSelected(),
-	//				this.primaryKeyCheckBox.isSelected(),
-	//				this.foreignKeyCheckBox.isSelected(),
-	//				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
-	//				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
-	//		if(isValidateAttribute(a)){
-	//			this.addAttributeToTable(a);
-	//		}
-	//		}
-	//	}
+
+	private void addAttributeButtonAction()
+	{
+		if(isCompleteAttribute()){
+			Attribute a = this.models.createAttribute(
+					attributeNameField.getText(),
+					(String)attributeTypeComboBox.getSelectedItem(), 
+					attributeSizeField.getText(), 
+					this.notNullCheckBox.isSelected(), 
+					this.primaryKeyCheckBox.isSelected(),
+					if(isValidateAttribute(a)){
+						this.addAttributeToTable(a);
+					}
+		}
+	}
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
@@ -522,48 +519,70 @@ implements ActionListener, ItemListener
 		this.setEnableButtonUpdateDeleteUpDown(false);
 	}
 
-	//TODO
-	//	/**
-	//	 * Détermine ce qu'il se passe lors d'une action sur
-	//	 * le bouton "Modifier l'attribut".
-	//	 */
-	//	private void updateAttributeButtonAction()
-	//	{
-	//		this.talk("");
-	//		int rowIndex = this.table.getSelectedRow();
-	//		Attribute a = this.models.getAttributeAt(rowIndex);
-	//		this.setAttributesValues(a.name, a.type, Integer.toString(a.size), a.notNull, a.unique, a.primaryKey, a.foreignKey, a.fkTable,a.fkAttribute);
-	//		this.updateState=true;
-	//		this.setDisableAllExceptAttribute(false);
-	//		this.setVisibleEnabledUpdateButtons(true);
-	//	}
+
+	/**
+	 *	TODO
+	 * Détermine ce qu'il se passe lors d'une action sur
+	 * le bouton "Modifier l'attribut".
+	 */
+	private void updateAttributeButtonAction()
+	{
+		this.talk("");
+		int rowIndex = this.table.getSelectedRow();
+		Attribute a = this.models.getAttributeAt(rowIndex);
+		this.setAttributesValues
+		(a.name, a.type, Integer.toString(a.size), 
+				a.notNull, a.unique, a.primaryKey, a.foreignKey, 
+				a.fkTable,a.fkAttribute);
+		this.updateState=true;
+		this.setDisableAllExceptAttribute(false);
+		this.setVisibleEnabledUpdateButtons(true);
+	}
+
+	/**
+	 *  Retourne vrai si tous les champs de l'attributs sont 
+	 *  renseignés,
+	 *  faux sinon.
+	 * @return boolean
+	 */
+	private boolean isCompleteAttribute()
+	{
+		if(("").equals(this.attributeNameField.getText()) 
+				|| ("").equals(this.attributeSizeField.getText()) 
+				)
+		{
+			this.talk(ERROR_ATTRIBUTE + "Tous les champs Attributs doivent être renseignés.");
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "Modifier".
+	 * TODO
 	 */
-	//TODO
-	//	private void confirmUpdateAttributeButtonAction(){
-	//		if(isCompleteAttribute()){
-	//		Attribute a = this.models.createAttribute(this.attributeNameField.getText(),
-	//				(String)this.attributeTypeComboBox.getSelectedItem(), 
-	//				this.attributeSizeField.getText(), 
-	//				this.notNullCheckBox.isSelected(), 
-	//				this.uniqueCheckBox.isSelected(),
-	//				this.primaryKeyCheckBox.isSelected(),
-	//				this.foreignKeyCheckBox.isSelected(),
-	//				this.foreignKeyTableComboBoxModel.getSelectedItem().toString(),
-	//				this.foreignKeyAttributeComboBoxModel.getSelectedItem().toString());
-	//		if(isValidateAttribute(a)){
-	//			this.models.setAttributeValueAt(this.table.getSelectedRow(),a);
-	//			this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
-	//			this.updateState=false;
-	//			this.clearAttribute();
-	//			this.setDisableAllExceptAttribute(true);
-	//			this.setVisibleEnabledUpdateButtons(false);
-	//		}
-	//		}
-	//	}
+
+	private void confirmUpdateAttributeButtonAction(){
+		if(isCompleteAttribute()){
+			Attribute a = this.models.createAttribute(this.attributeNameField.getText(),
+					(String)this.attributeTypeComboBox.getSelectedItem(), 
+					this.attributeSizeField.getText(), 
+					this.notNullCheckBox.isSelected(), 
+					this.primaryKeyCheckBox.isSelected(),
+			if(isValidateAttribute(a)){
+				this.models.setAttributeValueAt(this.table.getSelectedRow(),a);
+				this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
+				this.updateState=false;
+				this.clearAttribute();
+				this.setDisableAllExceptAttribute(true);
+				this.setVisibleEnabledUpdateButtons(false);
+			}
+		}
+	}
 
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
