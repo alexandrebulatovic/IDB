@@ -157,8 +157,7 @@ implements ItemListener
 	 * @param pk : vrai si et seulement si la case à cocher PRIMARY KEY 
 	 *  doit être sélectionnée, faux sinon.
 	 */
-	private void setAttributesValues
-	(String attribute, int type, String size, boolean notNull, boolean pk)
+	private void setAttributesValues (String attribute, int type, String size, boolean notNull, boolean pk)
 	{
 		this.attributeNameField.setText(attribute);
 		this.attributeTypeComboBox.setSelectedIndex(type);
@@ -166,17 +165,16 @@ implements ItemListener
 		this.notNullCheckBox.setSelected(notNull);
 		this.primaryKeyCheckBox.setSelected(pk);;
 	}
-
-
+	
 	/**
 	 * Ajoute l'attribut passé en paramètre à la table 
 	 * contenant les attributs.
 	 * 
 	 * @param attribute : null interdit.
 	 */
-	protected void addAttributeToTable(String name, int type, String size, boolean notNull, boolean primaryKey){
-		if (this.isValidateAttribute(name,type,size,notNull,primaryKey)){
-			this.models.addAttribute(name,(String)this.attributeTypeComboBox.getSelectedItem(),Integer.parseInt(size),notNull,primaryKey);
+	protected void addAttributeToTable(I_Attribute attribute){
+		if (this.isValidateAttribute(attribute)){
+			this.models.addAttribute(attribute);
 			this.talk(SUCCES_ATTRIBUTE +"Attribut ajouté.");
 			this.clearAttribute();
 		}
@@ -184,8 +182,6 @@ implements ItemListener
 			this.talk("Attribut non valide");
 		}
 	}
-
-
 	/**
 	 * Instancie, positionne et dimensionne les composants s'occupant
 	 * de la table ciblée.
@@ -268,7 +264,7 @@ implements ItemListener
 		this.increaseTop(10);
 
 		this.panelAttributes = new JPanel(new BorderLayout());
-		this.models = new AttributesAbstractTableModel();
+		this.models = new AttributesAbstractTableModel(this);
 		this.table = new JTable(this.models){
 			public boolean isCellEditable(int row, int col) {
 				return false;
@@ -357,14 +353,14 @@ implements ItemListener
 	 * -la taille renseignée est correcte en fonction du type,<br/> 
 	 * -le nom est unique dans la table.
 	 */
-	private boolean isValidateAttribute(String name, int type, String size, boolean notNull, boolean pk)
+	private boolean isValidateAttribute(I_Attribute attribute)
 	{
-		int checkSize = this.models.checkSizeAttributes(type,Integer.parseInt(size));
+		int checkSize = attribute.checkSizeAttributes();
 		if(!(checkSize>=0)){
-			this.talk(ERROR_ATTRIBUTE +models.attributeSizeError(checkSize));
+			this.talk(ERROR_ATTRIBUTE +attribute.attributeSizeError(this.getAttributeSizeComboBoxIndex(attribute.getType())));
 			return false;
 		}
-		else if(this.models.isDuplicateAttributeName(name) && !(this.updateState)){
+		else if(this.models.isDuplicateAttributeName(attribute) && !(this.updateState)){
 			this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
 			return false;
 		}
@@ -481,20 +477,18 @@ implements ItemListener
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "Ajouter l'attribut".
-	 * TODO
 	 */
 
 	private void addAttributeButtonAction()
 	{
 		if(isCompleteAttribute()){
 			String name = attributeNameField.getText();
-			int type = attributeTypeComboBox.getSelectedIndex();
-			String size = attributeSizeField.getText();
+			String type = (String)attributeTypeComboBox.getSelectedItem();
+			int size = Integer.parseInt(attributeSizeField.getText());
 			boolean notNull = this.notNullCheckBox.isSelected();
 			boolean primaryKey = this.primaryKeyCheckBox.isSelected();
-			if(isValidateAttribute(name,type,size,notNull,primaryKey)){
-				this.addAttributeToTable(name,type,size,notNull,primaryKey);
-			}
+			I_Attribute attribute = this.control.getAttributeModel(name,type,size,notNull,primaryKey);
+				this.addAttributeToTable(attribute);
 		}
 	}
 
@@ -511,7 +505,6 @@ implements ItemListener
 
 
 		/**
-		 *	TODO
 		 * Détermine ce qu'il se passe lors d'une action sur
 		 * le bouton "Modifier l'attribut".
 		 */
@@ -553,18 +546,18 @@ implements ItemListener
 		/**
 		 * Détermine ce qu'il se passe lors d'une action sur
 		 * le bouton "Modifier".
-		 * TODO
 		 */
 	
 		private void confirmUpdateAttributeButtonAction(){
 			if(isCompleteAttribute()){
 				String name = attributeNameField.getText();
-				int type = attributeTypeComboBox.getSelectedIndex();
-				String size = attributeSizeField.getText();
+				String type = (String)attributeTypeComboBox.getSelectedItem();
+				int size = Integer.parseInt(attributeSizeField.getText());
 				boolean notNull = this.notNullCheckBox.isSelected();
 				boolean primaryKey = this.primaryKeyCheckBox.isSelected();
-						if(isValidateAttribute(name,type,size,notNull,primaryKey)){
-							this.models.setAttributeValueAt(this.table.getSelectedRow(),name, attributeTypeComboBox.getItemAt(type),Integer.parseInt(size),notNull,primaryKey);
+				I_Attribute attribute = this.control.getAttributeModel(name,type,size,notNull,primaryKey);
+						if(isValidateAttribute(attribute)){
+							this.models.setAttributeValueAt(this.table.getSelectedRow(),attribute);
 							this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
 							this.updateState=false;
 							this.clearAttribute();

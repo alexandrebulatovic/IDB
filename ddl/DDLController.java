@@ -178,7 +178,7 @@ public class DDLController
 
 	
 	public List<Attribute> getAttributes(String table) {
-		return manager.getAttributess(table);
+		return manager.getAttributes(table);
 	}
 
 
@@ -196,6 +196,12 @@ public class DDLController
 
 	public String[] getAttributeTypes(){
 		return manager.getAttributeTypes();
+	}
+
+
+	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
