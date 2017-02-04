@@ -44,18 +44,7 @@ implements ActionListener, ItemListener
 
 	
 	/**
-	 * Réinitialise tous les champs de la vue.
-	 */
-	public void resetView()
-	{
-		this.setAttributesValues("nomAttribut", "VARCHAR2", "Taille", false, false);
-		this.tableNameField.setText("");
-		this.talk("");
-		this.setEnableButtonUpdateDeleteUpDown(false);;
-		this.models.removeAll();
-	}
-
-	/**
+	 * TODO : appellée nulle part
 	 * Affiche les arguments passés en paramètres dans la table.
 	 * 
 	 * @param attributes
@@ -69,11 +58,13 @@ implements ActionListener, ItemListener
 		this.setTableName(tableName);
 	}
 
+	
 	/**
-	 * Modifie l'état des boutons de modifications du tableau 
-	 * en fonction du boolean .
+	 * Active les boutons de suppression, de modification et de 
+	 * déplacement des attributs si et seulement si $b est vrai, 
+	 * sinon les désactive.
 	 * 
-	 * @param b : un boolean
+	 * @param b 
 	 */
 	public void setEnableButtonUpdateDeleteUpDown(boolean b){
 		this.deleteAttributeButton.setEnabled(b);
@@ -91,7 +82,7 @@ implements ActionListener, ItemListener
 			//	this.addAttributeButtonAction();
 		}
 		if (o == this.createTableButton) {
-			if(this.isCompleteTable()){
+			if(this.isComplete()){
 				createTableButtonAction();
 			}
 		}
@@ -149,10 +140,16 @@ implements ActionListener, ItemListener
 	}
 
 
-	@Override
-	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return false;
+	/**
+	 * Réinitialise tous les champs de la vue.
+	 */
+	protected void resetView()
+	{
+		this.setAttributesValues("nomAttribut", false, false);
+		this.tableNameField.setText("");
+		this.talk("");
+		this.setEnableButtonUpdateDeleteUpDown(false);;
+		this.models.removeAll();
 	}
 
 
@@ -322,7 +319,9 @@ implements ActionListener, ItemListener
 
 	
 	/**
-	 * Réinitialise les champs de saisie des attributs.
+	 * Réinitialise les champs de saisie des attributs.<br/>
+	 * Décoche les cases à cocher.<br/>
+	 * Replace les listes déroulantes sur le premier item.<br/>
 	 */
 	private void clearAttribute()
 	{
@@ -332,28 +331,7 @@ implements ActionListener, ItemListener
 		this.primaryKeyCheckBox.setSelected(false);
 		this.attributeTypeComboBox.setSelectedIndex(0);
 	}
-
-
-	/**
-	 *  Retourne vrai si tous les champs de l'attributs sont 
-	 *  renseignés,
-	 *  faux sinon.
-	 * @return boolean
-	 */
-	private boolean isCompleteAttribute()
-	{
-		if(("").equals(this.attributeNameField.getText()) 
-				|| ("").equals(this.attributeSizeField.getText()) 
-				)
-		{
-			this.talk(ERROR_ATTRIBUTE + "Tous les champs Attributs doivent être renseignés.");
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
+	
 
 	/**
 	 * Retourne vrai si la table est complète, c'est à dire si elle
@@ -362,7 +340,8 @@ implements ActionListener, ItemListener
 	 * 
 	 * @return boolean
 	 */
-	private boolean isCompleteTable()
+	@Override
+	public boolean isComplete()
 	{
 		if(this.models.getRowCount()==0){
 			this.talk(ERROR_ATTRIBUTE+"Il n'y a pas d'Attribut");
@@ -463,44 +442,18 @@ implements ActionListener, ItemListener
 
 
 	/**
-	 * Modfifie tous les champs d'un attribut.
-	 * 
-	 * @param name
-	 * @param type
-	 * @param size
-	 * @param notNull
-	 * @param pk
+	 * TODO : chaine d'obsolescence getIndexAttributeTypeComboBox()
+	 * @param attribute : nom de l'attribut, null interdit.
+	 * @param notNull : vrai si et seulement si $attribute ne peut pas être null, faux sinon.
+	 * @param pk : vrai si et seulement si $attribute est membre de la clée primaire, faux sinon.
 	 */
-	private void setAttributesValues(String name, String type, String size, boolean notNull, boolean pk)
+	private void setAttributesValues(String attribute, boolean notNull, boolean pk)
 	{
-		this.attributeNameField.setText(name);
-		this.attributeTypeComboBox.setSelectedIndex(getIndexAttributeTypeComboBox(type));
-		this.attributeSizeField.setText(size);
+		this.attributeNameField.setText(attribute);
+		this.attributeTypeComboBox.setSelectedIndex(0);
 		this.notNullCheckBox.setSelected(notNull);
 		this.primaryKeyCheckBox.setSelected(pk);;
 	}
-
-	/**
-	 * Retourne l'index de String dans la ComboBox des types
-	 * d'un attribut. 
-	 * 0 si VARCHAR2, 1 si NUMBER, 2 si DATE, 3 si CHAR.
-	 * 
-	 * @param type : une chaine String corespondant au type d'un attribut
-	 * @return int
-	 */
-	private int getIndexAttributeTypeComboBox(String type)
-	{
-		if("VARCHAR2".equals(type)){
-			return 0;
-		}else if("NUMBER".equals(type)){
-			return 1;
-		}else if("DATE".equals(type)){
-			return 2;
-		}else{
-			return 3;
-		}
-	}
-
 
 
 	/**

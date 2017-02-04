@@ -17,7 +17,7 @@ import gui.BasicGUI;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
-public class CreateModifyProperties extends BasicGUI{
+public abstract class CreateModifyProperties extends BasicGUI{
 	
 	protected CreateModifyProperties() {
 		super("Création de table",null, 900, 550, 20);
@@ -113,17 +113,4 @@ public class CreateModifyProperties extends BasicGUI{
 
 	/** Case à cocher pour la contrainte PrimaryKey */
 	protected JCheckBox primaryKeyCheckBox;
-
-
-	@Override
-	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 }
