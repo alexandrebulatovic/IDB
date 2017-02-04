@@ -100,7 +100,9 @@ public class DDLController
 	 * Modifie une table existante
 	 */
 	public void modifyTable(Table table,Table tableSource) {
-		//TODO : déplacer le talk vers l'IHM
+		/*
+		 * TODO : déplacer le talk vers l'IHM, déplacer le resetView
+		 */
 		ArrayList<Response> responses = this.manager.modifyTable(table.toModify(tableSource));
 		boolean error = false;
 		for (Response response : responses){
@@ -110,7 +112,7 @@ public class DDLController
 			}
 		}
 		if (!error) {
-			this.modifyGUI.resetView();
+//			this.modifyGUI.resetView();
 		}
 		
 	}
