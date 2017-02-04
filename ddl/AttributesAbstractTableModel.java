@@ -73,7 +73,7 @@ extends AbstractTableModel {
 		case 3:
 			return a.isNotNull();
 		case 4:
-			return a.isPk();
+			return a.isPrimaryKey();
 		default:
 			return null; 
 		}
@@ -85,7 +85,7 @@ extends AbstractTableModel {
 		select.setType(type);
 		select.setSize(size);
 		select.setNotNull(notNull);
-		select.setPk(primaryKey);
+		select.setPrimaryKey(primaryKey);
 		
 	}
 	
@@ -95,7 +95,7 @@ extends AbstractTableModel {
 		select.setType(a.getType());
 		select.setSize(a.getSize());
 		select.setNotNull(a.isNotNull());
-		select.setPk(a.isPk());
+		select.setPrimaryKey(a.isPrimaryKey());
 	}
 	/**
 	 * @param a
@@ -151,8 +151,8 @@ extends AbstractTableModel {
 	private void changePosition(int rowIndex,int direction ) {
 		I_Attribute select = this.getAttributeAt(rowIndex);
 		I_Attribute overSelect = this.getAttributeAt(rowIndex+direction);
-		this.setAttributeValueAt(rowIndex+direction, select.getName(), select.getType(), select.getSize(), select.isNotNull(), select.isPk());
-		this.setAttributeValueAt(rowIndex, overSelect.getName(), overSelect.getType(), overSelect.getSize(), overSelect.isNotNull(), overSelect.isPk());
+		this.setAttributeValueAt(rowIndex+direction, select.getName(), select.getType(), select.getSize(), select.isNotNull(), select.isPrimaryKey());
+		this.setAttributeValueAt(rowIndex, overSelect.getName(), overSelect.getType(), overSelect.getSize(), overSelect.isNotNull(), overSelect.isPrimaryKey());
 		this.fireTableDataChanged();
 	}
 

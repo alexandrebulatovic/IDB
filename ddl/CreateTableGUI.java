@@ -347,7 +347,7 @@ implements ItemListener
 	}
 
 	/**
-	 * @param at : null interdit.
+	 * @param attribute : null interdit.
 	 * @return vrai si et seulement si $a est un attribut dont :<br/> 
 	 * -les champs attributs sont complets,<br/> 
 	 * -la taille renseignée est correcte en fonction du type,<br/> 
@@ -355,9 +355,8 @@ implements ItemListener
 	 */
 	private boolean isValidateAttribute(I_Attribute attribute)
 	{
-		int checkSize = attribute.checkSizeAttributes();
-		if(!(checkSize>=0)){
-			this.talk(ERROR_ATTRIBUTE +attribute.attributeSizeError(this.getAttributeSizeComboBoxIndex(attribute.getType())));
+		if(! attribute.checkSize()){
+			this.talk(ERROR_ATTRIBUTE +attribute.sizeErrorMsg());
 			return false;
 		}
 		else if(this.models.isDuplicateAttributeName(attribute) && !(this.updateState)){
