@@ -177,12 +177,12 @@ implements ActionListener, ItemListener
 	 */
 	protected void handleTableComponent()
 	{
-		this.tableLabel = new JLabel("Table :");
-		this.tableLabel.setFont(new Font(FONT, Font.BOLD, 18));
-		this.bindAndAdd(this.tableLabel);
+		JLabel table = new JLabel("Table :");
+		table.setFont(new Font(FONT, Font.BOLD, 18));
+		this.bindAndAdd(table);
 
-		this.tableNameLabel= new JLabel("Nom de la table :");
-		this.bindAndAdd(this.tableNameLabel,7,true);
+		JLabel tableName = new JLabel("Nom de la table :");
+		this.bindAndAdd(tableName, 7, true);
 	}
 
 
@@ -206,9 +206,9 @@ implements ActionListener, ItemListener
 	private void handleAttributesComponent()
 	{
 		this.increaseTop(10);
-		this.attributeLabel = new JLabel("Attribut :");
-		this.attributeLabel.setFont(new Font(FONT, Font.BOLD, 18));
-		this.bindAndAdd(this.attributeLabel);
+		JLabel attributeLabel = new JLabel("Attribut :");
+		attributeLabel.setFont(new Font(FONT, Font.BOLD, 18));
+		this.bindAndAdd(attributeLabel);
 
 		int b = 6;
 		this.attributeNameField = new JTextField();
@@ -259,12 +259,13 @@ implements ActionListener, ItemListener
 				return false;
 			}
 		};
-		this.table.getSelectionModel().addListSelectionListener(new ControlTableResult(this));
-		this.scrollPane = new JScrollPane(this.table);
+		this.table.getSelectionModel().addListSelectionListener
+			(new ControlTableResult(this));
+		JScrollPane jscp = new JScrollPane(this.table);
 		this.table.setFillsViewportHeight(true);
 		this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		this.scrollPane.setVisible(true);
-		this.panelAttributes.add(this.scrollPane);
+		jscp.setVisible(true);
+		this.panelAttributes.add(jscp);
 		this.bindAndAdd(this.panelAttributes,200);
 		this.increaseTop(10);
 
@@ -618,7 +619,4 @@ implements ActionListener, ItemListener
 		 * afficher la Response retournée.
 		 */
 	}
-
 }
-
-
