@@ -13,10 +13,6 @@ import useful.Response;
 
 import useful.MaxLengthTextDocument;
 
-/**
- * @author Adrian
- *
- */
 @SuppressWarnings("serial")
 /**
  * IHM pour créer des tables dans la base de données.
@@ -25,7 +21,7 @@ import useful.MaxLengthTextDocument;
  */
 public class CreateTableGUI
 extends CreateModifyProperties
-implements ActionListener, ItemListener
+implements ItemListener
 {
 
 	/**
@@ -44,33 +40,18 @@ implements ActionListener, ItemListener
 
 
 	/**
-	 * TODO : appellée nulle part
-	 * Affiche les arguments passés en paramètres dans la table.
-	 * 
-	 * @param attributes
-	 * @param string
-	 */
-	public void setView(List<Attribute> attributes, String tableName) {	
-		this.resetView();
-		for (Attribute a : attributes){
-			this.addAttributeToTable(a);
-		}
-		this.setTableName(tableName);
-	}
-
-
-	/**
 	 * Active les boutons de suppression, de modification et de 
-	 * déplacement des attributs si et seulement si $b est vrai, 
+	 * déplacement des attributs si et seulement si $enabled est vrai, 
 	 * sinon les désactive.
 	 * 
-	 * @param b 
+	 * @param enabled : vrai si et seulement si les boutons doivent être activés,
+	 * faux sinon.
 	 */
-	public void setEnableButtonUpdateDeleteUpDown(boolean b){
-		this.deleteAttributeButton.setEnabled(b);
-		this.updateAttributeButton.setEnabled(b);
-		this.upPositionAttributeButton.setEnabled(b);
-		this.downPositionAttributeButton.setEnabled(b);
+	public void setEnableButtonUpdateDeleteUpDown(boolean enabled){
+		this.deleteAttributeButton.setEnabled(enabled);
+		this.updateAttributeButton.setEnabled(enabled);
+		this.upPositionAttributeButton.setEnabled(enabled);
+		this.downPositionAttributeButton.setEnabled(enabled);
 	}
 
 
@@ -113,43 +94,78 @@ implements ActionListener, ItemListener
 	}
 
 
-	/**
-	 * Retourne un objet de type Table qui contient tous
-	 * les éléments de la vue
-	 * @return
-	 */
-	//TODO
-	//	protected Table getTable() {
-	//		return new Table(
-	//				this.tableNameField.getText(),
-	//				this.models.getAttributes());
-	//	}
+//	/**
+//	 * TODO
+//	 * @return un objet de type Table qui contient tous
+//	 * les éléments de la vue
+//	 */
+//	protected Table getTable() {
+//		return new Table(
+//				this.tableNameField.getText(),
+//				this.models.getAttributes());
+//	}
 
+	
 	@Override
 	public void itemStateChanged(ItemEvent item)
 	{
 		Object obj = item.getItem();
 		int status = item.getStateChange();
-		if(obj==this.primaryKeyCheckBox){
-			if (status == ItemEvent.SELECTED){
-				this.setEnabledSelectedNotNullCheckBox(false);
-			}else if(status == ItemEvent.DESELECTED){
-				this.setEnabledSelectedNotNullCheckBox(true);
-			}
+		
+		if(obj == this.primaryKeyCheckBox){
+			boolean enabled = (status == ItemEvent.DESELECTED);
+			this.setEnabledSelectedNotNullCheckBox(enabled);
 		}
 	}
 
 
 	/**
-	 * Réinitialise tous les champs de la vue.
+	 * Réinitialise toutes les boites de saisie de la vue.<br/>
+	 * Réactive toutes les cases à cocher.<br/>
+	 * Efface les messages.<br/>
+	 * Vide la collection d'attributs.
 	 */
 	protected void resetView()
 	{
-		this.setAttributesValues("nomAttribut", false, false);
-		this.tableNameField.setText("");
 		this.talk("");
+		this.tableNameField.setText("");
+		this.clearAttribute();
 		this.setEnableButtonUpdateDeleteUpDown(false);;
 		this.models.removeAll();
+	}
+
+
+	/**
+	 * Réinitialise les champs de saisie des attributs.<br/>
+	 * Décoche les cases à cocher.<br/>
+	 * Replace les listes déroulantes sur le premier item.<br/>
+	 */
+	private void clearAttribute()
+	{
+		this.setAttributesValues("nomAttribut", 0, "", false, false);
+	}
+
+
+	/**
+	 * Modifie l'état des différents composants liés à la saisie d'un attribut.
+	 * 
+	 * @param attribute : texte à écrire dans la boite de saisie du nom de l'attribut, null interdit.
+	 * @param type : indice de la liste déroulante des types, 0 <= type < 4.
+	 * @param size : texte à écrire dans la boite de saisie de la taille de l'attribut, 
+	 *  null interdit, chaine vide autorisée.
+	 * @param notNull : vrai si et seulement si la case à cocher NOT NULL 
+	 *  doit être sélectionnée, faux sinon.
+	 * @param pk : vrai si et seulement si la case à cocher PRIMARY KEY 
+	 *  doit être sélectionnée, faux sinon.
+	 */
+	private void setAttributesValues
+		(String attribute, int type, String size, boolean notNull, boolean pk)
+	{
+		this.attributeNameField.setText(attribute);
+		this.attributeTypeComboBox.setSelectedIndex(type);
+		this.attributeSizeField.setText(size);
+		this.notNullCheckBox.setSelected(notNull);
+		this.primaryKeyCheckBox.setSelected(pk);;
 	}
 
 
@@ -157,7 +173,7 @@ implements ActionListener, ItemListener
 	 * Ajoute l'attribut passé en paramètre à la table 
 	 * contenant les attributs.
 	 * 
-	 * @param attribute : un objet Attribute
+	 * @param attribute : null interdit.
 	 */
 	protected void addAttributeToTable(Attribute attribute){
 		if (this.isValidateAttribute(attribute)){
@@ -182,7 +198,7 @@ implements ActionListener, ItemListener
 		this.bindAndAdd(table);
 
 		JLabel tableName = new JLabel("Nom de la table :");
-		this.bindAndAdd(tableName, 7, true);
+		this.bindAndAdd(tableName, 6, true);
 	}
 
 
@@ -260,7 +276,7 @@ implements ActionListener, ItemListener
 			}
 		};
 		this.table.getSelectionModel().addListSelectionListener
-			(new ControlTableResult(this));
+		(new ControlTableResult(this));
 		JScrollPane jscp = new JScrollPane(this.table);
 		this.table.setFillsViewportHeight(true);
 		this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -319,88 +335,72 @@ implements ActionListener, ItemListener
 	}
 
 
-	/**
-	 * Réinitialise les champs de saisie des attributs.<br/>
-	 * Décoche les cases à cocher.<br/>
-	 * Replace les listes déroulantes sur le premier item.<br/>
-	 */
-	private void clearAttribute()
-	{
-		this.attributeNameField.setText("");
-		this.attributeSizeField.setText("");
-		this.notNullCheckBox.setSelected(false);
-		this.primaryKeyCheckBox.setSelected(false);
-		this.attributeTypeComboBox.setSelectedIndex(0);
-	}
-
-
-	/**
-	 * Retourne vrai si la table est complète, c'est à dire si elle
-	 * contient des attributs et un nom de table,
-	 * faux sinon.
-	 * 
-	 * @return boolean
-	 */
 	@Override
 	public boolean isComplete()
 	{
 		if(this.models.getRowCount()==0){
 			this.talk(ERROR_ATTRIBUTE+"Il n'y a pas d'Attribut");
 			return false;
-		} else if ("".equals(this.tableNameField.getText())) {
+		} 
+		else if ("".equals(this.tableNameField.getText())) {
 			this.talk(ERROR_ATTRIBUTE+"Il manque le nom de la Table");
 			return false;
-		} else {
+		} 
+		else {
 			return true;
 		}
 	}
 
 	/**
-	 * Retourne vrai Si l'attribut a est un attribut Valide. C'est a dire 
-	 * Si les champs attributs sont complets,
-	 * Si la taille renseignées est correcte en fonction du type,
-	 * Si il n'y a pas de doublon au niveau du nom de l'attribut.
-	 * @param a
-	 * @return un boolean
+	 * @param at : null interdit.
+	 * @return vrai si et seulement si $a est un attribut dont :<br/> 
+	 * -les champs attributs sont complets,<br/> 
+	 * -la taille renseignée est correcte en fonction du type,<br/> 
+	 * -le nom est unique dans la table.
 	 */
-	private boolean isValidateAttribute(Attribute a){
-		if(!(a.checkSizeAttributes()>=0)){
-			this.talk(ERROR_ATTRIBUTE +a.attributeSizeError(a.checkSizeAttributes()));
+	private boolean isValidateAttribute(Attribute at){
+		if(!(at.checkSizeAttributes()>=0)){
+			this.talk(ERROR_ATTRIBUTE +at.attributeSizeError(at.checkSizeAttributes()));
 			return false;
-		}else if(this.models.isDuplicateAttributeName(a) && !(this.updateState)){
+		}
+		else if(this.models.isDuplicateAttributeName(at) && !(this.updateState)){
 			this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
 			return false;
 		}
-		return true;
+		else return true;
 	}
 
+	
 	/**
 	 * Modifie le nom de la Table dans le champs de saisie.
 	 * 
 	 * @param tableName : une chaine de caractère
 	 */
-	private void setTableName(String tableName) {
+	private void setTableName(String tableName) 
+	{
 		this.tableNameField.setText(tableName);
-
 	}
 
+	
 	/**
-	 * Si bool est true Désactives tous les champs de saisies, les boutons et le tableau 
-	 * qui ne sont pas utilies pour la modification d'un attribut,
-	 * sinon les actives.
+	 * Active ou désactive tous les composants qui n'interviennent pas
+	 * dans la définition d'un attribut.
 	 * 
-	 * @param bool
+	 * @param enable : vrai si et seulement si les composants doivent être activés,
+	 *  faux sinon.
 	 */
-	private void setDisableAllExceptAttribute(boolean bool){
-		this.tableNameField.setEnabled(bool);
-		this.attributeButton.setEnabled(bool);
-		this.panelAttributes.setEnabled(bool);
-		this.setEnableButtonUpdateDeleteUpDown(bool);
-		this.upPositionAttributeButton.setEnabled(bool);
-		this.downPositionAttributeButton.setEnabled(bool);
-		this.resetButton.setEnabled(bool);
-		this.createTableButton.setEnabled(bool);
+	private void setDisableAllExceptAttribute(boolean enable){
+		this.tableNameField.setEnabled(enable);
+		this.attributeButton.setEnabled(enable);
+		this.panelAttributes.setEnabled(enable);
+		this.setEnableButtonUpdateDeleteUpDown(enable);
+		this.upPositionAttributeButton.setEnabled(enable);
+		this.downPositionAttributeButton.setEnabled(enable);
+		this.resetButton.setEnabled(enable);
+		this.createTableButton.setEnabled(enable);
 	}
+	
+	
 	/**
 	 * Definit l'état des checkBox Unique et NotNull.
 	 * 
@@ -439,21 +439,6 @@ implements ActionListener, ItemListener
 		this.confirmUpdateAttributeButton.setEnabled(bool);
 		this.cancelUpdateAttributeButton.setVisible(bool);
 		this.cancelUpdateAttributeButton.setEnabled(bool);
-	}
-
-
-	/**
-	 * TODO : chaine d'obsolescence getIndexAttributeTypeComboBox()
-	 * @param attribute : nom de l'attribut, null interdit.
-	 * @param notNull : vrai si et seulement si $attribute ne peut pas être null, faux sinon.
-	 * @param pk : vrai si et seulement si $attribute est membre de la clée primaire, faux sinon.
-	 */
-	private void setAttributesValues(String attribute, boolean notNull, boolean pk)
-	{
-		this.attributeNameField.setText(attribute);
-		this.attributeTypeComboBox.setSelectedIndex(0);
-		this.notNullCheckBox.setSelected(notNull);
-		this.primaryKeyCheckBox.setSelected(pk);;
 	}
 
 
@@ -540,25 +525,23 @@ implements ActionListener, ItemListener
 		this.setVisibleEnabledUpdateButtons(true);
 	}
 
+	
 	/**
-	 *  Retourne vrai si tous les champs de l'attributs sont 
-	 *  renseignés,
-	 *  faux sinon.
-	 * @return boolean
+	 * @return vrai ssi tous les champs de l'attributs sont renseignés,
+	 * faux sinon.
 	 */
 	private boolean isCompleteAttribute()
 	{
-		if(("").equals(this.attributeNameField.getText()) 
-				|| ("").equals(this.attributeSizeField.getText()) 
-				)
-		{
-			this.talk(ERROR_ATTRIBUTE + "Tous les champs Attributs doivent être renseignés.");
+		String name = this.attributeNameField.getText();
+		String size = this.attributeSizeField.getText();
+		
+		if("".equals(name) || "".equals(size)) {
+			this.talk(ERROR_ATTRIBUTE + 
+					"Tous les champs Attributs doivent être renseignés.");
 			return false;
-		}
+		} 
 		else
-		{
 			return true;
-		}
 	}
 
 	/**
@@ -574,17 +557,18 @@ implements ActionListener, ItemListener
 					this.attributeSizeField.getText(), 
 					this.notNullCheckBox.isSelected(), 
 					this.primaryKeyCheckBox.isSelected(),
-			if(isValidateAttribute(a)){
-				this.models.setAttributeValueAt(this.table.getSelectedRow(),a);
-				this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
-				this.updateState=false;
-				this.clearAttribute();
-				this.setDisableAllExceptAttribute(true);
-				this.setVisibleEnabledUpdateButtons(false);
-			}
+					if(isValidateAttribute(a)){
+						this.models.setAttributeValueAt(this.table.getSelectedRow(),a);
+						this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
+						this.updateState=false;
+						this.clearAttribute();
+						this.setDisableAllExceptAttribute(true);
+						this.setVisibleEnabledUpdateButtons(false);
+					}
 		}
 	}
 
+	
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "Annuler les modifications".
@@ -596,6 +580,8 @@ implements ActionListener, ItemListener
 		this.setVisibleEnabledUpdateButtons(false);
 
 	}
+	
+	
 	/**
 	 * Document permettant de limiter le nombre de caractères maximum saisis.
 	 * Retourne un Document pouvant être passé en paramètre 
