@@ -97,7 +97,7 @@ extends BasicGUI
 	/** Case à cocher pour la contrainte PrimaryKey */
 	protected JCheckBox primaryKeyCheckBox;
 
-	
+	protected String [] types;
 	//Constructeur
 	/**
 	 * Constructeur vide.
