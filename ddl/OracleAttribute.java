@@ -1,54 +1,70 @@
 package ddl;
 
-public class OracleAttribute extends AbstractAttribute{
-
-	public String name;
-	public String type;
-	public boolean notNull;
-	public int size;
-	public boolean primaryKey;
-
-	public OracleAttribute(String name, String type, int size, boolean notNull, boolean primaryKey) {
-		super(name,type,size,notNull,primaryKey);
+public class OracleAttribute 
+extends AbstractAttribute
+{
+	//Constructeur
+	/**
+	 * Constructeur commun.
+	 * 
+	 * @param name : le nom de l'attribut, null interdit.
+	 * @param type : le type de l'attribut, null interdit.
+	 * @param size : la taille de l'attribut.
+	 * @param notNull : vrai si et seulement si l'attribut ne peut pas être null, 
+	 * faux sinon.
+	 * @param primaryKey : vrai si et seulement si l'attribut est membre de la 
+	 * clée primaire, faux sinon.
+	 */
+	public OracleAttribute
+	(String name, String type, int size, boolean notNull, boolean primaryKey) 
+	{
+		super(name, type ,size, notNull, primaryKey);
 	}
 
-	public OracleAttribute(OracleAttribute attributeAt) {
+	
+	/**
+	 * Constructeur par recopie.
+	 * 
+	 * @param attribute : null interdit.
+	 */
+	public OracleAttribute(OracleAttribute attributeAt) 
+	{
 		super(attributeAt);
 	}
+
 	
 	@Override
-	public int checkSizeAttributes(){
-		if("VARCHAR2".equals(this.type)){
-			if(size == 0 || size > 255){
-				return -1;
-			}else{
-				return 1;
-			}
-		}else if ("NUMBER".equals(this.type)){
-			if(size == 0 || size > 38){
-				return -2;
-			}else{
-				return 2;
-			}
-		}else if ("CHAR".equals(this.type)){
-			if(size == 0 || size > 255){
-				return -3;
-			}else{
-				return 3;
-			}
-	
-		}else{
-			return 0;
+	public String sizeErrorMsg()
+	{
+		switch (this.errorSizeCode()){
+		case -1 : return "1 <= taille VARCHAR <= 255";
+		case -2 : return "1 <= taille NUMBER <= 38";
+		case -3 : return "1 <= taille CHAR <= 255";
+		default : return "";
 		}
 	}
-		public String attributeSizeError(int i){
-			switch (i){
-				case -1 : return "1 <= taille VARCHAR <= 255";
-				case -2 : return "1 <= taille NUMBER <= 38";
-				case -3 : return "1 <= taille CHAR <= 255";
-				default : return "";
-			}
+
+	
+	@Override
+	public boolean checkSize()
+	{
+		return this.errorSizeCode() >= 0;
+	}
+	
+	
+	/**
+	 * @return un entier négatif si et seulement si la taille de l'attribut est en
+	 * désaccord avec sa taille, un entier supérieur ou égal à zéro sinon.
+	 */
+	private int errorSizeCode()
+	{
+		switch (this.type) {
+		case "VARCHAR2" : return (size == 0 || size > 255) ? -1 : 1;
+		case "NUMBER" 	: return (size == 0 || size > 38)  ? -2 : 2;
+		case "CHAR"		: return (size == 0 || size > 255) ? -3 : 3;
+		default 		: return 0;
 		}
+	}
 
 
 }
