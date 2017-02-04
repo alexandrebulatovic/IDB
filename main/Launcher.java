@@ -9,7 +9,7 @@ import useful.ConnectionStrings;
 import useful.ResponseData;
 import manager.DefaultValueManager;
 import manager.HomeFacade;
-import manager.I_DDLManager;
+import manager.ddl.I_DDLManager;
 import factory.MainFactory;
 import home.HomeController;
 import connection.ConnectionGUI;

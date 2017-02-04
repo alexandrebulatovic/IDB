@@ -2,9 +2,9 @@ package factory;
 
 import java.sql.Connection;
 
-import manager.I_ConnectionManager;
-import manager.I_DDLManager;
+import manager.connection.I_ConnectionManager;
 import manager.connection.OracleConnectionManager;
+import manager.ddl.I_DDLManager;
 import manager.ddl.OracleDDLManager;
 
 /**

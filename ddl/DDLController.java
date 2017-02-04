@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import business.Attribute;
 import business.Table;
 
-import manager.I_DDLManager;
+import manager.ddl.I_DDLManager;
 import useful.Response;
 import useful.ResponseData;
 

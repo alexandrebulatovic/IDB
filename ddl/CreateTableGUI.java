@@ -2,14 +2,13 @@ package ddl;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
-import java.util.List;
 import java.awt.Font;
 
 import javax.swing.*;
 
 import business.Attribute;
 import useful.FieldsKeyAdapter;
-import useful.Response;
+
 
 import useful.MaxLengthTextDocument;
 
@@ -83,7 +82,7 @@ implements ItemListener
 			this.positionAttributButtonAction("DOWN");
 		}
 		if (o == this.attributeTypeComboBox) {
-			selectSizeDateComboBoxAction();
+			this.selectSizeDateComboBoxAction();
 		}
 		if (o== this.confirmUpdateAttributeButton){
 			//TODO this.confirmUpdateAttributeButtonAction();
@@ -265,7 +264,7 @@ implements ItemListener
 		this.cancelUpdateAttributeButton = new JButton("Annuler les modifications") ;
 		this.cancelUpdateAttributeButton.addActionListener(this);
 		this.bindAndAdd(this.cancelUpdateAttributeButton,4,false);
-		this.setVisibleEnabledUpdateButtons(false);
+		this.setVisibleUpdateButtons(false);
 		this.increaseTop(10);
 
 		this.panelAttributes = new JPanel(new BorderLayout());
@@ -431,13 +430,15 @@ implements ItemListener
 
 	
 	/**
-	 * Rend visible les boutons de modification d'un attribut.
-	 * @param bool
+	 * Rend visible ou non les boutons de modification d'un attribut.
+	 * @param visible : vrai si et seulement si les boutons doivent être visible,
+	 * faux sinon.
 	 */
-	private void setVisibleEnabledUpdateButtons(boolean bool){
-		this.confirmUpdateAttributeButton.setVisible(bool);
+	private void setVisibleUpdateButtons(boolean visible)
+	{
+		this.confirmUpdateAttributeButton.setVisible(visible);
 //		this.confirmUpdateAttributeButton.setEnabled(bool);
-		this.cancelUpdateAttributeButton.setVisible(bool);
+		this.cancelUpdateAttributeButton.setVisible(visible);
 //		this.cancelUpdateAttributeButton.setEnabled(bool);
 	}
 
@@ -446,9 +447,11 @@ implements ItemListener
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "UP" ou le bouton "DOWN".
 	 */
-	private void positionAttributButtonAction(String direction){
+	private void positionAttributButtonAction(String direction)
+	{
 		if(this.table.getSelectedRow()!=-1){
 			int rowIndex = this.table.getSelectedRow();
+			
 			if("UP".equals(direction) && rowIndex!=0){
 				this.models.changeAttributePosition(direction, rowIndex);
 				this.table.setRowSelectionInterval(rowIndex-1, rowIndex-1);
@@ -460,6 +463,7 @@ implements ItemListener
 		}
 	}
 
+	
 	/**
 	 * Détermine ce qu'il se passe lors de la sélection d'une DATE
 	 * dans la ComboBox du type de l'attribut.
@@ -577,7 +581,7 @@ implements ItemListener
 	private void cancelUpdateAttributeButtonAction(){
 		this.clearAttribute();
 		this.disableAllExceptAttribute(true);
-		this.setVisibleEnabledUpdateButtons(false);
+		this.setVisibleUpdateButtons(false);
 
 	}
 	

@@ -7,8 +7,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import manager.I_DDLManager;
 import manager.SQLManager;
+import manager.ddl.I_DDLManager;
 import manager.ddl.OracleDDLManager;
 import useful.ResponseData;
 

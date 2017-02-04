@@ -2,10 +2,8 @@ package manager.ddl;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.List;
 
 import useful.Response;
-import business.Attribute;
 
 public class MySQLDDLManager 
 extends AbstractDLLManager 
@@ -44,13 +42,6 @@ extends AbstractDLLManager
 	
 	@Override
 	public ArrayList<Response> modifyTable(ArrayList<String> sqls) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	@Override
-	public List<Attribute> getAttributess(String table) {
 		// TODO Auto-generated method stub
 		return null;
 	}

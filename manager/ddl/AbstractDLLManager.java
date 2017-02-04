@@ -11,7 +11,6 @@ import java.util.List;
 import useful.Response;
 import useful.ResponseData;
 
-import manager.I_DDLManager;
 
 public abstract class AbstractDLLManager 
 implements I_DDLManager 
