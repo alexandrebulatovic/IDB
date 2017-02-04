@@ -19,13 +19,14 @@ public class testTable {
 	private Attribute att0;
 	private PrimaryKeyConstraint pk1;
 	private ArrayList<Constraint> constraints;
+	private Table table2;
 
 	@Before
 	public void init(){
 		constraints = new ArrayList<Constraint>();
-		table = new Table("nomTable", false);
+		table = new Table("PROFILS", false);
 		
-			att0 = new Attribute("id","NUMBER",500);
+			att0 = new Attribute("id","NUMBER",10);
 				pk1 = new PrimaryKeyConstraint();
 				constraints.add(pk1);
 				pk1.addAttribute(att0);
@@ -46,13 +47,34 @@ public class testTable {
 		
 		table.setConstraints(constraints);
 		
+		
+		
+		table2 = new Table(this.table);
+		
 	}
 	
 	@Test
 	public void testToCreate(){
+		String attendu = "CREATE TABLE PROFILS\n"
+				+ "(\n"
+				+ "nom VARCHAR2 (20),\n"
+				+ "prenom VARCHAR (20),\n"
+				+ "id NUMBER (10)\n"
+				+ ");"
+				+ "ALTER TABLE PROFILS\n"
+				+ "ADD CONSTRAINT pk_PROFILS_id PRIMARY KEY(id);\n";
+		String total = "";
 		for (String sql : this.table.toCreate()){
-			System.out.println(sql);
+			total+=sql;
 		}
+
+		assertEquals(attendu,total);
+	}
+	
+	
+	@Test
+	public void testToModify(){
+		
 	}
 	
 	

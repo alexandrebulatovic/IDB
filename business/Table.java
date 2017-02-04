@@ -143,7 +143,6 @@ public class Table {
 	/**
 	 * Retourne les requetes SQL qui modifient
 	 * La table avec des ALTER TABLE
-	 * @return String
 	 */
 	public ArrayList<String> toModify(Table tableSource) {
 		ArrayList<String> results = new ArrayList<String>();

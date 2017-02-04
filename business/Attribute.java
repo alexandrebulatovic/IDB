@@ -23,7 +23,8 @@ public class Attribute
 	
 	
 	/**
-	 * 
+	 * attention, la taille des types ne doit exéder 38 octets pour des 
+	 * types numériques
 	 * @param name
 	 * @param type
 	 * @param size
@@ -34,6 +35,7 @@ public class Attribute
 		this.name=name;
 		this.type=type;
 		this.size=size;
+
 
 
 		this.constraints = constraints;

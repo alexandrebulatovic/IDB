@@ -156,7 +156,7 @@ public class DDLController
 	
 	
 	/**
-	 * Retourne une réponse personnalisée contenant le nom des tables
+	 * Retourne une réponse personnalisée contenant le NOM es tables
 	 * de la base, si et seulement si (ces dernières existent et 
 	 * il n'y a pas eu d'exceptions).
 	 * 
