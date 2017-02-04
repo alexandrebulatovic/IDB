@@ -16,12 +16,12 @@ extends AbstractTableModel {
 	/**
 	 * Liste des attributs présent dans le tableau
 	 */
-	private LinkedHashSet<Attribute> attributes = new LinkedHashSet<Attribute>();
+	private LinkedHashSet<AttributeModel> attributes = new LinkedHashSet<AttributeModel>();
 
 	/**
 	 * Initialise l'en-tête
 	 */
-	private final String[] header = {"Nom Attribut", "Type", "Taille", "NOT NULL", "UNIQUE","PRIMARY KEY","FOREIGN KEY","Table","Attribut"};
+	private final String[] header = {"Nom Attribut", "Type", "Taille", "NOT NULL","PRIMARY KEY"};
 
 	/**
 	 * Constructeur 
@@ -43,12 +43,12 @@ extends AbstractTableModel {
 	}
 	/**
 	 * @param rowIndex
-	 * @return Attribute
+	 * @return AttributeModel
 	 */
-	public Attribute getAttributeAt(int rowIndex){
+	public AttributeModel getAttributeAt(int rowIndex){
 		int i = 0;
-		Iterator <Attribute> iterator = this.attributes.iterator();
-		Attribute result = null; //compilateur chiale
+		Iterator <AttributeModel> iterator = this.attributes.iterator();
+		AttributeModel result = null; //compilateur chiale
 		
 		while (iterator.hasNext() && i <= rowIndex) {
 			result = iterator.next();
@@ -61,7 +61,7 @@ extends AbstractTableModel {
 			
 			
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Attribute a = this.getAttributeAt(rowIndex);
+		AttributeModel a = this.getAttributeAt(rowIndex);
 		switch(columnIndex){
 		case 0:
 			return a.name;
@@ -72,56 +72,38 @@ extends AbstractTableModel {
 		case 3:
 			return a.notNull;
 		case 4:
-			return a.unique;
-		case 5:
 			return a.primaryKey;
-		case 6:
-			return a.foreignKey;
-		case 7:
-			return a.fkTable;
-		case 8:
-			return a.fkAttribute;
 		default:
 			return null; 
 		}
 	}
 	
-	public void setAttributeValueAt(int rowIndex, String name, String type, int size, boolean notNull, 
-			boolean unique, boolean pk, boolean fk, 
-			String fkTable, String fkAttribute){
-		Attribute select = this.getAttributeAt(rowIndex);
+	public void setAttributeValueAt(int rowIndex, String name, String type, int size, boolean notNull, boolean primaryKey){
+		AttributeModel select = this.getAttributeAt(rowIndex);
 		select.name=name;
 		select.type=type;
 		select.size=size;
 		select.notNull=notNull;
-		select.unique=unique;
-		select.primaryKey=pk;
-		select.foreignKey=fk;
-		select.fkTable=fkTable;
-		select.fkAttribute=fkAttribute;
+		select.primaryKey=primaryKey;
 		
 	}
 	
-	public void setAttributeValueAt(int rowIndex, Attribute a){
-		Attribute select = this.getAttributeAt(rowIndex);
+	public void setAttributeValueAt(int rowIndex, AttributeModel a){
+		AttributeModel select = this.getAttributeAt(rowIndex);
 		select.name=a.name;
 		select.type=a.type;
 		select.size=a.size;
 		select.notNull=a.notNull;
-		select.unique=a.unique;
 		select.primaryKey=a.primaryKey;
-		select.foreignKey=a.foreignKey;
-		select.fkTable=a.fkTable;
-		select.fkAttribute=a.fkAttribute;
 	}
 	/**
 	 * @param a
 	 * @return booleans
 	 */
-	public boolean isDuplicateAttributeName(Attribute a){
+	public boolean isDuplicateAttributeName(String name){
 		boolean res = false;
-		for(Attribute object: attributes){
-			if(object.name.equals(a.name)){
+		for(AttributeModel object: attributes){
+			if(object.name.equals(name)){
 				res=true;
 			}	
 		}
@@ -130,12 +112,13 @@ extends AbstractTableModel {
 
 	/**
 	 * Ajoute un attribut dans la Table et dans l'ArrayList
-	 * @param atrribute
+	 * @param attribute
 	 * @return int
 	 */
-	public int addAttribute(Attribute atrribute) {
-		if(!(isDuplicateAttributeName(atrribute))){
-		attributes.add(atrribute);
+	public int addAttribute(String name, String type, int size, boolean notNull, boolean primaryKey) {
+		if(!(isDuplicateAttributeName(name))){
+			AttributeModel attribute = new AttributeModel(name,type,size,notNull,primaryKey);
+		attributes.add(attribute);
 		fireTableRowsInserted(attributes.size()-1, attributes.size()-1);
 			return 1;
 		}else{
@@ -152,8 +135,8 @@ extends AbstractTableModel {
 	}
 	
 	public void changeAttributePosition(String direction, int rowIndex){
-		Attribute select;
-		Attribute overSelect;
+		AttributeModel select;
+		AttributeModel overSelect;
 		switch (direction){
 		case "UP" : 
 			changePosition(rowIndex,-1);
@@ -166,12 +149,12 @@ extends AbstractTableModel {
 	}
 
 	private void changePosition(int rowIndex,int direction ) {
-		Attribute select;
-		Attribute overSelect;
-		select = new Attribute(this.getAttributeAt(rowIndex));
-		overSelect= new Attribute(this.getAttributeAt(rowIndex+direction));
-		this.setAttributeValueAt(rowIndex+direction, select.name, select.type, select.size, select.notNull, select.unique, select.primaryKey, select.foreignKey, select.fkTable, select.fkAttribute);
-		this.setAttributeValueAt(rowIndex, overSelect.name, overSelect.type, overSelect.size, overSelect.notNull, overSelect.unique, overSelect.primaryKey, overSelect.foreignKey, overSelect.fkTable, overSelect.fkAttribute);
+		AttributeModel select;
+		AttributeModel overSelect;
+		select = new AttributeModel(this.getAttributeAt(rowIndex));
+		overSelect= new AttributeModel(this.getAttributeAt(rowIndex+direction));
+		this.setAttributeValueAt(rowIndex+direction, select.name, select.type, select.size, select.notNull, select.primaryKey);
+		this.setAttributeValueAt(rowIndex, overSelect.name, overSelect.type, overSelect.size, overSelect.notNull, overSelect.primaryKey);
 		this.fireTableDataChanged();
 	}
 
@@ -187,18 +170,18 @@ extends AbstractTableModel {
 	/**
 	 * @return ArrayList<Attribute>
 	 */
-	public LinkedHashSet<Attribute> getAttributes(){
+	public LinkedHashSet<AttributeModel> getAttributes(){
 		return this.attributes;
 	}
 	
-	public Attribute createAttribute(String name, String type, String size, boolean notNull, 
+	public AttributeModel createAttribute(String name, String type, String size, boolean notNull, 
 			boolean unique, boolean pk, boolean fk, 
 			String fkTable, String fkAttribute){
-		Attribute a;
+		AttributeModel a;
 		if(fk){
-			a = new Attribute(name,type,Integer.parseInt(size),notNull,unique,pk,fk,fkTable,fkAttribute);
+			a = new AttributeModel(name,type,Integer.parseInt(size),notNull,pk);
 		}else{
-			a = new Attribute(name,type,Integer.parseInt(size),notNull,unique,pk,fk,"N/A","N/A");
+			a = new AttributeModel(name,type,Integer.parseInt(size),notNull,pk);
 		}
 		return a;
 	}
@@ -212,4 +195,38 @@ extends AbstractTableModel {
 			return false;
 		}
 	}
+	
+	public int checkSizeAttributes(int type,int size){
+		if(type == 1){
+			if(size == 0 || size > 255){
+				return -1;
+			}else{
+				return 1;
+			}
+		}else if (type == 2){
+			if(size == 0 || size > 38){
+				return -2;
+			}else{
+				return 2;
+			}
+		}else if (type == 4){
+			if(size == 0 || size > 255){
+				return -3;
+			}else{
+				return 3;
+			}
+	
+		}else{
+			return 0;
+		}
+	}
+	public String attributeSizeError(int i){
+		switch (i){
+			case -1 : return "1 <= taille VARCHAR <= 255";
+			case -2 : return "1 <= taille NUMBER <= 38";
+			case -3 : return "1 <= taille CHAR <= 255";
+			default : return "";
+		}
+	}
+
 }
