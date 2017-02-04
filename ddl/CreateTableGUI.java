@@ -331,28 +331,7 @@ implements ActionListener, ItemListener
 		this.primaryKeyCheckBox.setSelected(false);
 		this.attributeTypeComboBox.setSelectedIndex(0);
 	}
-
-
-	/**
-	 *  Retourne vrai si tous les champs de l'attributs sont 
-	 *  renseignés,
-	 *  faux sinon.
-	 * @return boolean
-	 */
-	private boolean isCompleteAttribute()
-	{
-		if(("").equals(this.attributeNameField.getText()) 
-				|| ("").equals(this.attributeSizeField.getText()) 
-				)
-		{
-			this.talk(ERROR_ATTRIBUTE + "Tous les champs Attributs doivent être renseignés.");
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
+	
 
 	/**
 	 * Retourne vrai si la table est complète, c'est à dire si elle
