@@ -20,4 +20,10 @@ public interface I_DBMSFactory
 	 * @return un gestionnaire de définition des données.
 	 */
 	public I_DDLManager getDDLManager(Connection connection);
+	
+	
+	/**
+	 * @return un model d'attribut pour les IHM de DDL.
+	 */
+	public I_Attribute getAttributeModel();
 }

@@ -67,6 +67,15 @@ public class MainFactory
 		
 
 	/**
+	 * @return un model d'attribut pour les IHM de DDL.
+	 */
+	public I_Attribute getAttributeModel()
+	{
+		this.factory.getAttributeModel();
+	}
+	
+	
+	/**
 	 * Définit pour quel $dbms fabriquer les objets.
 	 * 
 	 * @param dbms : parmi les variables statiques, null interdit.

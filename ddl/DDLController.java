@@ -31,17 +31,19 @@ public class DDLController
 	/** IHM pour supprimer une table.*/
 	private DropTableGUI dropGUI;
 	
-	/** Gère la communication avec un SGBD dans l'optique d'utiliser le LDD.*/
-	private I_DDLManager manager;
+	/** Facade pour la définition des données.*/
+	private DDLFacade facade;
 		
 	
 	//Contructeur
 	/**
 	 * Constructeur commun.
+	 * 
+	 * @param : null interdit.
 	 */
-	public DDLController(I_DDLManager manager)
+	public DDLController(DDLFacade facade)
 	{
-		this.manager = manager;
+		this.facade = facade;
 	}
 	
 	
@@ -84,50 +86,38 @@ public class DDLController
 		}
 	}
 
+	
+	/**
+	 * @return une réponse personnalisée contenant le nom des tables
+	 * de la base, si et seulement si ces dernières existent et 
+	 * il n'y a pas eu d'exceptions, une réponse personnalisée vide sinon.
+	 */
+	public ResponseData<String> getTables()
+	{
+		return this.facade.getTables();
+	}
+
+
+	/**
+	 * @return la liste des types de données disponibles pour le SGBD.
+	 */
+	public String[] getAttributeTypes()
+	{
+		return this.facade.getAttributeTypes();
+	}
+
 
 	
 	/**
-	 * Envoie $table au DDLManager dans l'optique de la créer.
-	 * 
-	 * @param table : une table à créer. L'objet peut être erroné;
+	 * @return vrai si et seulement si le SGBD permet de "droper" une 
+	 * table avec l'option "CASCADE"
 	 */
-	public void createTable(Table table)
+	public boolean dbmsAllowsDropCascade()
 	{
-		boolean erreur = false;
-		for (String sql : table.toCreate()){
-			Response response = this.manager.createTable(sql);
-			if (!response.hasSuccess()){
-				erreur = true;
-			}
-			this.createGUI.talk(response);
-		}
-		
-		if (!erreur) {
-			this.createGUI.resetView();
-		}
-		
+		return this.facade.dbmsAllowsDropCascade();
 	}
-	
-	/**
-	 * Modifie une table existante
-	 */
-	public void modifyTable(Table table,Table tableSource) {
-		//TODO : déplacer le talk vers l'IHM
-		ArrayList<Response> responses = this.manager.modifyTable(table.toModify(tableSource));
-		boolean error = false;
-		for (Response response : responses){
-			if (!response.hasSuccess()){
-				error = true;
-				this.modifyGUI.talk(response);
-			}
-		}
-		if (!error) {
-			this.modifyGUI.resetView();
-		}
-		
-	}
-	
-	
+
+
 	/**
 	 * Supprime $table, si c'est possible.
 	 * 
@@ -141,30 +131,7 @@ public class DDLController
 	 */
 	public Response dropTable(String table, boolean cascade, boolean chain)
 	{
-		return this.manager.dropTable(table, cascade, chain);
-	}
-	
-	
-	/**
-	 * @return vrai si et seulement si le SGBD permet de "droper" une 
-	 * table avec l'option "CASCADE"
-	 */
-	public boolean dbmsAllowsDropCascade()
-	{
-		return this.manager.allowsDropCascade();
-	}
-	
-	
-	/**
-	 * Retourne une réponse personnalisée contenant le NOM es tables
-	 * de la base, si et seulement si (ces dernières existent et 
-	 * il n'y a pas eu d'exceptions).
-	 * 
-	 * @return CustomizedResponseWithData
-	 */
-	public ResponseData<String> getTables()
-	{
-		return this.manager.getTables();
+		return this.facade.dropTable(table, cascade, chain);
 	}
 
 
@@ -177,15 +144,39 @@ public class DDLController
 	 */
 	public ResponseData<String> getPrimaryKey(String table)
 	{
-		return this.manager.getPrimaryKey(table);
+		return this.facade.getPrimaryKey(table);
 	}
-	
+
 
 	/**
 	 * Ferme proprement les objets Statements.
 	 */
-	public void closeStatement(){this.manager.closeStatement();}
-
+	public void closeStatement(){this.facade.closeStatement();}
+	
+	
+	/**
+	 * Envoie $table au DDLManager dans l'optique de la créer.
+	 * 
+	 * @param table : une table à créer. L'objet peut être erroné;
+	 */
+	public Response createTable(Table table)
+	{
+		//TODO : à revoir complètement
+		//TODO : mettre une méthode dans la facade
+		return null;
+	}
+	
+	
+	/**
+	 * Modifie une table existante
+	 */
+	public Response modifyTable(Table table,Table tableSource) {
+		//TODO : à revoir complètement
+		//TODO : mettre une méthode dans la facade
+		return null;
+		
+	}
+	
 	
 	public List<Attribute> getAttributes(String table) {
 		ArrayList<Attribute> attributs = new ArrayList<Attribute>();
@@ -208,13 +199,4 @@ public class DDLController
 		gui.setVisible(true);
 		gui.toFront();
 	}
-
-	public String[] getAttributeTypes(){
-		return manager.getAttributeTypes();
-	}
-
-
-
-
-
 }

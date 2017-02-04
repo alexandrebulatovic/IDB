@@ -13,7 +13,7 @@ import manager.ddl.OracleDDLManager;
 public class OracleDBMSFactory 
 implements I_DBMSFactory 
 {
-	//Méthodes
+
 	@Override
 	public I_ConnectionManager getConnectionManager() 
 	{
@@ -25,6 +25,14 @@ implements I_DBMSFactory
 	public I_DDLManager getDDLManager(Connection connection) 
 	{
 		return new OracleDDLManager(connection);
+	}
+	
+	
+	@Override
+	public I_Attribute getAttributeModel() 
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

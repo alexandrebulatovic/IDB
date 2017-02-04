@@ -5,8 +5,12 @@ import java.sql.Connection;
 import manager.I_ConnectionManager;
 import manager.I_DDLManager;
 
+/**
+ * Fabrique à utilisé si aucun SGBD n'est encore sélectionné.
+ */
 public class VoidDBMSFactory 
-implements I_DBMSFactory {
+implements I_DBMSFactory 
+{
 
 	@Override
 	public I_ConnectionManager getConnectionManager() 
@@ -20,6 +24,14 @@ implements I_DBMSFactory {
 		return null;
 	}
 
+	
+	@Override
+	public I_Attribute getAttributeModel() 
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	
 	@Override
 	public String toString()

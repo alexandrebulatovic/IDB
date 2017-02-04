@@ -7,8 +7,12 @@ import manager.I_DDLManager;
 import manager.connection.MySQLConnectionManager;
 import manager.ddl.MySQLDDLManager;
 
+/**
+ * Fabrique à utiliser si le SGBD choisit est Oracle.
+ */
 public class MySQLDBMSFactory 
-implements I_DBMSFactory {
+implements I_DBMSFactory 
+{
 
 	@Override
 	public I_ConnectionManager getConnectionManager() 
@@ -16,12 +20,21 @@ implements I_DBMSFactory {
 		return new MySQLConnectionManager();
 	}
 
+	
 	@Override
 	public I_DDLManager getDDLManager(Connection connection) 
 	{
 		return new MySQLDDLManager(connection);
 	}
 
+	
+	@Override
+	public I_Attribute getAttributeModel() 
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	
 	@Override
 	public String toString()
