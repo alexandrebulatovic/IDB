@@ -2,6 +2,7 @@ package manager;
 
 import java.sql.Connection;
 
+import ddl.DDLFacade;
 import useful.ConnectionStrings;
 import useful.Response;
 import factory.MainFactory;
@@ -154,13 +155,10 @@ public class HomeFacade
 	
 	
 	/**
-	 * Pré-requis : utilisation de la méthode connect(), avec pour retour
-	 * une réponse personnalisée décrivant le succès de la connexion.
-	 * 
-	 * @return un gestionnaire de définition des données.
+	 * @return une facade pour la définition des données.
 	 */
-	public I_DDLManager getDDLManager()
+	public DDLFacade getDDLFacade()
 	{
-		return this.factory.getDDLManager(this.getConnection());
+		return new DDLFacade(this.factory.getDDLManager(this.getConnection()), this.factory);
 	}
 }
