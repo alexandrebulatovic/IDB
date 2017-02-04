@@ -3,7 +3,7 @@ package tests;
 import java.sql.Connection;
 
 import ddl.DDLController;
-import manager.I_DDLManager;
+import manager.ddl.I_DDLManager;
 
 public class DDLControllerMock extends DDLController {
 

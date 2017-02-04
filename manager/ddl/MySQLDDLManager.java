@@ -2,10 +2,8 @@ package manager.ddl;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.List;
 
 import useful.Response;
-import business.Attribute;
 
 public class MySQLDDLManager 
 extends AbstractDLLManager 
@@ -47,8 +45,7 @@ extends AbstractDLLManager
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
+	
 
 	@Override
 	protected Response dbmsDropTable(String table, boolean cascade) 

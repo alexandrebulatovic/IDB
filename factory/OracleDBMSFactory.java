@@ -3,10 +3,13 @@ package factory;
 import java.sql.Connection;
 
 import ddl.I_Attribute;
-import manager.I_ConnectionManager;
-import manager.I_DDLManager;
+
+import manager.connection.I_ConnectionManager;
+
 import manager.connection.OracleConnectionManager;
+import manager.ddl.I_DDLManager;
 import manager.ddl.OracleDDLManager;
+
 
 /**
  * Fabrique à utiliser si le SGBD choisit est Oracle.

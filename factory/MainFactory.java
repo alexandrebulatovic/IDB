@@ -3,8 +3,8 @@ package factory;
 import java.sql.Connection;
 
 import ddl.I_Attribute;
-import manager.I_ConnectionManager;
-import manager.I_DDLManager;
+import manager.connection.I_ConnectionManager;
+import manager.ddl.I_DDLManager;
 
 /**
  * Fabrique concrète de fabriques de SGBD.<br/>

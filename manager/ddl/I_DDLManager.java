@@ -1,11 +1,9 @@
-package manager;
+package manager.ddl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import useful.Response;
 import useful.ResponseData;
-import business.Attribute;
 
 public interface I_DDLManager 
 {
@@ -126,7 +124,6 @@ public interface I_DDLManager
 	 */
 	public abstract ResponseData<String[]> getAttributes(String table);
 	
-
 
 	/**
 	 * Ferme proprement les objets statements.

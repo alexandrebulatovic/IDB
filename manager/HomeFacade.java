@@ -3,6 +3,10 @@ package manager;
 import java.sql.Connection;
 
 import ddl.DDLFacade;
+
+import manager.connection.I_ConnectionManager;
+import manager.ddl.I_DDLManager;
+
 import useful.ConnectionStrings;
 import useful.Response;
 import factory.MainFactory;
@@ -159,6 +163,8 @@ public class HomeFacade
 	 */
 	public DDLFacade getDDLFacade()
 	{
-		return new DDLFacade(this.factory.getDDLManager(this.getConnection()), this.factory);
+		return new DDLFacade
+				(this.factory.getDDLManager(this.getConnection()), 
+				 this.factory);
 	}
 }
