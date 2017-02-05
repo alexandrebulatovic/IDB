@@ -361,9 +361,18 @@ implements ItemListener
 			this.talk(ERROR_ATTRIBUTE +attribute.sizeErrorMsg());
 			return false;
 		}
-		else if(this.models.isDuplicateAttributeName(attribute)){
+		else if(this.models.isDuplicateAttributeName(attribute) && !this.updateState){
 			this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
 			return false;
+		}else if(this.models.isDuplicateAttributeName(attribute) && this.updateState){
+			int rowIndex = this.table.getSelectedRow();
+			I_Attribute test = this.models.getAttributeAt(rowIndex);
+			if(!attribute.getName().equals(test.getName())){
+				this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
+				return false;
+			}else{
+				return true;
+			}
 		}
 		else return true;
 	}
@@ -580,7 +589,7 @@ implements ItemListener
 		this.clearAttribute();
 		this.disableAllExceptAttribute(true);
 		this.setVisibleUpdateButtons(false);
-
+		this.updateState=false;
 	}
 
 

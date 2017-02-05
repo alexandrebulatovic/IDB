@@ -106,7 +106,7 @@ extends AbstractTableModel {
 	public boolean isDuplicateAttributeName(I_Attribute attribute){
 		boolean res = false;
 		for(I_Attribute object: attributes){
-			if(object.getName().equals(attribute)){
+			if(object.getName().equals(attribute.getName())){
 				res=true;
 			}	
 		}
