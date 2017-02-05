@@ -27,7 +27,7 @@ extends AbstractAttribute
 	 * 
 	 * @param attribute : null interdit.
 	 */
-	public OracleAttribute(OracleAttribute attributeAt) 
+	public OracleAttribute(AbstractAttribute attributeAt) 
 	{
 		super(attributeAt);
 	}
@@ -46,17 +46,7 @@ extends AbstractAttribute
 
 	
 	@Override
-	public boolean checkSize()
-	{
-		return this.errorSizeCode() >= 0;
-	}
-	
-	
-	/**
-	 * @return un entier négatif si et seulement si la taille de l'attribut est en
-	 * désaccord avec sa taille, un entier supérieur ou égal à zéro sinon.
-	 */
-	private int errorSizeCode()
+	protected int errorSizeCode()
 	{
 		switch (this.type) {
 		case "VARCHAR2" : return (size == 0 || size > 255) ? -1 : 1;
@@ -65,6 +55,4 @@ extends AbstractAttribute
 		default 		: return 0;
 		}
 	}
-
-
 }

@@ -59,6 +59,13 @@ implements I_Attribute
 	
 	
 	//Méthodes
+	/**
+	 * @return un entier négatif si et seulement si la taille de l'attribut est en
+	 * désaccord avec sa taille, un entier supérieur ou égal à zéro sinon.
+	 */
+	protected abstract int errorSizeCode();
+
+
 	@Override
 	public  String getName(){
 		return this.name;
@@ -116,5 +123,11 @@ implements I_Attribute
 	@Override
 	public  void setPrimaryKey(boolean primaryKey){
 		this.primaryKey = primaryKey;
+	}
+
+
+	@Override
+	public boolean checkSize() {
+		return this.errorSizeCode() >= 0;
 	}
 }

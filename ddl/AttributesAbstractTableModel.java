@@ -135,8 +135,8 @@ extends AbstractTableModel {
 	}
 	
 	public void changeAttributePosition(String direction, int rowIndex){
-		OracleAttribute select;
-		OracleAttribute overSelect;
+		AbstractAttribute select;
+		AbstractAttribute overSelect;
 		switch (direction){
 		case "UP" : 
 			changePosition(rowIndex,-1);
