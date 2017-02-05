@@ -138,8 +138,6 @@ extends AbstractTableModel {
 	}
 
 	public void changeAttributePosition(String direction, int rowIndex){
-		AbstractAttribute select;
-		AbstractAttribute overSelect;
 		switch (direction){
 		case "UP" : 
 			changePosition(rowIndex,-1);
@@ -154,9 +152,10 @@ extends AbstractTableModel {
 	private void changePosition(int rowIndex,int direction ) {
 		I_Attribute select = this.getAttributeAt(rowIndex);
 		I_Attribute overSelect = this.getAttributeAt(rowIndex+direction);
+		I_Attribute overSelectCache = this.createGUI.control.getAttributeModel(overSelect.getName(), overSelect.getType(), overSelect.getSize(), overSelect.isNotNull(), overSelect.isPrimaryKey());
 		this.setAttributeValueAt(rowIndex+direction, select.getName(), select.getType(), select.getSize(), select.isNotNull(), select.isPrimaryKey());
-		this.setAttributeValueAt(rowIndex, overSelect.getName(), overSelect.getType(), overSelect.getSize(), overSelect.isNotNull(), overSelect.isPrimaryKey());
-		this.fireTableDataChanged();
+		this.setAttributeValueAt(rowIndex, overSelectCache.getName(), overSelectCache.getType(), overSelectCache.getSize(), overSelectCache.isNotNull(), overSelectCache.isPrimaryKey());
+		this.fireTableRowsUpdated(rowIndex, rowIndex+direction);
 	}
 
 	/**

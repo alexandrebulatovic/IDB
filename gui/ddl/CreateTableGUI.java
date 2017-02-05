@@ -462,14 +462,14 @@ implements ItemListener
 		
 		if(existRow){
 			int rowIndex = this.table.getSelectedRow();
-			boolean firstRow = rowIndex==0;
+			boolean firstRow = (rowIndex==0);
 			boolean lastRow = rowIndex==(this.table.getRowCount()-1);
 			
 			if("UP".equals(direction) && !firstRow){
 				this.models.changeAttributePosition(direction, rowIndex);
 				this.table.setRowSelectionInterval(rowIndex-1, rowIndex-1);
 			}
-			else if(!lastRow){
+			else if("DOWN".equals(direction) && !lastRow){
 				this.models.changeAttributePosition(direction, rowIndex);
 				this.table.setRowSelectionInterval(rowIndex+1, rowIndex+1);
 			}
