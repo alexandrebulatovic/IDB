@@ -361,7 +361,7 @@ implements ItemListener
 			this.talk(ERROR_ATTRIBUTE +attribute.sizeErrorMsg());
 			return false;
 		}
-		else if(this.models.isDuplicateAttributeName(attribute) && !(this.updateState)){
+		else if(this.models.isDuplicateAttributeName(attribute)){
 			this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
 			return false;
 		}
