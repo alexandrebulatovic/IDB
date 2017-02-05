@@ -55,4 +55,14 @@ extends AbstractAttribute
 		default 		: return 0;
 		}
 	}
+
+
+	@Override
+	public String toString() {
+		return "OracleAttribute [name=" + name + ", type=" + type
+				+ ", notNull=" + notNull + ", size=" + size + ", primaryKey="
+				+ primaryKey + "]";
+	}
+	
+
 }
