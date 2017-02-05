@@ -70,33 +70,33 @@ implements ItemListener
 		if (o == this.attributeButton) {
 			this.addAttributeButtonAction();
 		}
-		if (o == this.createTableButton) {
+		else if (o == this.createTableButton) {
 			if(this.isComplete()){
 				createTableButtonAction();
 			}
 		}
-		if (o == this.deleteAttributeButton) {
+		else if (o == this.deleteAttributeButton) {
 			this.deleteAttributeButtonAction();
 		}
-		if (o == this.updateAttributeButton) {
+		else if (o == this.updateAttributeButton) {
 			this.updateAttributeButtonAction();
 		}
-		if (o == this.resetButton) {
+		else if (o == this.resetButton) {
 			this.resetView();
 		}
-		if (o == this.upPositionAttributeButton) {
+		else if (o == this.upPositionAttributeButton) {
 			this.positionAttributButtonAction("UP");
 		}
-		if (o == this.downPositionAttributeButton) {
+		else if (o == this.downPositionAttributeButton) {
 			this.positionAttributButtonAction("DOWN");
 		}
-		if (o == this.attributeTypeComboBox) {
+		else if (o == this.attributeTypeComboBox) {
 			this.selectSizeDateComboBoxAction();
 		}
-		if (o== this.confirmUpdateAttributeButton){
+		else if (o== this.confirmUpdateAttributeButton){
 			this.confirmUpdateAttributeButtonAction();
 		}
-		if (o== this.cancelUpdateAttributeButton){
+		else if (o== this.cancelUpdateAttributeButton){
 			this.cancelUpdateAttributeButtonAction();
 		}
 	}
@@ -137,6 +137,17 @@ implements ItemListener
 
 
 	/**
+	 * Instancie, dimensionne et positionne les composants pour 
+	 * sélectionner une table.
+	 */
+	protected void handleTableInputs()
+	{
+		this.tableNameField = new JTextField();
+		this.bindAndAdd(this.tableNameField, 6, false);
+	}
+
+
+	/**
 	 * Réinitialise toutes les boites de saisie de la vue.<br/>
 	 * Réactive toutes les cases à cocher.<br/>
 	 * Efface les messages.<br/>
@@ -162,21 +173,6 @@ implements ItemListener
 		this.models.addAttribute(attribute);
 		this.talk(new Response(true,"Attribut ajouté."));
 		this.clearAttribute();
-	}
-
-
-	/**
-	 * Instancie, positionne et dimensionne les composants s'occupant
-	 * de la table ciblée.
-	 */
-	protected void handleTableComponent()
-	{
-		JLabel table = new JLabel("Table :");
-		table.setFont(new Font(FONT, Font.BOLD, 18));
-		this.bindAndAdd(table);
-	
-		JLabel tableName = new JLabel("Nom de la table :");
-		this.bindAndAdd(tableName, 6, true);
 	}
 
 
@@ -217,11 +213,25 @@ implements ItemListener
 	 */
 	private void handleComponents()
 	{
-		this.handleTableComponent();
-		this.tableNameField = new JTextField();
-		this.bindAndAdd(this.tableNameField, 6, false);
+		this.handleTableLabels();
+		this.handleTableInputs();
 		this.handleAttributesComponent();
 		this.handleRestComponent();
+	}
+
+	
+	/**
+	 * Instancie, positionne et dimensionne les composants s'occupant
+	 * de la table ciblée.
+	 */
+	private void handleTableLabels()
+	{
+		JLabel table = new JLabel("Table :");
+		table.setFont(new Font(FONT, Font.BOLD, 18));
+		this.bindAndAdd(table);
+	
+		JLabel tableName = new JLabel("Nom de la table :");
+		this.bindAndAdd(tableName, 6, true);
 	}
 
 

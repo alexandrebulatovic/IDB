@@ -1,150 +1,95 @@
 package gui.ddl;
 
-import gui.I_DDLGUI;
-
-import java.awt.Rectangle;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
-import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 import controller.DDLController;
 
-import business.Attribute;
 import business.Table;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
 public class ModifyTableGUI 
-extends CreateTableGUI {
-	
-	private JComboBox<String> comboChoiceTable;
-	
-	private Table tableSource;
-	
-	
-	private String tableSelected;
-	
-
-	public ModifyTableGUI(DDLController control) {
-		super(control);
-		this.setTitle("Modifier une table");
-		this.changeComponents();
-	}
-
-	
-	public I_DDLGUI createGUI(DDLController control)
-	{
-		
-	}
+extends CreateTableGUI 
+{
+	//Attributs
+	/** Liste déroulante contenant les tables engistrées en base.*/
+	private JComboBox<String> tablesCombo;
 	
 	
+	//Controleurs
 	/**
-	 * Cette méthode va changer quelques composants de
-	 * la classe hérité pour créer la vue
-	 * de modifications
+	 * Constructeur commun.
+	 * 
+	 * @param control : null interdit.
 	 */
-	private void changeComponents() {
-//		this.tableNameField.setVisible(false);
+	public ModifyTableGUI(DDLController control) 
+	{
+		super(control);
+		this.changeComponents();
+		this.synchronizeTablesComboBox();
+	}
+	
+	
+	//Méthodes
+	@Override
+	protected void handleTableInputs()
+	{
+		this.tablesCombo = new JComboBox<String>();
+		this.tablesCombo.addItemListener(this);
+		this.bindAndAdd(this.tablesCombo, 6, true);
+//		this.bindAndAdd(new JLabel("Modifier le nom : "), 6, true);
+		super.handleTableInputs();
+	}
 		
-		
-		initComboBoxChoice();
-		
-		Rectangle r = tableNameField.getBounds();
-		this.tableNameField.setBounds(r.x+r.width,r.y,r.width,r.height);
+		@Override
+	protected void createTableButtonAction(){}
+
+
+	/**
+	 * Modifie quelques composants de la superIHM pour coller au 
+	 * mieux au principe de modification.
+	 */
+	private void changeComponents() 
+	{
+		this.setTitle("Modifier une table");
 		this.createTableButton.setText("Modifier");
 	}
-
+	
 	
 	/**
-	 * Initialise la nouvelle comboBox
-	 * Possédant la liste des tables
+	 * Met à jour la liste déroulante contenant le noms des tables
+	 * enregistrées en base.
 	 */
-	private void initComboBoxChoice() 
+	private void synchronizeTablesComboBox()
 	{
-
+		this.tablesCombo.removeAllItems();
+		ResponseData<String> response = this.control.getTables();
+		this.talk(response);
 		
-		Rectangle coords = new Rectangle(this.tableNameField.getBounds());
-		
-		this.comboChoiceTable = new JComboBox<String>();
-		 
-		this.comboChoiceTable.setBounds(coords);
-
-		this.setComboBoxChoixValues();
-		
-		
-		this.add(this.comboChoiceTable);
-		
-		comboChoiceTable.addItemListener(this);
-
-	}
-	
-	private void setComboBoxChoixValues(){
-		this.comboChoiceTable.removeAllItems();
-//		this.comboChoiceTable.addItem("");
-		
-		
-		ResponseData<String> tables = this.control.getTables();
-		this.talk(tables.getMessage());
-		
-		for (String item : tables.getCollection()){
-			this.comboChoiceTable.addItem(item);
-		}
-	}
-
-
-	/**
-	 * initialise toutes les valeurs
-	 * selon la table entrée en paramètre dans le comboBox
-	 */
-	private void setValuesView(String table) {
-		this.setViewModify(this.control.getAttributes(table), table);
-	}
-	
-	
-	public void setViewModify(List<Attribute> attributes, String tableName) {	
-		this.resetView();
-		for (Attribute a : attributes){
-			this.models.addAttribute(a);
+		for (String table : response.getCollection()){
+			this.tablesCombo.addItem(table);
 		}
 	}
 	
-	
-	@Override
-	protected void createTableButtonAction(){
-		this.control.modifyTable(this.getTable(),this.tableSource);
-	}
-	
-	
-	/**
-	 * Resélectionn le bon Item et recalcule les valeurs du comboBoxChoice
-	 */
-	private void acualiseComboBoxChoice() {
-		this.tableSelected = this.comboChoiceTable.getSelectedItem().toString();
-		this.setComboBoxChoixValues();
-		this.comboChoiceTable.setSelectedItem(this.tableSelected);
-	}
-	
 
-	
     @Override
-	public void windowActivated(WindowEvent e)
-	{
-		acualiseComboBoxChoice();
-	}
+	public void windowActivated(WindowEvent e) {this.synchronizeTablesComboBox();}
 
 
 	@Override
     public void itemStateChanged(ItemEvent e) {
     	super.itemStateChanged(e);
        if (e.getStateChange() == ItemEvent.SELECTED) {
-    	   if (e.getSource() == this.comboChoiceTable){
+    	   if (e.getSource() == this.tablesCombo){
     		   if (!e.getItem().toString().equals("")){
     				String tableSelected = e.getItem().toString();
-    				this.setValuesView(tableSelected);
+//    				this.setValuesView(tableSelected);
     				this.tableNameField.setText(tableSelected);
-    				this.tableSource = this.getTable();
+//    				this.tableSource = this.getTable();
     		   }
     	   }
 
