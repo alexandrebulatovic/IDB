@@ -469,7 +469,7 @@ implements ItemListener
 				this.models.changeAttributePosition(direction, rowIndex);
 				this.table.setRowSelectionInterval(rowIndex-1, rowIndex-1);
 			}
-			else if(!lastRow){
+			else if("DOWN".equals(direction) && !lastRow){
 				this.models.changeAttributePosition(direction, rowIndex);
 				this.table.setRowSelectionInterval(rowIndex+1, rowIndex+1);
 			}
