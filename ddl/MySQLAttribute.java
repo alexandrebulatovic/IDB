@@ -27,7 +27,7 @@ extends AbstractAttribute
 	 * 
 	 * @param attribute : null interdit.
 	 */
-	public MySQLAttribute(AbstractAttribute attributeAt) 
+	public MySQLAttribute(MySQLAttribute attributeAt) 
 	{
 		super(attributeAt);
 	}
