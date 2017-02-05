@@ -33,7 +33,7 @@ import factory.MainFactory;
  * Se faire une classe Perso, contenant deux variable static final String
  * LOGIN et MDP dans le package test, et les ajouter au .gitignore.
  */
-public class TestsRomain 
+public class TestsConnecte 
 {
 	private static DefaultValueManager dvm;
 	private static MainFactory factory;
