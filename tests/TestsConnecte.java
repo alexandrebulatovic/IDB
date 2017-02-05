@@ -4,8 +4,10 @@ import static org.junit.Assert.*;
 
 import java.sql.Connection;
 
+import manager.connection.MockConnectionManager;
 import manager.connection.MySQLConnectionManager;
 import manager.connection.OracleConnectionManager;
+import manager.ddl.MockDDLManager;
 import manager.ddl.MySQLDDLManager;
 import manager.ddl.OracleDDLManager;
 import manager.xml.DefaultValueManager;
@@ -19,6 +21,7 @@ import useful.ConnectionStrings;
 
 import controller.DDLController;
 import controller.HomeController;
+import ddl.MockAttribute;
 import ddl.MySQLAttribute;
 import ddl.OracleAttribute;
 
@@ -100,10 +103,10 @@ public class TestsConnecte
 		
 		factory.setDBMS(MainFactory.NULL);
 		assertEquals("Fabrique inactive.", factory.toString());
-		assertEquals(null, factory.getConnectionManager());
-		assertEquals(null, factory.getDDLManager(connection));
-		assertEquals(null, factory.getAttributeModel
-				(name, type, size, nn, pk));
+		assertEquals(true, factory.getConnectionManager() instanceof MockConnectionManager);
+		assertEquals(true, factory.getDDLManager(connection) instanceof MockDDLManager);
+		assertEquals(true, factory.getAttributeModel
+				(name, type, size, nn, pk) instanceof MockAttribute);
 		
 		factory.setDBMS(MainFactory.ORACLE);
 		assertEquals("Fabrique pour Oracle.", factory.toString());
