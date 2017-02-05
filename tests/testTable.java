@@ -84,7 +84,7 @@ public class testTable {
 		att_d.setTableName(this.tableRecupere.getName());
 		
 		tableRecupere.addAttribute(att_a);
-		tableRecupere.addAttribute(att_b);
+		//tableRecupere.addAttribute(att_b); //on n'ajoute pas le nom volontairement
 		tableRecupere.addAttribute(att_c);
 		tableRecupere.addAttribute(att_d);
 		
@@ -103,12 +103,12 @@ public class testTable {
 				+ "nom VARCHAR2 (20) NOT NULL,\n"
 				+ "prenom VARCHAR2 (20),\n"
 				+ "id NUMBER (10)\n"
-				+ ");"
+				+ ");\n"
 				+ "ALTER TABLE PROFILS\n"
 				+ "ADD CONSTRAINT pk_PROFILS_id PRIMARY KEY(id);\n";
 		String total = "";
 		for (String sql : this.table.toCreate()){
-			total+=sql;
+			total+=sql+";\n";
 		}
 
 		assertEquals(attendu,total);
@@ -118,13 +118,15 @@ public class testTable {
 	@Test
 	public void testToModify(){
 		String attendu = "ALTER TABLE PROFILS\n"
-				+ "ADD dateNaissance DATE\n";
+					   + "ADD dateNaissance DATE;\n"
+					   + "ALTER TABLE PROFILS\n"
+					   + "DROP nom;\n";
 		String actual = "";
 //		System.out.println(this.tableRecupere);
 		for (String sql : this.table.toModify(this.tableRecupere)){
-			actual+=sql;
+			actual+=sql+";\n";
 		}
-		
+		System.out.println(actual);
 		assertEquals(attendu,actual);
 	}
 	

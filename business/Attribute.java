@@ -273,7 +273,7 @@ public class Attribute
 	
 	
 	/**
-	 * @Exemple ALTER TABLE $nom ADD $attribut $type $taill
+	 * @Exemple ALTER TABLE $nomTable ADD $nomAttribut $type $taill
 	 * @return
 	 */
 	public String toADDSQL(){
@@ -283,6 +283,16 @@ public class Attribute
 			taille = "("+this.size+")";
 		}
 		return "ALTER TABLE "+this.tableName+"\nADD "+this.name+" "+this.type+taille;
+	}
+
+	/**
+	 * @Exemple ALTER TABLE $nomTable DROP $nomAttribut
+	 * @return
+	 */
+	public String toDROPSQL() {
+		
+		return "ALTER TABLE "+this.tableName+"\nDROP "+this.name;
+
 	}
 	
 }

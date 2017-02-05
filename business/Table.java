@@ -129,10 +129,10 @@ public class Table {
 			sql += att.toString();
 			i++;
 		}
-		sqls.add(sql+"\n);");
+		sqls.add(sql+"\n)");
 		
 		for (Constraint constraint : constraints){
-			sqls.add(constraint.toAddConstraintSQL()+";\n");
+			sqls.add(constraint.toAddConstraintSQL());
 		}
 		return sqls;
 	}
@@ -149,8 +149,8 @@ public class Table {
 		
 		addAttributes(tableSource, results);
 		
-//		dropAttributes(tableSource, results);
-//		
+		dropAttributes(tableSource, results);
+		
 //		modifyAttributes(tableSource, results);
 //		
 //		modifyName(tableSource, results);
@@ -272,13 +272,7 @@ public class Table {
 	 */
 	private void dropAttributes(Table tableSource, ArrayList<String> results) {
 		for (Attribute attribute : attributesToDrop(tableSource)){
-			StringBuilder build = new StringBuilder();
-			build.append("ALTER TABLE ");
-			build.append(this.name);
-			build.append("\n");
-			build.append("DROP COLUMN ");
-			build.append(attribute.name);
-			results.add(build.toString());
+			results.add(attribute.toDROPSQL());
 		}
 	}
 
@@ -290,7 +284,7 @@ public class Table {
 	 */
 	private void addAttributes(Table tableSource, ArrayList<String> results) {
 		for (Attribute attribute : attributesToAdd(tableSource)){
-			results.add(attribute.toADDSQL()+"\n");
+			results.add(attribute.toADDSQL());
 		}
 	}
 	
@@ -302,8 +296,8 @@ public class Table {
 	 */
 	private ArrayList<Attribute> attributesToDrop(Table tableSource) {
 		ArrayList<Attribute> attributesToDrop = new ArrayList<Attribute>();
-		for (Attribute att : tableSource.getAttributes()){
-			if (!estContenu(this.attributes,att)){
+		for (Attribute att : this.getAttributes()){
+			if (!estContenu(tableSource.getAttributes(),att)){
 				attributesToDrop.add(att);
 			}
 	
