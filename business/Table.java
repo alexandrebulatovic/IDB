@@ -149,11 +149,11 @@ public class Table {
 		
 		addAttributes(tableSource, results);
 		
-		dropAttributes(tableSource, results);
-		
-		modifyAttributes(tableSource, results);
-		
-		modifyName(tableSource, results);
+//		dropAttributes(tableSource, results);
+//		
+//		modifyAttributes(tableSource, results);
+//		
+//		modifyName(tableSource, results);
 		
 
 	 
@@ -289,17 +289,9 @@ public class Table {
 	 * @param results
 	 */
 	private void addAttributes(Table tableSource, ArrayList<String> results) {
-//		for (Attribute attribute : attributesToAdd(tableSource)){
-//			for (String sql : attribute.toSQL(this.name)){
-//				StringBuilder build = new StringBuilder();
-//				build.append("ALTER TABLE ");
-//				build.append(this.name);
-//				build.append("\n");
-//				build.append("ADD ");
-//				build.append(sql);
-//				results.add(build.toString());//on ajoute plusieures requetes pour un seul attribut
-//			}
-//		}
+		for (Attribute attribute : attributesToAdd(tableSource)){
+			results.add(attribute.toADDSQL()+"\n");
+		}
 	}
 	
 	/**
@@ -356,8 +348,9 @@ public class Table {
 	 */
 	private ArrayList<Attribute> attributesToAdd(Table tableSource) {
 		ArrayList<Attribute> attributesToAdd = new ArrayList<Attribute>();
-		for (Attribute att : this.attributes){
-			if (!estContenu(tableSource.getAttributes(),att)){
+
+		for (Attribute att : tableSource.getAttributes()){
+			if (!estContenu(this.getAttributes(),att)){
 				attributesToAdd.add(att);
 			}
 	
@@ -374,12 +367,14 @@ public class Table {
 	 * @param att
 	 * @return boolean
 	 */
-	private boolean estContenu(LinkedHashSet<Attribute> listAtributes, Attribute att) {
-		for (Attribute attribute : listAtributes){
+	private boolean estContenu(LinkedHashSet<Attribute> listAttributes, Attribute att) {
+		
+		for (Attribute attribute : listAttributes){
 			if (attribute.name.equals(att.name)){
 				return true;
 			}
 		}
+		
 		return false;
 	}
 

@@ -271,6 +271,20 @@ public class Attribute
 		return this.name+" "+this.type+" ("+this.size+")"+nn;
 	}
 	
+	
+	/**
+	 * @Exemple ALTER TABLE $nom ADD $attribut $type $taill
+	 * @return
+	 */
+	public String toADDSQL(){
+		String taille = "";
+		
+		if (!this.type.equals("DATE")){
+			taille = "("+this.size+")";
+		}
+		return "ALTER TABLE "+this.tableName+"\nADD "+this.name+" "+this.type+taille;
+	}
+	
 }
 
 
