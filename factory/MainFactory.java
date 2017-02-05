@@ -19,6 +19,9 @@ public class MainFactory
 	/** Mot clé pour passer sur la fabrique de MySQL.*/
 	public static final String MYSQL = "MySQL";
 	
+	/** Mot-clé pour une fabrique inactive.*/
+	public static final String NULL = "NULL";
+	
 	
 	//Attributs
 	/** Fabrique choisie pour l'exécution de l'application.*/
@@ -29,9 +32,9 @@ public class MainFactory
 	/**
 	 * Constructeur vide.
 	 */
-	public MainFactory()
+	public MainFactory(String dbms)
 	{
-		this.factory = new VoidDBMSFactory();
+		this.setDBMS(dbms);
 	}
 	
 	
@@ -92,8 +95,10 @@ public class MainFactory
 		case ORACLE : this.factory = new OracleDBMSFactory();
 		break;
 		
-		case MYSQL : this.factory = new MySQLDBMSFactory();
+		case MYSQL  : this.factory = new MySQLDBMSFactory();
 		break;
+		
+		default 	: this.factory = new NullDBMSFactory();
 		}
 	}
 	

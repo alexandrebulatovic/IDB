@@ -30,7 +30,7 @@ public class CreateTableGUI
 extends CreateModifyProperties
 implements ItemListener
 {
-
+	
 	/**
 	 * Constructeur commun.
 	 * 

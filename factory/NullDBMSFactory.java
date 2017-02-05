@@ -10,7 +10,7 @@ import manager.ddl.I_DDLManager;
 /**
  * Fabrique à utilisé si aucun SGBD n'est encore sélectionné.
  */
-public class VoidDBMSFactory 
+public class NullDBMSFactory 
 implements I_DBMSFactory 
 {
 

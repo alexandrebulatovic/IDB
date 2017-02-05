@@ -133,7 +133,6 @@ public class HomeFacade
 		this.dvm.setPort(param.port);
 		this.dvm.setDataBase(param.baseName);
 		this.dvm.save();
-		this.dvm = null; //Détruit l'objet
 	}
 	
 	

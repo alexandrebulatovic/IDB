@@ -49,7 +49,7 @@ public class Launcher {
 	private void initApplication()
 	{
 		this.dvm = new DefaultValueManager();
-		this.factory = new MainFactory();
+		this.factory = new MainFactory(MainFactory.NULL);
 		this.facade = new HomeFacade(dvm, factory);
 		this.hc = new HomeController(facade);
 	}
