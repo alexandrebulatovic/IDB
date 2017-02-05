@@ -151,8 +151,8 @@ public class Table {
 		
 		dropAttributes(tableSource, results);
 		
-//		modifyAttributes(tableSource, results);
-//		
+		modifyAttributes(tableSource, results);
+		
 //		modifyName(tableSource, results);
 		
 
@@ -182,7 +182,9 @@ public class Table {
 	 */
 	private void modifyAttributes(Table tableSource, ArrayList<String> results) {
 		
-//		for (Attribute[] attribute : attributesToChange(tableSource)){
+		for (Attribute[] attribute : attributesToChange(tableSource)){
+			System.out.println(attribute[0]);
+			System.out.println(attribute[1]);
 //			Attribute attSrc = attribute[0];
 //			Attribute attDest = attribute[1];
 //			if (attSrc.foreignKey != attDest.foreignKey){
@@ -260,7 +262,7 @@ public class Table {
 //				results.add(sql.toString());
 //				
 //			}
-//		}
+		}
 	}
 
 
@@ -311,9 +313,9 @@ public class Table {
 	 * qui sont différents et qui doivent
 	 * donc être modifié
 	 * 
-	 * Le Attribute est composé de attribut source et attribut cible
-	 * Attribute[0] ==> attribut actuel
-	 * Attribute[1] ==> attribut à obtenir
+	 * Le Attribute est composé de attribut source et attribut cible<br>
+	 * Attribute[0] ==> attribut à obtenir<br>
+	 * Attribute[1] ==> attribut actuel<br>
 	 * @param tableSource
 	 * @return
 	 */

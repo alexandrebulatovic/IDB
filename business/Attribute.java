@@ -277,12 +277,7 @@ public class Attribute
 	 * @return
 	 */
 	public String toADDSQL(){
-		String taille = "";
-		
-		if (!this.type.equals("DATE")){
-			taille = "("+this.size+")";
-		}
-		return "ALTER TABLE "+this.tableName+"\nADD "+this.name+" "+this.type+taille;
+		return "ALTER TABLE "+this.tableName+"\nADD "+this.toSQL();
 	}
 
 	/**
@@ -290,9 +285,11 @@ public class Attribute
 	 * @return
 	 */
 	public String toDROPSQL() {
-		
 		return "ALTER TABLE "+this.tableName+"\nDROP "+this.name;
-
+	}
+	
+	public String toModify(){
+		return "ALTER TABLE "+this.tableName+"\nMODIFY "+this.toSQL();
 	}
 	
 }
