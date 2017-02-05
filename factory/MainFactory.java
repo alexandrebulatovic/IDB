@@ -98,7 +98,7 @@ public class MainFactory
 		case MYSQL  : this.factory = new MySQLDBMSFactory();
 		break;
 		
-		default 	: this.factory = new NullDBMSFactory();
+		default 	: this.factory = new MockDBMSFactory();
 		}
 	}
 	

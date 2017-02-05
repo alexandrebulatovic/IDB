@@ -27,7 +27,7 @@ extends AbstractAttribute
 	 * 
 	 * @param attribute : null interdit.
 	 */
-	public OracleAttribute(AbstractAttribute attributeAt) 
+	public OracleAttribute(OracleAttribute attributeAt) 
 	{
 		super(attributeAt);
 	}
