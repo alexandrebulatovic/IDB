@@ -19,13 +19,13 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import gui.BasicGUI;
+import gui.AbstractBasicGUI;
 import useful.ResponseData;
 
 /** IHM qui permet les opérations {@code Create|Read|Update|Select} sur une base de données
  * en manipulant un objet graphique {@code JTable}.*/
 @SuppressWarnings("serial")
-public class CRUDView extends BasicGUI implements ActionListener {
+public class CRUDView extends AbstractBasicGUI implements ActionListener {
 
 	/* CONSTANTES */ 
 

@@ -1,6 +1,6 @@
 package sql;
 
-import gui.BasicGUI;
+import gui.AbstractBasicGUI;
 
 import java.awt.Dialog;
 import java.awt.Window;
@@ -22,7 +22,7 @@ import javax.swing.*;
  *  */
 
 @SuppressWarnings("serial")
-public class SQLView extends BasicGUI
+public class SQLView extends AbstractBasicGUI
 implements ActionListener
 {
 	/* ATTRIBUTS */

@@ -14,7 +14,7 @@ import useful.Response;
 import useful.ResponseData;
 
 
-import gui.BasicGUI;
+import gui.AbstractBasicGUI;
 
 /**
  * IHM pour supprimer des tables de la base de données.
@@ -23,7 +23,7 @@ import gui.BasicGUI;
  */
 @SuppressWarnings("serial")
 public class DropTableGUI 
-extends BasicGUI
+extends AbstractBasicGUI
 implements ActionListener
 {
 	//Attributes

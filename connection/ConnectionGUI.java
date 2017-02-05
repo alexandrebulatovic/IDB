@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import useful.ConnectionStrings;
 import useful.Response;
 import useful.MaxLengthTextDocument;
-import gui.BasicGUI;
+import gui.AbstractBasicGUI;
 import home.HomeController;
 import home.HomeGUI;
 
@@ -31,7 +31,7 @@ import home.HomeGUI;
  */
 @SuppressWarnings("serial")
 public class ConnectionGUI 
-extends BasicGUI
+extends AbstractBasicGUI
 implements ActionListener, ItemListener
 {
 	//Attributs

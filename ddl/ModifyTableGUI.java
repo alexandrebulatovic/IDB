@@ -1,5 +1,7 @@
 package ddl;
 
+import gui.I_DDLGUI;
+
 import java.awt.Rectangle;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
@@ -12,7 +14,8 @@ import business.Table;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
-public class ModifyTableGUI extends CreateTableGUI {
+public class ModifyTableGUI 
+extends CreateTableGUI {
 	
 	private JComboBox<String> comboChoiceTable;
 	
@@ -26,10 +29,14 @@ public class ModifyTableGUI extends CreateTableGUI {
 		super(control);
 		this.setTitle("Modifier une table");
 		this.changeComponents();
-		
-		
 	}
 
+	
+	public I_DDLGUI createGUI(DDLController control)
+	{
+		
+	}
+	
 	
 	/**
 	 * Cette méthode va changer quelques composants de

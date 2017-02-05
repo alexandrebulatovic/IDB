@@ -2,9 +2,10 @@ package ddl;
 
 import useful.Response;
 import useful.ResponseData;
-import business.Table;
+
 import factory.MainFactory;
-import manager.I_DDLManager;
+
+import manager.ddl.I_DDLManager;
 
 public class DDLFacade 
 {

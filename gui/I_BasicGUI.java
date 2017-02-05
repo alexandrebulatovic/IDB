@@ -7,7 +7,7 @@ import useful.Response;
  * 
  * @author UGOLINI Romain
  */
-public interface IDBGUI 
+public interface I_BasicGUI 
 {	
 	/**
 	 * @return Vrai si et seulement si tous les composants nécessaires

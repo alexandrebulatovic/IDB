@@ -7,11 +7,11 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import gui.BasicGUI;
+import gui.AbstractBasicGUI;
 
 @SuppressWarnings("serial")
 public abstract class CreateModifyProperties 
-extends BasicGUI
+extends AbstractBasicGUI
 {
 	//Statique
 	/** Police d'écriture de l'IHM.*/

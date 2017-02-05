@@ -100,32 +100,4 @@ public class Launcher {
 		cs.password = "";
 		this.hc.connect(cs);
 	}
-	
-	
-	private void testKey()
-	{
-		ConnectionStrings cs = this.facade.getDefaultValues();
-//		cs.password = "";
-		this.hc.connect(cs);
-		I_DDLManager ddlManager = this.facade.getDDLManager();
-		ResponseData<String []> imported = ddlManager.getPrimaryFromForeign("TROIS");
-		
-		for (String [] ligne: imported.getCollection()) {
-			for (String colonne : ligne) {
-				System.out.print(colonne + ",\t");
-			}
-			System.out.println();
-		}
-		
-		System.out.println();
-		ResponseData<String []> exported = ddlManager.getForeignFromPrimary("TROIS");
-		for (String [] ligne: exported.getCollection()) {
-			for (String colonne : ligne) {
-				System.out.print(colonne + ",\t");
-			}
-			System.out.println();
-		}
-		this.facade.disconnect();
-		int a = 5;
-	}
 }

@@ -5,7 +5,6 @@ import java.sql.Connection;
 import ddl.DDLFacade;
 
 import manager.connection.I_ConnectionManager;
-import manager.ddl.I_DDLManager;
 
 import useful.ConnectionStrings;
 import useful.Response;

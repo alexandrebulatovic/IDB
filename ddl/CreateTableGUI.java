@@ -1,12 +1,13 @@
 package ddl;
 
+
+
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.awt.Font;
 
 import javax.swing.*;
 
-import business.Attribute;
 import useful.FieldsKeyAdapter;
 
 

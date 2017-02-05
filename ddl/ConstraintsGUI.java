@@ -12,10 +12,10 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
-import gui.BasicGUI;
+import gui.AbstractBasicGUI;
 import home.HomeController;
 
-public class ConstraintsGUI extends BasicGUI{
+public class ConstraintsGUI extends AbstractBasicGUI{
 
 	DDLController control;
 	public ConstraintsGUI() {

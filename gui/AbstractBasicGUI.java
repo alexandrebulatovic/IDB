@@ -40,9 +40,9 @@ import java.awt.event.WindowListener;
  * @author UGOLINI Romain
  */
 @SuppressWarnings("serial")
-public abstract class BasicGUI 
+public abstract class AbstractBasicGUI 
 extends JFrame
-implements IDBGUI, WindowListener, ActionListener
+implements I_BasicGUI, WindowListener, ActionListener
 {
 	//Attributs
 	/** Nom de l'IHM.*/
@@ -83,7 +83,7 @@ implements IDBGUI, WindowListener, ActionListener
 	 * @param height : hauteur de l'IHM, 0 < height.
 	 * @param componentHeight : hauteur par défaut des composants de l'IHM, 0 < componentHeight.
 	 */
-	protected BasicGUI(String name, LayoutManager lm, int width, int height, int componentHeight)
+	protected AbstractBasicGUI(String name, LayoutManager lm, int width, int height, int componentHeight)
 	{
 		super(name);
 		this.setLayout(lm);
