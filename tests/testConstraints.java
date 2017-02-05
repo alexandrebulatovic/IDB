@@ -61,13 +61,13 @@ public class testConstraints {
 		assertEquals("un_tableTest_testAtt UNIQUE(testAtt)",unique.getNameSQL());
 	}
 
-	@Test
-	public void testNotNull(){
-		NotNullConstraint nn = new NotNullConstraint();
-		nn.addAttribute(getAttribute("attTest"));
-		nn.createAndSetName();
-		assertEquals("ck_attTest CHECK(attTest IS NOT NULL)",nn.getNameSQL());
-	}
+//	@Test
+//	public void testNotNull(){
+//		NotNullConstraint nn = new NotNullConstraint();
+//		nn.addAttribute(getAttribute("attTest"));
+//		nn.createAndSetName();
+//		assertEquals("ck_attTest CHECK(attTest IS NOT NULL)",nn.getNameSQL());
+//	}
 	
 	@Test
 	public void testToAddConstraintSQL(){
@@ -85,7 +85,7 @@ public class testConstraints {
 
 	
 	public Attribute getAttribute(String name){
-		return new Attribute(name, null, 0, null, null);
+		return new Attribute(name, null, 0, null, null, false);
 	}
 	public Table getTable(String name){
 		return new Table(name, false);

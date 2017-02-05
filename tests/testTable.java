@@ -35,7 +35,7 @@ public class testTable {
 			att0.addConstraint(pk1);
 			
 			
-			att1 = new Attribute("nom","VARCHAR2",20);
+			att1 = new Attribute("nom","VARCHAR2",20,true);//cet attribut est not null
 			att1.setTableName(table.getName());
 			
 			att2 = new Attribute("prenom","VARCHAR",20);
@@ -57,7 +57,7 @@ public class testTable {
 	public void testToCreate(){
 		String attendu = "CREATE TABLE PROFILS\n"
 				+ "(\n"
-				+ "nom VARCHAR2 (20),\n"
+				+ "nom VARCHAR2 (20) NOT NULL,\n"
 				+ "prenom VARCHAR (20),\n"
 				+ "id NUMBER (10)\n"
 				+ ");"
@@ -74,7 +74,16 @@ public class testTable {
 	
 	@Test
 	public void testToModify(){
+		Table newTable = new Table(this.table);
+		String attendu = "ALTER TABLE PROFILS\n"
+				+ "ADD age VARCHAR2 (20)";
 		
+		String actual = "";
+		for (String sql : this.table.toModify(newTable)){
+			actual+=sql;
+		}
+		
+		assertEquals(attendu,actual);
 	}
 	
 	

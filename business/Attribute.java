@@ -21,6 +21,8 @@ public class Attribute
 	
 	private List<Constraint> constraints;
 	
+	private boolean notNull = false;
+	
 	
 	/**
 	 * attention, la taille des types ne doit exéder 38 octets pour des 
@@ -31,13 +33,14 @@ public class Attribute
 	 * @param constraints
 	 * @param tableName
 	 */
-	public Attribute(String name, String type, int size, List<Constraint> constraints,String tableName){
+	public Attribute(String name, String type, int size, List<Constraint> constraints,String tableName, boolean isNotNull){
 		this.name=name;
 		this.type=type;
 		this.size=size;
 
 
-
+		this.notNull = isNotNull;
+		
 		this.constraints = constraints;
 		this.tableName = tableName;
 	}
@@ -59,23 +62,36 @@ public class Attribute
 			this.constraints.add(c);
 		}
 	}
+	
+	
+	/**
+	 * 
+	 * Par défaut,
+	 * La suppression ne se fait pas en DELETE CASCADE
+	 * @param name
+	 * @param type
+	 * @param size
+	 * @param isNotNull
+	 */
+	public Attribute(String name,String type, int size, boolean isNotNull) {
+		this(name,type,size,new ArrayList<Constraint>(),null,isNotNull);
+	}
 
+	
+	/**
+	 * Par défaut, l'attribut peut être null et ne possede pas de contraintes.
+	 * La suppression ne se fait pas en DELETE CASCADE
+	 * @param name
+	 * @param type
+	 * @param size
+	 */
 	public Attribute(String name,String type, int size) {
-		this(name,type,size,new ArrayList<Constraint>(),null);
+		this(name,type,size,false);
 	}
 
 
 	public boolean isNotNull(){
-		for (Constraint c : constraints){
-			if (c instanceof NotNullConstraint){
-				NotNullConstraint nulll = (NotNullConstraint) c;
-				if (nulll.getAttribute()==this){
-					return true;
-				}
-				
-			}
-		}
-		return false;
+		return this.notNull;
 	}
 	
 	public boolean isUnique(){
@@ -167,7 +183,7 @@ public class Attribute
 	
 	/**
 	 * Retourne une représentation de l'attribut
-	 * exemple att1 NUMBER(8)
+	 * @Exemple att1 NUMBER(8)
 	 */
 	@Override
 	public String toString()
@@ -194,12 +210,9 @@ public class Attribute
 
 
 	/**
-	 * Retourne une liste de requettes du type
-	 * ALTER TABLE $nomTable
-	 * ADD CONSTRAINT $nom CHECK($condition)
-	 * (ceci est un exemple)
-	 * 
-	 * @return liste de requettes
+	 * Retourne une liste de requettes
+	 * @Exemple ALTER TABLE $nomTable ADD CONSTRAINT $nom CHECK($condition)
+	 * @return liste de requettes SQL string
 	 */
 	public List<String> toCreateConstraintsSQL()
 	{
@@ -244,191 +257,19 @@ public class Attribute
 	}
 
 
-	//Privées
-	/**
-	 * Retourne une chaîne de caractères qui représente le nom et le type de $this, 
-	 * comme s'il s'agissait d'une requête SQL pour créer une table.
-	 * La taille de $this est ajoutée uniquement lorsque c'est nécessaire.
-	 * 
-	 * @return String
-	 */
-	private String toSQLDeclaration()
-	{
-		StringBuilder result = new StringBuilder();
-		result.append(this.name + " " + this.type);
-		if (! this.type.equals("DATE")) result.append("(" + this.size + ")");
-		return result.toString();
-	}
-	
-	
-//	/**
-//	 * Retourne une chaîne de caractères qui correspond à
-//	 * une déclaration de contrainte NOT NULL pour $this,
-//	 * si et seulement si $this possède cette contrainte.
-//	 * Retourne une chaîne vide sinon.
-//	 * exemple : "ADD CONTRAINT nn_nomTable_nomAttribut CHECK(attribut IS NOT NULL)"
-//	 * @return String
-//	 */
-//	private String toSQLNotNull()
-//	{
-//		return this.notNull 
-//				? this.toConcatSQL("nn", "CHECK", "IS NOT NULL")
-//				: "";
-//	}
-//	
-//	
-//	/**
-//	 * Retourne une chaîne de caractères qui correspond à
-//	 * une déclaration de contrainte UNIQUE pour $this,
-//	 * si et seulement si $this possède cette contrainte.
-//	 * Retourne une chaîne vide sinon.
-//	 * 
-//	 * @return String
-//	 */
-//	private String toSQLUnique()
-//	{
-//		return this.unique 
-//				? this.toConcatSQL("un", "UNIQUE", null)
-//				: "";
-//	}
-//	
-//	
-//	/**
-//	 * Retourne une chaîne de caractères qui correspond à
-//	 * une déclaration de contrainte FOREIGN KEY pour $this,
-//	 * si et seulement si $this possède cette contrainte.
-//	 * Retourne une chaîne vide sinon.
-//	 * 
-//	 * @return String
-//	 */
-//	public String toSQLForeinKey()
-//	{
-//		return this.foreignKey
-//				? this.toConcatSQL("fk", "FOREIGN KEY", null)
-//				: "";
-//	}
-//	
-//
-//	
-//	
-//	
-//	/**
-//	 * Retourne une chaîne de caractères qui représente une clause CONSTRAINT 
-//	 * complète, dont le nom commence par $prefix, le type $keyword et 
-//	 * éventuellement de condition $condition.
-//	 * 
-//	 * @param prefix : pk, fk, nn, un, ck.
-//	 * @param keyword : UNIQUE, CHECK, FOREIGN KEY.
-//	 * @param condition : condition à concaténer dans un CHECK (doit être null si la contrainte n'est pas un CHECK)
-//	 * @return String
-//	 */
-//	private String toConcatSQL(
-//			String prefix, String keyword,
-//			String condition
-//			)
-//	{
-//		StringBuilder result = new StringBuilder();
-//		result.append(",\n" + this.toSQLConstraintName(prefix));
-//		result.append(" ");
-//		result.append(this.toSQLConstraintType(keyword, condition));
-//		if (keyword.equals("FOREIGN KEY")) {
-//			result.append(" ");
-//			result.append(this.toSQLReferences());
-//		}
-//		return result.toString();
-//	}
-//	
-//
-//
-//
-//	/**
-//	 * Retourne une chaîne de caractères qui représente le début
-//	 * d'une clause CONSTRAINT en SQL, c'est à dire le mot CONSTRAINT et le nom de la contrainte.
-//	 * Le nom de la contrainte commence par $prefix.
-//	 * 	  
-//	 * @param prefix : préfixe du nom de la contrainte (pk, fk, nn, un, ck)
-//	 * @return String
-//	 */
-//	public String toSQLConstraintName(String prefix)
-//	{
-//		return "CONSTRAINT " + prefix + "_" 
-//				+ this.tableName + "_" + this.name;
-//	}
-//	
-//	
-//	/**
-//	 * Retourne une chaîne de caractères qui représente 
-//	 * $constraintType imposée sur $this.
-//	 * 
-//	 * @param constraintType : mot-clef de contrainte (UNIQUE, CHECK, FOREIGN KEY)
-//	 * @param condition : null ssi $constraintType != "CHECK", expression booléenne sinon.
-//	 * @return String
-//	 */
-//	public String toSQLConstraintType(String constraintType, String condition)
-//	{
-//		StringBuilder result = new StringBuilder();
-//		result.append(constraintType + " (" + this.name);
-//		if (condition != null) result.append(" " + condition);
-//		result.append(")");
-//		return result.toString();
-//	}
-//	
-//	
-//	/**
-//	 * Retourne une chaîne de caractères qui représente
-//	 * la référence sur laquelle se base $this.
-//	 * Cette méthode ne doit pas être appellée si $this n'est pas une clef étrangère.
-//	 * 
-//	 * @return String
-//	 */
-//	public String toSQLReferences()
-//	{
-//		StringBuilder result = new StringBuilder();
-//		result.append("REFERENCES ");
-//		result.append(this.fkTable);
-//		result.append("(");
-//		result.append(this.fkAttribute);
-//		result.append(")");
-//		return result.toString();
-//	}
-//	
-//
-//
 
 	/**
-	 * exemple nomProduit VARCHAR (30)
+	 * Retourne une représentation de l'attribut
+	 * @Exemple nomProduit VARCHAR (30) NOT NULL
 	 * @return String
 	 */
 	public String toSQL() {
+		String nn = this.notNull?" NOT NULL":"";
 		if (this.type.equals("DATE")){
-			return this.name+" "+this.type;
+			return this.name+" "+this.type+nn;
 		}
-		return this.name+" "+this.type+" ("+this.size+")";
+		return this.name+" "+this.type+" ("+this.size+")"+nn;
 	}
-	
-		
-//		String constraint = "CONSTRAINT ";
-//		String endNameConstraint = table+"_"+this.name;
-//		
-//		sql.add(this.name+" "+this.type+" ("+this.size+")");
-//		
-//		if (this.unique){
-//			sql.add(constraint+"un_"+endNameConstraint+" UNIQUE ("+this.name+")");
-//		}
-//		
-//		if (this.notNull){
-//			sql.add(constraint+"nn_"+endNameConstraint+"CHECK ("+this.name+" IS NOT NULL)");
-//		}
-//		if (this.primaryKey){
-//			sql.add(constraint+"pk_"+endNameConstraint+"PRIMARY KEY ("+this.name+")");
-//		}
-//		if (this.foreignKey){
-//			sql.add(constraint+"fk_"+endNameConstraint+"FOREIGN KEY ("+this.name+") REFERENCES "+this.fkTable+"("+this.fkAttribute+")");
-//		}
-//		
-//		
-//		return sql;
-
 	
 }
 
