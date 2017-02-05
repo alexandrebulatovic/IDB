@@ -54,7 +54,8 @@ implements ItemListener
 	 * @param enabled : vrai si et seulement si les boutons doivent être activés,
 	 * faux sinon.
 	 */
-	public void setEnableButtonUpdateDeleteUpDown(boolean enabled){
+	public void setEnableButtonUpdateDeleteUpDown(boolean enabled)
+	{
 		this.deleteAttributeButton.setEnabled(enabled);
 		this.updateAttributeButton.setEnabled(enabled);
 		this.upPositionAttributeButton.setEnabled(enabled);
@@ -101,18 +102,6 @@ implements ItemListener
 	}
 
 
-	//	/**
-	//	 * TODO
-	//	 * @return un objet de type Table qui contient tous
-	//	 * les éléments de la vue
-	//	 */
-	//	protected Table getTable() {
-	//		return new Table(
-	//				this.tableNameField.getText(),
-	//				this.models.getAttributes());
-	//	}
-
-
 	@Override
 	public void itemStateChanged(ItemEvent item)
 	{
@@ -123,6 +112,27 @@ implements ItemListener
 			boolean enabled = (status == ItemEvent.DESELECTED);
 			this.enableSelectNotNullCheckBox(enabled);
 		}
+	}
+
+
+	@Override
+	public boolean isComplete()
+	{
+		String msg;
+		boolean hasAttribute = this.models.getRowCount()!=0;
+		boolean hasName =  !"".equals(this.tableNameField.getText());
+		boolean okay =  hasAttribute &&  hasName ;
+		
+		if(! okay){
+			if (!hasAttribute)
+				msg = "Il n'y a pas d'attribut";
+			else 
+				msg = "Il manque le nom de la table.";
+		} 
+		else msg = "";
+		
+		this.talk(new Response(okay, msg));
+		return okay;
 	}
 
 
@@ -139,6 +149,34 @@ implements ItemListener
 		this.clearAttribute();
 		this.setEnableButtonUpdateDeleteUpDown(false);;
 		this.models.removeAll();
+	}
+
+
+	/**
+	 * Ajoute l'attribut passé en paramètre à la table 
+	 * contenant les attributs.
+	 * 
+	 * @param attribute : null interdit.
+	 */
+	protected void addAttributeToTable(I_Attribute attribute){
+		this.models.addAttribute(attribute);
+		this.talk(new Response(true,"Attribut ajouté."));
+		this.clearAttribute();
+	}
+
+
+	/**
+	 * Instancie, positionne et dimensionne les composants s'occupant
+	 * de la table ciblée.
+	 */
+	protected void handleTableComponent()
+	{
+		JLabel table = new JLabel("Table :");
+		table.setFont(new Font(FONT, Font.BOLD, 18));
+		this.bindAndAdd(table);
+	
+		JLabel tableName = new JLabel("Nom de la table :");
+		this.bindAndAdd(tableName, 6, true);
 	}
 
 
@@ -173,32 +211,6 @@ implements ItemListener
 		this.notNullCheckBox.setSelected(notNull);
 		this.primaryKeyCheckBox.setSelected(pk);;
 	}
-
-	/**
-	 * Ajoute l'attribut passé en paramètre à la table 
-	 * contenant les attributs.
-	 * 
-	 * @param attribute : null interdit.
-	 */
-	protected void addAttributeToTable(I_Attribute attribute){
-		this.models.addAttribute(attribute);
-		this.talk(new Response(true,"Attribut ajouté."));
-		this.clearAttribute();
-	}
-	/**
-	 * Instancie, positionne et dimensionne les composants s'occupant
-	 * de la table ciblée.
-	 */
-	protected void handleTableComponent()
-	{
-		JLabel table = new JLabel("Table :");
-		table.setFont(new Font(FONT, Font.BOLD, 18));
-		this.bindAndAdd(table);
-
-		JLabel tableName = new JLabel("Nom de la table :");
-		this.bindAndAdd(tableName, 6, true);
-	}
-
 
 	/**
 	 * Instancie, positionne et dimensionne les différents composants de l'IHM.
@@ -333,23 +345,9 @@ implements ItemListener
 	}
 
 
-	@Override
-	public boolean isComplete()
-	{
-		if(this.models.getRowCount()==0){
-			this.talk(new Response(false,"Il n'y a pas d'attribut"));
-			return false;
-		} 
-		else if ("".equals(this.tableNameField.getText())) {
-			this.talk(new Response(false,"Il manque le nom de la Table"));
-			return false;
-		} 
-		else {
-			return true;
-		}
-	}
-
 	/**
+	 * Affiche un message pour indiquer si $attribute est acceptable.
+	 * 
 	 * @param attribute : null interdit.
 	 * @return vrai si et seulement si $a est un attribut dont :<br/> 
 	 * -les champs attributs sont complets,<br/> 
@@ -358,35 +356,35 @@ implements ItemListener
 	 */
 	private boolean isValidateAttribute(I_Attribute attribute)
 	{
+		String msg;
+		
+		boolean result;
+		boolean doublon = this.models.isDuplicateAttributeName(attribute);
+
 		if(! attribute.checkSize()){
-			this.talk(new Response(false,attribute.sizeErrorMsg()));
-			return false;
+			msg = attribute.sizeErrorMsg();
+			result = false;
 		}
-		else if(this.models.isDuplicateAttributeName(attribute) && !this.updateState){
-			this.talk(new Response(false,"Un attribut existant a déja le même nom."));
-			return false;
-		}else if(this.models.isDuplicateAttributeName(attribute) && this.updateState){
-			int rowIndex = this.table.getSelectedRow();
-			I_Attribute test = this.models.getAttributeAt(rowIndex);
-			if(!attribute.getName().equals(test.getName())){
-				this.talk(new Response(false,"Un attribut existant a déja le même nom."));
-				return false;
-			}else{
-				return true;
+		else if(!doublon) {
+			msg = "";
+			result = true;
+		} 
+		else {
+			String msgDoublon = "Un attribut existant a déja le même nom.";
+			if(!this.updateState) {
+				msg = msgDoublon;
+				result = false;
+			} 
+			else {
+				int rowIndex = this.table.getSelectedRow();
+				I_Attribute test = this.models.getAttributeAt(rowIndex);
+				result = attribute.equals(test);
+				msg = result ? "" : msgDoublon;
 			}
 		}
-		else return true;
-	}
-
-
-	/**
-	 * Modifie le nom de la Table dans le champs de saisie.
-	 * 
-	 * @param tableName : une chaine de caractère
-	 */
-	private void setTableName(String tableName) 
-	{
-		this.tableNameField.setText(tableName);
+		
+		this.talk(new Response(result, msg));
+		return result;
 	}
 
 
@@ -446,9 +444,7 @@ implements ItemListener
 	private void setVisibleUpdateButtons(boolean visible)
 	{
 		this.confirmUpdateAttributeButton.setVisible(visible);
-		//		this.confirmUpdateAttributeButton.setEnabled(bool);
 		this.cancelUpdateAttributeButton.setVisible(visible);
-		//		this.cancelUpdateAttributeButton.setEnabled(bool);
 	}
 
 
@@ -481,20 +477,17 @@ implements ItemListener
 	 * Détermine ce qu'il se passe lors de la sélection d'une DATE
 	 * dans la ComboBox du type de l'attribut.
 	 */
-	private void selectSizeDateComboBoxAction() {
+	private void selectSizeDateComboBoxAction() 
+	{
 		Object selected = this.attributeTypeComboBox.getSelectedItem();
-		if("DATE".equals(selected.toString())){
-			enableSizeField(false);
-		}else{
-			enableSizeField(true);
-		}
+		enableSizeField(!"DATE".equals(selected.toString()));
 	}
 
+	
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "Ajouter l'attribut".
 	 */
-
 	private void addAttributeButtonAction()
 	{
 		if(isCompleteAttribute()){
@@ -503,12 +496,14 @@ implements ItemListener
 			int size = Integer.parseInt(attributeSizeField.getText());
 			boolean notNull = this.notNullCheckBox.isSelected();
 			boolean primaryKey = this.primaryKeyCheckBox.isSelected();
-			I_Attribute attribute = this.control.getAttributeModel(name,type,size,notNull,primaryKey);
+			I_Attribute attribute = this.control.getAttributeModel
+					(name, type, size, notNull, primaryKey);
 			if(this.isValidateAttribute(attribute))
 				this.addAttributeToTable(attribute);
 		}
 	}
 
+	
 	/**
 	 * Détermine ce qu'il se passe lors d'une action sur
 	 * le bouton "Supprimer l'attribut".
@@ -543,6 +538,10 @@ implements ItemListener
 
 
 	/**
+	 * Affiche un message pour indiquer si toutes les informations
+	 * nécessaire pour créer un attribut sont renseignées dans les 
+	 * formulaires de saisie.
+	 * 
 	 * @return vrai ssi tous les champs de l'attributs sont renseignés,
 	 * faux sinon.
 	 */
@@ -552,7 +551,8 @@ implements ItemListener
 		String size = this.attributeSizeField.getText();
 
 		if("".equals(name) || "".equals(size)) {
-			this.talk(new Response(false,"Tous les champs Attributs doivent être renseignés."));
+			this.talk(new Response
+					(false, "Les champs de nom et de taille d'attribut doivent être renseignés."));
 			return false;
 		} 
 		else
@@ -574,7 +574,7 @@ implements ItemListener
 			I_Attribute attribute = this.control.getAttributeModel(name,type,size,notNull,primaryKey);
 			if(isValidateAttribute(attribute)){
 				this.models.setAttributeValueAt(this.table.getSelectedRow(),attribute);
-				this.talk(new Response(true,"Attribut Modifé."));
+				this.talk(new Response(true,"Attribut modifé."));
 				this.updateState=false;
 				this.clearAttribute();
 				this.disableAllExceptAttribute(true);
@@ -622,6 +622,7 @@ implements ItemListener
 		return -1;
 	}
 
+	
 	protected void createTableButtonAction() 
 	{
 		/**

@@ -130,4 +130,13 @@ implements I_Attribute
 	public boolean checkSize() {
 		return this.errorSizeCode() >= 0;
 	}
+	
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		return (o == null 
+				? false 
+				: ((AbstractAttribute)o).name.equals(this.name));
+	}
 }
