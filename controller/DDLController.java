@@ -5,17 +5,12 @@ import gui.ddl.CreateTableGUI;
 import gui.ddl.DropTableGUI;
 import gui.ddl.ModifyTableGUI;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JFrame;
 
 import ddl.I_Attribute;
 
-import business.Attribute;
 import business.Table;
 
-import manager.ddl.I_DDLManager;
 import useful.Response;
 import useful.ResponseData;
 
