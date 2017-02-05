@@ -1,4 +1,4 @@
-package gui;
+package gui.abstrct;
 
 import useful.Response;
 

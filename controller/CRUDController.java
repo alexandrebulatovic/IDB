@@ -1,4 +1,6 @@
-package crud;
+package controller;
+
+import gui.CRUDGUI;
 
 import java.sql.Connection;
 import java.util.Vector;
@@ -7,9 +9,10 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import manager.SQLManager;
+
 import manager.ddl.I_DDLManager;
 import manager.ddl.OracleDDLManager;
+import manager.sql.SQLManager;
 import useful.ResponseData;
 
 public class CRUDController 
@@ -17,7 +20,7 @@ public class CRUDController
 	/* ATTRIBUTS */
 
 	/** IHM du CRUD.*/
-	private CRUDView crud_view;
+	private CRUDGUI crud_view;
 
 	private I_DDLManager ddl_manager;
 
@@ -51,7 +54,7 @@ public class CRUDController
 	 */
 	public void openCRUDGUI() {
 		if (this.crud_view == null) {
-			this.crud_view = new CRUDView(this);
+			this.crud_view = new CRUDGUI(this);
 		}
 		else{
 			showGUI(this.crud_view);

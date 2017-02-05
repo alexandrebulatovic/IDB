@@ -1,19 +1,11 @@
-
 package main;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
-import useful.ConnectionStrings;
-import useful.ResponseData;
-import manager.DefaultValueManager;
-import manager.HomeFacade;
-import manager.ddl.I_DDLManager;
+import manager.xml.DefaultValueManager;
+import facade.HomeFacade;
 import factory.MainFactory;
-import home.HomeController;
-import connection.ConnectionGUI;
-import ddl.DDLController;
+import gui.ConnectionGUI;
+import controller.HomeController;
+
 
 /**
  * Initialise l'application.
@@ -38,38 +30,9 @@ public class Launcher {
 	public static void main(String[] args) 
 	{
 		Launcher main = new Launcher();
-				main.launchApplication();
-//		main.connect();
-//		try {
-//			Statement st = main.facade.getConnection().createStatement();
-//			String sql = "select search_condition from all_constraints " +
-//					"where owner = 'UGOLINIR'" +
-//					" and table_name = 'TEST'";
-//			ResultSet rs = st.executeQuery(sql);
-//			while (rs.next()) {
-//				System.out.println(rs.getString(1));
-//			}
-//		}
-//		catch(Exception e) {
-//
-//		}
+		main.launchApplication();
 	}
-
 	
-	private void testNotNull(Launcher main)
-	{
-		main.connect();
-		I_DDLManager ddlmanager = main.factory.getDDLManager(main.facade.getConnection());
-		ResponseData<String []> r = ddlmanager.getAttributes("eleves");
-		System.out.println(r.getCollection());
-		for (String [] st : r.getCollection()) {
-			for (String s : st) {
-				System.out.print(s +", ");
-			}
-			System.out.println();
-		}
-		main.hc.disconnect();
-	}
 	
 	/**
 	 * Lance l' IHM de l'application.
@@ -89,15 +52,5 @@ public class Launcher {
 		this.factory = new MainFactory();
 		this.facade = new HomeFacade(dvm, factory);
 		this.hc = new HomeController(facade);
-	}
-	
-	/**
-	 * Se connecte au dernier SGBD atteint (fichier XML).
-	 */
-	private void connect()
-	{
-		ConnectionStrings cs = this.facade.getDefaultValues();
-		cs.password = "";
-		this.hc.connect(cs);
 	}
 }

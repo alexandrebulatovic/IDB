@@ -3,7 +3,7 @@ import java.awt.List;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
-import manager.SQLManager;
+import manager.sql.SQLManager;
 
 
 

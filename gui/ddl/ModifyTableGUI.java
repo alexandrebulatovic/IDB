@@ -1,4 +1,4 @@
-package ddl;
+package gui.ddl;
 
 import gui.I_DDLGUI;
 
@@ -8,6 +8,8 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.JComboBox;
+
+import controller.DDLController;
 
 import business.Attribute;
 import business.Table;

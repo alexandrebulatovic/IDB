@@ -1,4 +1,4 @@
-package ddl;
+package gui.ddl;
 
 
 
@@ -7,6 +7,12 @@ import java.awt.event.*;
 import java.awt.Font;
 
 import javax.swing.*;
+
+import controller.DDLController;
+import ddl.AttributesAbstractTableModel;
+import ddl.ControlTableResult;
+import ddl.CreateModifyProperties;
+import ddl.I_Attribute;
 
 import useful.FieldsKeyAdapter;
 

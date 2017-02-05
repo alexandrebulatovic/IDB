@@ -1,9 +1,16 @@
-package ddl;
+package controller;
+
+import facade.DDLFacade;
+import gui.ddl.CreateTableGUI;
+import gui.ddl.DropTableGUI;
+import gui.ddl.ModifyTableGUI;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
+
+import ddl.I_Attribute;
 
 import business.Attribute;
 import business.Table;
@@ -176,10 +183,11 @@ public class DDLController
 		return null;
 		
 	}
-	
-	
-	public List<Attribute> getAttributes(String table) {
-		return manager.getAttributes(table);
+
+
+	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
@@ -193,11 +201,5 @@ public class DDLController
 	{
 		gui.setVisible(true);
 		gui.toFront();
-	}
-
-
-	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

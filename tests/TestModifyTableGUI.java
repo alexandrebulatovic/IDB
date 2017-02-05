@@ -2,6 +2,8 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import gui.ddl.ModifyTableGUI;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,8 +11,7 @@ import java.sql.SQLException;
 import org.junit.Before;
 import org.junit.Test;
 
-import ddl.ModifyTableGUI;
-import manager.DefaultValueManager;
+import manager.xml.DefaultValueManager;
 
 //public class TestModifyTableGUI {
 //

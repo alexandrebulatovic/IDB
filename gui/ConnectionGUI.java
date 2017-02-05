@@ -1,4 +1,6 @@
-package connection;
+package gui;
+
+import gui.abstrct.AbstractBasicGUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,12 +16,11 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import controller.HomeController;
+
 import useful.ConnectionStrings;
 import useful.Response;
 import useful.MaxLengthTextDocument;
-import gui.AbstractBasicGUI;
-import home.HomeController;
-import home.HomeGUI;
 
 
 /**

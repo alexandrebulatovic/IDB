@@ -1,4 +1,6 @@
-package ddl;
+package gui.ddl;
+
+import gui.abstrct.AbstractBasicGUI;
 
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -12,8 +14,9 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
-import gui.AbstractBasicGUI;
-import home.HomeController;
+import controller.DDLController;
+import controller.HomeController;
+
 
 public class ConstraintsGUI extends AbstractBasicGUI{
 

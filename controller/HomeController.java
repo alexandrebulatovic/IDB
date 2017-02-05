@@ -1,9 +1,6 @@
-package home;
+package controller;
 
-import manager.HomeFacade;
-import crud.CRUDController;
-import ddl.DDLController;
-import sql.SQLController;
+import facade.HomeFacade;
 import useful.ConnectionStrings;
 import useful.Response;
 

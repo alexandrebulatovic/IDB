@@ -1,20 +1,23 @@
-package sql;
+package controller;
+
+import gui.SQLGUI;
 
 import java.sql.Connection;
 import javax.swing.JTable;
-import manager.SQLManager;
+
+import manager.sql.SQLManager;
 
 /** Effectue la communication entre la {@code SQLView} et le {@code SQLController}.
  * 
  * @see SQLManager
- * @see SQLView
+ * @see SQLGUI
  */
 public class SQLController {
 
 	/* ATTRIBUTS */
 
 	/** IHM pour taper des requetes SQL. */
-	private SQLView sql_view;
+	private SQLGUI sql_view;
 
 	/** Objet pour envoyer des requetes au SGBD. */
 	private SQLManager sql_manager;
@@ -35,7 +38,7 @@ public class SQLController {
 	public void openSQL()
 	{
 		if (this.sql_view == null) {
-			this.sql_view = new SQLView(this);
+			this.sql_view = new SQLGUI(this);
 		} else {
 			this.sql_view.setVisible(true);
 			this.sql_view.toFront();

@@ -1,5 +1,6 @@
-package ddl;
+package facade;
 
+import ddl.I_Attribute;
 import useful.Response;
 import useful.ResponseData;
 

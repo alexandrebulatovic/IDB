@@ -1,5 +1,7 @@
 package ddl;
 
+import gui.ddl.CreateTableGUI;
+
 import java.util.LinkedHashSet;
 import java.util.Iterator;
 

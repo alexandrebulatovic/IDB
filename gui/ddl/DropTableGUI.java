@@ -1,4 +1,6 @@
-package ddl;
+package gui.ddl;
+
+import gui.abstrct.AbstractBasicGUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,11 +12,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.WindowConstants;
 
+import controller.DDLController;
+
 import useful.Response;
 import useful.ResponseData;
 
 
-import gui.AbstractBasicGUI;
 
 /**
  * IHM pour supprimer des tables de la base de données.

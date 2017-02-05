@@ -7,7 +7,9 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import gui.AbstractBasicGUI;
+import controller.DDLController;
+
+import gui.abstrct.AbstractBasicGUI;
 
 @SuppressWarnings("serial")
 public abstract class CreateModifyProperties 

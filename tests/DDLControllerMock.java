@@ -2,7 +2,8 @@ package tests;
 
 import java.sql.Connection;
 
-import ddl.DDLController;
+import controller.DDLController;
+
 import manager.ddl.I_DDLManager;
 
 public class DDLControllerMock extends DDLController {

@@ -1,4 +1,4 @@
-package manager;
+package manager.sql;
 
 import java.math.BigDecimal;
 import java.sql.Connection;

@@ -1,5 +1,7 @@
 package ddl;
 
+import gui.ddl.CreateTableGUI;
+
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
