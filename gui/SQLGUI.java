@@ -1,6 +1,7 @@
-package sql;
+package gui;
 
-import gui.BasicGUI;
+
+import gui.abstrct.AbstractBasicGUI;
 
 import java.awt.Dialog;
 import java.awt.Window;
@@ -10,6 +11,9 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 
 import javax.swing.*;
+
+import controller.SQLController;
+
 
 /** 
  * IHM qui permet d'écrire des requêtes {@code SQL} et de les envoyer au serveur manuellement.
@@ -22,7 +26,7 @@ import javax.swing.*;
  *  */
 
 @SuppressWarnings("serial")
-public class SQLView extends BasicGUI
+public class SQLGUI extends AbstractBasicGUI
 implements ActionListener
 {
 	/* ATTRIBUTS */
@@ -39,7 +43,7 @@ implements ActionListener
 	/* CONSTRUCTEUR */
 
 	/** Met en place les élements affichés et initialise le controller de la vue. */
-	public SQLView(SQLController control) 
+	public SQLGUI(SQLController control) 
 	{
 		super("Menu SQL", null, 400, 350, 20);
 		this.sql_controller = control;
@@ -108,7 +112,7 @@ implements ActionListener
 
 	/** Pop-up pour afficher une table sous la forme d'un objet {@code JTable}.
 	 * @param table : {@code JTable} à afficher. */
-	public void showTable(JTable table)
+	public void showTable(final JTable table)
 	{
 		// cette portion de code sert à rendre la JOptionPane redimensionnable
 		table.addHierarchyListener(new HierarchyListener() { 

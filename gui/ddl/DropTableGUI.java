@@ -1,4 +1,6 @@
-package ddl;
+package gui.ddl;
+
+import gui.abstrct.AbstractBasicGUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,11 +12,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.WindowConstants;
 
+import controller.DDLController;
+
 import useful.Response;
 import useful.ResponseData;
 
 
-import gui.BasicGUI;
 
 /**
  * IHM pour supprimer des tables de la base de données.
@@ -23,7 +26,7 @@ import gui.BasicGUI;
  */
 @SuppressWarnings("serial")
 public class DropTableGUI 
-extends BasicGUI
+extends AbstractBasicGUI
 implements ActionListener
 {
 	//Attributes
@@ -33,8 +36,11 @@ implements ActionListener
 	/** Liste déroulantes contenant les tables disponibles.*/
 	private JComboBox<String> tableComboBox;
 	
-	/** Case à cocher pour forcer la suppression en cascade.*/
+	/** Case à cocher pour forcer la suppression malgré les références.*/
 	private JCheckBox cascadeCheckBox;
+	
+	/** Case à cocher pour forcer la suppression en chaine.*/
+	private JCheckBox chainCheckBox;
 	
 	/** Bouton pour envoyer la requête de suppression.*/
 	private JButton okButton;
@@ -46,7 +52,7 @@ implements ActionListener
 	 */
 	public DropTableGUI(DDLController control)
 	{
-		super("Suppression de table", null, 400, 180, 30);
+		super("Suppression de table", null, 400, 250, 30);
 		this.control = control;
 		this.handleComponents();
 		this.fillComboBox();
@@ -74,9 +80,7 @@ implements ActionListener
 	@Override
 	public void windowActivated(WindowEvent e)
 	{
-		this.tableComboBox.removeAllItems();
-		this.fillComboBox();
-		this.enableOrDisableComponent();
+		this.refreshView();
 	}
 	
 	
@@ -97,6 +101,9 @@ implements ActionListener
 			this.bindAndAdd(this.cascadeCheckBox);
 		}
 
+		this.chainCheckBox = new JCheckBox("Réaction en chaîne.");
+		this.bindAndAdd(this.chainCheckBox);
+		
 		//Bouton
 		this.okButton = new JButton("Supprimer");
 		this.okButton.addActionListener(this);
@@ -133,13 +140,21 @@ implements ActionListener
 		if (this.isComplete()) {
 			String table = (String)this.tableComboBox.getSelectedItem();
 
-			Response response = this.control.dropTable(table, 
-					this.cascadeCheckBox != null ? this.cascadeCheckBox.isSelected() : false);
-			this.talk(response); 
+			Response response = this.control.dropTable(
+					table, 
+					this.cascadeCheckBox != null ? this.cascadeCheckBox.isSelected() : false,
+							this.chainCheckBox.isSelected());
+			
 			if (response.hasSuccess()) {
-				this.tableComboBox.removeItem(table);
-				this.enableOrDisableComponent();
+				if (this.chainCheckBox.isSelected()) {
+					this.refreshView();
+				}
+				else {
+					this.tableComboBox.removeItem(table);
+					this.enableOrDisableComponent();
+				}
 			}
+			this.talk(response); 
 		}
 	}
 
@@ -167,4 +182,14 @@ implements ActionListener
 		}
 	}
 	
+	
+	/**
+	 * Rafraichit l'IHM.
+	 */
+	private void refreshView()
+	{
+		this.tableComboBox.removeAllItems();
+		this.fillComboBox();
+		this.enableOrDisableComponent();
+	}
 }

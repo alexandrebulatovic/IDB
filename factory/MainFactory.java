@@ -2,8 +2,9 @@ package factory;
 
 import java.sql.Connection;
 
-import manager.I_ConnectionManager;
-import manager.I_DDLManager;
+import ddl.I_Attribute;
+import manager.connection.I_ConnectionManager;
+import manager.ddl.I_DDLManager;
 
 /**
  * Fabrique concrète de fabriques de SGBD.<br/>
@@ -18,6 +19,9 @@ public class MainFactory
 	/** Mot clé pour passer sur la fabrique de MySQL.*/
 	public static final String MYSQL = "MySQL";
 	
+	/** Mot-clé pour une fabrique inactive.*/
+	public static final String NULL = "NULL";
+	
 	
 	//Attributs
 	/** Fabrique choisie pour l'exécution de l'application.*/
@@ -28,9 +32,9 @@ public class MainFactory
 	/**
 	 * Constructeur vide.
 	 */
-	public MainFactory()
+	public MainFactory(String dbms)
 	{
-		this.factory = new VoidDBMSFactory();
+		this.setDBMS(dbms);
 	}
 	
 	
@@ -67,6 +71,20 @@ public class MainFactory
 		
 
 	/**
+	 * @param primaryKey 
+	 * @param notNull 
+	 * @param parseInt 
+	 * @param type 
+	 * @param name 
+	 * @return un model d'attribut pour les IHM de DDL.
+	 */
+	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey)
+	{
+		return this.factory.getAttributeModel(name,type,parseInt, notNull,primaryKey);
+	}
+	
+	
+	/**
 	 * Définit pour quel $dbms fabriquer les objets.
 	 * 
 	 * @param dbms : parmi les variables statiques, null interdit.
@@ -77,8 +95,10 @@ public class MainFactory
 		case ORACLE : this.factory = new OracleDBMSFactory();
 		break;
 		
-		case MYSQL : this.factory = new MySQLDBMSFactory();
+		case MYSQL  : this.factory = new MySQLDBMSFactory();
 		break;
+		
+		default 	: this.factory = new NullDBMSFactory();
 		}
 	}
 	

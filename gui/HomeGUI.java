@@ -1,4 +1,6 @@
-package home;
+package gui;
+
+import gui.abstrct.AbstractBasicGUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,7 +9,8 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
-import gui.BasicGUI;
+import controller.HomeController;
+
 
 /**
  * IHM du menu principal, une fois la connexion établie.
@@ -16,7 +19,7 @@ import gui.BasicGUI;
  */
 @SuppressWarnings("serial")
 public class HomeGUI 
-extends BasicGUI
+extends AbstractBasicGUI
 implements ActionListener
 {
 	//Attributes

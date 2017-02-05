@@ -2,10 +2,8 @@ package manager.ddl;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.List;
 
 import useful.Response;
-import business.Attribute;
 
 public class MySQLDDLManager 
 extends AbstractDLLManager 
@@ -26,7 +24,7 @@ extends AbstractDLLManager
 	@Override
 	public String[] getAttributeTypes() 
 	{
-		String [] result = {"char", "varchar", "date", "numeric"};
+		String [] result = {"VARCHAR", "NUMERIC", "DATE", "CHAR"};
 		return result;
 	}
 
@@ -47,19 +45,12 @@ extends AbstractDLLManager
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	
+
 	@Override
-	public Response dropTable(String table, boolean cascade) 
+	protected Response dbmsDropTable(String table, boolean cascade) 
 	{
-		String sql = "DROP TABLE " + table + (cascade ? " CASCADE" : "");
+		String sql = "DROP TABLE " + table + (cascade ? "CASCADE" : "") ;
 		return this.executeUpdate(sql, "Table supprimée.");
-	}
-
-	
-	@Override
-	public List<Attribute> getAttributes(String table) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

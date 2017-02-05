@@ -1,14 +1,15 @@
 package tests;
 
-import java.sql.Connection;
-
-import ddl.DDLController;
-import manager.I_DDLManager;
+import controller.DDLController;
+import facade.DDLFacade;
 
 public class DDLControllerMock extends DDLController {
 
-	public DDLControllerMock(I_DDLManager manager) {
-		super(manager);
+	public DDLControllerMock(DDLFacade facade) {
+		super(facade);
+		// TODO Auto-generated constructor stub
 	}
+
+	
 
 }

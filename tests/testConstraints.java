@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import business.Attribute;
 import business.*;
 
 public class testConstraints {
@@ -24,7 +23,7 @@ public class testConstraints {
 		fk.addAttributeDestination(dest1);
 		fk.addAttributeDestination(dest2);
 		
-		fk.createName();
+		fk.createAndSetName();
 		assertEquals("fk_tableSrc_test FOREIGN KEY (test) REFERENCES tableDest(testDest,testDest2)",fk.getNameSQL());
 	}
 	
@@ -37,8 +36,8 @@ public class testConstraints {
 		pk.setTable(getTable("tableTest"));
 		pk.addAttribute(a1);
 		pk.addAttribute(a2);
-		pk.createName();
-		assertEquals("pk_tableTest_a1_a2 PRIMARY KEY PRIMARY KEY(a1,a2)",pk.getNameSQL());
+		pk.createAndSetName();
+		assertEquals("pk_tableTest_a1_a2 PRIMARY KEY(a1,a2)",pk.getNameSQL());
 		
 	}
 	
@@ -47,19 +46,28 @@ public class testConstraints {
 	public void testCheck(){
 		CheckConstraint ck = new CheckConstraint("machin<(autre+3)");
 //		ck.setTable(getTable("tableTest"));
-		ck.createName();
+		ck.createAndSetName();
 		assertEquals("ck CHECK(machin<(autre+3))",ck.getNameSQL());
 		ck.setName("ma_check_perso");
 		assertEquals("ma_check_perso CHECK(machin<(autre+3))",ck.getNameSQL());
 	}
 	
 	@Test
-	public void testNotNull(){
-		NotNullConstraint nn = new NotNullConstraint();
-		nn.addAttribute(getAttribute("attTest"));
-		nn.createName();
-		assertEquals("ck_attTest CHECK(attTest IS NOT NULL)",nn.getNameSQL());
+	public void testUnique(){
+		UniqueConstraint unique = new UniqueConstraint();
+		unique.setTable(getTable("tableTest"));
+		unique.addAttribute(getAttribute("testAtt"));
+		unique.createAndSetName();
+		assertEquals("un_tableTest_testAtt UNIQUE(testAtt)",unique.getNameSQL());
 	}
+
+//	@Test
+//	public void testNotNull(){
+//		NotNullConstraint nn = new NotNullConstraint();
+//		nn.addAttribute(getAttribute("attTest"));
+//		nn.createAndSetName();
+//		assertEquals("ck_attTest CHECK(attTest IS NOT NULL)",nn.getNameSQL());
+//	}
 	
 	@Test
 	public void testToAddConstraintSQL(){
@@ -71,13 +79,13 @@ public class testConstraints {
 		pk.addAttribute(a1);
 		pk.addAttribute(a2);
 		pk.setName("pk_pers_php");
-		assertEquals("ALTER TABLE tableTest\nADD CONSTRAINT pk_pers_php",pk.toAddConstraintSQL());
+		assertEquals("ALTER TABLE tableTest\nADD CONSTRAINT pk_pers_php PRIMARY KEY(a1,a2)",pk.toAddConstraintSQL());
 		assertEquals("ALTER TABLE tableTest\nDROP CONSTRAINT pk_pers_php",pk.toDropConstraintSQL());
 	}
-	
+
 	
 	public Attribute getAttribute(String name){
-		return new Attribute(name, null, 0, false, false, false, false, null, null);
+		return new Attribute(name, null, 0, null, null, false);
 	}
 	public Table getTable(String name){
 		return new Table(name, false);

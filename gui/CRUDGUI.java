@@ -1,4 +1,6 @@
-package crud;
+package gui;
+
+import gui.abstrct.AbstractBasicGUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,13 +21,14 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import gui.BasicGUI;
+import controller.CRUDController;
+
 import useful.ResponseData;
 
 /** IHM qui permet les opérations {@code Create|Read|Update|Select} sur une base de données
  * en manipulant un objet graphique {@code JTable}.*/
 @SuppressWarnings("serial")
-public class CRUDView extends BasicGUI implements ActionListener {
+public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 	/* CONSTANTES */ 
 
@@ -78,7 +81,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 	/* CONSTRUCTEUR */
 
 	/** Met en place les élements affichés et initialise le controller de la view. */
-	public CRUDView(CRUDController control)
+	public CRUDGUI(CRUDController control)
 	{
 		super("CRUD", null, 900, 550, 30);
 		this.crud_controller = control;
@@ -120,7 +123,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 			int columnCount = this.tableModel.getColumnCount();
 
 			this.tableModel.addRow(new Vector[columnCount]);
-			this.changeSelection(CRUDView.LAST);
+			this.changeSelection(CRUDGUI.LAST);
 			this.comboBoxListener = false; // on empeche l'utilisateur de changer de table pendant une insertion
 		} 
 		else
@@ -186,7 +189,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 		if (reply.equals("OK"))
 		{
 			tableModel.removeRow(this.currentIndex); // si ça marche on le vire de l'affichage
-			this.changeSelection(CRUDView.PREVIOUS); // puis on replace la selection
+			this.changeSelection(CRUDGUI.PREVIOUS); // puis on replace la selection
 		} else
 			showError(reply); // sinon on affiche simplement message d'erreur
 	}
@@ -209,13 +212,13 @@ public class CRUDView extends BasicGUI implements ActionListener {
 
 			switch (newSelection)
 			{
-			case CRUDView.PREVIOUS: 
+			case CRUDGUI.PREVIOUS: 
 				newPosition = this.currentIndex-1; // on se repositionne sur le tuple précédent
 				break;
-			case CRUDView.LAST: 
+			case CRUDGUI.LAST: 
 				newPosition = this.tableModel.getRowCount()-1; // on se repositionne sur le dernier tuple
 				break;
-			case CRUDView.CURRENT: 
+			case CRUDGUI.CURRENT: 
 				newPosition = this.currentIndex; // on se repositionne sur le même tuple
 				break;
 			}
@@ -246,19 +249,19 @@ public class CRUDView extends BasicGUI implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				if (CRUDView.this.comboBoxListener)
+				if (CRUDGUI.this.comboBoxListener)
 				{
-					String selectedTable = (String) CRUDView.this.tableComboBox.getSelectedItem();
+					String selectedTable = (String) CRUDGUI.this.tableComboBox.getSelectedItem();
 
 					if (selectedTable != null) 
 					{
-						CRUDView.this.requestTable(selectedTable);
-						CRUDView.this.revealJButtons();
+						CRUDGUI.this.requestTable(selectedTable);
+						CRUDGUI.this.revealJButtons();
 					}
 
 					if (ALLOW_EDITS) 
 						// si on change de table alors qu'on est en mode "edition", on desactive le mode
-						CRUDView.this.updateButtonAction();
+						CRUDGUI.this.updateButtonAction();
 				}
 			}
 		});
@@ -355,7 +358,7 @@ public class CRUDView extends BasicGUI implements ActionListener {
 			public void valueChanged(ListSelectionEvent e) 
 			{
 				if (!e.getValueIsAdjusting()) // pour ne garder que le dernier évenèment d'une action qui en déclenche plusieurs
-					CRUDView.this.currentIndex = CRUDView.this.tableJTable.getSelectedRow();
+					CRUDGUI.this.currentIndex = CRUDGUI.this.tableJTable.getSelectedRow();
 			}
 		});
 	}
@@ -370,21 +373,21 @@ public class CRUDView extends BasicGUI implements ActionListener {
 
 			@Override
 			public boolean isCellEditable(int row, int col) {
-				if (CRUDView.this.INSERTING && row == this.getRowCount()-1)
+				if (CRUDGUI.this.INSERTING && row == this.getRowCount()-1)
 					return true;
 				else
-					return CRUDView.this.ALLOW_EDITS;
+					return CRUDGUI.this.ALLOW_EDITS;
 			}
 
 			@Override
 			public void setValueAt(Object aValue, int row, int column) {
 
-				if (CRUDView.this.ALLOW_EDITS) // si le mode "modification" est actif
+				if (CRUDGUI.this.ALLOW_EDITS) // si le mode "modification" est actif
 				{
-					String reply = CRUDView.this.crud_controller.updateRow(row, column, aValue);
+					String reply = CRUDGUI.this.crud_controller.updateRow(row, column, aValue);
 
 					if (!reply.equals("OK"))
-						CRUDView.this.showError(reply);
+						CRUDGUI.this.showError(reply);
 					else
 						super.setValueAt(aValue, row, column);
 				}

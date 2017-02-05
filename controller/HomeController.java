@@ -1,9 +1,6 @@
-package home;
+package controller;
 
-import manager.HomeFacade;
-import crud.CRUDController;
-import ddl.DDLController;
-import sql.SQLController;
+import facade.HomeFacade;
 import useful.ConnectionStrings;
 import useful.Response;
 
@@ -180,7 +177,7 @@ public class HomeController
 	private void createOrNotDDLControl()
 	{
 		if (this.ddlControl == null) {
-			this.ddlControl = new DDLController(this.facade.getDDLManager());
+			this.ddlControl = new DDLController(this.facade.getDDLFacade());
 		}
 	}
 	

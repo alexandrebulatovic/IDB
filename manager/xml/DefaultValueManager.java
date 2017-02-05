@@ -1,4 +1,4 @@
-package manager;
+package manager.xml;
 
 import java.util.Properties;
 

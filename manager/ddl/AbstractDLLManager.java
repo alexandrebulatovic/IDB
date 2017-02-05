@@ -1,6 +1,5 @@
 package manager.ddl;
 
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -12,7 +11,6 @@ import java.util.List;
 import useful.Response;
 import useful.ResponseData;
 
-import manager.I_DDLManager;
 
 public abstract class AbstractDLLManager 
 implements I_DDLManager 
@@ -32,6 +30,9 @@ implements I_DDLManager
 
 	/** Constante pour récupérer les champs de contrainte unique.*/
 	private final static int UNIQUE = 4;
+	
+	/** Constante pour récupérer les attributs d'une table.*/
+	private final static int COLUMNS = 5;
 	
 	
 	//Attributs
@@ -80,7 +81,7 @@ implements I_DDLManager
 	
 
 	@Override
-	public ResponseData<String []> getImportedKey(String table)
+	public ResponseData<String []> getPrimaryFromForeign(String table)
 	{
 		int [] columns = {3, 4, 13, 7, 8, 12};
 		return this.procedureToGetMetadata
@@ -98,11 +99,33 @@ implements I_DDLManager
 	
 	
 	@Override
-	public ResponseData<String []> getExportedKey(String table)
+	public ResponseData<String []> getForeignFromPrimary(String table)
 	{
 		int columns [] = {3, 4, 13, 7, 8, 12};
 		return this.procedureToGetMetadata
 				(OUT_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
+	}
+	
+	
+	@Override
+	public ResponseData<String[]> getAttributes(String table)
+	{
+		int columns [] = {4, 6, 7, 18};
+		return this.procedureToGetMetadata(COLUMNS, table, columns, "Attributs récupérés.");
+	}
+	
+	
+	@Override
+	public Response dropTable(String table, boolean cascade, boolean chain)
+	{
+		if (chain) {
+			Response domino;
+			domino = this.dropTableRecursive(table);
+			if (! domino.hasSuccess()) {
+				return domino;
+			}
+		}
+		return this.dbmsDropTable(table, cascade);
 	}
 	
 	
@@ -135,6 +158,45 @@ implements I_DDLManager
 		}
 		return result;
 	}
+	
+
+	/**
+	 * Supprime récursivement toutes les tables qui référencent $table.<br/>
+	 * $table n'est pas supprimée.
+	 * 
+	 * @param table : la table référencées par d'autres tables, null interdit.
+	 * @return une réponse personnalisée décrivant la suppression des tables
+	 * qui référencent $table.
+	 */
+	protected Response dropTableRecursive(String table) {
+		Response result = null; //Compilateur chiale
+		ResponseData<String []> exported = this.getForeignFromPrimary(table);
+		
+		if (! exported.hasSuccess())
+			result = exported;
+		else {
+			String [] tables = extractTableExported(exported.getCollection());
+			
+			for (String t : tables) {
+				result = this.dropTable(t, false, true);
+				if (! result.hasSuccess()) return result;
+			}
+			if (result == null) 
+				result = new Response(true, "Pas de table qui référence.");
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Supprime $table de la base de données.
+	 * 
+	 * @param table : la table à supprimer, null interdit.
+	 * @param cascade : vrai si et seulement si $table peut être supprimée 
+	 * alors qu'elle est référencée par d'autres tables, faux sinon.
+	 * @return une réponse personnalisée décrivant si $table a pu être supprimée ou non.
+	 */
+	protected abstract Response dbmsDropTable(String table, boolean cascade);
 	
 	
 	//Privées
@@ -207,8 +269,7 @@ implements I_DDLManager
 			break;
 
 		case PRIMARY_KEY :
-			this.metaDataResult = this.metadata.getPrimaryKeys(
-					null, user, table);
+			this.metaDataResult = this.metadata.getPrimaryKeys(null, user, table);
 			break;
 		
 		case IN_FOREIGN_KEY :
@@ -221,6 +282,10 @@ implements I_DDLManager
 		
 		case OUT_FOREIGN_KEY :
 			this.metaDataResult = this.metadata.getExportedKeys(null, user, table);
+			break;
+		
+		case COLUMNS :
+			this.metaDataResult = this.metadata.getColumns(null, null, table, null);
 			break;
 		}
 	}
@@ -249,6 +314,28 @@ implements I_DDLManager
 			result.add(row);
 		}
 		this.metaDataResult.close();
+		return result;
+	}
+	
+	
+	/**
+	 * @param list : collection obtenu sur l'appel de getExportedKey().
+	 * @return un ensemble de tables.
+	 */
+	private static String [] extractTableExported(List<String []> list)
+	{
+		List<String> sort = new ArrayList<String>();
+		
+		for (String [] tab : list) {
+			if (! sort.contains(tab[3]))
+				sort.add(tab[3]);
+		}
+		String [] result = new String [sort.size()];
+		int i = 0;
+		for (String table : sort) {
+			result[i] = table;
+			i++;
+		}
 		return result;
 	}
 }

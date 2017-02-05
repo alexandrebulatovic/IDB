@@ -1,15 +1,11 @@
-
 package main;
 
-import useful.ConnectionStrings;
-import useful.ResponseData;
-import manager.DefaultValueManager;
-import manager.HomeFacade;
-import manager.I_DDLManager;
+import manager.xml.DefaultValueManager;
+import facade.HomeFacade;
 import factory.MainFactory;
-import home.HomeController;
-import connection.ConnectionGUI;
-import ddl.DDLController;
+import gui.ConnectionGUI;
+import controller.HomeController;
+
 
 /**
  * Initialise l'application.
@@ -36,7 +32,7 @@ public class Launcher {
 		Launcher main = new Launcher();
 		main.launchApplication();
 	}
-
+	
 	
 	/**
 	 * Lance l' IHM de l'application.
@@ -53,36 +49,8 @@ public class Launcher {
 	private void initApplication()
 	{
 		this.dvm = new DefaultValueManager();
-		this.factory = new MainFactory();
+		this.factory = new MainFactory(MainFactory.NULL);
 		this.facade = new HomeFacade(dvm, factory);
 		this.hc = new HomeController(facade);
-	}
-	
-	
-	private void testKey()
-	{
-		ConnectionStrings cs = this.facade.getDefaultValues();
-//		cs.password = "";
-		this.hc.connect(cs);
-		I_DDLManager ddlManager = this.facade.getDDLManager();
-		ResponseData<String []> imported = ddlManager.getImportedKey("TROIS");
-		
-		for (String [] ligne: imported.getCollection()) {
-			for (String colonne : ligne) {
-				System.out.print(colonne + ",\t");
-			}
-			System.out.println();
-		}
-		
-		System.out.println();
-		ResponseData<String []> exported = ddlManager.getExportedKey("TROIS");
-		for (String [] ligne: exported.getCollection()) {
-			for (String colonne : ligne) {
-				System.out.print(colonne + ",\t");
-			}
-			System.out.println();
-		}
-		this.facade.disconnect();
-		int a = 5;
 	}
 }
