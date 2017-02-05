@@ -458,14 +458,18 @@ implements ItemListener
 	 */
 	private void positionAttributButtonAction(String direction)
 	{
-		if(this.table.getSelectedRow()!=-1){
+		boolean existRow = this.table.getSelectedRow()!=-1;
+		
+		if(existRow){
 			int rowIndex = this.table.getSelectedRow();
-
-			if("UP".equals(direction) && rowIndex!=0){
+			boolean firstRow = rowIndex==0;
+			boolean lastRow = rowIndex==(this.table.getRowCount()-1);
+			
+			if("UP".equals(direction) && !firstRow){
 				this.models.changeAttributePosition(direction, rowIndex);
 				this.table.setRowSelectionInterval(rowIndex-1, rowIndex-1);
 			}
-			if("DOWN".equals(direction) && rowIndex!=this.table.getRowCount()-1){
+			else if(!lastRow){
 				this.models.changeAttributePosition(direction, rowIndex);
 				this.table.setRowSelectionInterval(rowIndex+1, rowIndex+1);
 			}
