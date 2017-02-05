@@ -19,13 +19,6 @@ extends AbstractBasicGUI
 	/** Police d'écriture de l'IHM.*/
 	protected static final String FONT = null;
 
-	/** Préfixe des messages d'erreurs. */
-	protected static final String ERROR_ATTRIBUTE = "ERREUR : ";
-
-	/** Préfixe des messages de succès. */
-	protected static final String SUCCES_ATTRIBUTE = "SUCCES : ";
-
-	
 	//Attributs
 	/** Controleur lié à l'IHM. */
 	protected DDLController control;

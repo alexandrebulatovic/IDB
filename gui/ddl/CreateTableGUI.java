@@ -18,6 +18,7 @@ import useful.FieldsKeyAdapter;
 
 
 import useful.MaxLengthTextDocument;
+import useful.Response;
 
 @SuppressWarnings("serial")
 /**
@@ -66,7 +67,7 @@ implements ItemListener
 	{
 		Object o = e.getSource();
 		if (o == this.attributeButton) {
-				this.addAttributeButtonAction();
+			this.addAttributeButtonAction();
 		}
 		if (o == this.createTableButton) {
 			if(this.isComplete()){
@@ -77,7 +78,7 @@ implements ItemListener
 			this.deleteAttributeButtonAction();
 		}
 		if (o == this.updateAttributeButton) {
-				this.updateAttributeButtonAction();
+			this.updateAttributeButtonAction();
 		}
 		if (o == this.resetButton) {
 			this.resetView();
@@ -172,7 +173,7 @@ implements ItemListener
 		this.notNullCheckBox.setSelected(notNull);
 		this.primaryKeyCheckBox.setSelected(pk);;
 	}
-	
+
 	/**
 	 * Ajoute l'attribut passé en paramètre à la table 
 	 * contenant les attributs.
@@ -180,9 +181,9 @@ implements ItemListener
 	 * @param attribute : null interdit.
 	 */
 	protected void addAttributeToTable(I_Attribute attribute){
-			this.models.addAttribute(attribute);
-			this.talk(SUCCES_ATTRIBUTE +"Attribut ajouté.");
-			this.clearAttribute();
+		this.models.addAttribute(attribute);
+		this.talk(new Response(true,"Attribut ajouté."));
+		this.clearAttribute();
 	}
 	/**
 	 * Instancie, positionne et dimensionne les composants s'occupant
@@ -336,11 +337,11 @@ implements ItemListener
 	public boolean isComplete()
 	{
 		if(this.models.getRowCount()==0){
-			this.talk(ERROR_ATTRIBUTE+"Il n'y a pas d'attribut");
+			this.talk(new Response(false,"Il n'y a pas d'attribut"));
 			return false;
 		} 
 		else if ("".equals(this.tableNameField.getText())) {
-			this.talk(ERROR_ATTRIBUTE+"Il manque le nom de la Table");
+			this.talk(new Response(false,"Il manque le nom de la Table"));
 			return false;
 		} 
 		else {
@@ -358,17 +359,17 @@ implements ItemListener
 	private boolean isValidateAttribute(I_Attribute attribute)
 	{
 		if(! attribute.checkSize()){
-			this.talk(ERROR_ATTRIBUTE +attribute.sizeErrorMsg());
+			this.talk(new Response(false,attribute.sizeErrorMsg()));
 			return false;
 		}
 		else if(this.models.isDuplicateAttributeName(attribute) && !this.updateState){
-			this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
+			this.talk(new Response(false,"Un attribut existant a déja le même nom."));
 			return false;
 		}else if(this.models.isDuplicateAttributeName(attribute) && this.updateState){
 			int rowIndex = this.table.getSelectedRow();
 			I_Attribute test = this.models.getAttributeAt(rowIndex);
 			if(!attribute.getName().equals(test.getName())){
-				this.talk(ERROR_ATTRIBUTE +"Un attribut existant a déja le même nom.");
+				this.talk(new Response(false,"Un attribut existant a déja le même nom."));
 				return false;
 			}else{
 				return true;
@@ -511,30 +512,30 @@ implements ItemListener
 	private void deleteAttributeButtonAction()
 	{
 		this.models.removeAttributes(this.table.getSelectedRow());
-		this.talk(SUCCES_ATTRIBUTE+"Attribut supprimé");
+		this.talk(new Response(true,"Attribut supprimé"));
 		this.setEnableButtonUpdateDeleteUpDown(false);
 	}
 
 
-		/**
-		 * Détermine ce qu'il se passe lors d'une action sur
-		 * le bouton "Modifier l'attribut".
-		 */
-		private void updateAttributeButtonAction()
-		{
-			this.talk("");
-			int rowIndex = this.table.getSelectedRow();
-			String name = (String) this.models.getValueAt(rowIndex, 0);
-			String type = (String) this.models.getValueAt(rowIndex, 1);
-			int size = (int) this.models.getValueAt(rowIndex, 2);
-			boolean notNull = (boolean) this.models.getValueAt(rowIndex, 3);
-			boolean primaryKey = (boolean) this.models.getValueAt(rowIndex, 4);
-					
-			this.setAttributesValues(name,this.getAttributeSizeComboBoxIndex(type),Integer.toString(size),notNull,primaryKey);
-			this.updateState=true;
-			this.disableAllExceptAttribute(false);
-			this.setVisibleUpdateButtons(true);
-		}
+	/**
+	 * Détermine ce qu'il se passe lors d'une action sur
+	 * le bouton "Modifier l'attribut".
+	 */
+	private void updateAttributeButtonAction()
+	{
+		this.talk("");
+		int rowIndex = this.table.getSelectedRow();
+		String name = (String) this.models.getValueAt(rowIndex, 0);
+		String type = (String) this.models.getValueAt(rowIndex, 1);
+		int size = (int) this.models.getValueAt(rowIndex, 2);
+		boolean notNull = (boolean) this.models.getValueAt(rowIndex, 3);
+		boolean primaryKey = (boolean) this.models.getValueAt(rowIndex, 4);
+
+		this.setAttributesValues(name,this.getAttributeSizeComboBoxIndex(type),Integer.toString(size),notNull,primaryKey);
+		this.updateState=true;
+		this.disableAllExceptAttribute(false);
+		this.setVisibleUpdateButtons(true);
+	}
 
 
 	/**
@@ -547,37 +548,36 @@ implements ItemListener
 		String size = this.attributeSizeField.getText();
 
 		if("".equals(name) || "".equals(size)) {
-			this.talk(ERROR_ATTRIBUTE + 
-					"Tous les champs Attributs doivent être renseignés.");
+			this.talk(new Response(false,"Tous les champs Attributs doivent être renseignés."));
 			return false;
 		} 
 		else
 			return true;
 	}
 
-		/**
-		 * Détermine ce qu'il se passe lors d'une action sur
-		 * le bouton "Modifier".
-		 */
-	
-		private void confirmUpdateAttributeButtonAction(){
-			if(isCompleteAttribute()){
-				String name = attributeNameField.getText();
-				String type = (String)attributeTypeComboBox.getSelectedItem();
-				int size = Integer.parseInt(attributeSizeField.getText());
-				boolean notNull = this.notNullCheckBox.isSelected();
-				boolean primaryKey = this.primaryKeyCheckBox.isSelected();
-				I_Attribute attribute = this.control.getAttributeModel(name,type,size,notNull,primaryKey);
-						if(isValidateAttribute(attribute)){
-							this.models.setAttributeValueAt(this.table.getSelectedRow(),attribute);
-							this.talk(SUCCES_ATTRIBUTE+"Attribut Modifé.");
-							this.updateState=false;
-							this.clearAttribute();
-							this.disableAllExceptAttribute(true);
-							this.setVisibleUpdateButtons(false);
-						}
+	/**
+	 * Détermine ce qu'il se passe lors d'une action sur
+	 * le bouton "Modifier".
+	 */
+
+	private void confirmUpdateAttributeButtonAction(){
+		if(isCompleteAttribute()){
+			String name = attributeNameField.getText();
+			String type = (String)attributeTypeComboBox.getSelectedItem();
+			int size = Integer.parseInt(attributeSizeField.getText());
+			boolean notNull = this.notNullCheckBox.isSelected();
+			boolean primaryKey = this.primaryKeyCheckBox.isSelected();
+			I_Attribute attribute = this.control.getAttributeModel(name,type,size,notNull,primaryKey);
+			if(isValidateAttribute(attribute)){
+				this.models.setAttributeValueAt(this.table.getSelectedRow(),attribute);
+				this.talk(new Response(true,"Attribut Modifé."));
+				this.updateState=false;
+				this.clearAttribute();
+				this.disableAllExceptAttribute(true);
+				this.setVisibleUpdateButtons(false);
 			}
 		}
+	}
 
 
 	/**
