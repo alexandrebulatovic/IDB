@@ -43,6 +43,9 @@ public class SQLManager {
 	/** Stocke les méta-données de la dernière requête executée. */
 	private ResultSetMetaData rsmd;
 
+	/** Connexion à la base de données. */
+	private Connection conn;
+
 
 	/* CONSTRUCTEUR */
 
@@ -50,6 +53,7 @@ public class SQLManager {
 	 * @param conn : {@code Connection} à partir duquel initialiser le {@code SQLManager}. */
 	public SQLManager(Connection conn, int statementType)
 	{
+		this.conn = conn;
 		this.initStatement(conn, statementType);
 	}
 
@@ -258,7 +262,7 @@ public class SQLManager {
 
 			rs.insertRow();
 			rs.moveToCurrentRow();
-
+			conn.commit();
 			return "OK";   
 
 		} catch (SQLException exception) {
@@ -277,6 +281,7 @@ public class SQLManager {
 		{
 			rs.absolute(index);
 			rs.deleteRow();
+			conn.commit();
 			return "OK";
 
 		} catch (SQLException exception) {
@@ -295,10 +300,10 @@ public class SQLManager {
 		//correspondance entre la TableModel (index commence à 0) et le ResultSet (index commence à 1..)
 		column++; 
 		index++;
-
+		
 		try {
 			rs.absolute(index);
-
+			// TODO utiliser updateObject
 			if (value instanceof Integer)
 				rs.updateInt(column, (int) value);
 			else if (value instanceof String)
@@ -315,9 +320,9 @@ public class SQLManager {
 				rs.updateLong(column,  (long) value);
 			else if (value instanceof BigDecimal)
 				rs.updateBigDecimal(column, (BigDecimal) value);
-
+			// updateNull ?
 			rs.updateRow();
-
+			conn.commit();
 			return "OK";
 
 		} catch (SQLException exception) {
