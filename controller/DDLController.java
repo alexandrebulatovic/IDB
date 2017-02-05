@@ -181,8 +181,7 @@ public class DDLController
 
 
 	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.facade.getAttributeModel(name,type,parseInt,notNull,primaryKey);
 	}
 
 

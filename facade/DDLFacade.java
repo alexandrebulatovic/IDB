@@ -113,10 +113,15 @@ public class DDLFacade
 	
 	
 	/**
+	 * @param primaryKey 
+	 * @param notNull 
+	 * @param parseInt 
+	 * @param type 
+	 * @param name 
 	 * @return un model d'attribut pour les IHM de DDL.
 	 */
-	public I_Attribute getAttributeModel()
+	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey)
 	{
-		return this.factory.getAttributeModel();
+		return this.factory.getAttributeModel(name,type,parseInt, notNull,primaryKey);
 	}
 }

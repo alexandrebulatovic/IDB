@@ -52,17 +52,17 @@ extends AbstractTableModel {
 		int i = 0;
 		Iterator <I_Attribute> iterator = this.attributes.iterator();
 		I_Attribute result = null; //compilateur chiale
-		
+
 		while (iterator.hasNext() && i <= rowIndex) {
 			result = iterator.next();
 			i++;
 		}
 		return result;
 	}
-			
-			
-			
-			
+
+
+
+
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		I_Attribute a = this.getAttributeAt(rowIndex);
 		switch(columnIndex){
@@ -80,7 +80,7 @@ extends AbstractTableModel {
 			return null; 
 		}
 	}
-	
+
 	public void setAttributeValueAt(int rowIndex, String name, String type, int size, boolean notNull, boolean primaryKey){
 		I_Attribute select = this.getAttributeAt(rowIndex);
 		select.setName(name);
@@ -88,9 +88,9 @@ extends AbstractTableModel {
 		select.setSize(size);
 		select.setNotNull(notNull);
 		select.setPrimaryKey(primaryKey);
-		
+
 	}
-	
+
 	public void setAttributeValueAt(int rowIndex, I_Attribute a){
 		I_Attribute select = this.getAttributeAt(rowIndex);
 		select.setName(a.getName());
@@ -112,7 +112,7 @@ extends AbstractTableModel {
 		}
 		return res;
 	}
-			
+
 
 	/**
 	 * Ajoute un attribut dans la Table et dans l'ArrayList
@@ -121,8 +121,9 @@ extends AbstractTableModel {
 	 */
 	public int addAttribute(I_Attribute attribute) {
 		if(!(isDuplicateAttributeName(attribute))){
-		attributes.add(attribute);
-		return 1;
+			attributes.add(attribute);
+			this.fireTableRowsInserted(0, attributes.size());
+			return 1;
 		}else{
 			return 0;
 		}
@@ -131,11 +132,11 @@ extends AbstractTableModel {
 	 * Supprime tout les attribut de la Table et de l'ArrayList
 	 */
 	public void removeAll(){
-		 for(int i = this.attributes.size() - 1; i >= 0; i--){
-			 removeAttributes(i);
-         }
+		for(int i = this.attributes.size() - 1; i >= 0; i--){
+			removeAttributes(i);
+		}
 	}
-	
+
 	public void changeAttributePosition(String direction, int rowIndex){
 		AbstractAttribute select;
 		AbstractAttribute overSelect;
@@ -143,7 +144,7 @@ extends AbstractTableModel {
 		case "UP" : 
 			changePosition(rowIndex,-1);
 			break;
-			
+
 		case "DOWN" :
 			changePosition(rowIndex,+1);
 			break;
@@ -166,7 +167,7 @@ extends AbstractTableModel {
 		attributes.remove(this.getAttributeAt(rowIndex));
 		fireTableRowsDeleted(rowIndex, rowIndex);
 	}
-	
+
 	/**
 	 * @return ArrayList<Attribute>
 	 */
@@ -185,9 +186,9 @@ extends AbstractTableModel {
 		}
 	}
 
-	
-	
-	
-	
+
+
+
+
 
 }

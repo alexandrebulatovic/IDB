@@ -28,9 +28,8 @@ implements I_DBMSFactory
 
 	
 	@Override
-	public I_Attribute getAttributeModel() 
+	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) 
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
