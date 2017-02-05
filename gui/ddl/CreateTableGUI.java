@@ -402,6 +402,7 @@ implements ItemListener
 		this.downPositionAttributeButton.setEnabled(enable);
 		this.resetButton.setEnabled(enable);
 		this.createTableButton.setEnabled(enable);
+		this.table.setEnabled(enable);
 	}
 
 
