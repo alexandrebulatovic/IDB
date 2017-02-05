@@ -180,14 +180,9 @@ implements ItemListener
 	 * @param attribute : null interdit.
 	 */
 	protected void addAttributeToTable(I_Attribute attribute){
-		if (this.isValidateAttribute(attribute)){
 			this.models.addAttribute(attribute);
 			this.talk(SUCCES_ATTRIBUTE +"Attribut ajouté.");
 			this.clearAttribute();
-		}
-		else{
-			this.talk("Attribut non valide");
-		}
 	}
 	/**
 	 * Instancie, positionne et dimensionne les composants s'occupant
@@ -495,6 +490,7 @@ implements ItemListener
 			boolean notNull = this.notNullCheckBox.isSelected();
 			boolean primaryKey = this.primaryKeyCheckBox.isSelected();
 			I_Attribute attribute = this.control.getAttributeModel(name,type,size,notNull,primaryKey);
+			if(this.isValidateAttribute(attribute))
 				this.addAttributeToTable(attribute);
 		}
 	}
