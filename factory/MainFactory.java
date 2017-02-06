@@ -2,6 +2,7 @@ package factory;
 
 import java.sql.Connection;
 
+import business.TableSet;
 import ddl.I_Attribute;
 import manager.connection.I_ConnectionManager;
 import manager.ddl.I_DDLManager;
@@ -28,13 +29,17 @@ public class MainFactory
 	private I_DBMSFactory factory;
 	
 	
+	private TableSet tableSet;
+	
+	
 	//Constructeur
 	/**
 	 * Constructeur vide.
 	 */
-	public MainFactory(String dbms)
+	public MainFactory(String dbms, TableSet tables)
 	{
 		this.setDBMS(dbms);
+		this.tableSet = tables;
 	}
 	
 	

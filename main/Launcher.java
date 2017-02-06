@@ -1,5 +1,6 @@
 package main;
 
+import business.TableSet;
 import manager.xml.DefaultValueManager;
 import facade.HomeFacade;
 import factory.MainFactory;
@@ -16,7 +17,7 @@ public class Launcher {
 	private MainFactory factory;
 	private HomeController hc;
 	private HomeFacade facade;
-	
+	private TableSet tableSet;
 	
 	protected Launcher()
 	{
@@ -49,7 +50,8 @@ public class Launcher {
 	private void initApplication()
 	{
 		this.dvm = new DefaultValueManager();
-		this.factory = new MainFactory(MainFactory.NULL);
+		this.tableSet = new TableSet();
+		this.factory = new MainFactory(MainFactory.NULL, this.tableSet);
 		this.facade = new HomeFacade(dvm, factory);
 		this.hc = new HomeController(facade);
 	}
