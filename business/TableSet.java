@@ -3,6 +3,8 @@ package business;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Conteneur de tables. */
+
 public class TableSet {
 	
 	public List<Table> tables;

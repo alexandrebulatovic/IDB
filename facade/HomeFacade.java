@@ -2,10 +2,9 @@ package facade;
 
 import java.sql.Connection;
 
-
+import business.TableSet;
 import manager.connection.I_ConnectionManager;
 import manager.xml.DefaultValueManager;
-
 import useful.ConnectionStrings;
 import useful.Response;
 import factory.MainFactory;
@@ -25,6 +24,8 @@ public class HomeFacade
 	/** Gestionnaire de connexion.*/
 	private I_ConnectionManager connector;
 	
+	/** Tables disponibles.*/
+	private TableSet tables;
 	
 	//Constructeurs
 	/**
@@ -32,11 +33,13 @@ public class HomeFacade
 	 * 
 	 * @param dvm : null interdit.
 	 * @param factory : null interdit.
+	 * @param tables : null interdit.
 	 */
-	public HomeFacade(DefaultValueManager dvm, MainFactory factory)
+	public HomeFacade(DefaultValueManager dvm, MainFactory factory, TableSet tables)
 	{
 		this.dvm = dvm;
 		this.factory = factory;
+		this.tables = tables;
 	}
 	
 	

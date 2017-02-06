@@ -8,15 +8,13 @@ import useful.ResponseData;
 import factory.MainFactory;
 import manager.ddl.I_DDLManager;
 
-public class DDLFacade 
+public class DDLFacade extends AbstractBusinessDDLFacade
 {
 	/** Gestionnaire de définition des données.*/
-	private I_DDLManager manager;
 
 	/** Fabrique principale.*/
 	private MainFactory factory;
 
-	private TableSet tables;
 
 	//TODO : attribut pour la classe business
 
@@ -27,11 +25,10 @@ public class DDLFacade
 	 * @param manager : null interdit.
 	 * @param factory : null interdit.
 	 */
-	public DDLFacade(I_DDLManager manager, MainFactory factory)
+	public DDLFacade(I_DDLManager manager, MainFactory factory,TableSet tables)
 	{
-		this.manager = manager;
+		super(tables,manager);
 		this.factory = factory;
-		this.tables = new TableSet();
 	}
 
 
