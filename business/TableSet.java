@@ -54,6 +54,21 @@ public class TableSet {
 	}
 	
 	
+	/**
+	 * Ajoute un attribut dans la table spécifié
+	 * vérifie les contraintes et si la table existe
+	 * ajoute si nécessaire la clé primaire sur l'attribut
+	 * Cette méthode part du principe qu'il ne peu y avoir qu'une clé primaire
+	 * par table (gère automatiquement les groupes de clé primaires pour
+	 * un attribut donné)
+	 * @param tableName
+	 * @param AttributeName
+	 * @param type
+	 * @param size
+	 * @param notNull
+	 * @param primaryKey
+	 * @return
+	 */
 	public boolean addAttributeToTable(String tableName,String AttributeName, String type, int size, boolean notNull,boolean primaryKey){
 		for (Table table:tables){
 			if (table.getName().equals(tableName)){
@@ -77,11 +92,7 @@ public class TableSet {
 		return false;
 	}
 	
-	public boolean addPrimaryKey(String tableName, List<String> AttributeName){
-		
-		
-		return true;
-	}
+
 	
 	public ArrayList<String> getSQLTableToCreate(String tableName){
 		for (Table table:tables){
