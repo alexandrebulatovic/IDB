@@ -187,7 +187,7 @@ public class HomeController
 	 */
 	private void createOrNotCRUDControl()
 	{
-		if (this.crudControl == null) { // TODO : besoin du DDLManager adéquat
+		if (this.crudControl == null) {
 			this.crudControl = new CRUDController(this.facade.getCRUDFacade());
 		}
 	}

@@ -13,6 +13,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import manager.connection.I_ConnectionManager;
 import useful.Response;
 
 /**
