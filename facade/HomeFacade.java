@@ -157,6 +157,8 @@ public class HomeFacade
 	
 	
 	/**
+	 * Pré-requis : doit être appelée après que la connexion soit faite.
+	 * 
 	 * @return une facade pour la définition des données.
 	 */
 	public DDLFacade getDDLFacade()
