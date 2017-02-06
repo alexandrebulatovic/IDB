@@ -10,13 +10,8 @@ import manager.ddl.I_DDLManager;
 
 public class DDLFacade extends AbstractBusinessDDLFacade
 {
-	/** Gestionnaire de définition des données.*/
-
 	/** Fabrique principale.*/
 	private MainFactory factory;
-
-
-	//TODO : attribut pour la classe business
 
 	//Constructeur
 	/**
@@ -68,27 +63,7 @@ public class DDLFacade extends AbstractBusinessDDLFacade
 	{
 		return this.manager.getAttributeTypes();
 	}
-
-
-	/**
-	 * @return une réponse personnalisée contenant le nom des tables
-	 * de la base, si et seulement si ces dernières existent et 
-	 * il n'y a pas eu d'exceptions, une réponse personnalisée vide sinon.
-	 */
-	public ResponseData<String> getTables()
-	{
-		//TODO : If les classes metiers sont vides 
-		ResponseData<String> response = this.manager.getTables();
-		if(response.hasSuccess()){
-			for(String table : response.getCollection()){
-				//TODO : return boolean
-				this.tables.addTable(table);
-			}
-		}
-		return response;
-	}
-
-
+	
 	/**
 	 * @return vrai si et seulement si le SGBD permet de "droper" une 
 	 * table avec l'option "CASCADE"

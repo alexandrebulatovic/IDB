@@ -55,7 +55,6 @@ implements ActionListener
 		super("Suppression de table", null, 400, 250, 30);
 		this.control = control;
 		this.handleComponents();
-		this.fillComboBox();
 		this.enableOrDisableComponent();
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
 	}
@@ -118,10 +117,12 @@ implements ActionListener
 	 */
 	private void fillComboBox()
 	{
+		
 		String msg;
 		ResponseData<String> 
 			response = this.control.getTables();
 		msg = response.getMessage();
+		this.tableComboBox.removeAllItems();
 		if (response.hasSuccess()) {
 			msg += " : " + response.getCollection().size();
 			for (String s : response.getCollection()) {
@@ -188,7 +189,6 @@ implements ActionListener
 	 */
 	private void refreshView()
 	{
-		this.tableComboBox.removeAllItems();
 		this.fillComboBox();
 		this.enableOrDisableComponent();
 	}
