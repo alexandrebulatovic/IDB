@@ -497,6 +497,27 @@ public class Table {
 		return false;
 		
 	}
+	
+	/**
+	 * retourne false en cas d'échec
+	 * @param attributeToDrop
+	 * @return
+	 */
+	public boolean dropAttribute(Attribute attributeToDrop){
+		boolean noError = true;
+		for (Constraint c : attributeToDrop.getConstraints()){
+			noError = c.dropAttribute(attributeToDrop);
+			if (c.getAttributes().size()==0){
+				if (!this.constraints.remove(c)){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
+
 
 
 

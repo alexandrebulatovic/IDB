@@ -162,6 +162,12 @@ public abstract class Constraint
 		result.deleteCharAt(result.length()-1);
 		return result.toString();
 	}
+
+
+	public boolean dropAttribute(Attribute attributeToDrop) {
+		return this.attributes.remove(attributeToDrop);
+		
+	}
 	
 	
 	

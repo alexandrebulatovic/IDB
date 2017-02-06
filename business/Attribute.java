@@ -304,6 +304,10 @@ public class Attribute
 		return null;
 	}
 	
+	public List<Constraint> getConstraints(){
+		return this.constraints;
+	}
+	
 }
 
 

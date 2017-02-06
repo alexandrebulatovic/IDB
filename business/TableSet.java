@@ -67,7 +67,7 @@ public class TableSet {
 	 * @param size
 	 * @param notNull
 	 * @param primaryKey
-	 * @return
+	 * @return boolean
 	 */
 	public boolean addAttributeToTable(String tableName,String AttributeName, String type, int size, boolean notNull,boolean primaryKey){
 		for (Table table:tables){
