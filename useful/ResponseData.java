@@ -10,6 +10,7 @@ import java.util.List;
  * @author romain
  *
  * @param <T> : le type des données à retourner.
+ * @see Response
  */
 public class ResponseData <T>
 extends Response
