@@ -7,7 +7,7 @@ import java.util.List;
 
 public class TableSet {
 	
-	private List<Table> tables;
+	public List<Table> tables;
 	
 	boolean tablesLoaded = false;
 	
@@ -87,7 +87,9 @@ public class TableSet {
 				if (!havePk){
 					PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
 					pk.addAttribute(a);
-					pk.setTable(table);					
+					pk.setTable(table);
+					a.addConstraint(pk);									
+					table.addConstraint(pk);
 				}
 				return table.addAttribute(a);
 			}
