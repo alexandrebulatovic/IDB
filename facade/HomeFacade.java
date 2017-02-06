@@ -168,6 +168,17 @@ public class HomeFacade
 	{
 		return new DDLFacade
 				(this.factory.getDDLManager(this.getConnection()), 
-				 this.factory);
+				 this.factory, this.tables);
+	}
+	
+	
+	/**
+	 * Pré-requis : doit être appelée après que la connexion soit faite.
+	 * 
+	 * @return une facade pour le CRUD des données.
+	 */
+	public CRUDFacade getCRUDFacade()
+	{
+		return new CRUDFacade(this.factory.getDDLManager(this.getConnection()), connector, tables);
 	}
 }

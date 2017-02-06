@@ -8,8 +8,8 @@ public class CRUDFacade extends AbstractBusinessDDLFacade{
 
 	private I_ConnectionManager connector;
 	
-	public CRUDFacade(I_DDLManager manager,TableSet tables,I_ConnectionManager connector) {
-		super(tables,manager);
+	public CRUDFacade(I_DDLManager manager, I_ConnectionManager connector, TableSet tables) {
+		super(manager,tables);
 		this.connector = connector;
 	}
 

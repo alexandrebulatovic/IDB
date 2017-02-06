@@ -17,11 +17,10 @@ public class AbstractBusinessDDLFacade
 	//Constructeur
 	/**
 	 * Constructeur communb.
-	 * 
-	 * @param tables : null interdit.
 	 * @param ddlmanager : null interdit.
+	 * @param tables : null interdit.
 	 */
-	protected AbstractBusinessDDLFacade(TableSet tables, I_DDLManager ddlmanager)
+	protected AbstractBusinessDDLFacade(I_DDLManager ddlmanager, TableSet tables)
 	{
 		this.tables = tables;
 		this.manager = ddlmanager;

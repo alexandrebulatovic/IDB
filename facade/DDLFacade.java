@@ -27,7 +27,7 @@ public class DDLFacade extends AbstractBusinessDDLFacade
 	 */
 	public DDLFacade(I_DDLManager manager, MainFactory factory,TableSet tables)
 	{
-		super(tables,manager);
+		super(manager,tables);
 		this.factory = factory;
 	}
 

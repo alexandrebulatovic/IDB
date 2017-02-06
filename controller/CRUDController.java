@@ -1,14 +1,15 @@
 package controller;
 
+import facade.CRUDFacade;
 import gui.CRUDGUI;
 
 import java.sql.Connection;
 import java.util.Vector;
+
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-
 
 import manager.ddl.I_DDLManager;
 import manager.ddl.OracleDDLManager;
@@ -26,16 +27,31 @@ public class CRUDController
 
 	private SQLManager sql_manager;
 
-
-
-	/* METHODES */
-
+	/** Facade pour le CRUD des données.*/
+	private CRUDFacade facade;
+	
+	
+	//Constructeurs
+	//TODO : à supprimer.
 	public CRUDController(Connection connection) 
 	{
 		this.ddl_manager = new OracleDDLManager(connection);
 		this.sql_manager = new SQLManager(connection, SQLManager.TYPE_UPDATABLE_RESULTSET);
 	}
 
+	
+	/**
+	 * Constructeur commun.
+	 * 
+	 * @param facade : null interdit.
+	 */
+	public CRUDController(CRUDFacade facade)
+	{
+		this.facade = facade;
+	}
+	
+	
+	/* METHODES */
 	/**
 	 * Retourne une réponse personnalisée contenant le nom des tables
 	 * de la base, si et seulement si (ces dernières existent et 
