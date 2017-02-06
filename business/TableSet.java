@@ -27,13 +27,13 @@ public class TableSet {
 	 * @param cascadeConstraint
 	 * @return
 	 */
-	public boolean addTable(String tableName,boolean cascadeConstraint){
+	public boolean addTable(String tableName){
 		for (Table table:tables){
 			if (table.getName().equals(tableName)){
 				return false;
 			}
 		}
-		return this.tables.add(new Table(tableName,cascadeConstraint));
+		return this.tables.add(new Table(tableName,false));
 	}
 	
 	
