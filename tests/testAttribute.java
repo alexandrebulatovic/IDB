@@ -30,8 +30,8 @@ public class testAttribute {
 //		nn1 = new NotNullConstraint();
 		fk1 = new ForeignKeyConstraint();
 		
-		tableBidon = new Table("tableBidon", false);
-		tableBidon2 = new Table("tableBidon2", false);
+		tableBidon = new Table("tableBidon");
+		tableBidon2 = new Table("tableBidon2");
 		
 		constraints.add(un1);
 		constraints.add(pk1);

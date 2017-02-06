@@ -33,7 +33,7 @@ public class TableSet {
 				return false;
 			}
 		}
-		return this.tables.add(new Table(tableName,false));
+		return this.tables.add(new Table(tableName));
 	}
 	
 	

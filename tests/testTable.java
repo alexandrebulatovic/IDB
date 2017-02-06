@@ -33,8 +33,8 @@ public class testTable {
 		constraints = new ArrayList<Constraint>();
 		constraints2 = new ArrayList<Constraint>();
 		
-		table = new Table("PROFILS", false);
-		tableRecupere = new Table("PROFILS",false);
+		table = new Table("PROFILS");
+		tableRecupere = new Table("PROFILS");
 		
 		
 			att0 = new Attribute("id","NUMBER",10);

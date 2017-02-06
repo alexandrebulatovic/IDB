@@ -18,12 +18,6 @@ public class Table {
 	
 	private ArrayList<Constraint> constraints;
 	
-	/**
-	 * Vrai si et seulement si la table doit être supprimée
-	 * en cascade, faux sinon.
-	 */
-	private boolean cascade;
-
 	
 
 	//Constructeurs
@@ -60,13 +54,11 @@ public class Table {
 	 * l'option CASCADE CONSTRAINT dans le SGBD.
 	 * 
 	 * @param name : le nom de la table.
-	 * @param cascade : un ensemble d'attributs, peut être vide.
 	 */
-	public Table(String name, boolean cascade)
+	public Table(String name)
 	{
 		this();
 		this.name = name;
-		this.cascade = cascade;
 	}
 	
 	/**
@@ -102,7 +94,6 @@ public class Table {
 	{
 		StringBuilder result = new StringBuilder();
 		result.append(this.name + ":\n");
-		result.append(this.cascade ? "cascade constraint\n" : "");
 		for (Attribute a : this.attributes) {
 			result.append(a.toString());
 			result.append('\n');
@@ -382,8 +373,7 @@ public class Table {
 	 */
 	public String toDrop()
 	{
-		return "DROP TABLE " + this.name + 
-				(this.cascade ? " CASCADE CONSTRAINTS" : "");
+		return "DROP TABLE " + this.name;
 	}
 	
 	
