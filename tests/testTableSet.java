@@ -51,16 +51,18 @@ public class testTableSet {
 		
 		sqlAttendu = "CREATE TABLE table1\n"
 				+ "(\n"
-				+ "att1 VARCHAR2 (20)\n"
+				+ "att1 VARCHAR2 (20),\n"
+				+ "att2 VARCHAR23 (44),\n"
+				+ "att3 VARCHAR2 (22)\n"
 				+ ");\n"
 				+ "ALTER TABLE table1\n"
-				+ "ADD CONSTRAINT pk_table1_att1 PRIMARY KEY(att1);\n";
+				+ "ADD CONSTRAINT pk_table1_att1_att2 PRIMARY KEY(att1,att2);\n";
 		
 		sqlTotal = "";
 		for (String sql : ensembleTable.getSQLTableToCreate("table1")){
 			sqlTotal+=sql+";\n";
 		}
-		System.out.println(sqlTotal);
+		assertEquals(sqlAttendu,sqlTotal);
 		
 		
 	}
