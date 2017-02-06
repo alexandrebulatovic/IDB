@@ -8,9 +8,12 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+
+import useful.Response;
 
 /**
  * Gère la communication avec le serveur à partir de la requête entrée dans la {@code SQLView}.
@@ -80,7 +83,7 @@ public class SQLManager {
 
 
 		} catch (SQLException exception) {	
-			System.out.println(errorHandling(exception));
+			System.out.println(errorHandler(exception));
 		}
 	}
 
@@ -96,7 +99,10 @@ public class SQLManager {
 
 			if (is_resultset) { // SELECT
 
-				return buildJTable();
+				this.rs = stat.getResultSet();
+				this.rsmd = this.rs.getMetaData();
+
+				return buildJTable(this.rs, this.rsmd);
 
 			} else { //  INSERT, UPDATE, DELETE ou LDD
 
@@ -105,7 +111,7 @@ public class SQLManager {
 			}
 
 		}catch (SQLException exception) {	
-			return errorHandling(exception);
+			return errorHandler(exception);
 		}
 		catch (Exception exception) {
 			exception.printStackTrace();	
@@ -124,10 +130,10 @@ public class SQLManager {
 	/** Créé la réponse de la requête à partir de sa syntaxe et du résultat de la base de données.
 	 * @param qry : la requête envoyée au serveur. 
 	 * @return un {@code String} de la réponse à afficher qui peut éventuellement être une erreur. */
-	private String buildReply(String qry)
+	private Response buildReply(String qry)
 	{
-		String str = "Aucune ligne retournée.";
-
+		String str = null;
+		
 		try {
 			if (qry.contains("INSERT")){
 				str = stat.getUpdateCount()+ " ligne ajoutée.";
@@ -139,21 +145,24 @@ public class SQLManager {
 				str = "Table créée.";
 			} else if (qry.contains("DROP")) {
 				str = "Table supprimée.";
+			} else {
+				str = "Aucune ligne retournée.";
 			}
 
 		} catch (SQLException exception) {	
-			return errorHandling(exception);
+//			return errorHandler(exception);
+			return null;
 		} catch (Exception exception) {
 			exception.printStackTrace();	
 		}
 
-		return str;
+		return new Response(true, str);
 	}
 
 	/** Crée un message d'erreur à partir d'une {@code SQLException}.
 	 * @param exception : objet {@code SQLException} caractérisant l'erreur rencontrée. 
 	 * @return un {@code String} expliquant l'erreur. */
-	public static String errorHandling(SQLException exception) 
+	public static String errorHandler(SQLException exception) 
 	{
 		String str;
 
@@ -171,15 +180,14 @@ public class SQLManager {
 	 * @param rs : {@code ResultSet} à partir duquel générer la représentation.
 	 * @return un {@code JTable} qui représente la table.
 	 */
-	private JTable buildJTable() 
+	public static JTable buildJTable(ResultSet rs, ResultSetMetaData rsmd) 
 	{
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		Vector<String> columnNames = new Vector<String>();
 
 		try {
-			this.rs = stat.getResultSet();
-			this.rsmd = rs.getMetaData();
+
 
 			int size = rsmd.getColumnCount();
 
@@ -197,7 +205,7 @@ public class SQLManager {
 			}
 
 		} catch (SQLException exception) {
-			System.out.println(errorHandling(exception));
+			System.out.println(errorHandler(exception));
 		}
 
 		return new JTable(new DefaultTableModel(data, columnNames)){
@@ -242,9 +250,9 @@ public class SQLManager {
 				case "java.sql.Date": // DATE
 					rs.updateDate(columnPosition, (Date) vector.get(i));
 					break;
-					/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
+				case "java.math.BigDecimal": // NUMERIC, DECIMAL
 					rs.updateBigDecimal(columnPosition, (BigDecimal) vector.get(i));
-					break;*/
+					break;
 				case "java.lang.Boolean": // BIT
 					rs.updateBoolean(columnPosition, (boolean) vector.get(i));
 					break;
@@ -266,7 +274,7 @@ public class SQLManager {
 			return "OK";   
 
 		} catch (SQLException exception) {
-			return errorHandling(exception);
+			return errorHandler(exception);
 		}
 	}
 
@@ -285,7 +293,7 @@ public class SQLManager {
 			return "OK";
 
 		} catch (SQLException exception) {
-			return this.errorHandling(exception);
+			return this.errorHandler(exception);
 		}
 	}
 
@@ -300,7 +308,7 @@ public class SQLManager {
 		//correspondance entre la TableModel (index commence à 0) et le ResultSet (index commence à 1..)
 		column++; 
 		index++;
-		
+
 		try {
 			rs.absolute(index);
 			// TODO utiliser updateObject
@@ -326,7 +334,7 @@ public class SQLManager {
 			return "OK";
 
 		} catch (SQLException exception) {
-			return SQLManager.errorHandling(exception);
+			return SQLManager.errorHandler(exception);
 		}
 	}
 }

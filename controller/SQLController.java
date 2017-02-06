@@ -3,8 +3,10 @@ package controller;
 import gui.SQLGUI;
 
 import java.sql.Connection;
+
 import javax.swing.JTable;
 
+import useful.Response;
 import manager.sql.SQLManager;
 
 /** Effectue la communication entre la {@code SQLView} et le {@code SQLController}.
@@ -58,8 +60,8 @@ public class SQLController {
 	 * @param reply : la réponse du serveur, un {@code String} ou un {@code JTable}. */
 	private void transmitReply(Object reply) 
 	{
-		if (reply instanceof String)
-			this.sql_view.showReply((String) reply);
+		if (reply instanceof Response)
+			this.sql_view.showReply(((Response) reply).getMessage());
 
 		else if (reply instanceof JTable)
 			this.sql_view.showTable((JTable) reply);

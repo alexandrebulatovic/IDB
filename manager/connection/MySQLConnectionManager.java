@@ -23,7 +23,7 @@ extends AbstractConnectionManager
 
 	//Protected
 	@Override
-	protected String errorMessage(SQLException e)
+	public String errorMessage(SQLException e)
 	{
 		switch (e.getErrorCode()) {
 		case 0 		: return "adresse IP ou port incorrect.";

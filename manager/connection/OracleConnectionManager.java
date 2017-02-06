@@ -24,10 +24,13 @@ extends AbstractConnectionManager
 	
 	//Protected
 	@Override
-	protected String errorMessage(SQLException e)
+	public String errorMessage(SQLException e)
 	{
 		switch (e.getErrorCode()) {
 		case 0 		: return "nom de base de données incorrect.";
+		case 900	: return "Veuillez saisir la requête correctement !";
+		case 942	: return "Cette table ou cette vue n'existe pas.";
+		case 955	: return "Ce nom est déjà pris.";
 		case 1017 	: return "utilisateur ou mot de passe incorrect.";
 		case 17002	: return "adresse IP ou port incorrect.";
 		case 17443 	: return "mot de passe nécessaire.";
