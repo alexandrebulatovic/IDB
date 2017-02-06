@@ -42,7 +42,7 @@ public class AbstractDDLCRUDFacade
 		else {
 			response = this.manager.getTables();
 			tables.loadTables(response.getCollection());
-			System.out.println("Oracle");
+			System.out.println("SGBD");
 		}
 		return response;
 	}

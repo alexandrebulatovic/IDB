@@ -14,6 +14,7 @@ extends AbstractDDLCRUDFacade
 	/** Fabrique principale.*/
 	private MainFactory factory;
 
+	
 	//Constructeur
 	/**
 	 * Constructeur commun.
@@ -29,8 +30,6 @@ extends AbstractDDLCRUDFacade
 
 
 	//Méthodes
-	//TODO : setBusiness()
-
 	/**
 	 * Tente de créer $table dans la base de données.
 	 * 
