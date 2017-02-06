@@ -37,7 +37,7 @@ public class TableSet {
 	}
 	
 	
-	public boolean addAttributeToTable(String tableName,String AttributeName, String type, int size, boolean notNull){
+	public boolean addAttributeToTable(String tableName,String AttributeName, String type, int size, boolean notNull,boolean primaryKey){
 		for (Table table:tables){
 			if (table.getName().equals(tableName)){
 				Attribute a = new Attribute(AttributeName, type, size, null, tableName, notNull);
@@ -47,11 +47,20 @@ public class TableSet {
 		return false;
 	}
 	
-//	public boolean addConstraintToAttributeToTable(String tableName, String AttributeName){
-//		
-//		
-//		return false;
-//	}
+	public boolean addPrimaryKey(String tableName, List<String> AttributeName){
+		
+		
+		return true;
+	}
+	
+	public ArrayList<String> getSQLTableToCreate(String tableName){
+		for (Table table:tables){
+			if (table.getName().equals(tableName)){
+				return table.toCreate();
+			}
+		}
+		return null;
+	}
 	
 	
 }
