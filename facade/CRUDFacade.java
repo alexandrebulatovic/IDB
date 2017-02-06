@@ -1,12 +1,17 @@
 package facade;
 
+import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
 
+import useful.Response;
 import useful.ResponseData;
 import business.TableSet;
+import manager.connection.AbstractConnectionManager;
 import manager.connection.I_ConnectionManager;
+import manager.connection.MySQLConnectionManager;
+import manager.ddl.AbstractDLLManager;
 import manager.ddl.I_DDLManager;
 import manager.sql.SQLManager;
 
@@ -61,4 +66,15 @@ public class CRUDFacade extends AbstractBusinessDDLFacade{
 	public String addTuple(Vector<Object> row_to_add) {
 		return (this.sql_manager.addTuple(row_to_add));
 	}
+
+	/**
+	 * Génère un objet {@code Response} à partir d'une exception de type {@code SQLException}.
+	 * @param exception {@code SQLException} de la base de données.
+	 * @return un objet {@code Response} décrivant l'erreur.
+	 */
+	public Response errorHandler(SQLException exception) 
+	{ // TODO: remonter la methode errorMessage dans l'interface
+		return new Response(false, ((AbstractConnectionManager)connector).errorMessage(exception));
+	}
+
 }
