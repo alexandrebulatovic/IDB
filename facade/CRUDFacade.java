@@ -15,7 +15,9 @@ import manager.ddl.AbstractDLLManager;
 import manager.ddl.I_DDLManager;
 import manager.sql.SQLManager;
 
-public class CRUDFacade extends AbstractBusinessDDLFacade{
+public class CRUDFacade 
+extends AbstractDDLCRUDFacade
+{
 
 	private I_ConnectionManager connector;
 

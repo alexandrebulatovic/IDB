@@ -2,7 +2,7 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import gui.ddl.ModifyTableGUI;
+import gui.ddl.AlterTableGUI;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -129,6 +129,20 @@ implements I_DDLManager
 	}
 	
 	
+//	@Override
+//	public Response dropTable(String table, boolean cascade, boolean chain)
+//	{
+//		if (chain) {
+//			Response domino;
+//			domino = this.dropTableRecursive(table);
+//			if (! domino.hasSuccess()) {
+//				return domino;
+//			}
+//		}
+//		return this.dbmsDropTable(table, cascade);
+//	}
+	
+	
 	@Override
 	public void closeStatement()
 	{

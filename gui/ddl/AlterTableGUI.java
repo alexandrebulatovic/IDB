@@ -4,15 +4,13 @@ import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 
 import controller.DDLController;
 
-import business.Table;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
-public class ModifyTableGUI 
+public class AlterTableGUI 
 extends CreateTableGUI 
 {
 	//Attributs
@@ -26,11 +24,11 @@ extends CreateTableGUI
 	 * 
 	 * @param control : null interdit.
 	 */
-	public ModifyTableGUI(DDLController control) 
+	public AlterTableGUI(DDLController control) 
 	{
 		super(control);
 		this.changeComponents();
-		this.synchronizeTablesComboBox();
+		//Evènement de focus met à jour la liste déroulante.
 	}
 	
 	

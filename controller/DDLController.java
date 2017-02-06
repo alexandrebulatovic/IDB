@@ -3,7 +3,7 @@ package controller;
 import facade.DDLFacade;
 import gui.ddl.CreateTableGUI;
 import gui.ddl.DropTableGUI;
-import gui.ddl.ModifyTableGUI;
+import gui.ddl.AlterTableGUI;
 
 import javax.swing.JFrame;
 
@@ -27,7 +27,7 @@ public class DDLController
 	private CreateTableGUI createGUI;
 
 	/**IHM pour modifier une table et ses attributs.*/
-	private ModifyTableGUI modifyGUI;
+	private AlterTableGUI modifyGUI;
 
 	/** IHM pour supprimer une table.*/
 	private DropTableGUI dropGUI;
@@ -64,7 +64,7 @@ public class DDLController
 
 	public void openModifyGUI() {
 		if (this.modifyGUI == null){
-			this.modifyGUI = new ModifyTableGUI(this);
+			this.modifyGUI = new AlterTableGUI(this);
 		}
 		else{
 			showGUI(this.modifyGUI);

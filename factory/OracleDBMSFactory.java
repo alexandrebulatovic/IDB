@@ -3,7 +3,6 @@ package factory;
 import java.sql.Connection;
 
 import ddl.I_Attribute;
-import ddl.MySQLAttribute;
 import ddl.OracleAttribute;
 import manager.connection.I_ConnectionManager;
 
