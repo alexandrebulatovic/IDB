@@ -140,6 +140,8 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 			{
 				this.showError(reply);
 				this.tableModel.removeRow(new_row_index); // on enlève de la JTable le tuple qui a échoué
+			} else {
+				this.requestTable(table_name);
 			}
 
 			this.INSERTING = false;

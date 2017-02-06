@@ -1,20 +1,13 @@
 package tests;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
-
+import static org.junit.Assert.*;
 import manager.sql.SQLManager;
 
+import org.junit.Test;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({SQLManager.class})
+
 public class SQLManagerTest {
-	
+
 	SQLManager sqlManager = new SQLManager(null, -1);
 
 	@Test

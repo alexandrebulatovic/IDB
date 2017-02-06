@@ -183,7 +183,7 @@ implements I_ConnectionManager
 	 * @return Un message d'erreur plus lisible 
 	 * que celui retourné par le SGBD après une tentative de connexion.
 	 */
-	protected abstract String errorMessage(SQLException e);
+	public abstract String errorMessage(SQLException e);
 	
 	
 	/**
