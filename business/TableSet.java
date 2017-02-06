@@ -21,21 +21,37 @@ public class TableSet {
 	}
 	
 	
+	/**
+	 * retourne false en cas d'échec
+	 * @param tableName
+	 * @param cascadeConstraint
+	 * @return
+	 */
 	public boolean addTable(String tableName,boolean cascadeConstraint){
-		//TODO verifier que c'est possible et l'ajoute
-		return false;
+		for (Table table:tables){
+			if (table.getName().equals(tableName)){
+				return false;
+			}
+		}
+		return this.tables.add(new Table(tableName,cascadeConstraint));
 	}
+	
 	
 	public boolean addAttributeToTable(String tableName,String AttributeName, String type, int size, boolean notNull){
-		//TODO ++ vérifications
+		for (Table table:tables){
+			if (table.getName().equals(tableName)){
+				Attribute a = new Attribute(AttributeName, type, size, null, tableName, notNull);
+				return table.addAttribute(a);
+			}
+		}
 		return false;
 	}
 	
-	public boolean addConstraintToAttributeToTable(String tableName, String AttributeName){
-		
-		
-		return false;
-	}
+//	public boolean addConstraintToAttributeToTable(String tableName, String AttributeName){
+//		
+//		
+//		return false;
+//	}
 	
 	
 }
