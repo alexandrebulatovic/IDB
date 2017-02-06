@@ -8,7 +8,8 @@ import useful.ResponseData;
 import factory.MainFactory;
 import manager.ddl.I_DDLManager;
 
-public class DDLFacade extends AbstractBusinessDDLFacade
+public class DDLFacade 
+extends AbstractDDLCRUDFacade
 {
 	/** Fabrique principale.*/
 	private MainFactory factory;
