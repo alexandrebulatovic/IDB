@@ -14,6 +14,9 @@ public class TableSet {
 		tables = new ArrayList<Table>();
 	}
 	
+	public boolean isLoaded(){
+		return this.tablesLoaded;
+	}
 	
 	public List<String> getTablesNames(){
 		List<String> retour = new ArrayList<String>();
@@ -29,13 +32,11 @@ public class TableSet {
 	 * @param tablesNames
 	 * @return
 	 */
-	public boolean loadTables(List<String>tablesNames){
+	public void loadTables(List<String>tablesNames){
 		this.tablesLoaded = true;
-		boolean noError = true;
 		for (String tableName : tablesNames){
-			noError =  noError && this.tables.add(new Table(tableName));
+			this.tables.add(new Table(tableName));
 		}
-		return !noError;
 	}
 	
 	/**

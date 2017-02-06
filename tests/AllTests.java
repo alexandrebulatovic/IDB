@@ -6,7 +6,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ testAttribute.class,
 				testConstraints.class,
-				testTable.class
+				testTable.class,
+				testTableSet.class
         })
 public class AllTests {
 
