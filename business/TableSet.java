@@ -65,36 +65,45 @@ public class TableSet {
 	 * par table (gère automatiquement les groupes de clé primaires pour
 	 * un attribut donné)
 	 * @param tableName
-	 * @param AttributeName
+	 * @param attributeName
 	 * @param type
 	 * @param size
 	 * @param notNull
 	 * @param primaryKey
 	 * @return boolean
 	 */
-	public boolean addAttributeToTable(String tableName,String AttributeName, String type, int size, boolean notNull,boolean primaryKey){
+	public boolean addAttributeToTable(String tableName,String attributeName, String type, int size, boolean notNull,boolean primaryKey){
 		for (Table table:tables){
-			if (table.getName().equals(tableName)){
-				Attribute a = new Attribute(AttributeName, type, size, null, tableName, notNull);
-				boolean havePk = false;
-				for (Attribute attributeActual : table.getAttributes()){
-					if (attributeActual.isPk()){
-						havePk = true;
-						PrimaryKeyConstraint pk = attributeActual.getPk();
-						pk.addAttribute(a);
-					}
+			if (table.getName().equals(tableName) && !table.containsAttributeName(attributeName)){
+				Attribute newAttribute = new Attribute(attributeName, type, size, null, tableName, notNull);
+				
+				if (primaryKey){
+					ajouterPrimaryKey(table, newAttribute);
 				}
-				if (!havePk){
-					PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
-					pk.addAttribute(a);
-					pk.setTable(table);
-					a.addConstraint(pk);									
-					table.addConstraint(pk);
-				}
-				return table.addAttribute(a);
+				
+				
+				return table.addAttribute(newAttribute);
 			}
 		}
 		return false;
+	}
+
+	private void ajouterPrimaryKey(Table table, Attribute a) {
+		boolean havePk = false;
+		for (Attribute attributeActual : table.getAttributes()){
+			if (attributeActual.isPk()){
+				havePk = true;
+				PrimaryKeyConstraint pk = attributeActual.getPk();
+				pk.addAttribute(a);
+			}
+		}
+		if (!havePk){
+			PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
+			pk.addAttribute(a);
+			pk.setTable(table);
+			a.addConstraint(pk);									
+			table.addConstraint(pk);
+		}
 	}
 	
 
