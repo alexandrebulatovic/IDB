@@ -199,6 +199,20 @@ public class Table {
 		return result.toString();
 	}
 
+	/**
+	 * Recherche un attribut d'après son nom et retourne 
+	 * true s'il existe
+	 * @param attributeName
+	 * @return
+	 */
+	public boolean containsAttributeName(String attributeName){
+		for (Attribute att : this.attributes){
+			if (att.name.equals(attributeName)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 
 	/**

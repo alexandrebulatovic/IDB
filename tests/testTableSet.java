@@ -43,6 +43,28 @@ public class testTableSet {
 		}
 		assertEquals (sqlAttendu, sqlTotal);
 		
+		ensembleTable.addAttributeToTable("table1", "att2", "VARCHAR23", 44, false, true);
+		ensembleTable.addAttributeToTable("table1", "att3", "VARCHAR2", 22, false, false);
+		
+		assertEquals("L'attribut ne doit pas pouvoir être créé en double",false,ensembleTable.addAttributeToTable("table1", "att2", "VARCHAR2", 22, false, false));
+		
+		
+		sqlAttendu = "CREATE TABLE table1\n"
+				+ "(\n"
+				+ "att1 VARCHAR2 (20),\n"
+				+ "att2 VARCHAR23 (44),\n"
+				+ "att3 VARCHAR2 (22)\n"
+				+ ");\n"
+				+ "ALTER TABLE table1\n"
+				+ "ADD CONSTRAINT pk_table1_att1_att2 PRIMARY KEY(att1,att2);\n";
+		
+		sqlTotal = "";
+		for (String sql : ensembleTable.getSQLTableToCreate("table1")){
+			sqlTotal+=sql+";\n";
+		}
+		assertEquals(sqlAttendu,sqlTotal);
+		
+		
 	}
 
 }
