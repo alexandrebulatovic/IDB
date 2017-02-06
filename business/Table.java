@@ -83,6 +83,10 @@ public class Table {
 		return this.name;
 	}
 	
+	public ArrayList<Constraint> getConstraints(){
+		return this.constraints;
+	}
+	
 	
 	public void setConstraints(ArrayList<Constraint> constraints){
 		this.constraints = constraints;
@@ -138,7 +142,7 @@ public class Table {
 		}
 		sqls.add(sql+"\n)");
 		
-		for (Constraint constraint : constraints){
+		for (Constraint constraint : constraints){			
 			sqls.add(constraint.toAddConstraintSQL());
 		}
 		return sqls;
@@ -467,6 +471,16 @@ public class Table {
 		for (Attribute a : attributes) {
 			this.attributes.add(new Attribute(a));
 		}
+	}
+
+
+
+	public boolean addConstraint(PrimaryKeyConstraint pk) {
+		if (!this.constraints.contains(pk)){
+			return this.constraints.add(pk);
+		}
+		return false;
+		
 	}
 
 

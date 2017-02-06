@@ -7,6 +7,9 @@ import java.util.List;
 
 import org.junit.*;
 
+import business.Attribute;
+import business.Constraint;
+import business.Table;
 import business.TableSet;
 
 public class testTableSet {
@@ -28,7 +31,18 @@ public class testTableSet {
 		
 		ensembleTable.loadTables(tablesNames);
 		ensembleTable.addAttributeToTable("table1", "att1", "VARCHAR2", 20, false, true);
-		System.out.println(ensembleTable.getSQLTableToCreate("table1"));
+		String sqlAttendu = "CREATE TABLE table1\n"
+				+ "(\n"
+				+ "att1 VARCHAR2 (20)\n"
+				+ ");\n"
+				+ "ALTER TABLE table1\n"
+				+ "ADD CONSTRAINT pk_table1_att1 PRIMARY KEY(att1);\n";
+		String sqlTotal = "";
+		for (String sql : ensembleTable.getSQLTableToCreate("table1")){
+			sqlTotal+=sql+";\n";
+		}
+		assertEquals (sqlAttendu, sqlTotal);
+		
 	}
 
 }

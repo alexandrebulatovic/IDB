@@ -41,7 +41,12 @@ public class Attribute
 
 		this.notNull = isNotNull;
 		
-		this.constraints = constraints;
+		if (constraints == null)
+			this.constraints = new ArrayList<Constraint>();
+		else
+			this.constraints = constraints;	
+		
+		
 		this.tableName = tableName;
 	}
 	
@@ -165,8 +170,9 @@ public class Attribute
 	 * et retourne true si elle à bien été ajouté
 	 * @param constraint
 	 */
-	public boolean addConstraint(Constraint constraint){
+	public boolean addConstraint(Constraint constraint){		
 		if (!this.constraints.contains(constraint)){
+			
 			return this.constraints.add(constraint);
 		}
 		return false;
