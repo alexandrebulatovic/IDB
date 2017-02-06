@@ -3,17 +3,11 @@ package controller;
 import facade.CRUDFacade;
 import gui.CRUDGUI;
 
-import java.sql.Connection;
 import java.util.Vector;
 
 import javax.swing.JFrame;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
-import manager.ddl.I_DDLManager;
-import manager.ddl.OracleDDLManager;
-import manager.sql.SQLManager;
 import useful.ResponseData;
 
 public class CRUDController 
@@ -23,23 +17,9 @@ public class CRUDController
 	/** IHM du CRUD.*/
 	private CRUDGUI crud_view;
 
-	private I_DDLManager ddl_manager;
-
-	private SQLManager sql_manager;
-
 	/** Facade pour le CRUD des données.*/
 	private CRUDFacade facade;
-	
-	
-	//Constructeurs
-	//TODO : à supprimer.
-	public CRUDController(Connection connection) 
-	{
-		this.ddl_manager = new OracleDDLManager(connection);
-		this.sql_manager = new SQLManager(connection, SQLManager.TYPE_UPDATABLE_RESULTSET);
-	}
 
-	
 	/**
 	 * Constructeur commun.
 	 * 
@@ -49,21 +29,9 @@ public class CRUDController
 	{
 		this.facade = facade;
 	}
-	
-	
-	/* METHODES */
-	/**
-	 * Retourne une réponse personnalisée contenant le nom des tables
-	 * de la base, si et seulement si (ces dernières existent et 
-	 * il n'y a pas eu d'exceptions).
-	 * 
-	 * @return CustomizedResponseWithData
-	 */
-	public ResponseData<String> getTables()
-	{
-		return this.ddl_manager.getTables();
-	}
 
+
+	/* METHODES */
 	/**
 	 * Ouvre l'IHM de CRUD si et seulement si 
 	 * elle n'existe pas, sinon tente de l'afficher au premier plan.
@@ -89,6 +57,18 @@ public class CRUDController
 	}
 
 	/**
+	 * Retourne une réponse personnalisée contenant le nom des tables
+	 * de la base, si et seulement si (ces dernières existent et 
+	 * il n'y a pas eu d'exceptions).
+	 * 
+	 * @return CustomizedResponseWithData
+	 */
+	public ResponseData<String> getTables()
+	{
+		return this.facade.getTables();
+	}
+
+	/**
 	 * Demande au {@code SQLManager} un modèle de {@code JTable} avec les données correspondant 
 	 * au nom de la table demandée.
 	 * @param tableName : nom de la table demandée.
@@ -96,7 +76,7 @@ public class CRUDController
 	 */
 	public DefaultTableModel requestTable(String tableName) 
 	{
-		return this.sql_manager.requestTableModel(tableName);
+		return this.facade.requestTable(tableName);
 	}
 
 	/**
@@ -105,7 +85,7 @@ public class CRUDController
 	 * @return "OK" si la suppression a réussie, un message d'erreur sinon.
 	 */
 	public String deleteRow(int index) {
-		return (this.sql_manager.removeTuple(index));
+		return (this.facade.deleteRow(index));
 	}
 
 	/**
@@ -119,7 +99,7 @@ public class CRUDController
 		Vector dataVector = this.crud_view.getTableModel().getDataVector();
 		Vector<Object> row_to_add =  (Vector<Object>) dataVector.elementAt(index); // on récupere la ligne concernée
 
-		return (this.sql_manager.addTuple(row_to_add));
+		return (this.facade.addTuple(row_to_add));
 	}
 
 	/** Met à jour une valeur d'un tuple dans la base de données.
@@ -130,6 +110,6 @@ public class CRUDController
 	 */
 	public String updateRow(int index, int column, Object updateBuffer)
 	{
-		return this.sql_manager.updateTuple(index, column, updateBuffer);
+		return this.facade.updateRow(index, column, updateBuffer);
 	}
 }

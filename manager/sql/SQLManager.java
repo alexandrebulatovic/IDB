@@ -250,9 +250,9 @@ public class SQLManager {
 				case "java.sql.Date": // DATE
 					rs.updateDate(columnPosition, (Date) vector.get(i));
 					break;
-				case "java.math.BigDecimal": // NUMERIC, DECIMAL
+				/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
 					rs.updateBigDecimal(columnPosition, (BigDecimal) vector.get(i));
-					break;
+					break;*/
 				case "java.lang.Boolean": // BIT
 					rs.updateBoolean(columnPosition, (boolean) vector.get(i));
 					break;
