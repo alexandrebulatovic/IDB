@@ -4,7 +4,7 @@ import useful.ResponseData;
 import manager.ddl.I_DDLManager;
 import business.TableSet;
 
-public class AbstractBusinessDDLFacade 
+public class AbstractDDLCRUDFacade 
 {
 	//Attributs
 	/** Tables disponibles.*/
@@ -20,7 +20,7 @@ public class AbstractBusinessDDLFacade
 	 * @param ddlmanager : null interdit.
 	 * @param tables : null interdit.
 	 */
-	protected AbstractBusinessDDLFacade(I_DDLManager ddlmanager, TableSet tables)
+	protected AbstractDDLCRUDFacade(I_DDLManager ddlmanager, TableSet tables)
 	{
 		this.tables = tables;
 		this.manager = ddlmanager;
