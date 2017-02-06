@@ -8,10 +8,10 @@ public class AbstractBusinessDDLFacade
 {
 	//Attributs
 	/** Tables disponibles.*/
-	private TableSet tables;
+	protected TableSet tables;
 
 	/** Gestionnaire de définition des données.*/
-	private I_DDLManager manager;
+	protected I_DDLManager manager;
 
 
 	//Constructeur
