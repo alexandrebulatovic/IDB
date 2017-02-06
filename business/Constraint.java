@@ -88,7 +88,8 @@ public abstract class Constraint
 	 */
 	public void setTable(Table table) {
 		this.table = table;
-		}
+		this.createAndSetName();
+	}
 
 	/**
 	 * @return la liste des attributs visés par la contrainte.
@@ -107,6 +108,7 @@ public abstract class Constraint
 	public void addAttribute(Attribute att)
 	{
 		this.attributes.add(att);
+		this.createAndSetName();
 	}
 	
 	/**

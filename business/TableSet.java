@@ -41,6 +41,19 @@ public class TableSet {
 		for (Table table:tables){
 			if (table.getName().equals(tableName)){
 				Attribute a = new Attribute(AttributeName, type, size, null, tableName, notNull);
+				boolean havePk = false;
+				for (Attribute attributeActual : table.getAttributes()){
+					if (attributeActual.isPk()){
+						havePk = true;
+						PrimaryKeyConstraint pk = attributeActual.getPk();
+						pk.addAttribute(a);
+					}
+				}
+				if (!havePk){
+					PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
+					pk.addAttribute(a);
+					pk.setTable(table);					
+				}
 				return table.addAttribute(a);
 			}
 		}
