@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 /**
- * Gère la communication avec le serveur à partir de la requête reçue par la {@code SQLView}.
+ * Gère la communication avec le serveur à partir de la requête entrée dans la {@code SQLView}.
  * <P>
  * Elle génére une {@code JTable} ou un message à partir de la réponse du serveur et l'envoie à 
  * la classe appelante.
@@ -116,7 +116,7 @@ public class SQLManager {
 	/** Formate la requête SQL pour pouvoir fonctionner avec JDBC. 
 	 * @param qry : requête SQL à formater.
 	 * @return un {@code String} de la requête formatée. */
-	private String formatSQL(String qry) 
+	public String formatSQL(String qry) 
 	{
 		return qry.replace(";","");
 	}
@@ -150,10 +150,10 @@ public class SQLManager {
 		return str;
 	}
 
-	/** Créé un message d'erreur à partir d'une {@code SQLException}.
+	/** Crée un message d'erreur à partir d'une {@code SQLException}.
 	 * @param exception : objet {@code SQLException} caractérisant l'erreur rencontrée. 
 	 * @return un {@code String} expliquant l'erreur. */
-	private String errorHandling(SQLException exception) 
+	public static String errorHandling(SQLException exception) 
 	{
 		String str;
 
@@ -326,7 +326,7 @@ public class SQLManager {
 			return "OK";
 
 		} catch (SQLException exception) {
-			return this.errorHandling(exception);
+			return SQLManager.errorHandling(exception);
 		}
 	}
 }
