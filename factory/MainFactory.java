@@ -29,17 +29,13 @@ public class MainFactory
 	private I_DBMSFactory factory;
 	
 	
-	private TableSet tableSet;
-	
-	
 	//Constructeur
 	/**
 	 * Constructeur vide.
 	 */
-	public MainFactory(String dbms, TableSet tables)
+	public MainFactory(String dbms)
 	{
 		this.setDBMS(dbms);
-		this.tableSet = tables;
 	}
 	
 	

@@ -53,7 +53,7 @@ public class TestsConnecte
 	{
 		dvm = new DefaultValueManager();
 		factory = new MainFactory(MainFactory.NULL);
-		homeFacade = new HomeFacade(dvm, factory);
+		homeFacade = new HomeFacade(dvm, factory, null);
 		homeControl = new HomeController(homeFacade);
 		ConnectionStrings parameters = homeControl.getDefaultValues();
 		parameters.password = Perso.MDP;
