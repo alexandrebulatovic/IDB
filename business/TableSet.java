@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TableSet {
+	
 	private List<Table> tables;
+	
+	boolean tablesLoaded = false;
 	
 	
 	public TableSet(){
@@ -22,36 +25,83 @@ public class TableSet {
 	
 	
 	/**
+	 * Retourne true s'il y a eu des erreurs
+	 * @param tablesNames
+	 * @return
+	 */
+	public boolean loadTables(List<String>tablesNames){
+		this.tablesLoaded = true;
+		boolean noError = true;
+		for (String tableName : tablesNames){
+			noError =  noError && this.tables.add(new Table(tableName));
+		}
+		return !noError;
+	}
+	
+	/**
 	 * retourne false en cas d'échec
 	 * @param tableName
 	 * @param cascadeConstraint
 	 * @return
 	 */
-	public boolean addTable(String tableName,boolean cascadeConstraint){
+	public boolean addTable(String tableName){
 		for (Table table:tables){
 			if (table.getName().equals(tableName)){
 				return false;
 			}
 		}
-		return this.tables.add(new Table(tableName,cascadeConstraint));
+		return this.tables.add(new Table(tableName));
 	}
 	
 	
-	public boolean addAttributeToTable(String tableName,String AttributeName, String type, int size, boolean notNull){
+	/**
+	 * Ajoute un attribut dans la table spécifié
+	 * vérifie les contraintes et si la table existe
+	 * ajoute si nécessaire la clé primaire sur l'attribut
+	 * Cette méthode part du principe qu'il ne peu y avoir qu'une clé primaire
+	 * par table (gère automatiquement les groupes de clé primaires pour
+	 * un attribut donné)
+	 * @param tableName
+	 * @param AttributeName
+	 * @param type
+	 * @param size
+	 * @param notNull
+	 * @param primaryKey
+	 * @return boolean
+	 */
+	public boolean addAttributeToTable(String tableName,String AttributeName, String type, int size, boolean notNull,boolean primaryKey){
 		for (Table table:tables){
 			if (table.getName().equals(tableName)){
 				Attribute a = new Attribute(AttributeName, type, size, null, tableName, notNull);
+				boolean havePk = false;
+				for (Attribute attributeActual : table.getAttributes()){
+					if (attributeActual.isPk()){
+						havePk = true;
+						PrimaryKeyConstraint pk = attributeActual.getPk();
+						pk.addAttribute(a);
+					}
+				}
+				if (!havePk){
+					PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
+					pk.addAttribute(a);
+					pk.setTable(table);					
+				}
 				return table.addAttribute(a);
 			}
 		}
 		return false;
 	}
 	
-//	public boolean addConstraintToAttributeToTable(String tableName, String AttributeName){
-//		
-//		
-//		return false;
-//	}
+
+	
+	public ArrayList<String> getSQLTableToCreate(String tableName){
+		for (Table table:tables){
+			if (table.getName().equals(tableName)){
+				return table.toCreate();
+			}
+		}
+		return null;
+	}
 	
 	
 }

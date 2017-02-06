@@ -294,6 +294,19 @@ public class Attribute
 		return "ALTER TABLE "+this.tableName+"\nDROP "+this.name;
 
 	}
+
+	public PrimaryKeyConstraint getPk() {
+		for (Constraint c : this.constraints){
+			if (c instanceof PrimaryKeyConstraint){
+				return (PrimaryKeyConstraint) c;
+			}
+		}
+		return null;
+	}
+	
+	public List<Constraint> getConstraints(){
+		return this.constraints;
+	}
 	
 }
 

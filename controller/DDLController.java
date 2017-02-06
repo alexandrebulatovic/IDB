@@ -25,17 +25,17 @@ public class DDLController
 	//Attributs
 	/** IHM pour créer une table et ses attributs.*/
 	private CreateTableGUI createGUI;
-	
+
 	/**IHM pour modifier une table et ses attributs.*/
 	private ModifyTableGUI modifyGUI;
-	
+
 	/** IHM pour supprimer une table.*/
 	private DropTableGUI dropGUI;
-	
+
 	/** Facade pour la définition des données.*/
 	private DDLFacade facade;
-		
-	
+
+
 	//Contructeur
 	/**
 	 * Constructeur commun.
@@ -46,8 +46,8 @@ public class DDLController
 	{
 		this.facade = facade;
 	}
-	
-	
+
+
 	/**
 	 * Ouvre l'IHM de création des tables si et seulement si 
 	 * elle n'existe pas, sinon tente de l'afficher au premier plan.
@@ -61,7 +61,7 @@ public class DDLController
 			showGUI(this.createGUI);
 		}
 	}
-	
+
 	public void openModifyGUI() {
 		if (this.modifyGUI == null){
 			this.modifyGUI = new ModifyTableGUI(this);
@@ -69,10 +69,10 @@ public class DDLController
 		else{
 			showGUI(this.modifyGUI);
 		}
-		
+
 	}
 
-	
+
 	/**
 	 * Ouvre l'IHM de création des tables si et seulement si 
 	 * elle n'existe pas, sinon tente de l'afficher au premier plan.
@@ -86,8 +86,8 @@ public class DDLController
 			showGUI(this.dropGUI);
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return une réponse personnalisée contenant le nom des tables
 	 * de la base, si et seulement si ces dernières existent et 
@@ -108,7 +108,7 @@ public class DDLController
 	}
 
 
-	
+
 	/**
 	 * @return vrai si et seulement si le SGBD permet de "droper" une 
 	 * table avec l'option "CASCADE"
@@ -153,8 +153,8 @@ public class DDLController
 	 * Ferme proprement les objets Statements.
 	 */
 	public void closeStatement(){this.facade.closeStatement();}
-	
-	
+
+
 	/**
 	 * Envoie $table au DDLManager dans l'optique de la créer.
 	 * 
@@ -162,12 +162,10 @@ public class DDLController
 	 */
 	public Response createTable(I_Table table)
 	{
-		//TODO : à revoir complètement
-		//TODO : mettre une méthode dans la facade
-		return null;
+		return this.facade.createTable(table);
 	}
-	
-	
+
+
 	/**
 	 * Modifie une table existante
 	 */
@@ -175,7 +173,7 @@ public class DDLController
 		//TODO : à revoir complètement
 		//TODO : mettre une méthode dans la facade
 		return null;
-		
+
 	}
 
 

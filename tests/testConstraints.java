@@ -19,7 +19,7 @@ public class testConstraints {
 		fk.addAttribute(a1);
 		fk.setTable(this.getTable("tableSrc"));
 		
-		fk.setTableDestination(new Table("tableDest",false));
+		fk.setTableDestination(new Table("tableDest"));
 		fk.addAttributeDestination(dest1);
 		fk.addAttributeDestination(dest2);
 		
@@ -88,7 +88,7 @@ public class testConstraints {
 		return new Attribute(name, null, 0, null, null, false);
 	}
 	public Table getTable(String name){
-		return new Table(name, false);
+		return new Table(name);
 	}
 
 
