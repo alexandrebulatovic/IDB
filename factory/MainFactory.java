@@ -2,7 +2,6 @@ package factory;
 
 import java.sql.Connection;
 
-import business.TableSet;
 import ddl.I_Attribute;
 import manager.connection.I_ConnectionManager;
 import manager.ddl.I_DDLManager;
@@ -21,7 +20,7 @@ public class MainFactory
 	public static final String MYSQL = "MySQL";
 	
 	/** Mot-clé pour une fabrique inactive.*/
-	public static final String NULL = "NULL";
+	public static final String MOCK = "Mock";
 	
 	
 	//Attributs
