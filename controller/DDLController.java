@@ -8,9 +8,8 @@ import gui.ddl.ModifyTableGUI;
 import javax.swing.JFrame;
 
 import ddl.I_Attribute;
-
+import ddl.I_Table;
 import business.Table;
-
 import useful.Response;
 import useful.ResponseData;
 
@@ -161,7 +160,7 @@ public class DDLController
 	 * 
 	 * @param table : une table à créer. L'objet peut être erroné;
 	 */
-	public Response createTable(Table table)
+	public Response createTable(I_Table table)
 	{
 		//TODO : à revoir complètement
 		//TODO : mettre une méthode dans la facade

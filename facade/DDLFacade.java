@@ -1,11 +1,10 @@
 package facade;
 
 import ddl.I_Attribute;
+import ddl.I_Table;
 import useful.Response;
 import useful.ResponseData;
-
 import factory.MainFactory;
-
 import manager.ddl.I_DDLManager;
 
 public class DDLFacade 
@@ -40,9 +39,9 @@ public class DDLFacade
 	 * 
 	 * @param table : une table à créer. L'objet peut être erroné;
 	 */
-	public Response createTable(String sql)
+	public Response createTable(I_Table table)
 	{
-		return this.manager.createTable(sql);
+		return this.manager.createTable(table);
 	}
 	
 	

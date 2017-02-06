@@ -5,6 +5,7 @@ package gui.ddl;
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.awt.Font;
+import java.util.LinkedHashSet;
 
 import javax.swing.*;
 
@@ -13,10 +14,9 @@ import ddl.AttributesAbstractTableModel;
 import ddl.ControlTableResult;
 import ddl.CreateModifyProperties;
 import ddl.I_Attribute;
-
+import ddl.I_Table;
+import ddl.TableModel;
 import useful.FieldsKeyAdapter;
-
-
 import useful.MaxLengthTextDocument;
 import useful.Response;
 
@@ -635,9 +635,13 @@ implements ItemListener
 	
 	protected void createTableButtonAction() 
 	{
-		/**
-		 * TODO : envoyer appeller le controleur
-		 * afficher la Response retournée.
-		 */
+		I_Table table = new TableModel(this.tableNameField.getText());
+		LinkedHashSet<I_Attribute> attributes = this.models.getAttributes();
+		for(I_Attribute attribute : attributes){
+			table.addAttribute(attribute);
+		}
+		System.out.println(table);
+		this.control.createTable(table);
+		
 	}
 }
