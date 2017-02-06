@@ -37,13 +37,12 @@ public class AbstractBusinessDDLFacade
 		if (tables.isLoaded()) {
 			response = new ResponseData<String>
 			(true, "Tables récupérées.", this.tables.getTablesNames());
+			System.out.println("Metier");
 		} 
 		else {
 			response = this.manager.getTables();
-
-			for(String table : response.getCollection()){
-				this.tables.addTable(table);
-			}
+			tables.loadTables(response.getCollection());
+			System.out.println("Oracle");
 		}
 		return response;
 	}
