@@ -88,20 +88,36 @@ public class Table {
 		this.constraints = constraints;
 	}
 	
-	//Méthodes
-	@Override
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
-		result.append(this.name + ":\n");
-		for (Attribute a : this.attributes) {
-			result.append(a.toString());
-			result.append('\n');
+	public boolean addAttribute(Attribute attributes) {
+		if (!this.attributes.contains(attributes)){
+			return this.attributes.add(attributes);
 		}
-		return result.toString();
+		return false;
+		
 	}
-	
-	
+
+
+
+	/**
+	 * retourne false en cas d'échec
+	 * @param attributeToDrop
+	 * @return
+	 */
+	public boolean dropAttribute(Attribute attributeToDrop){
+		boolean noError = true;
+		for (Constraint c : attributeToDrop.getConstraints()){
+			noError = c.dropAttribute(attributeToDrop);
+			if (c.getAttributes().size()==0){
+				if (!this.constraints.remove(c)){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
+
 	/**
 	 * Retourne une chaîne de caractères qui synthétise $this
 	 * en une requète SQL de création de table.
@@ -149,6 +165,34 @@ public class Table {
 
 	 
 		return results;
+	}
+
+
+
+	/**
+	 * Retourne une chaîne de caractères qui synthétise $this
+	 * en une requète SQL de suppression de table.
+	 * 
+	 * @return String
+	 */
+	public String toDrop()
+	{
+		return "DROP TABLE " + this.name;
+	}
+
+
+
+	//Méthodes
+	@Override
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append(this.name + ":\n");
+		for (Attribute a : this.attributes) {
+			result.append(a.toString());
+			result.append('\n');
+		}
+		return result.toString();
 	}
 
 
@@ -366,18 +410,6 @@ public class Table {
 
 
 	/**
-	 * Retourne une chaîne de caractères qui synthétise $this
-	 * en une requète SQL de suppression de table.
-	 * 
-	 * @return String
-	 */
-	public String toDrop()
-	{
-		return "DROP TABLE " + this.name;
-	}
-	
-	
-	/**
 	 * Retourne le nombre d'attributs qui
 	 * composent la clef primaire de $this.
 	 * 
@@ -421,58 +453,7 @@ public class Table {
 	}
 	
 	
-	/**
-	 * Retourne une chaine de caractères qui représente
-	 * l'ensemble des attributs de $this sous la forme d'une 
-	 * requête SQL. A l'exception des contraintes de clefs primaires,
-	 * toutes les autres sont retournées.
-	 * 
-	 * @return String
-	 */
-	private String attributesToSQL()
-	{
-		StringBuilder result = new StringBuilder();
-		
-		int i=0;
-		for (Attribute a : this.attributes){
-			if (i!=0){
-				result.append(",\n");
-			}
-			result.append(a.toSQL());
-			i++;
-		}
-		return result.toString();
-	}
-	
-	
-	/**
-	 * Retourne une chaîne vide si et seulement si $this n'a pas de clée primaire.
-	 * 
-	 * Retourne une chaîne de caractères qui synthétise les attributs
-	 * de la clée primaire de $this sous la forme d'une clause CONSTRAINT.
-	 * CONTRAINT pk_table PRIMARY KEY (noms)
-	 * @return String
-	 */
-	private String primaryKeyToSQL()
-	{
-		return null;
-//		StringBuilder result = new StringBuilder();
-//		if (this.hasPrimaryKey()) {
-//			result.append("CONSTRAINT pk_");
-//			result.append(this.name);
-//			result.append(" PRIMARY KEY (");
-//			for (Attribute a : this.attributes) {
-//				if (a.primaryKey) {
-//					result.append(a.name);
-//					result.append(", ");
-//				}
-//			}
-//			result.deleteCharAt(result.length()-1);
-//			result.deleteCharAt(result.length()-1);
-//			result.append(")");
-//		}
-//		return result.toString();
-	}
+
 	
 	
 	/**
@@ -486,34 +467,6 @@ public class Table {
 		for (Attribute a : attributes) {
 			this.attributes.add(new Attribute(a));
 		}
-	}
-
-
-
-	public boolean addAttribute(Attribute attributes) {
-		if (!this.attributes.contains(attributes)){
-			return this.attributes.add(attributes);
-		}
-		return false;
-		
-	}
-	
-	/**
-	 * retourne false en cas d'échec
-	 * @param attributeToDrop
-	 * @return
-	 */
-	public boolean dropAttribute(Attribute attributeToDrop){
-		boolean noError = true;
-		for (Constraint c : attributeToDrop.getConstraints()){
-			noError = c.dropAttribute(attributeToDrop);
-			if (c.getAttributes().size()==0){
-				if (!this.constraints.remove(c)){
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 
 
