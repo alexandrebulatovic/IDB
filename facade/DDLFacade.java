@@ -1,5 +1,6 @@
 package facade;
 
+import business.TableSet;
 import ddl.I_Attribute;
 import ddl.I_Table;
 import useful.Response;
@@ -11,12 +12,14 @@ public class DDLFacade
 {
 	/** Gestionnaire de définition des données.*/
 	private I_DDLManager manager;
-	
+
 	/** Fabrique principale.*/
 	private MainFactory factory;
-	
+
+	private TableSet tables;
+
 	//TODO : attribut pour la classe business
-	
+
 	//Constructeur
 	/**
 	 * Constructeur commun.
@@ -28,12 +31,13 @@ public class DDLFacade
 	{
 		this.manager = manager;
 		this.factory = factory;
+		this.tables = new TableSet();
 	}
-	
-	
+
+
 	//Méthodes
 	//TODO : setBusiness()
-	
+
 	/**
 	 * Tente de créer $table dans la base de données.
 	 * 
@@ -41,10 +45,25 @@ public class DDLFacade
 	 */
 	public Response createTable(I_Table table)
 	{
-		return this.manager.createTable(table);
+		if(this.tables.addTable(table.getName())){
+			for(I_Attribute attribute : table.getAttributes()){
+				this.tables.addAttributeToTable(
+						table.getName(),
+						attribute.getName(),
+						attribute.getType(),
+						attribute.getSize(),
+						attribute.isNotNull(),
+						attribute.isPrimaryKey());
+			}
+			//TODO : ligne en dessous
+			return this.manager.createTable("");
+		}else{
+			return new Response(false,"Cette table existe déjà.");
+		}
+		//return this.manager.createTable(table);
 	}
-	
-	
+
+
 	/**
 	 * @return la liste des types de données disponibles pour le SGBD.
 	 */
@@ -52,8 +71,8 @@ public class DDLFacade
 	{
 		return this.manager.getAttributeTypes();
 	}
-	
-	
+
+
 	/**
 	 * @return une réponse personnalisée contenant le nom des tables
 	 * de la base, si et seulement si ces dernières existent et 
@@ -61,10 +80,18 @@ public class DDLFacade
 	 */
 	public ResponseData<String> getTables()
 	{
-		return this.manager.getTables();
+		//TODO : If les classes metiers sont vides 
+		ResponseData<String> response = this.manager.getTables();
+		if(response.hasSuccess()){
+			for(String table : response.getCollection()){
+				//TODO : return boolean
+				this.tables.addTable(table);
+			}
+		}
+		return response;
 	}
-	
-	
+
+
 	/**
 	 * @return vrai si et seulement si le SGBD permet de "droper" une 
 	 * table avec l'option "CASCADE"
@@ -73,7 +100,7 @@ public class DDLFacade
 	{
 		return this.manager.allowsDropCascade();
 	}
-	
+
 
 	/**
 	 * Supprime $table, si c'est possible.
@@ -90,8 +117,8 @@ public class DDLFacade
 	{
 		return this.manager.dropTable(table, cascade, chain);
 	}
-	
-	
+
+
 	/**
 	 * Retourne une réponse personnalisée qui contient les membres
 	 * de la clée primaire de $table.
@@ -103,14 +130,14 @@ public class DDLFacade
 	{
 		return this.manager.getPrimaryKey(table);
 	}
-	
-	
+
+
 	/**
 	 * Ferme proprement les objets Statements.
 	 */
 	public void closeStatement(){this.manager.closeStatement();}
-	
-	
+
+
 	/**
 	 * @param primaryKey 
 	 * @param notNull 
