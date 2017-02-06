@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import useful.Response;
 import useful.ResponseData;
 
+/**
+ * Fournit un moyen de communication avec le SGBD dans l'optique 
+ * de définir les données (LDD).
+ */
 public interface I_DDLManager 
 {
-
 	//Méthodes
 	/**
 	 * @return la liste des types disponibles dans le SGBD.
@@ -41,13 +44,22 @@ public interface I_DDLManager
 	 * @param table : une table à supprimer, null interdit.
 	 * @param cascade : vrai si et seulement si $table peut être supprimée 
 	 * alors qu'elle est référencée par d'autres tables, faux sinon.
-	 * @param chain : vrai si et seulement si toutes les tables qui référencent
-	 * $table doivent être supprimées aussi.
 	 * @return une réponse personnalisée décrivant si la suppression de toutes
 	 * les tables concernées a réussi ou non.
 	 */
-	public abstract Response dropTable(String table, boolean cascade, boolean chain);
+	public abstract Response dropTable(String table, boolean cascade);
 
+	
+	/**
+	 * Supprime $table et toutes les tables de la bases qui utilisent la clée primaire
+	 * de $table.
+	 * 
+	 * @param table : une table à supprimer, null interdit.
+	 * @return une réponse personnalisée qui contient le nom de toutes les tables 
+	 * supprimées, ou une réponse vide en cas d'erreur.
+	 */
+	public abstract ResponseData<String> dropTableDomino(String table);
+	
 	
 	/**
 	 * @return Une réponse personnalisée contenant le nom des tables de données

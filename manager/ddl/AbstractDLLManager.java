@@ -13,7 +13,7 @@ import useful.ResponseData;
 
 
 public abstract class AbstractDLLManager 
-implements I_DDLManager 
+extends AbstractSuccesDDLManager
 {
 	//Statiques
 	/** Constante pour récupérer le nom des tables de données.*/
@@ -64,7 +64,7 @@ implements I_DDLManager
 	{
 		int [] columns = {3};
 		ResponseData<String []> r = this.procedureToGetMetadata
-				(TABLES, null, columns, "Tables récupérées");
+				(TABLES, null, columns, GET_TABLES);
 		return new ResponseData<String>(r);
 	}
 	
@@ -74,7 +74,7 @@ implements I_DDLManager
 	{
 		int [] columns = {4};
 		ResponseData<String []> r = this.procedureToGetMetadata
-				(PRIMARY_KEY, table, columns, "Clée primaire récupérée.");
+				(PRIMARY_KEY, table, columns, GET_PRIMARY);
 		return new ResponseData<String> (r) ;
 		
 	}
@@ -85,7 +85,7 @@ implements I_DDLManager
 	{
 		int [] columns = {3, 4, 13, 7, 8, 12};
 		return this.procedureToGetMetadata
-				(IN_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
+				(IN_FOREIGN_KEY, table, columns, PRIMARIES_FROM_FOREIGN);
 	}
 	
 	
@@ -93,7 +93,8 @@ implements I_DDLManager
 	public ResponseData<String> getUniqueAttribute(String table) {
 		int [] columns = {9};
 		 ResponseData<String[]> r = 
-				 this.procedureToGetMetadata(UNIQUE, table, columns, "Attributs uniques récupérés.");
+				 this.procedureToGetMetadata
+				 (UNIQUE, table, columns, GET_UNIQUE);
 		 return new ResponseData<String>(r);
 	}
 	
@@ -103,7 +104,7 @@ implements I_DDLManager
 	{
 		int columns [] = {3, 4, 13, 7, 8, 12};
 		return this.procedureToGetMetadata
-				(OUT_FOREIGN_KEY, table, columns, "Clées étrangères récupérées.");
+				(OUT_FOREIGN_KEY, table, columns, FOREIGNS_FROM_PRIMARY);
 	}
 	
 	
@@ -111,21 +112,8 @@ implements I_DDLManager
 	public ResponseData<String[]> getAttributes(String table)
 	{
 		int columns [] = {4, 6, 7, 18};
-		return this.procedureToGetMetadata(COLUMNS, table, columns, "Attributs récupérés.");
-	}
-	
-	
-	@Override
-	public Response dropTable(String table, boolean cascade, boolean chain)
-	{
-		if (chain) {
-			Response domino;
-			domino = this.dropTableRecursive(table);
-			if (! domino.hasSuccess()) {
-				return domino;
-			}
-		}
-		return this.dbmsDropTable(table, cascade);
+		return this.procedureToGetMetadata
+				(COLUMNS, table, columns, GET_COLUMNS);
 	}
 	
 	
@@ -192,7 +180,7 @@ implements I_DDLManager
 			String [] tables = extractTableExported(exported.getCollection());
 			
 			for (String t : tables) {
-				result = this.dropTable(t, false, true);
+				result = this.dropTable(t, false);
 				if (! result.hasSuccess()) return result;
 			}
 			if (result == null) 
@@ -200,17 +188,6 @@ implements I_DDLManager
 		}
 		return result;
 	}
-	
-	
-	/**
-	 * Supprime $table de la base de données.
-	 * 
-	 * @param table : la table à supprimer, null interdit.
-	 * @param cascade : vrai si et seulement si $table peut être supprimée 
-	 * alors qu'elle est référencée par d'autres tables, faux sinon.
-	 * @return une réponse personnalisée décrivant si $table a pu être supprimée ou non.
-	 */
-	protected abstract Response dbmsDropTable(String table, boolean cascade);
 	
 	
 	//Privées

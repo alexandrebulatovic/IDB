@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 import useful.Response;
+import useful.ResponseData;
 
 public class MySQLDDLManager 
 extends AbstractDLLManager 
@@ -36,7 +37,7 @@ extends AbstractDLLManager
 	@Override
 	public Response createTable(String sql) 
 	{
-		return this.executeUpdate(sql+"\nENGINE=InnoDB", "Table créée");
+		return this.executeUpdate(sql+"\nENGINE=InnoDB", CREATE_TABLE);
 	}
 
 	
@@ -48,9 +49,9 @@ extends AbstractDLLManager
 	
 
 	@Override
-	protected Response dbmsDropTable(String table, boolean cascade) 
+	public Response dropTable(String table, boolean cascade) 
 	{
-		String sql = "DROP TABLE " + table + (cascade ? "CASCADE" : "") ;
-		return this.executeUpdate(sql, "Table supprimée.");
+		String sql = "DROP TABLE " + table + (cascade ? " CASCADE" : "") ;
+		return this.executeUpdate(sql, DROP_TABLE);
 	}
 }

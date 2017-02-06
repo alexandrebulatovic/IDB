@@ -6,7 +6,7 @@ import useful.Response;
 import useful.ResponseData;
 
 public class MockDDLManager 
-implements I_DDLManager 
+extends AbstractSuccesDDLManager
 {
 
 	@Override
@@ -24,7 +24,7 @@ implements I_DDLManager
 	@Override
 	public Response createTable(String sql) 
 	{
-		return new Response(true, "Table créée.");
+		return new Response(true, GET_TABLES);
 	}
 
 	@Override
@@ -35,48 +35,55 @@ implements I_DDLManager
 	}
 
 	@Override
-	public Response dropTable(String table, boolean cascade, boolean chain) 
+	public Response dropTable(String table, boolean cascade) 
 	{
-		return new Response(true, "Table supprimée.");
+		return new Response(true, DROP_TABLE);
 	}
 
 	@Override
 	public ResponseData<String> getTables() 
 	{
-		return new ResponseData<String>(true, "Tables récupérées.");
+		return new ResponseData<String>(true, GET_TABLES);
 	}
 
 	@Override
 	public ResponseData<String> getPrimaryKey(String table) 
 	{
-		return new ResponseData<String>(true, "Clées primaires récupérées.");
+		return new ResponseData<String>(true, GET_PRIMARY);
 	}
 
 	@Override
 	public ResponseData<String[]> getPrimaryFromForeign(String table) 
 	{
-		return new ResponseData<String[]>(true, "Clée étrangères récupérées.");
+		return new ResponseData<String[]>(true, PRIMARIES_FROM_FOREIGN);
 	}
 
 	@Override
 	public ResponseData<String[]> getForeignFromPrimary(String table) 
 	{
-		return new ResponseData<String[]>(true, "Clée primaires récupérées.");
+		return new ResponseData<String[]>(true, FOREIGNS_FROM_PRIMARY);
 	}
 
 	@Override
 	public ResponseData<String> getUniqueAttribute(String table) 
 	{
-		return new ResponseData<String>(true, "Attributs uniques récupérés.");
+		return new ResponseData<String>(true, GET_UNIQUE);
 	}
 
 	@Override
 	public ResponseData<String[]> getAttributes(String table) 
 	{
-		return new ResponseData<String[]>(true, "Attributs récupérés.");
+		return new ResponseData<String[]>(true, GET_COLUMNS);
 	}
 
 	@Override
 	public void closeStatement() {}
+
+
+	@Override
+	public ResponseData<String> dropTableDomino(String table) 
+	{
+		return new ResponseData<String>(true, DOMINO);
+	}
 
 }

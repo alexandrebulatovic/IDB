@@ -40,7 +40,7 @@ extends AbstractDLLManager
 	{	
 		//TODO : virer ceci en version finale seulement
 		System.out.println(sql);
-		return this.executeUpdate(sql, "Table créée.");
+		return this.executeUpdate(sql, CREATE_TABLE);
 	}
 	
 	
@@ -57,9 +57,9 @@ extends AbstractDLLManager
 
 	
 	@Override
-	protected Response dbmsDropTable(String table, boolean cascade) 
+	public Response dropTable(String table, boolean cascade) 
 	{
 		String sql = "DROP TABLE " + table + (cascade ? " CASCADE CONSTRAINT" : "");
-		return this.executeUpdate(sql, "Table supprimée.");
+		return this.executeUpdate(sql, DROP_TABLE);
 	}
 }

@@ -87,7 +87,7 @@ extends AbstractDDLCRUDFacade
 	 */
 	public Response dropTable(String table, boolean cascade, boolean chain)
 	{
-		return this.manager.dropTable(table, cascade, chain);
+		return this.manager.dropTable(table, cascade);
 	}
 
 
