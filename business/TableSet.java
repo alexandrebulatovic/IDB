@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TableSet {
+	
 	private List<Table> tables;
+	
+	boolean tablesLoaded = false;
 	
 	
 	public TableSet(){
@@ -20,6 +23,20 @@ public class TableSet {
 		return retour;
 	}
 	
+	
+	/**
+	 * Retourne true s'il y a eu des erreurs
+	 * @param tablesNames
+	 * @return
+	 */
+	public boolean loadTables(List<String>tablesNames){
+		this.tablesLoaded = true;
+		boolean noError = true;
+		for (String tableName : tablesNames){
+			noError =  noError && this.tables.add(new Table(tableName));
+		}
+		return !noError;
+	}
 	
 	/**
 	 * retourne false en cas d'échec
