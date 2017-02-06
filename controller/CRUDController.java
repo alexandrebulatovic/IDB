@@ -18,7 +18,7 @@ public class CRUDController
 	private CRUDGUI crud_view;
 
 	/** Facade pour le CRUD des données.*/
-	private CRUDFacade facade;
+	private CRUDFacade crud_facade;
 
 	/**
 	 * Constructeur commun.
@@ -27,7 +27,7 @@ public class CRUDController
 	 */
 	public CRUDController(CRUDFacade facade)
 	{
-		this.facade = facade;
+		this.crud_facade = facade;
 	}
 
 
@@ -65,7 +65,7 @@ public class CRUDController
 	 */
 	public ResponseData<String> getTables()
 	{
-		return this.facade.getTables();
+		return this.crud_facade.getTables();
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class CRUDController
 	 */
 	public DefaultTableModel requestTable(String tableName) 
 	{
-		return this.facade.requestTable(tableName);
+		return this.crud_facade.requestTable(tableName);
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class CRUDController
 	 * @return "OK" si la suppression a réussie, un message d'erreur sinon.
 	 */
 	public String deleteRow(int index) {
-		return (this.facade.deleteRow(index));
+		return (this.crud_facade.deleteRow(index));
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class CRUDController
 		Vector dataVector = this.crud_view.getTableModel().getDataVector();
 		Vector<Object> row_to_add =  (Vector<Object>) dataVector.elementAt(index); // on récupere la ligne concernée
 
-		return (this.facade.addTuple(row_to_add));
+		return (this.crud_facade.addTuple(row_to_add));
 	}
 
 	/** Met à jour une valeur d'un tuple dans la base de données.
@@ -110,6 +110,6 @@ public class CRUDController
 	 */
 	public String updateRow(int index, int column, Object updateBuffer)
 	{
-		return this.facade.updateRow(index, column, updateBuffer);
+		return this.crud_facade.updateRow(index, column, updateBuffer);
 	}
 }
