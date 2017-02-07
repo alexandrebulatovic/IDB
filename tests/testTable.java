@@ -126,8 +126,14 @@ public class testTable {
 		for (String sql : this.table.toModify(this.tableRecupere)){
 			actual+=sql+";\n";
 		}
-		System.out.println(actual);
+//		System.out.println(actual);
 		assertEquals(attendu,actual);
+	}
+	
+	@Test
+	public void testDeleteTable(){
+		System.out.println("clean : "+this.table.cleanAll());
+		System.out.println(att1);
 	}
 	
 	

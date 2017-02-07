@@ -518,10 +518,17 @@ public class Table {
 		ArrayList<Constraint> constraintsDeleted;
 		for (Attribute a : attributes){
 			constraintsDeleted = a.cleanConstraints();
+			
+			for (Constraint c : constraintsDeleted){
+				System.out.println("\n\ncons : "+this.constraints.get(0)+"\n\n");
+				System.out.println("\n\ntoDel : "+c+"\n\n");
+				System.out.println("============="+String.valueOf(c==this.constraints.get(0))+"=============");
+			}
+			
 			this.constraints.removeAll(constraintsDeleted);
 			constraintsDeleted.clear();
 		}
-		this.attributes.clear();
+		this.attributes.clear();		
 		if (this.constraints.size() != 0){
 			return false;
 		}
