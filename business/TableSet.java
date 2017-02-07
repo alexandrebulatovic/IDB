@@ -7,9 +7,9 @@ import java.util.List;
 
 public class TableSet {
 	
-	public List<Table> tables;
+	private List<Table> tables;
 	
-	boolean tablesLoaded = false;
+	private boolean tablesLoaded = false;
 	
 	
 	public TableSet(){
@@ -118,4 +118,16 @@ public class TableSet {
 	}
 	
 	
+	//TODO : à arranger Gael :p
+	public void removeTable(String table)
+	{
+		int i = 0;
+		for (Table t : tables) {
+			if (t.getName().equals(table)) {
+				this.tables.remove(i);
+				break;
+			}
+			i++;
+		}
+	}
 }

@@ -80,17 +80,40 @@ extends AbstractDDLCRUDFacade
 	 * @param table : une table à supprimer, null interdit.
 	 * @param cascade : vrai si et seulement si $table peut être supprimée 
 	 * alors qu'elle est référencée par d'autres tables, faux sinon.
-	 * @param chain : vrai si et seulement si toutes les tables qui référencent
-	 * $table doivent être supprimées aussi.
 	 * @return une réponse personnalisée décrivant si la suppression de toutes
 	 * les tables a réussi ou non.
 	 */
-	public Response dropTable(String table, boolean cascade, boolean chain)
+	public Response dropTable(String table, boolean cascade)
 	{
-		return this.manager.dropTable(table, cascade);
+		Response result = this.manager.dropTable(table, cascade);
+		if (result.hasSuccess()) {
+			this.tables.removeTable(table);
+		}
+		return result;
 	}
 
 
+	/**
+	 * Supprime $table et toutes les tables de la bases qui utilisent la clée primaire
+	 * de $table.
+	 * 
+	 * @param table : une table à supprimer, null interdit.
+	 * @return une réponse personnalisée qui contient le nom de toutes les tables 
+	 * supprimées, ou une réponse vide en cas d'erreur.
+	 */
+	public Response dropTableDomino(String table)
+	{
+
+		ResponseData<String> result = this.manager.dropTableDomino(table);
+		if (result.hasSuccess()) {
+			for (String t : result.getCollection()) {
+				this.tables.removeTable(t);
+			}
+		}
+		return result;
+	}
+	
+	
 	/**
 	 * Retourne une réponse personnalisée qui contient les membres
 	 * de la clée primaire de $table.

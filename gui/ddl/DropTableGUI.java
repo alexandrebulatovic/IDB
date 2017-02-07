@@ -40,7 +40,7 @@ implements ActionListener
 	private JCheckBox cascadeCheckBox;
 	
 	/** Case à cocher pour forcer la suppression en chaine.*/
-	private JCheckBox chainCheckBox;
+	private JCheckBox dominoCheckBox;
 	
 	/** Bouton pour envoyer la requête de suppression.*/
 	private JButton okButton;
@@ -100,8 +100,8 @@ implements ActionListener
 			this.bindAndAdd(this.cascadeCheckBox);
 		}
 
-		this.chainCheckBox = new JCheckBox("Réaction en chaîne.");
-		this.bindAndAdd(this.chainCheckBox);
+		this.dominoCheckBox = new JCheckBox("Réaction en chaîne.");
+		this.bindAndAdd(this.dominoCheckBox);
 		
 		//Bouton
 		this.okButton = new JButton("Supprimer");
@@ -140,21 +140,20 @@ implements ActionListener
 	{
 		if (this.isComplete()) {
 			String table = (String)this.tableComboBox.getSelectedItem();
-
-			Response response = this.control.dropTable(
-					table, 
-					this.cascadeCheckBox != null ? this.cascadeCheckBox.isSelected() : false,
-							this.chainCheckBox.isSelected());
+			boolean domino = this.dominoCheckBox.isSelected();
+			Response response;
 			
-			if (response.hasSuccess()) {
-				if (this.chainCheckBox.isSelected()) {
-					this.refreshView();
-				}
-				else {
-					this.tableComboBox.removeItem(table);
-					this.enableOrDisableComponent();
-				}
+			if (domino) {
+				response = this.control.dropTableDomino(table);
 			}
+			else {
+				boolean cascade = this.cascadeCheckBox != null 
+						? this.cascadeCheckBox.isSelected() 
+						: false;
+				response = this.control.dropTable(table, cascade);
+			}
+			
+			if (response.hasSuccess()) this.refreshView();
 			this.talk(response); 
 		}
 	}

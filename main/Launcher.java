@@ -51,7 +51,7 @@ public class Launcher {
 	{
 		this.dvm = new DefaultValueManager();
 		this.tableSet = new TableSet();
-		this.factory = new MainFactory(MainFactory.NULL);
+		this.factory = new MainFactory(MainFactory.MOCK);
 		this.facade = new HomeFacade(dvm, factory, this.tableSet);
 		this.hc = new HomeController(facade);
 	}

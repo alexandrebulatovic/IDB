@@ -125,17 +125,29 @@ public class DDLController
 	 * @param table : une table à supprimer, null interdit.
 	 * @param cascade : vrai si et seulement si $table peut être supprimée 
 	 * alors qu'elle est référencée par d'autres tables, faux sinon.
-	 * @param chain : vrai si et seulement si toutes les tables qui référencent
-	 * $table doivent être supprimées aussi.
 	 * @return une réponse personnalisée décrivant si la suppression de toutes
 	 * les tables a réussi ou non.
 	 */
-	public Response dropTable(String table, boolean cascade, boolean chain)
+	public Response dropTable(String table, boolean cascade)
 	{
-		return this.facade.dropTable(table, cascade, chain);
+		return this.facade.dropTable(table, cascade);
 	}
 
 
+	/**
+	 * Supprime $table et toutes les tables de la bases qui utilisent la clée primaire
+	 * de $table.
+	 * 
+	 * @param table : une table à supprimer, null interdit.
+	 * @return une réponse personnalisée qui contient le nom de toutes les tables 
+	 * supprimées, ou une réponse vide en cas d'erreur.
+	 */
+	public Response dropTableDomino(String table)
+	{
+		return this.facade.dropTableDomino(table);
+	}
+	
+	
 	/**
 	 * Retourne une réponse personnalisée qui contient les membres
 	 * de la clée primaire de $table.

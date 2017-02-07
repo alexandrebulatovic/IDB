@@ -116,6 +116,29 @@ extends AbstractSuccesDDLManager
 				(COLUMNS, table, columns, GET_COLUMNS);
 	}
 	
+	@Override
+	public ResponseData<String> dropTableDomino(String table)
+	{
+		ResponseData<String> result = new ResponseData<String>(true, DOMINO);
+		ResponseData<String> temporary;
+		ResponseData<String[]> allTables = this.getForeignFromPrimary(table);
+		String [] differentTables = extractTables(allTables.getCollection());
+		
+		
+		for (String t : differentTables) {
+			if (! t.equals(table)) {
+				temporary = this.dropTableDomino(t);
+				//TODO : vérifier que temporary n'ait pas échoué.
+				result.add(temporary.getCollection());
+			}
+		}
+		
+		//TODO : vérifier que dropTable n'ait pas échoué.
+		this.dropTable(table, false);
+		result.add(table);
+		return result;
+	}
+	
 	
 //	@Override
 //	public Response dropTable(String table, boolean cascade, boolean chain)
@@ -177,7 +200,7 @@ extends AbstractSuccesDDLManager
 		if (! exported.hasSuccess())
 			result = exported;
 		else {
-			String [] tables = extractTableExported(exported.getCollection());
+			String [] tables = extractTables(exported.getCollection());
 			
 			for (String t : tables) {
 				result = this.dropTable(t, false);
@@ -311,9 +334,9 @@ extends AbstractSuccesDDLManager
 	
 	/**
 	 * @param list : collection obtenu sur l'appel de getExportedKey().
-	 * @return un ensemble de tables.
+	 * @return un ensemble (pas de doublon) de tables.
 	 */
-	private static String [] extractTableExported(List<String []> list)
+	private static String [] extractTables(List<String []> list)
 	{
 		List<String> sort = new ArrayList<String>();
 		

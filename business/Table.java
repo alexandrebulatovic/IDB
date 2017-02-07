@@ -199,6 +199,19 @@ public class Table {
 		return result.toString();
 	}
 
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		boolean result = 
+		(o == null 
+				? false 
+				: ((Table)o).name.equals(this.name));
+		System.out.println("equals :" + (result?"ok":"non") );
+		return result;
+	}
+	
+	
 	/**
 	 * Recherche un attribut d'après son nom et retourne 
 	 * true s'il existe

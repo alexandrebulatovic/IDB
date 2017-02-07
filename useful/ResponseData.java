@@ -83,6 +83,19 @@ extends Response
 	}
 	
 	
+	/**
+	 * Ajoute tous les éléments de $elements à la reponse.
+	 * 
+	 * @param elements : null interdit.
+	 */
+	public void add(List<T> elements)
+	{
+		for (T e : elements) {
+			this.add(e);
+		}
+	}
+	
+	
 	@Override
 	public String toString()
 	{
