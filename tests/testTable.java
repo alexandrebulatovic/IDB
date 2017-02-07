@@ -76,7 +76,7 @@ public class testTable {
 		att_b = new Attribute("nom","VARCHAR2",20,true);
 		att_b.setTableName(this.tableRecupere.getName());
 		
-		att_c = new Attribute("prenom","VARCHAR2",20);
+		att_c = new Attribute("prenom","VARCHAR2",27);
 		att_c.setTableName(this.tableRecupere.getName());
 		
 		
@@ -85,7 +85,7 @@ public class testTable {
 		
 		tableRecupere.addAttribute(att_a);
 		//tableRecupere.addAttribute(att_b); //on n'ajoute pas le nom volontairement
-		tableRecupere.addAttribute(att_c);
+		tableRecupere.addAttribute(att_c);//volontairement, le prénom à changé de taille
 		tableRecupere.addAttribute(att_d);
 		
 		table.setConstraints(constraints2);
