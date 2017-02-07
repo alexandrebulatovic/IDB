@@ -31,6 +31,7 @@ public class testTableSet {
 		
 		ensembleTable.loadTables(tablesNames);
 		ensembleTable.addAttributeToTable("table1", "att1", "VARCHAR2", 20, false, true);
+		
 		String sqlAttendu = "CREATE TABLE table1\n"
 				+ "(\n"
 				+ "att1 VARCHAR2 (20)\n"
@@ -44,7 +45,8 @@ public class testTableSet {
 		assertEquals (sqlAttendu, sqlTotal);
 		
 		ensembleTable.addAttributeToTable("table1", "att2", "VARCHAR23", 44, false, true);
-		ensembleTable.addAttributeToTable("table1", "att3", "VARCHAR2", 22, false, false);
+		ensembleTable.addAttributeToTable("table1", "att3", "VARCHAR2", 22, true, false);
+		ensembleTable.addAttributeToTable("table1", "attDate", "DATE", 13, false, false);
 		
 		assertEquals("L'attribut ne doit pas pouvoir être créé en double",false,ensembleTable.addAttributeToTable("table1", "att2", "VARCHAR2", 22, false, false));
 		
@@ -53,7 +55,8 @@ public class testTableSet {
 				+ "(\n"
 				+ "att1 VARCHAR2 (20),\n"
 				+ "att2 VARCHAR23 (44),\n"
-				+ "att3 VARCHAR2 (22)\n"
+				+ "att3 VARCHAR2 (22) NOT NULL,\n"
+				+ "attDate DATE\n"
 				+ ");\n"
 				+ "ALTER TABLE table1\n"
 				+ "ADD CONSTRAINT pk_table1_att1_att2 PRIMARY KEY(att1,att2);\n";
@@ -64,6 +67,7 @@ public class testTableSet {
 		}
 		assertEquals(sqlAttendu,sqlTotal);
 		
+//		System.out.println(ensembleTable.getSQLTableToCreate("table1"));
 		
 	}
 

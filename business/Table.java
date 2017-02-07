@@ -207,7 +207,6 @@ public class Table {
 		(o == null 
 				? false 
 				: ((Table)o).name.equals(this.name));
-		System.out.println("equals :" + (result?"ok":"non") );
 		return result;
 	}
 	
@@ -236,7 +235,7 @@ public class Table {
 	private void modifyName(Table tableSource, ArrayList<String> results) {
 		if (!tableSource.name.equals(this.name)){
 			results.add("RENAME "+tableSource.name+" TO "+this.name);	
-		}		
+		}
 	}
 
 
