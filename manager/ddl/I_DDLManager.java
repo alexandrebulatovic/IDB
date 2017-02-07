@@ -28,12 +28,23 @@ public interface I_DDLManager
 	/**
 	 * Tente de créer une table dans la base de données.
 	 * 
-	 * @param sql : une requête SQL pour créer une table, null interdit.
+	 * @param sql : une requête SQL pour créer une table sans contrainte, 
+	 * à l'exception d'un NOT NULL "in line", null interdit.
 	 * @return Une réponse personnalisée avec un message de succès si et seulement si
 	 * la table est créée, un message détaillant l'erreur sinon.
 	 */
 	public abstract Response createTable(String sql);
 
+	
+	/**
+	 * Altère une table dans la base de données.
+	 * 
+	 * @param sql : une requète SQL "ALTER TABLE...", null interdit.
+	 * @return une réponse personnalisée décrivant si l'atltération des
+	 * tables & réussie ou ratée. 
+	 */
+	public abstract Response altertable(String sql);
+	
 	
 	public abstract ArrayList<Response> modifyTable(ArrayList<String> sqls);
 

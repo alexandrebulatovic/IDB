@@ -27,6 +27,7 @@ extends AbstractSuccesDDLManager
 		return new Response(true, GET_TABLES);
 	}
 
+	
 	@Override
 	public ArrayList<Response> modifyTable(ArrayList<String> sqls) 
 	{

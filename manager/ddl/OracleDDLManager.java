@@ -38,8 +38,6 @@ extends AbstractDLLManager
 	@Override
 	public Response createTable(String sql)
 	{	
-		//TODO : virer ceci en version finale seulement
-		System.out.println(sql);
 		return this.executeUpdate(sql, CREATE_TABLE);
 	}
 	

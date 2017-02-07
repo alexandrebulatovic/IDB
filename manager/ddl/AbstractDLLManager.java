@@ -116,6 +116,14 @@ extends AbstractSuccesDDLManager
 				(COLUMNS, table, columns, GET_COLUMNS);
 	}
 	
+	
+	@Override
+	public Response altertable(String sql) 
+	{
+		return this.executeUpdate(sql, CREATE_TABLE);
+	}
+	
+	
 	@Override
 	public ResponseData<String> dropTableDomino(String table)
 	{
@@ -138,20 +146,6 @@ extends AbstractSuccesDDLManager
 		result.add(table);
 		return result;
 	}
-	
-	
-//	@Override
-//	public Response dropTable(String table, boolean cascade, boolean chain)
-//	{
-//		if (chain) {
-//			Response domino;
-//			domino = this.dropTableRecursive(table);
-//			if (! domino.hasSuccess()) {
-//				return domino;
-//			}
-//		}
-//		return this.dbmsDropTable(table, cascade);
-//	}
 	
 	
 	@Override

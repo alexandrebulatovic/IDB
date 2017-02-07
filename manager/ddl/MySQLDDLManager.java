@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 import useful.Response;
-import useful.ResponseData;
 
 public class MySQLDDLManager 
 extends AbstractDLLManager 
