@@ -3,11 +3,13 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.*;
 
 import business.Attribute;
 import business.Constraint;
+import business.ForeignKeyConstraint;
 import business.PrimaryKeyConstraint;
 import business.Table;
 
@@ -30,16 +32,13 @@ public class testTable {
 
 	@Before
 	public void init(){
-		constraints = new ArrayList<Constraint>();
-		constraints2 = new ArrayList<Constraint>();
-		
 		table = new Table("PROFILS");
 		tableRecupere = new Table("PROFILS");
 		
 		
 			att0 = new Attribute("id","NUMBER",10);
 				pk1 = new PrimaryKeyConstraint();
-				constraints.add(pk1);
+				table.addConstraint(pk1);
 				pk1.addAttribute(att0);
 				pk1.setTable(table);
 				pk1.createAndSetName();
@@ -56,7 +55,6 @@ public class testTable {
 		table.addAttribute(att2);
 		table.addAttribute(att0);
 		
-		table.setConstraints(constraints);
 		
 		
 		
@@ -66,7 +64,7 @@ public class testTable {
 		
 		att_a = new Attribute("id","NUMBER",10);
 			pk_a = new PrimaryKeyConstraint();
-			constraints2.add(pk_a);
+			table2.addConstraint(pk_a);
 			pk_a.addAttribute(att_a);
 			pk_a.setTable(tableRecupere);
 			pk_a.setName(this.pk1.getName());
@@ -87,8 +85,6 @@ public class testTable {
 		//tableRecupere.addAttribute(att_b); //on n'ajoute pas le nom volontairement
 		tableRecupere.addAttribute(att_c);//volontairement, le prénom à changé de taille
 		tableRecupere.addAttribute(att_d);
-		
-		table.setConstraints(constraints2);
 		
 			
 		
@@ -132,8 +128,33 @@ public class testTable {
 	
 	@Test
 	public void testDeleteTable(){
+		
+		
+		ForeignKeyConstraint fk = new ForeignKeyConstraint();
+		fk.setTable(table);
+		fk.setTableDestination(table2);
+		fk.addAttribute(att2);
+		fk.addAttributeDestination(att_b);
+		
+		att1.addConstraint(fk);
+		
 		System.out.println("clean : "+this.table.cleanAll());
-		System.out.println(att1);
+
+		assertEquals(0,att0.getConstraints().size());
+		
+		assertEquals(0,att1.getConstraints().size());
+		assertEquals(0,att2.getConstraints().size());
+		assertEquals(0,table.getAttributes().size());
+		assertEquals(0,pk1.getAttributes().size());
+		
+//		for (Attribute c : fk.getAttributes()){
+//			System.out.println("atteuheiffh ==>"+fk.attributes.get(0));//possède att2
+//		}
+		
+		assertEquals(0,fk.getAttributes().size());
+		
+		
+		
 	}
 	
 	

@@ -22,5 +22,7 @@ public class PrimaryKeyConstraint extends Constraint{
 		}
 		return this.getEntete()+"("+lesPks+")";
 	}
+	
+	
 
 }

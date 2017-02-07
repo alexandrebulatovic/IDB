@@ -15,18 +15,43 @@ public class ForeignKeyConstraint extends Constraint {
 	private Table tableDestination;
 	private List<Attribute> attributesDestination;
 	
+	
+	/**
+	 * Il faut renseigner plus tard les paramètres suivants pour garantir le bon fonctionnement
+	 * @param tableSource
+	 * @param attributesSources
+	 * @param tableDestination
+	 * @param attributesDestinations
+	 * 
+	 * @see business.ForeignKeyConstraint#ForeignKeyConstraint(Table, List, Table, List)
+	 */
 	public ForeignKeyConstraint(){
+		super();
+		System.out.println("INSTANCIATION DE FK");
 		this.attributesDestination = new ArrayList<Attribute>();
 		
 		this.keyWord = "FOREIGN KEY";
 		this.prefix = "fk";
 	}
 	
+	/**
+	 * @deprecated il est LARGEMENT préférable d'utiliser les add
+	 * afin d'éviter les incohérences ou ajouts de contrôles
+	 * @param tableSource
+	 * @param attributesSources
+	 * @param tableDestination
+	 * @param attributesDestinations
+	 */
+	public ForeignKeyConstraint(Table tableSource, List<Attribute> attributesSources, Table tableDestination,List<Attribute> attributesDestinations){
+		this.setTable(tableSource);
+		this.setTableDestination(tableDestination);
+		this.attributes = attributesSources;
+		this.attributesDestination = attributesDestinations;
+	}
+	
 	@Override
 	public String getNameSQL() {
 		String attDest = "";
-
-		
 		int i=0;
 		for (Attribute dest : attributesDestination){
 			if (i!=0){
@@ -61,6 +86,13 @@ public class ForeignKeyConstraint extends Constraint {
 	
 	public Table getTableDestination(){
 		return this.tableDestination;
+	}
+	
+
+	public void cleanAll(){
+		super.cleanAll();
+		this.tableDestination = null;
+		this.attributesDestination.clear();
 	}
 
 }
