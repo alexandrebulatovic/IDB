@@ -90,6 +90,10 @@ public class Table {
 	}
 	
 	
+	/**
+	 * @deprecated il est préférable d'ajouter les contraintes 1 à 1 pour les contrôles
+	 * @param constraints
+	 */
 	public void setConstraints(ArrayList<Constraint> constraints){
 		this.constraints = constraints;
 	}
@@ -505,13 +509,29 @@ public class Table {
 
 
 
-	public boolean addConstraint(PrimaryKeyConstraint pk) {
-		if (!this.constraints.contains(pk)){
-			return this.constraints.add(pk);
+	public boolean addConstraint(Constraint c) {
+		if (!this.containsConstraint(c)){
+			return this.constraints.add(c);
 		}
 		return false;
 		
 	}
+
+	/**
+	 * 
+	 * @param a constraint
+	 * @return boolean
+	 */
+	private boolean containsConstraint(Constraint c) {
+		for (Constraint constraint : this.constraints){
+			if (constraint.equals(c)){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 
 
 	/**

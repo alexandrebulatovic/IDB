@@ -179,7 +179,7 @@ public abstract class Constraint
 
 	@Override
 	public String toString() {
-		return "Constraint [keyWord=" + keyWord + ", attributes=" + attributes
+		return "Constraint [id= "+this.thisId+", keyWord=" + keyWord + ", attributes=" + attributes
 				+ ", table=" + table + ", name=" + name + ", prefix=" + prefix
 				+ "]";
 	}
@@ -200,7 +200,6 @@ public abstract class Constraint
 	 * supprime tous le contenu de la constrainte
 	 */
 	public void cleanAll() {
-		
 		this.attributes.clear();
 		
 		this.table = null;

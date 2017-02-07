@@ -35,7 +35,8 @@ public class ForeignKeyConstraint extends Constraint {
 	}
 	
 	/**
-	 * 
+	 * @deprecated il est LARGEMENT préférable d'utiliser les add
+	 * afin d'éviter les incohérences ou ajouts de contrôles
 	 * @param tableSource
 	 * @param attributesSources
 	 * @param tableDestination
