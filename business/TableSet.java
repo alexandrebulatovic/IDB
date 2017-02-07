@@ -4,22 +4,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Conteneur de tables. */
-
-public class TableSet {
-	
+public class TableSet 
+{
+	//Attributs
+	/** Toutes les tables présentes dans la base de données.*/
 	private List<Table> tables;
 	
+	/** 
+	 * Vrai si et seulement si les tables ont toutes été chargées 
+	 * depuis la base de données. 
+	 */
 	private boolean tablesLoaded = false;
 	
+	/** Une table en attente d'être ajoutée.*/
+	private Table candidate;
 	
-	public TableSet(){
+	
+	//Constructeur
+	/**
+	 * Constructeur vide.
+	 */
+	public TableSet()
+	{
 		tables = new ArrayList<Table>();
+		candidate = new Table();
 	}
 	
-	public boolean isLoaded(){
-		return this.tablesLoaded;
-	}
 	
+	//Méthodes
+	/**
+	 * @return vrai si et seulement si les tables ont toutes été chargées 
+	 * depuis la base de données. 
+	 */
+	public boolean isLoaded(){return this.tablesLoaded;}
+	
+	
+	/**
+	 * @return la liste des tables de la base de données.
+	 */
 	public List<String> getTablesNames(){
 		List<String> retour = new ArrayList<String>();
 		for (Table table : tables){
@@ -30,9 +52,13 @@ public class TableSet {
 	
 	
 	/**
-	 * Retourne true s'il y a eu des erreurs
-	 * @param tablesNames
-	 * @return
+	 * A n'utiliser qu'au lancement de l'application, pour charger 
+	 * une première fois le nom de toutes les tables disponibles.<br/><br/>
+	 * 
+	 * Charge en mémoire le nom des tables de la base de données,
+	 * définit l'ensemble comme étant "chargé".
+	 * 
+	 * @param tablesNames : le nom des tables disponibles, null interdit.
 	 */
 	public void loadTables(List<String>tablesNames){
 		this.tablesLoaded = true;
@@ -40,6 +66,7 @@ public class TableSet {
 			this.tables.add(new Table(tableName));
 		}
 	}
+	
 	
 	/**
 	 * ajoute une table si c'est possible (si aucune autres table n'existe),
@@ -57,8 +84,18 @@ public class TableSet {
 	}
 	
 	
-	public boolean isAddable(String tableName){
-		if (this.getTableWithName(tableName)==null){
+	/**
+	 * Instancie $table et le stocke en tant que candidat,
+	 * si et seulement si $table est ajoutable à l'ensemble.
+	 * 
+	 * @param table : nom d'une table à ajouter, null interdit.
+	 * @return vrai si et seulement si il est possible d'ajouter
+	 * $table à l'ensemble, faux sinon.
+	 */
+	public boolean isAddable(String table)
+	{
+		if (this.getTableWithName(table)==null){
+			this.candidate = new Table(table);
 			return true;
 		}
 		return false;
@@ -69,7 +106,7 @@ public class TableSet {
 	 * Ajoute un attribut dans la table spécifié
 	 * vérifie les contraintes et si la table existe
 	 * ajoute si nécessaire la clé primaire sur l'attribut
-	 * Cette méthode part du principe qu'il ne peu y avoir qu'une clé primaire
+	 * Cette méthode part du principe qu'il ne peut y avoir qu'une clé primaire
 	 * par table (gère automatiquement les groupes de clé primaires pour
 	 * un attribut donné)
 	 * @param tableName
@@ -95,25 +132,6 @@ public class TableSet {
 		}
 		return false;
 	}
-
-	private void ajouterPrimaryKey(Table table, Attribute a) {
-		boolean havePk = false;
-		for (Attribute attributeActual : table.getAttributes()){
-			if (attributeActual.isPk()){
-				havePk = true;
-				PrimaryKeyConstraint pk = attributeActual.getPk();
-				pk.addAttribute(a);
-			}
-		}
-		if (!havePk){
-			PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
-			pk.addAttribute(a);
-			pk.setTable(table);
-			a.addConstraint(pk);
-			table.addConstraint(pk);
-		}
-	}
-	
 
 	/**
 	 * retourne une liste de requettes permettant de modifier la table
@@ -162,16 +180,35 @@ public class TableSet {
 	
 	
 	/**
-	 * @param tableName
-	 * @return Retourne une table d'après son nom<br>
-	 * Retourne null en cas d'échec ou si la table n'existe pas
+	 * @param name : nom de la table a récupérée, null interdit.
+	 * @return une table nommée $name si et seulement si elle existe,<br>
+	 * null sinon.
 	 */
-	private Table getTableWithName(String tableName){		
+	private Table getTableWithName(String name){		
 		for (Table table : tables){
-			if (table.getName().equals(tableName)){
+			if (table.getName().equals(name)){
 				return table;
 			}
 		}
 		return null;
+	}
+
+
+	private void ajouterPrimaryKey(Table table, Attribute a) {
+		boolean havePk = false;
+		for (Attribute attributeActual : table.getAttributes()){
+			if (attributeActual.isPk()){
+				havePk = true;
+				PrimaryKeyConstraint pk = attributeActual.getPk();
+				pk.addAttribute(a);
+			}
+		}
+		if (!havePk){
+			PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
+			pk.addAttribute(a);
+			pk.setTable(table);
+			a.addConstraint(pk);
+			table.addConstraint(pk);
+		}
 	}
 }

@@ -16,7 +16,7 @@ public class Table {
 	/** Un ensemble d'attributs (pas de doublons).*/
 	private LinkedHashSet<Attribute> attributes;
 	
-	private ArrayList<Constraint> constraints;
+	private List<Constraint> constraints;
 	
 	
 
@@ -25,7 +25,9 @@ public class Table {
 	 * Constructeur vide.
 	 * Instancie un ensemble vide.
 	 */
-	protected Table(){
+	protected Table()
+	{
+		this.name = "";
 		this.attributes = new LinkedHashSet<Attribute>();
 		this.constraints = new ArrayList<Constraint>();
 	}
