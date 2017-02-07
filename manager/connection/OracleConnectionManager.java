@@ -34,7 +34,7 @@ extends AbstractConnectionManager
 		case 1017 	: return "utilisateur ou mot de passe incorrect.";
 		case 17002	: return "adresse IP ou port incorrect.";
 		case 17443 	: return "mot de passe nécessaire.";
-		default 	: return "inconnue.";
+		default 	: return e.getErrorCode() + " : " + e.getMessage();
 		}
 	}
 	

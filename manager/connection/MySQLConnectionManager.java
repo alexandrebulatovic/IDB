@@ -29,7 +29,7 @@ extends AbstractConnectionManager
 		case 0 		: return "adresse IP ou port incorrect.";
 		case 1044 	: return "nom de base de données inaccessible.";
 		case 1045 	: return "nom d'utilisateur ou mot de passe incorrect.";
-		default 	: return "inconnue.";
+		default 	: return e.getErrorCode() + " : " + e.getMessage();
 		}
 	}
 	

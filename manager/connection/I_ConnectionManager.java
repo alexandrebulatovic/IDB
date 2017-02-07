@@ -1,6 +1,7 @@
 package manager.connection;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import useful.ConnectionStrings;
 import useful.Response;
@@ -50,5 +51,12 @@ public interface I_ConnectionManager {
 	 * Ferme proprement la connexion.
 	 */
 	public abstract void disconnect();
+
+	/**
+	 * Interprète les erreurs retournées par le SGBD.
+	 * @param e {@code SQLException} levée par le SGBD
+	 * @return un {@code String} expliquant l'erreur.
+	 */
+	public abstract String errorMessage(SQLException e);
 
 }
