@@ -14,20 +14,19 @@ public abstract class Constraint
 	//Attributs
 	/** Mot clé définissant la contrainte exemple : PRIMARY KEY.*/
 
-	protected String keyWord;
+	protected String keyWord = "NO_KEY_WORD";
 	
 	/** Attributs ciblés par la contrainte.*/
 	protected List<Attribute> attributes;
 	
 	/** Une contrainte appartient à une table.*/
-	//TODO : voir les applications
 	protected Table table;
 	
 	/** Nom unique de la contrainte.*/ 
 	protected String name;
 
 	/** Préfixe du nom de la contrainte, parmi nn, ck.*/
-	protected String prefix; //TODO : inutile puisque déterminable depuis keyword.
+	protected String prefix;
 	
 	
 
@@ -74,8 +73,10 @@ public abstract class Constraint
 	
 	
 	/**
-	 * TODO : à repréciser, incompréhensible
-	 * @return un type CHECK(machin IS NOT NULL)
+	 * Retourne une représentation de la contrainte 
+	 * brute
+	 * @exemple CHECK(machin IS NOT NULL)
+	 * @return String
 	 */
 	public abstract String getNameSQL();
 	
@@ -89,8 +90,8 @@ public abstract class Constraint
 
 	
 	/**
-	 * TODO : confirmer que null est interdit.
 	 * @param table : la table visée par la contrainte, null interdit.
+	 * @see business.Table
 	 */
 	public void setTable(Table table) {
 		this.table = table;

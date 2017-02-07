@@ -318,7 +318,7 @@ public class Attribute
 	 */
 	public ArrayList<Constraint> cleanConstraints() {
 		ArrayList<Constraint> tmp = new ArrayList<Constraint>(this.constraints);
-		this.constraints.clear();
+		this.constraints.clear();//on vide la liste
 		return tmp;
 	}
 	
