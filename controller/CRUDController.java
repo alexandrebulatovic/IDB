@@ -8,6 +8,7 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
+import useful.Response;
 import useful.ResponseData;
 
 public class CRUDController 
@@ -22,7 +23,6 @@ public class CRUDController
 
 	/**
 	 * Constructeur commun.
-	 * 
 	 * @param facade : null interdit.
 	 */
 	public CRUDController(CRUDFacade facade)
@@ -82,33 +82,36 @@ public class CRUDController
 	/**
 	 * Supprime le tuple situé à {@code index} de la base de données.
 	 * @param index : position du tuple à supprimer.
-	 * @return "OK" si la suppression a réussie, un message d'erreur sinon.
+	 * @return un objet {@code Response}.
+	 * @see Response
 	 */
-	public String deleteRow(int index) {
-		return (this.crud_facade.deleteRow(index));
+	public Response deleteRow(int index) {
+		return this.crud_facade.deleteRow(index);
 	}
 
 	/**
 	 * Insère dans la base de données le tuple situé à {@code index} dans la {@code JTable}.
 	 * @param index : position du tuple à ajouter. 
 	 * @param tableName : nom de la table concernée.
-	 * @return "OK" si la modification a réussie, un message d'erreur sinon.
+	 * @return un objet {@code Response}.
+	 * @see Response
 	 */
-	public String addRow(int index, String tableName) 
+	public Response addRow(int index, String tableName) 
 	{
 		Vector dataVector = this.crud_view.getTableModel().getDataVector();
 		Vector<Object> row_to_add =  (Vector<Object>) dataVector.elementAt(index); // on récupere la ligne concernée
 
-		return (this.crud_facade.addTuple(row_to_add));
+		return this.crud_facade.addTuple(row_to_add);
 	}
 
 	/** Met à jour une valeur d'un tuple dans la base de données.
 	 * @param index : position du tuple.
 	 * @param column : colonne de la valeur.
 	 * @param updateBuffer : nouvelle valeur.
-	 * @return "OK" si la modification a réussie, un message d'erreur sinon.
+	 * @return un objet {@code Response}.
+	 * @see Response
 	 */
-	public String updateRow(int index, int column, Object updateBuffer)
+	public Response updateRow(int index, int column, Object updateBuffer)
 	{
 		return this.crud_facade.updateRow(index, column, updateBuffer);
 	}

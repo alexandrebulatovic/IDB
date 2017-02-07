@@ -8,7 +8,6 @@ import javax.swing.table.DefaultTableModel;
 import useful.Response;
 import useful.ResponseData;
 import business.TableSet;
-import manager.connection.AbstractConnectionManager;
 import manager.connection.I_ConnectionManager;
 import manager.connection.MySQLConnectionManager;
 import manager.ddl.AbstractDLLManager;
@@ -19,6 +18,7 @@ public class CRUDFacade
 extends AbstractDDLCRUDFacade
 {
 
+	/** Structure représentant une connexion à un SGBD. */
 	private I_ConnectionManager connector;
 
 	private SQLManager sql_manager;
@@ -30,8 +30,7 @@ extends AbstractDDLCRUDFacade
 	}
 
 	/**
-	 * Demande au {@code SQLManager} un modèle de {@code JTable} avec les données correspondant 
-	 * au nom de la table demandée.
+	 * Demande au {@code SQLManager} un modèle de données de {@code JTable}.
 	 * @param tableName : nom de la table demandée.
 	 * @return un objet {@code DefaultTableModel} contenant les données de la table.
 	 */
@@ -43,10 +42,16 @@ extends AbstractDDLCRUDFacade
 	/**
 	 * Supprime le tuple situé à {@code index} de la base de données.
 	 * @param index : position du tuple à supprimer.
-	 * @return "OK" si la suppression a réussie, un message d'erreur sinon.
+	 * @return un objet {@code Response}.
+	 * @see Response
 	 */
-	public String deleteRow(int index) {
-		return (this.sql_manager.removeTuple(index));
+	public Response deleteRow(int index) {
+		if (!this.sql_manager.removeTuple(index)) {
+			SQLException sqlException = this.sql_manager.getSqlException();
+			String msgException = connector.errorMessage(sqlException);
+			return new Response(false, msgException);
+		} else
+			return new Response(true);
 	}
 
 
@@ -54,29 +59,30 @@ extends AbstractDDLCRUDFacade
 	 * @param index : position du tuple.
 	 * @param column : colonne de la valeur.
 	 * @param updateBuffer : nouvelle valeur.
-	 * @return "OK" si la modification a réussie, un message d'erreur sinon.
+	 * @return un objet {@code Response}.
+	 * @see Response
 	 */
-	public String updateRow(int index, int column, Object updateBuffer)
+	public Response updateRow(int index, int column, Object updateBuffer)
 	{
-		return this.sql_manager.updateTuple(index, column, updateBuffer);
+		if (!this.sql_manager.updateTuple(index, column, updateBuffer)) {
+			SQLException sqlException = this.sql_manager.getSqlException();
+			String msgException = connector.errorMessage(sqlException);
+			return new Response(true, msgException);
+		} else
+			return new Response(true);
 	}
 
 	/** Insère un nouveau tuple dans la base de données.
-	 * @param row_to_add : {@code Vector} représentant les données à insérer dans l'ordre.
-	 * @return "OK" si l'insertion réussie, sinon un message d'erreur.
+	 * @param row_to_add : objet {@code Vector} représentant les données à insérer dans l'ordre.
+	 * @return un objet {@code Response}.
+	 * @see Response
 	 */
-	public String addTuple(Vector<Object> row_to_add) {
-		return (this.sql_manager.addTuple(row_to_add));
+	public Response addTuple(Vector<Object> row_to_add) {
+		if (!this.sql_manager.addTuple(row_to_add)) {
+			SQLException sqlException = this.sql_manager.getSqlException();
+			String msgException = connector.errorMessage(sqlException);
+			return new Response(true, msgException);
+		} else
+			return new Response(true);
 	}
-
-	/**
-	 * Génère un objet {@code Response} à partir d'une exception de type {@code SQLException}.
-	 * @param exception {@code SQLException} de la base de données.
-	 * @return un objet {@code Response} décrivant l'erreur.
-	 */
-	public Response errorHandler(SQLException exception) 
-	{ // TODO: remonter la methode errorMessage dans l'interface
-		return new Response(false, ((AbstractConnectionManager)connector).errorMessage(exception));
-	}
-
 }

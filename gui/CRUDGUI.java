@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -22,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import controller.CRUDController;
-
+import useful.Response;
 import useful.ResponseData;
 
 /** IHM qui permet les opérations {@code Create|Read|Update|Select} sur une base de données
@@ -134,11 +135,11 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 			int new_row_index = this.tableModel.getRowCount()-1;
 			String table_name = (String)this.tableComboBox.getSelectedItem();
 
-			String reply = this.crud_controller.addRow(new_row_index, table_name);
+			Response reply = this.crud_controller.addRow(new_row_index, table_name);
 
-			if (!reply.equals("OK")) // en cas d'echec d'insertion
+			if (!reply.hasSuccess()) // en cas d'echec d'insertion
 			{
-				this.showError(reply);
+				this.showError(reply.getMessage());
 				this.tableModel.removeRow(new_row_index); // on enlève de la JTable le tuple qui a échoué
 			} else {
 				this.requestTable(table_name);
@@ -186,14 +187,14 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 	private void deleteButtonAction() 
 	{
 		// on essaie de l'effacer de la base de données
-		String reply = this.crud_controller.deleteRow(this.currentIndex);
+		Response reply = this.crud_controller.deleteRow(this.currentIndex);
 
-		if (reply.equals("OK"))
+		if (reply.hasSuccess())
 		{
 			tableModel.removeRow(this.currentIndex); // si ça marche on le vire de l'affichage
 			this.changeSelection(CRUDGUI.PREVIOUS); // puis on replace la selection
 		} else
-			showError(reply); // sinon on affiche simplement message d'erreur
+			showError(reply.getMessage()); // sinon on affiche simplement message d'erreur
 	}
 
 	/** Crée un pop-up du message d'erreur.
@@ -386,10 +387,10 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 				if (CRUDGUI.this.ALLOW_EDITS) // si le mode "modification" est actif
 				{
-					String reply = CRUDGUI.this.crud_controller.updateRow(row, column, aValue);
+					Response reply = CRUDGUI.this.crud_controller.updateRow(row, column, aValue);
 
-					if (!reply.equals("OK"))
-						CRUDGUI.this.showError(reply);
+					if (!reply.hasSuccess())
+						CRUDGUI.this.showError(reply.getMessage());
 					else
 						super.setValueAt(aValue, row, column);
 				}

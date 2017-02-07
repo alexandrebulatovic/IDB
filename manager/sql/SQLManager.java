@@ -50,6 +50,9 @@ public class SQLManager {
 	/** Connexion à la base de données. */
 	private Connection conn;
 
+	/** Dernière exception levée. */
+	private SQLException sqlException;
+
 
 	/* CONSTRUCTEUR */
 
@@ -62,6 +65,14 @@ public class SQLManager {
 	}
 
 	/* METHODES*/
+
+	/**
+	 * Permet d'obtenir la dernière exception levée par le SGBD.
+	 * @return un objet {@code SQLException}.
+	 */
+	public SQLException getSqlException() {
+		return sqlException;
+	}
 
 	/** Initialise l'attribut {@code Statement} nécessaire pour envoyer les requêtes SQL. 
 	 * @param conn : {@code Connection} à partir duquel initialiser le {@code Statement}.
@@ -134,7 +145,7 @@ public class SQLManager {
 	private Response buildReply(String qry)
 	{
 		String str = null;
-		
+
 		try {
 			if (qry.contains("INSERT")){
 				str = stat.getUpdateCount()+ " ligne ajoutée.";
@@ -151,10 +162,9 @@ public class SQLManager {
 			}
 
 		} catch (SQLException exception) {	
-//			return errorHandler(exception);
-			return null;
-		} catch (Exception exception) {
-			exception.printStackTrace();	
+			this.sqlException = exception;
+		} catch (NullPointerException exception) {
+			System.out.println("il n'y a pas de requête à parser.");
 		}
 
 		return new Response(true, str);
@@ -229,9 +239,10 @@ public class SQLManager {
 
 	/** Insère un nouveau tuple dans la base de données.
 	 * @param vector : {@code Vector} représentant les données à insérer dans l'ordre.
-	 * @return "OK" si l'insertion réussie, sinon un message d'erreur.
+	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code this.sqlException}
+	 * est mis à jour.
 	 */
-	public String addTuple(Vector<Object> vector)
+	public boolean addTuple(Vector<Object> vector)
 	{
 
 		try {
@@ -251,7 +262,7 @@ public class SQLManager {
 				case "java.sql.Date": // DATE
 					rs.updateDate(columnPosition, (Date) vector.get(i));
 					break;
-				/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
+					/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
 					rs.updateBigDecimal(columnPosition, (BigDecimal) vector.get(i));
 					break;*/
 				case "java.lang.Boolean": // BIT
@@ -272,18 +283,20 @@ public class SQLManager {
 			rs.insertRow();
 			rs.moveToCurrentRow();
 			conn.commit();
-			return "OK";   
+			return true;   
 
 		} catch (SQLException exception) {
-			return errorHandler(exception);
+			this.sqlException = exception;
+			return false;
 		}
 	}
 
 	/** Supprime un tuple de la base de données.
 	 * @param index : index du tuple à supprimer affiché dans la {@code JTable} (commence à 0).
-	 * @return "OK" si la suppression réussie, sinon un message d'erreur.
+	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code sqlException}
+	 * est mis à jour.
 	 */
-	public String removeTuple(int index) 
+	public boolean removeTuple(int index) 
 	{
 		index++; // conversion entre index du TableModel et la methode absolute() où l'index commence à 1
 		try 
@@ -291,10 +304,11 @@ public class SQLManager {
 			rs.absolute(index);
 			rs.deleteRow();
 			conn.commit();
-			return "OK";
+			return true;
 
 		} catch (SQLException exception) {
-			return this.errorHandler(exception);
+			this.sqlException = exception;
+			return false;
 		}
 	}
 
@@ -302,9 +316,10 @@ public class SQLManager {
 	 * @param index : numéro d'index du tuple de la valeur à mettre à jour, commence à 0.
 	 * @param column : numéro de colonne de la valeur à mettre à jour, commence à 0.
 	 * @param value : nouvelle valeur de l'attribut.
-	 * @return "OK" si la modification réussie, sinon un message d'erreur.
+	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code sqlException}
+	 * est mis à jour.
 	 */
-	public String updateTuple(int index, int column, Object value)
+	public boolean updateTuple(int index, int column, Object value)
 	{
 		//correspondance entre la TableModel (index commence à 0) et le ResultSet (index commence à 1..)
 		column++; 
@@ -332,10 +347,11 @@ public class SQLManager {
 			// updateNull ?
 			rs.updateRow();
 			conn.commit();
-			return "OK";
+			return true;
 
 		} catch (SQLException exception) {
-			return SQLManager.errorHandler(exception);
+			this.sqlException = exception;
+			return false;
 		}
 	}
 }
