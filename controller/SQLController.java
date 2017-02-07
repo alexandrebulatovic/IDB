@@ -1,5 +1,6 @@
 package controller;
 
+import facade.CRUDFacade;
 import gui.SQLGUI;
 
 import java.sql.Connection;
@@ -24,17 +25,22 @@ public class SQLController {
 	/** Objet pour envoyer des requetes au SGBD. */
 	private SQLManager sql_manager;
 
+	private CRUDFacade facade;
+
 	/* CONSTRUCTEUR */
 
 	/** Instancie le {@code SQLManager}.
-	 * @param conn : l'objet Connection résultant de la connexion à la base de données. */
-	public SQLController(Connection conn)
+	 * @param conn : l'objet Connection résultant de la connexion à la base de données. 
+	 * @param facade : null interdit.
+	 * */
+	public SQLController(Connection conn, CRUDFacade facade)
 	{
+		this.facade = facade;
 		this.sql_manager = new SQLManager(conn, SQLManager.TYPE_PLAIN_RESULTSET);
 	}
 
+	
 	/* METHODES*/
-
 	/** Affiche au premier plan l'IHM pour taper du code SQL,
 	 *  la créée si elle n'existe pas. */
 	public void openSQL()

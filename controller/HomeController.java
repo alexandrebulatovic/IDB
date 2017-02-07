@@ -199,7 +199,7 @@ public class HomeController
 	private void createOrNotSQLController()
 	{
 		if (this.sqlControl == null) {
-			this.sqlControl = new SQLController(this.facade.getConnection());
+			this.sqlControl = new SQLController(this.facade.getConnection(), this.facade.getCRUDFacade());
 		}
 	}
 }
