@@ -1,5 +1,8 @@
 package facade;
 
+import java.util.Iterator;
+import java.util.List;
+
 import business.TableSet;
 import ddl.I_Attribute;
 import ddl.I_Table;
@@ -37,7 +40,20 @@ extends AbstractDDLCRUDFacade
 	 */
 	public Response createTable(I_Table table)
 	{
-		if(this.tables.addTable(table.getName())){
+		boolean addable = this.createtableBusiness(table);
+		if (!addable) 
+			return new Response(false, "Cette table existe déjà.");
+		else 
+			return this.createTableDBMS(table);
+	}
+
+	
+	private boolean createtableBusiness(I_Table table)
+	{
+		String name = table.getName();
+		boolean addable = this.tables.addTable(name);
+		
+		if (addable) {
 			for(I_Attribute attribute : table.getAttributes()){
 				this.tables.addAttributeToTable(
 						table.getName(),
@@ -47,15 +63,27 @@ extends AbstractDDLCRUDFacade
 						attribute.isNotNull(),
 						attribute.isPrimaryKey());
 			}
-			//TODO : ligne en dessous
-			return this.manager.createTable("");
-		}else{
-			return new Response(false,"Cette table existe déjà.");
 		}
-		//return this.manager.createTable(table);
+		return addable;
 	}
-
-
+	
+	
+	private Response createTableDBMS(I_Table table)
+	{
+		String name = table.getName();
+		List<String> sql = this.tables.getSQLTableToCreate(name);
+		Iterator<String> statement = sql.iterator();
+		
+		String create = statement.next(); 
+		Response result = this.manager.createTable(create);
+		
+		while (statement.hasNext() && result.hasSuccess()) {
+			result = this.manager.altertable(statement.next());
+		}
+		return result;
+	}
+	
+	
 	/**
 	 * @return la liste des types de données disponibles pour le SGBD.
 	 */

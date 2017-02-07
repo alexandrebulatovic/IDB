@@ -87,4 +87,10 @@ extends AbstractSuccesDDLManager
 		return new ResponseData<String>(true, DOMINO);
 	}
 
+
+	@Override
+	public Response altertable(String sql) 
+	{
+		return new Response(true, CREATE_TABLE);
+	}
 }
