@@ -82,6 +82,18 @@ public class testConstraints {
 		assertEquals("ALTER TABLE tableTest\nADD CONSTRAINT pk_pers_php PRIMARY KEY(a1,a2)",pk.toAddConstraintSQL());
 		assertEquals("ALTER TABLE tableTest\nDROP CONSTRAINT pk_pers_php",pk.toDropConstraintSQL());
 	}
+	
+	@Test
+	public void testEquals(){
+		UniqueConstraint c1 = new UniqueConstraint();
+		UniqueConstraint c2 = new UniqueConstraint();
+		Attribute att = new Attribute(null, null, 0, null, null, false);
+		c1.addAttribute(att);
+		c2.addAttribute(att);
+		System.out.println(c1.toString());
+		System.out.println(c2.toString());
+		System.out.println(c1.equals(c2));
+	}
 
 	
 	public Attribute getAttribute(String name){
