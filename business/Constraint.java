@@ -6,6 +6,11 @@ import java.util.List;
 
 public abstract class Constraint
 {
+	
+	private static long id=0;
+	
+	private long thisId;
+	
 	//Attributs
 	/** Mot clé définissant la contrainte exemple : PRIMARY KEY.*/
 
@@ -32,6 +37,7 @@ public abstract class Constraint
 	 */
 	protected Constraint()
 	{
+		thisId = Constraint.id++;
 		this.attributes = new ArrayList<Attribute>();
 	}
 	
@@ -167,6 +173,25 @@ public abstract class Constraint
 	public boolean dropAttribute(Attribute attributeToDrop) {
 		return this.attributes.remove(attributeToDrop);
 		
+	}
+
+
+	@Override
+	public String toString() {
+		return "Constraint [keyWord=" + keyWord + ", attributes=" + attributes
+				+ ", table=" + table + ", name=" + name + ", prefix=" + prefix
+				+ "]";
+	}
+	
+	/**
+	 * Compare 2 contraintes d'après un id écrit en brut
+	 */
+	@Override
+	public boolean equals(Object o){
+		if (((Constraint)o).thisId==this.thisId ){
+			return true;
+		}
+		return false;
 	}
 	
 	
