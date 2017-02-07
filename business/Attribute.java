@@ -319,8 +319,12 @@ public class Attribute
 	 * Supprime toutes les contraintes
 	 * @return une liste des contraintes qui ont été totalement supprimés	
 	 */
-	public ArrayList<Constraint> cleanConstraints() {
+	public ArrayList<Constraint> cleanAll() {
 		ArrayList<Constraint> tmp = new ArrayList<Constraint>(this.constraints);
+		
+		for (Constraint c : this.constraints){
+			c.cleanAll();
+		}
 		this.constraints.clear();//on vide la liste
 		return tmp;
 	}

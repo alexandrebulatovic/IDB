@@ -3,11 +3,13 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.*;
 
 import business.Attribute;
 import business.Constraint;
+import business.ForeignKeyConstraint;
 import business.PrimaryKeyConstraint;
 import business.Table;
 
@@ -133,7 +135,30 @@ public class testTable {
 	@Test
 	public void testDeleteTable(){
 		System.out.println("clean : "+this.table.cleanAll());
-		System.out.println(att1);
+		
+		ForeignKeyConstraint fk = new ForeignKeyConstraint(
+				table, 
+				Arrays.asList(att2), 
+				table2,
+				Arrays.asList(att_b)
+				);
+		
+//		System.out.println(att0.getConstraints());
+		assertEquals(0,att0.getConstraints().size());
+		
+		assertEquals(0,att1.getConstraints().size());
+		assertEquals(0,att2.getConstraints().size());
+		assertEquals(0,table.getAttributes().size());
+		assertEquals(0,pk1.getAttributes().size());
+		
+		for (Attribute c : fk.getAttributes()){
+			System.out.println("atteuheiffh ==>"+fk.attributes.get(0));//possède att2
+		}
+		
+		assertEquals(0,fk.getAttributes().size());
+		
+		
+		
 	}
 	
 	

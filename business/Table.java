@@ -521,12 +521,12 @@ public class Table {
 	public boolean cleanAll() {
 		ArrayList<Constraint> constraintsDeleted;
 		for (Attribute a : attributes){
-			constraintsDeleted = a.cleanConstraints();
+			constraintsDeleted = a.cleanAll();
 			
 			for (Constraint c : constraintsDeleted){
 				System.out.println("\n\ncons : "+this.constraints.get(0)+"\n\n");
 				System.out.println("\n\ntoDel : "+c+"\n\n");
-				System.out.println("============="+String.valueOf(c==this.constraints.get(0))+"=============");
+				System.out.println("============="+String.valueOf(c.equals(this.constraints.get(0)))+"=============");
 			}
 			
 			this.constraints.removeAll(constraintsDeleted);

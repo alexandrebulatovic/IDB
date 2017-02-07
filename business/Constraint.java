@@ -14,10 +14,10 @@ public abstract class Constraint
 	//Attributs
 	/** Mot clé définissant la contrainte exemple : PRIMARY KEY.*/
 
-	protected String keyWord = "NO_KEY_WORD";
+	public String keyWord = "NO_KEY_WORD";//TODO PASSER EN PROTECTED
 	
 	/** Attributs ciblés par la contrainte.*/
-	protected List<Attribute> attributes;
+	public List<Attribute> attributes;
 	
 	/** Une contrainte appartient à une table.*/
 	protected Table table;
@@ -193,6 +193,20 @@ public abstract class Constraint
 			return true;
 		}
 		return false;
+	}
+
+
+	/**
+	 * supprime tous le contenu de la constrainte
+	 */
+	public void cleanAll() {
+		
+		this.attributes.clear();
+		
+		this.table = null;
+		this.keyWord = "NO_KEYWORD";
+		
+		
 	}
 	
 	

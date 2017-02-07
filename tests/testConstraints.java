@@ -87,9 +87,10 @@ public class testConstraints {
 	public void testEquals(){
 		UniqueConstraint c1 = new UniqueConstraint();
 		UniqueConstraint c2 = new UniqueConstraint();
-		Attribute att = new Attribute(null, null, 0, null, null, false);
+		Attribute att = new Attribute("attTest", "TYPE", 0, null, "tableName", false);
 		c1.addAttribute(att);
 		c2.addAttribute(att);
+		System.out.println(att); 
 		System.out.println(c1.toString());
 		System.out.println(c2.toString());
 		assertFalse(c1.equals(c2));
