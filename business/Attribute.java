@@ -36,6 +36,9 @@ public class Attribute
 	public Attribute(String name, String type, int size, List<Constraint> constraints,String tableName, boolean isNotNull){
 		this.name=name;
 		this.type=type;
+		if (type ==null ){
+			this.type = "NO_TYPE";
+		}
 		this.size=size;
 
 

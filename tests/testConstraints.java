@@ -92,7 +92,8 @@ public class testConstraints {
 		c2.addAttribute(att);
 		System.out.println(c1.toString());
 		System.out.println(c2.toString());
-		System.out.println(c1.equals(c2));
+		assertFalse(c1.equals(c2));
+		assertTrue(c1.equals(c1));
 	}
 
 	
