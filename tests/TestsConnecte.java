@@ -52,7 +52,7 @@ public class TestsConnecte
 	public static void before()
 	{
 		dvm = new DefaultValueManager();
-		factory = new MainFactory(MainFactory.NULL);
+		factory = new MainFactory(MainFactory.MOCK);
 		homeFacade = new HomeFacade(dvm, factory, null);
 		homeControl = new HomeController(homeFacade);
 		ConnectionStrings parameters = homeControl.getDefaultValues();
@@ -101,7 +101,7 @@ public class TestsConnecte
 		assertEquals(MainFactory.ORACLE, factory.getAvailableDBMS()[0]);
 		assertEquals(MainFactory.MYSQL, factory.getAvailableDBMS()[1]);
 		
-		factory.setDBMS(MainFactory.NULL);
+		factory.setDBMS(MainFactory.MOCK);
 		assertEquals("Fabrique inactive.", factory.toString());
 		assertEquals(true, factory.getConnectionManager() instanceof MockConnectionManager);
 		assertEquals(true, factory.getDDLManager(connection) instanceof MockDDLManager);
