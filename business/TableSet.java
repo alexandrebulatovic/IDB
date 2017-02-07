@@ -101,7 +101,7 @@ public class TableSet {
 			PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
 			pk.addAttribute(a);
 			pk.setTable(table);
-			a.addConstraint(pk);									
+			a.addConstraint(pk);
 			table.addConstraint(pk);
 		}
 	}
@@ -110,12 +110,12 @@ public class TableSet {
 	/**
 	 * retourne une liste de requettes permettant de modifier la table
 	 * passé en paramètres
-	 * @Exemple [CREATE TABLE table(...),ALTER TABLE table... , ALTER T...,...]
+	 * @exemple [CREATE TABLE table(...),ALTER TABLE table... , ALTER T...,...]
 	 * @see business.Table#toCreate(Table)
 	 * @param tableName
 	 * @return ArrayList<String> sqlString
 	 */
-	public ArrayList<String> getSQLTableToCreate(String tableName){
+	public List<String> getSQLTableToCreate(String tableName){
 		for (Table table:tables){
 			if (table.getName().equals(tableName)){
 				return table.toCreate();
@@ -132,7 +132,7 @@ public class TableSet {
 	 * @return ArrayList<String> sqlString
 	 */
 	public ArrayList<String> getSQLTableToModify(String tableName){
-		return null;
+		return null;//TODO
 	}
 	
 	

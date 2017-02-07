@@ -1,5 +1,5 @@
 package business;
-import java.awt.List;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
@@ -83,7 +83,7 @@ public class Table {
 		return this.name;
 	}
 	
-	public ArrayList<Constraint> getConstraints(){
+	public List<Constraint> getConstraints(){
 		return this.constraints;
 	}
 	
@@ -128,8 +128,8 @@ public class Table {
 	 * 
 	 * @return String
 	 */
-	public ArrayList<String> toCreate(){
-		ArrayList<String> sqls = new ArrayList<String>();
+	public List<String> toCreate(){
+		List<String> sqls = new ArrayList<String>();
 		
 		String sql = this.tableNameToSQL() + "\n(\n";
 		int i=0;
@@ -155,7 +155,7 @@ public class Table {
 	 * Retourne les requetes SQL qui modifient
 	 * La table avec des ALTER TABLE
 	 */
-	public ArrayList<String> toModify(Table tableSource) {
+	public List<String> toModify(Table tableSource) {
 		ArrayList<String> results = new ArrayList<String>();
 		
 		addAttributes(tableSource, results);
