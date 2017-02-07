@@ -510,6 +510,25 @@ public class Table {
 	}
 
 
+	/**
+	 * Supprime tous les attributes et les contraintes
+	 * (ou modifie les contraintes si nécessaires)
+	 */
+	public boolean cleanAll() {
+		ArrayList<Constraint> constraintsDeleted;
+		for (Attribute a : attributes){
+			constraintsDeleted = a.cleanConstraints();
+			this.constraints.removeAll(constraintsDeleted);
+			constraintsDeleted.clear();
+		}
+		this.attributes.clear();
+		if (this.constraints.size() != 0){
+			return false;
+		}
+		return true;
+	}
+
+
 
 
 

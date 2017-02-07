@@ -313,6 +313,17 @@ public class Attribute
 	public List<Constraint> getConstraints(){
 		return this.constraints;
 	}
+
+	
+	/**
+	 * Supprime toutes les contraintes
+	 * @return une liste des contraintes qui ont été totalement supprimés	
+	 */
+	public ArrayList<Constraint> cleanConstraints() {
+		ArrayList<Constraint> tmp = new ArrayList<Constraint>(this.constraints);
+		this.constraints.clear();
+		return tmp;
+	}
 	
 }
 

@@ -107,7 +107,14 @@ public class TableSet {
 	}
 	
 
-	
+	/**
+	 * retourne une liste de requettes permettant de modifier la table
+	 * passé en paramètres
+	 * @Exemple [CREATE TABLE table(...),ALTER TABLE table... , ALTER T...,...]
+	 * @see business.Table#toCreate(Table)
+	 * @param tableName
+	 * @return ArrayList<String> sqlString
+	 */
 	public ArrayList<String> getSQLTableToCreate(String tableName){
 		for (Table table:tables){
 			if (table.getName().equals(tableName)){
@@ -117,17 +124,46 @@ public class TableSet {
 		return null;
 	}
 	
+	/**
+	 * retourne une liste de requettes permettant de modifier la table
+	 * passé en paramètres
+	 * @see business.Table#toModify(Table)
+	 * @param tableName
+	 * @return ArrayList<String> sqlString
+	 */
+	public ArrayList<String> getSQLTableToModify(String tableName){
+		return null;
+	}
 	
-	//TODO : à arranger Gael :p
-	public void removeTable(String table)
+	
+	/**
+	 * Supprime une table s'après son nom
+	 * et s'occupe de supprimer les sous attributs
+	 * et les contraintes associés 
+	 * @param table
+	 * @return true en cas de succès<br>
+	 * false en cas d'erreur
+	 */
+	public boolean removeTable(String table)
 	{
-		int i = 0;
-		for (Table t : tables) {
-			if (t.getName().equals(table)) {
-				this.tables.remove(i);
-				break;
+		Table laTable = this.getTableWithName(table);
+		laTable.cleanAll();
+		
+		return this.tables.remove(laTable);
+	}
+	
+	
+	/**
+	 * @param tableName
+	 * @return Retourne une table d'après son nom<br>
+	 * Retourne null en cas d'échec ou si la table n'existe pas
+	 */
+	private Table getTableWithName(String tableName){		
+		for (Table table : tables){
+			if (table.getName().equals(tableName)){
+				return table;
 			}
-			i++;
 		}
+		return null;
 	}
 }
