@@ -1,6 +1,7 @@
 package manager.connection;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import useful.ConnectionStrings;
 import useful.Response;
@@ -42,4 +43,8 @@ implements I_ConnectionManager
 
 	@Override
 	public void disconnect() {}
+
+
+	@Override
+	public String errorMessage(SQLException e) {return "";}
 }

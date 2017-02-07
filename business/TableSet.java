@@ -44,20 +44,20 @@ public class TableSet {
 	/**
 	 * ajoute une table si c'est possible (si aucune autres table n'existe),
 	 * sinon garde l'ancienne.<br>
-	 * il est nécessaire d'utiliser {@link business.TableSet#isAddableTable(String)} avant d'ajouter une table
+	 * il est nécessaire d'utiliser {@link business.TableSet#isAddable(String)} avant d'ajouter une table
 	 * (de préférence)
 	 * @param tableName
 	 * @param cascadeConstraint
-	 * @see business.TableSet#isAddableTable(String)
+	 * @see business.TableSet#isAddable(String)
 	 */
 	public void addTable(String tableName){
-		if (this.isAddableTable(tableName)){
+		if (this.isAddable(tableName)){
 			this.tables.add(new Table(tableName));
 		}
 	}
 	
 	
-	public boolean isAddableTable(String tableName){
+	public boolean isAddable(String tableName){
 		if (this.getTableWithName(tableName)==null){
 			return true;
 		}

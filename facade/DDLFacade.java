@@ -48,10 +48,15 @@ extends AbstractDDLCRUDFacade
 	}
 
 	
+	/**
+	 * 
+	 * @param table
+	 * @return
+	 */
 	private boolean createtableBusiness(I_Table table)
 	{
 		String name = table.getName();
-		boolean addable = this.tables.addTable(name);
+		boolean addable = this.tables.isAddable(name);
 		
 		if (addable) {
 			for(I_Attribute attribute : table.getAttributes()){

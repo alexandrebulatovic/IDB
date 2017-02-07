@@ -640,8 +640,10 @@ implements ItemListener
 		for(I_Attribute attribute : attributes){
 			table.addAttribute(attribute);
 		}
-		System.out.println(table);
-		this.control.createTable(table);
-		
+		Response r = this.control.createTable(table);
+		if (r.hasSuccess()) {
+			this.resetView();
+		}
+		this.talk(r);
 	}
 }
