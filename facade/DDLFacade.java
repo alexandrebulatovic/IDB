@@ -232,4 +232,9 @@ extends AbstractDDLCRUDFacade
 		return this.manager.getUniqueAttribute(string);
 		
 	}
+
+
+	public ResponseData<String[]> getPrimaryFromForeign(String string) {
+		return this.manager.getPrimaryFromForeign(string);
+	}
 }

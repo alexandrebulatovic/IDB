@@ -251,7 +251,7 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 	private void fillTableConstraints()
 	{
 		ResponseData<String[]> 
-		response = this.control.getForeignFromPrimary(this.tableNameComboBox.getSelectedItem().toString());
+		response = this.control.getPrimaryFromForeign(this.tableNameComboBox.getSelectedItem().toString());
 		while(this.constraintsListModel.getRowCount() != 0){
 			constraintsListModel.removeRow(0);
 		}
@@ -260,10 +260,10 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 				Vector<String> v = new Vector<String>();
 				v.addElement(s[5]);
 				v.addElement("FOREIGN KEY");
-				v.addElement(s[0]);
-				v.addElement(s[1]);
 				v.addElement(s[3]);
 				v.addElement(s[4]);
+				v.addElement(s[0]);
+				v.addElement(s[1]);
 				
 				this.constraintsListModel.addRow(v);
 			}

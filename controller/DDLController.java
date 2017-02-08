@@ -262,4 +262,9 @@ public class DDLController
 	public ResponseData<String> getUniqueAttribute(String string) {
 		return this.facade.getUniqueAttribute(string);
 	}
+
+
+	public ResponseData<String[]> getPrimaryFromForeign(String string) {
+		return this.facade.getPrimaryFromForeign(string);
+	}
 }
