@@ -296,15 +296,31 @@ public class TableSet
 	 * voir @return pour le contenu de la description de chaque attribut
 	 * @param tableName
 	 * @return
-	 * 0 - name
-	 * 1 - type
-	 * 2 - size
-	 * 3 - 'UNIQUE'/null
-	 * 4 - {String tableSource, String[]}/null
+	 * 0 - name string
+	 * 1 - type string
+	 * 2 - size int
+	 * 3 - null/nomConstrainte : String
+	 * 4 - null/liste fk composé de 
+	 * 		0 - nomFk String
+	 * 		1 - tableSource String
+	 * 		2 - liste<String> attSources String
+	 * 		3 - tableDest String 
+	 * 		4 - listattDest String
 	 */
-	public String[] getTableWithJustComplexConstraintsAndBaseInformationsAttributes(){
-		//TODO
-		return null;
+	public List<Object> getTableWithJustComplexConstraintsAndBaseInformationsAttributes(String tableName, String attributeName){
+		Attribute attribute = this.getAttributeWithName(tableName, attributeName);
+		List<Object> attributeReturn = new ArrayList();
+		
+		attributeReturn.add(attribute.getName());
+		attributeReturn.add(attribute.type);
+		attributeReturn.add(attribute.size);
+		attributeReturn.add(attribute.isUnique());
+		
+		List<Object> fk = attribute.getFk().toListOfString();
+		
+		attributeReturn.add(fk);
+		
+		return attributeReturn;
 	}
 	
 	private List<Attribute> getAttributesFromString(Table tableSource, String[] attributesSourcesNames) {

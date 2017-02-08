@@ -148,6 +148,11 @@ public class Attribute
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @return ForeignKeyConstraint ou null
+	 * 
+	 */
 	public ForeignKeyConstraint getFk(){
 		if (this.isFk()){
 			for (Constraint c : constraints){

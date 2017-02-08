@@ -94,4 +94,35 @@ public class ForeignKeyConstraint extends Constraint {
 		this.attributesDestination.clear();
 	}
 
+	
+	public List<Object> toListOfString() {
+		ArrayList<Object> liste = new ArrayList();
+		
+		liste.add(this.name);
+		liste.add(this.getTable());
+		liste.add(this.getAttributesNames());
+		liste.add(this.tableDestination);
+		liste.add(this.getAttributesDestinationNames());
+		
+		
+		
+		return liste;
+	}
+
+	private List<String> getAttributesDestinationNames() {
+		ArrayList<String> retour = new ArrayList<String>();
+		for (Attribute att : this.getAttributesDestination()){
+			retour.add(att.getName());
+		}
+		return retour;
+	}
+
+	private List<String> getAttributesNames() {
+		ArrayList<String> retour = new ArrayList<String>();
+		for (Attribute att : this.getAttributes()){
+			retour.add(att.getName());
+		}
+		return retour;
+	}
+
 }
