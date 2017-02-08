@@ -75,7 +75,7 @@ public class testAttribute {
 				+ "ADD CONSTRAINT un_tableBidon_attTest UNIQUE(attTest);\n"
 				+ "\n"
 				+ "ALTER TABLE tableBidon\n"
-				+ "ADD CONSTRAINT pk_tableBidon_attTest PRIMARY KEY(attTest);\n"
+				+ "ADD CONSTRAINT pk_tableBidon PRIMARY KEY(attTest);\n"
 				+ "\n"
 				+ "ALTER TABLE tableBidon\n"
 				+ "ADD CONSTRAINT fk_tableBidon_attTest FOREIGN KEY (attTest) REFERENCES tableBidon2(attTest2);\n"

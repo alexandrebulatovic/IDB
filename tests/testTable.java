@@ -101,7 +101,7 @@ public class testTable {
 				+ "id NUMBER (10)\n"
 				+ ");\n"
 				+ "ALTER TABLE PROFILS\n"
-				+ "ADD CONSTRAINT pk_PROFILS_id PRIMARY KEY(id);\n";
+				+ "ADD CONSTRAINT pk_PROFILS PRIMARY KEY(id);\n";
 		String total = "";
 		for (String sql : this.table.toCreate()){
 			total+=sql+";\n";

@@ -37,7 +37,7 @@ public class testConstraints {
 		pk.addAttribute(a1);
 		pk.addAttribute(a2);
 		pk.createAndSetName();
-		assertEquals("pk_tableTest_a1_a2 PRIMARY KEY(a1,a2)",pk.getNameSQL());
+		assertEquals("pk_tableTest PRIMARY KEY(a1,a2)",pk.getNameSQL());
 		
 	}
 	
@@ -96,6 +96,43 @@ public class testConstraints {
 		assertFalse(c1.equals(c2));
 		assertTrue(c1.equals(c1));
 	}
+	
+	
+	@Test
+	public void testLenghtOfNameConstraintName(){
+		PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
+		pk.setName("azertyuiopqsdfghjklmwxcvbn123$3.14159165358979323");
+		assertEquals("azertyuiopqsdfghjklmwxcvbn123$",pk.getName());
+		Attribute a1 = new Attribute("zhdzhdgjzhdgjzhdjh", "STRING", 888);
+		Attribute a2 = new Attribute("123456789999999", "VARCHAR", 465);
+		Table t1 = new Table("tableBidon");
+		pk.setTable(t1);
+		pk.addAttribute(a1);
+		pk.addAttribute(a2);
+		pk.createAndSetName();
+		assertEquals("pk_tableBidon",pk.getName());
+		
+		UniqueConstraint un = new UniqueConstraint();
+		un.setTable(t1);
+		
+		un.addAttribute(new Attribute("rien", "TYPE", 66));
+		un.addAttribute(new Attribute("rien2", "TYPE", 33));
+		un.createAndSetName();
+		assertEquals("un_tableBidon_rien_rien2",un.getName());
+		un.addAttribute(new Attribute("rien3", "TYPE", 33));
+		un.addAttribute(new Attribute("rien4", "TYPE", 33));
+		un.addAttribute(new Attribute("rienzdzdzdzdzd5", "TYPE", 33));
+		un.addAttribute(new Attribute("rien6", "TYPE", 33));
+		un.addAttribute(new Attribute("rien7", "TYPE", 33));
+		un.addAttribute(new Attribute("rien11", "TYPE", 33));
+		un.addAttribute(new Attribute("rien22", "TYPE", 33));
+		un.addAttribute(new Attribute("rien33", "TYPE", 33));
+		
+		
+		un.createAndSetName();
+		assertEquals("un_tableBidon",un.getName());
+		
+	}
 
 	
 	public Attribute getAttribute(String name){
@@ -107,3 +144,4 @@ public class testConstraints {
 
 
 }
+

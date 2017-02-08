@@ -22,7 +22,7 @@ public class testTableSet {
 	}
 	
 	@Test
-	public void test(){
+	public void testGlobal(){
 		List<String >tablesNames = new ArrayList<String>();
 		
 		tablesNames.add("table1");
@@ -37,7 +37,7 @@ public class testTableSet {
 				+ "att1 VARCHAR2 (20)\n"
 				+ ");\n"
 				+ "ALTER TABLE table1\n"
-				+ "ADD CONSTRAINT pk_table1_att1 PRIMARY KEY(att1);\n";
+				+ "ADD CONSTRAINT pk_table1 PRIMARY KEY(att1);\n";
 		String sqlTotal = "";
 		for (String sql : ensembleTable.getSQLTableToCreate("table1")){
 			sqlTotal+=sql+";\n";
@@ -59,7 +59,7 @@ public class testTableSet {
 				+ "attDate DATE\n"
 				+ ");\n"
 				+ "ALTER TABLE table1\n"
-				+ "ADD CONSTRAINT pk_table1_att1_att2 PRIMARY KEY(att1,att2);\n";
+				+ "ADD CONSTRAINT pk_table1 PRIMARY KEY(att1,att2);\n";
 		
 		sqlTotal = "";
 		for (String sql : ensembleTable.getSQLTableToCreate("table1")){

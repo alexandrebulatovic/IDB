@@ -55,16 +55,30 @@ public abstract class Constraint
 	/**
 	 * @return le nom unique de la contrainte.
 	 */
-	public String getName(){return this.name;}
+	public String getName(){
+		return this.name;
+	}
 	
+	/**
+	 * set le nom de la contrainte
+	 * @note la longueur ne doit dépasser les 30 caractères
+	 * @param name
+	 */
 	public void setName(String name){
-		this.name = name;
+		if (name.length()>30){
+			this.name = name.substring(0, 30);
+		}
+		
+		else{
+			this.name = name;
+		}
 	}
 	
 	
 	/**
 	 * Détermine le nom de la contrainte.<br/>
 	 * Assigne ce nom à la contrainte.
+	 * @see Constraint#createName()
 	 */
 	public void createAndSetName()
 	{
@@ -74,7 +88,7 @@ public abstract class Constraint
 	
 	/**
 	 * Retourne une représentation de la contrainte 
-	 * brute
+	 * 'brute'
 	 * @exemple CHECK(machin IS NOT NULL)
 	 * @return String
 	 */
@@ -82,11 +96,19 @@ public abstract class Constraint
 	
 	
 	/** 
-	 * exemple retourne 'nn_table_att UNIQUE'
-	 * l'entete de la contrainte
-	 * @return 
+	 * @return la table source concerné par la contrainte
 	 */
-	public Table getTable() {return table;}
+	public Table getTable() {
+		return table;
+	}
+	
+	/**
+	 * retourne l'id unique de la constrainte
+	 * @return thisId
+	 */
+	public long getId(){
+		return this.thisId;
+	}
 
 	
 	/**
@@ -107,22 +129,23 @@ public abstract class Constraint
 
 
 	/**
-	 * TODO : empécher les doublons.
-	 * TODO : mettre à jour le nom de la contrainte.
 	 * Ajoute un attribut visé par la contrainte.
-	 * @param att : null interdit
+	 * @param attribute : null interdit
+	 * @note change le nom de la constrainte, ne pas faire setName au début ! ({@link Constraint#setName(String)})
 	 */
-	public void addAttribute(Attribute att)
+	public void addAttribute(Attribute attribute)
 	{
-		this.attributes.add(att);
-		this.createAndSetName();
+		if (!this.attributes.contains(attribute)){
+			this.attributes.add(attribute);
+			this.createAndSetName();
+		}
 	}
 	
 	/**
-	 * TODO : préciser exactement ce qu'il ressort.
-	 * exemple : 
-	 * ALTER TABLE tableTest
-	 * ADD CONSTRAINT pk_pers_php UNIQUE(att)
+	 * retourne une requette sql qui ajoute la contrainte actuelle
+	 * @exemple 
+	 * ALTER TABLE tableName
+	 * ADD CONSTRAINT un_tableName_att UNIQUE(att)
 	 * @return String
 	 */
 	public String toAddConstraintSQL(){
@@ -130,9 +153,9 @@ public abstract class Constraint
 	}
 	
 	/**
-	 * exemple :
-	 * ALTER TABLE tableTest
-	 * ADD CONSTRAINT pk_pers_php
+	 * @exemple
+	 * ALTER TABLE tableName<br>
+	 * DROP CONSTRAINT pk_tableName_att
 	 * @return String
 	 */
 	public String toDropConstraintSQL(){
@@ -140,7 +163,7 @@ public abstract class Constraint
 	}
 	
 	/**
-	 * Retourne ALTER TABLE {nomTable}\n
+	 * @exemple ALTER TABLE $tableName\n
 	 * @return String
 	 */
 	private String toAlterSQL(){
@@ -152,6 +175,9 @@ public abstract class Constraint
 
 
 	/**
+	 * @note le nom de dépassera jamais les 30 caractères
+	 * @exemple pk_TableName_att1_att2
+	 * @see business.Constraint#createAndSetName()
 	 * @return le nom de la contrainte, déterminé par : <br/>
 	 * - son prefix,<br/>
 	 * - sa table, <br/>
@@ -160,14 +186,44 @@ public abstract class Constraint
 	public String createName()
 	{
 		StringBuilder result = new StringBuilder();
+		StringBuilder start =  createStartName();
 		
-		if (this.prefix != null) result.append(this.prefix + '_');
-		if (table != null) result.append(table.getName() + '_');
+		
+		result.append(start.toString());
+		
 		for (Attribute attribute : this.attributes){
 			result.append(attribute.name + '_');  
 		}
+		
 		result.deleteCharAt(result.length()-1);
+		
+		if (result.length()>30){
+			if (start.length()>30){
+				return this.prefix+"_"+String.valueOf(this.thisId);
+			}
+			start.deleteCharAt(start.length()-1);
+			return start.toString();
+		}
+		
+		
 		return result.toString();
+	}
+
+
+	/**
+	 * @exemple pk_tableName
+	 * @return
+	 */
+	protected StringBuilder createStartName() {
+		StringBuilder start = new StringBuilder();
+		if (this.prefix != null){
+			start.append(this.prefix + '_');
+		}
+			
+		if (table != null){
+			start.append(table.getName() + '_');
+		}
+		return start;
 	}
 
 
