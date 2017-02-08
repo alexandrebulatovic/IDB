@@ -65,6 +65,7 @@ public abstract class Constraint
 	 * @param name
 	 */
 	public void setName(String name){
+		if (name == null) return;
 		if (name.length()>30){
 			this.name = name.substring(0, 30);
 		}

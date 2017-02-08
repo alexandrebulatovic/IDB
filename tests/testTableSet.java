@@ -19,10 +19,6 @@ public class testTableSet {
 	@Before
 	public void init() {
 		ensembleTable = new TableSet();
-	}
-	
-	@Test
-	public void testGlobal(){
 		List<String >tablesNames = new ArrayList<String>();
 		
 		tablesNames.add("table1");
@@ -30,8 +26,13 @@ public class testTableSet {
 		tablesNames.add("table3");
 		
 		ensembleTable.loadTables(tablesNames);
-		ensembleTable.addAttribute("table1", "att1", "VARCHAR2", 20, false, true);
 		
+		ensembleTable.addAttribute("table1", "att1", "VARCHAR2", 20, false, true);
+	}
+	
+	@Test
+	public void testGlobal(){
+
 		String sqlAttendu = "CREATE TABLE table1\n"
 				+ "(\n"
 				+ "att1 VARCHAR2 (20)\n"
@@ -69,6 +70,24 @@ public class testTableSet {
 		
 //		System.out.println(ensembleTable.getSQLTableToCreate("table1"));
 		
+	}
+	
+	@Test
+	public void testForeignKey(){
+		ensembleTable.addAttribute("table1", "attFk1", "VARCHAR2", 2, false, false);
+		ensembleTable.addAttribute("table1", "attFk2", "VARCHAR2", 2, false, false);
+		
+		ensembleTable.addAttribute("table2", "attPk1", "VARCHAR2", 2, false, true);
+		ensembleTable.addAttribute("table2", "attPk2", "VARCHAR2", 2, false, true);
+
+		
+		ensembleTable.addForeignKey("table1", new String[] {"attFk1","attFk2"}, "table2", new String[] {"attPk1","attPk2"});
+		assertEquals("ALTER TABLE table1\n"
+				+ "ADD CONSTRAINT fk_table1_attFk1_attFk2 "
+				+ "FOREIGN KEY (attFk1) "
+				+ "REFERENCES table2(attPk1,attPk2)",
+				
+				ensembleTable.getSQLTableToCreate("table1").get(2));
 	}
 
 }

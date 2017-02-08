@@ -160,21 +160,6 @@ public class TableSet
 		return added;
 	}
 	
-	private List<Attribute> getAttributesFromString(Table tableSource, String[] attributesSourcesNames) {
-		ArrayList<Attribute> retour = new ArrayList<Attribute>();
-		
-		for (String attName : attributesSourcesNames){
-			for (Attribute att : tableSource.getAttributes()){
-				if (att.getName().equals(attName)){
-					retour.add(att);
-				}
-			}
-		}
-		return retour;
-		
-	}
-
-
 	/**
 	 * ajoute une clé étrangère si c'est possible
 	 * Le nom de la fk sera automatiquement généré
@@ -237,6 +222,21 @@ public class TableSet
 	}
 	
 	
+	private List<Attribute> getAttributesFromString(Table tableSource, String[] attributesSourcesNames) {
+		ArrayList<Attribute> retour = new ArrayList<Attribute>();
+		
+		for (String attName : attributesSourcesNames){
+			for (Attribute att : tableSource.getAttributes()){
+				if (att.getName().equals(attName)){
+					retour.add(att);
+				}
+			}
+		}
+		return retour;
+		
+	}
+
+
 	/**
 	 * @param name : nom de la table a récupérée, null interdit.
 	 * @return une table nommée $name si et seulement si elle existe,<br>
