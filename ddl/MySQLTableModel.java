@@ -9,7 +9,7 @@ extends AbstractTableModel
 	 */
 	public MySQLTableModel()
 	{
-		super("t");
+		super();
 	}
 	
 	/**

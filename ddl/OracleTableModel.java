@@ -9,7 +9,7 @@ extends AbstractTableModel
 	 */
 	public OracleTableModel()
 	{
-		super("t");
+		super();
 	}
 	
 	/**

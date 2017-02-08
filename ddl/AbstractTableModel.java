@@ -11,6 +11,11 @@ implements I_TableModel
 
 	private List<I_AttributeModel> attributes;
 
+	protected AbstractTableModel()
+	{
+		this("t");
+	}
+	
 	public AbstractTableModel(String name){
 		this.setName(name);
 		attributes = new ArrayList<I_AttributeModel>();

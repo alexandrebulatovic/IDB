@@ -9,7 +9,7 @@ extends AbstractTableModel
 	 */
 	public MockTableModel()
 	{
-		super("t");
+		super();
 	}
 	
 	/**
