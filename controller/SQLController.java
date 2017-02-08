@@ -4,13 +4,14 @@ import facade.CRUDFacade;
 import gui.SQLGUI;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.JTable;
 
 import useful.Response;
 import manager.sql.SQLManager;
 
-/** Effectue la communication entre la {@code SQLView} et le {@code SQLController}.
+/** Effectue la communication entre la vue et le manager du SGBD.
  * 
  * @see SQLManager
  * @see SQLGUI
@@ -25,7 +26,7 @@ public class SQLController {
 	/** Objet pour envoyer des requetes au SGBD. */
 	private SQLManager sql_manager;
 
-	private CRUDFacade facade;
+	private CRUDFacade crud_facade;
 
 	/* CONSTRUCTEUR */
 
@@ -35,11 +36,11 @@ public class SQLController {
 	 * */
 	public SQLController(Connection conn, CRUDFacade facade)
 	{
-		this.facade = facade;
+		this.crud_facade = facade;
 		this.sql_manager = new SQLManager(conn, SQLManager.TYPE_PLAIN_RESULTSET);
 	}
 
-	
+
 	/* METHODES*/
 	/** Affiche au premier plan l'IHM pour taper du code SQL,
 	 *  la créée si elle n'existe pas. */
@@ -66,11 +67,26 @@ public class SQLController {
 	 * @param reply : la réponse du serveur, un {@code String} ou un {@code JTable}. */
 	private void transmitReply(Object reply) 
 	{
-		if (reply instanceof Response)
-			this.sql_view.showReply(((Response) reply).getMessage());
+		if (reply instanceof Response) {
+
+			if (!((Response) reply).hasSuccess()) { // si c'est une erreur
+
+				SQLException sqlException = this.sql_manager.getSqlException(); // on récupère l'exception
+				String errorMsg = this.crud_facade.generateErrorMsg(sqlException); // on crée un message d'erreur
+
+				this.sql_view.showError(errorMsg); // on affiche le message d'erreur
+
+			} else {
+
+				String msg = ((Response) reply).getMessage();
+
+				this.sql_view.showReply(msg); // on affiche une notification à l'utilisateur
+
+			}
+		}
 
 		else if (reply instanceof JTable)
-			this.sql_view.showTable((JTable) reply);
+			this.sql_view.showTable((JTable) reply); // on affiche la JTable retournée
 	}
 
 }

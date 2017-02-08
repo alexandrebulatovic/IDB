@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.sql.Statement;
 import java.util.Vector;
 
@@ -119,16 +120,12 @@ public class SQLManager {
 			} else { //  INSERT, UPDATE, DELETE ou LDD
 
 				return buildReply(qry_formated);
-
 			}
 
-		}catch (SQLException exception) {	
-			return errorHandler(exception);
+		} catch (SQLException exception) {
+			this.sqlException = exception;
+			return new Response(false);
 		}
-		catch (Exception exception) {
-			exception.printStackTrace();	
-		}
-		return null;
 	}
 
 	/** Formate la requête SQL pour pouvoir fonctionner avec JDBC. 
@@ -251,33 +248,40 @@ public class SQLManager {
 			int columnPosition = 1;
 			for (int i = 0; i < vector.size() ; i++, columnPosition++) 
 			{ 
-				switch (this.rsmd.getColumnClassName(columnPosition)) // on récupère la classe de l'objet utilisé pour l'affichage
-				{
-				case "java.lang.String": // type sql : CHAR, VARCHAR, LONGVARCHAR
-					rs.updateString(columnPosition, (String) vector.get(i));
-					break;
-				case "java.lang.Integer": // INTEGER
-					rs.updateInt(columnPosition, (int) vector.get(i));
-					break;
-				case "java.sql.Date": // DATE
-					rs.updateDate(columnPosition, (Date) vector.get(i));
-					break;
-					/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
-					rs.updateBigDecimal(columnPosition, (BigDecimal) vector.get(i));
-					break;*/
-				case "java.lang.Boolean": // BIT
-					rs.updateBoolean(columnPosition, (boolean) vector.get(i));
-					break;
-				case "java.lang.Long": // BIGINT
-					rs.updateLong(columnPosition, (long) vector.get(i));
-					break;
-				case "java.lang.Float": // REAL
-					rs.updateFloat(columnPosition,  (float) vector.get(i));
-					break;
-				case "java.lang.Double": // DOUBLE, FLOAT
-					rs.updateDouble(columnPosition,  (double) vector.get(i));
-					break;
+				if (vector.get(i) == null){
+					rs.updateNull(columnPosition);
+				} else {
+
+					switch (this.rsmd.getColumnClassName(columnPosition)) // on récupère la classe de l'objet utilisé pour l'affichage
+					{
+					case "java.lang.String": // type sql : CHAR, VARCHAR, LONGVARCHAR
+						rs.updateString(columnPosition, (String) vector.get(i));
+						break;
+					case "java.lang.Integer": // INTEGER
+						rs.updateInt(columnPosition, (int) vector.get(i));
+						break;
+					case "java.sql.Date": // DATE
+						rs.updateDate(columnPosition, (Date) vector.get(i));
+						break;
+						/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
+						rs.updateBigDecimal(columnPosition, (BigDecimal) vector.get(i));
+						break;*/
+					case "java.lang.Boolean": // BIT
+						rs.updateBoolean(columnPosition, (boolean) vector.get(i));
+						break;
+					case "java.lang.Long": // BIGINT
+						rs.updateLong(columnPosition, (long) vector.get(i));
+						break;
+					case "java.lang.Float": // REAL
+						rs.updateFloat(columnPosition,  (float) vector.get(i));
+						break;
+					case "java.lang.Double": // DOUBLE, FLOAT
+						rs.updateDouble(columnPosition,  (double) vector.get(i));
+						break;
+					}
+
 				}
+
 			}
 
 			rs.insertRow();
@@ -328,7 +332,9 @@ public class SQLManager {
 		try {
 			rs.absolute(index);
 			// TODO utiliser updateObject
-			if (value instanceof Integer)
+			if (value == null)
+				rs.updateNull(column);
+			else if (value instanceof Integer)
 				rs.updateInt(column, (int) value);
 			else if (value instanceof String)
 				rs.updateString(column, (String) value);

@@ -21,7 +21,6 @@ import controller.SQLController;
  * Elle intéragit également avec l'utilisateur en lui affichant une {@link JTable} ou
  *  un pop-up de la réponse du serveur.
  * <P>
- *  
  *  @see SQLController
  *  */
 
@@ -126,13 +125,21 @@ implements ActionListener
 				}
 			}
 		});
-		JOptionPane.showMessageDialog(null, new JScrollPane(table), "Résultat", JOptionPane.INFORMATION_MESSAGE);
+
+		JOptionPane.showMessageDialog(null, new JScrollPane(table), "Résultat", JOptionPane.PLAIN_MESSAGE);
 	}
 
-	/** Pop-up pour afficher un message.
-	 * @param str : Message à afficher. */
+	/** Pop-up pour afficher un message d'information.
+	 * @param str : Message d'information à afficher. */
 	public void showReply(String str)
 	{
 		JOptionPane.showMessageDialog(null, str, "Résultat", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	/** Pop-up pour afficher un message d'erreur.
+	 * @param str : Message d'erreur à afficher. */
+	public void showError(String str)
+	{
+		JOptionPane.showMessageDialog(null, str, "Erreur", JOptionPane.ERROR_MESSAGE);
 	}
 }

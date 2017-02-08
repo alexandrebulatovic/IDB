@@ -48,7 +48,7 @@ extends AbstractDDLCRUDFacade
 	public Response deleteRow(int index) {
 		if (!this.sql_manager.removeTuple(index)) {
 			SQLException sqlException = this.sql_manager.getSqlException();
-			String msgException = connector.errorMessage(sqlException);
+			String msgException = generateErrorMsg(sqlException);
 			return new Response(false, msgException);
 		} else
 			return new Response(true);
@@ -66,8 +66,8 @@ extends AbstractDDLCRUDFacade
 	{
 		if (!this.sql_manager.updateTuple(index, column, updateBuffer)) {
 			SQLException sqlException = this.sql_manager.getSqlException();
-			String msgException = connector.errorMessage(sqlException);
-			return new Response(true, msgException);
+			String msgException = generateErrorMsg(sqlException);
+			return new Response(false, msgException);
 		} else
 			return new Response(true);
 	}
@@ -80,9 +80,16 @@ extends AbstractDDLCRUDFacade
 	public Response addTuple(Vector<Object> row_to_add) {
 		if (!this.sql_manager.addTuple(row_to_add)) {
 			SQLException sqlException = this.sql_manager.getSqlException();
-			String msgException = connector.errorMessage(sqlException);
-			return new Response(true, msgException);
+			String msgException = generateErrorMsg(sqlException);
+			return new Response(false, msgException);
 		} else
 			return new Response(true);
 	}
+
+	/** {@link I_ConnectionManager#errorMessage(SQLException)} */
+	public String generateErrorMsg(SQLException sqlException) {
+		return connector.errorMessage(sqlException);
+	}
+
+
 }
