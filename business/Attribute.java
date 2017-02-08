@@ -328,6 +328,10 @@ public class Attribute
 		this.constraints.clear();//on vide la liste
 		return tmp;
 	}
+
+	public String getName() {
+		return this.name;
+	}
 	
 }
 

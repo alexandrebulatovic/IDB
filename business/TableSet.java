@@ -1,6 +1,7 @@
 package business;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /** Conteneur de tables. */
@@ -113,6 +114,82 @@ public class TableSet
 		}
 		return false;
 	}
+	
+	/**
+	 * ajoute une clé étrangère si c'est possible
+	 * Les attributs doivent exister !!
+	 * @param nameOfConstraint
+	 * @param tableSourceName
+	 * @param attributesSourcesNames
+	 * @param tableDestinationName
+	 * @param attributesDestinationsNames
+	 * @return
+	 */
+	public boolean addForeignKey(String name, String tableSourceName, String[] attributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
+		boolean added = false;
+		
+		Table tableSource = this.getTableWithName(tableSourceName);
+		Table tableDestination = this.getTableWithName(tableDestinationName);
+		
+		ForeignKeyConstraint fk = new ForeignKeyConstraint();
+		fk.setTable(tableSource);
+		fk.setTableDestination(tableDestination);
+		
+		
+		
+		for (Attribute att : getAttributesFromString(tableSource,attributesSourcesNames)){
+			att.addConstraint(fk);
+			fk.addAttribute(att);
+		}
+		
+		for (Attribute att : getAttributesFromString(tableDestination,attributesDestinationsNames)){
+			att.addConstraint(fk);
+			fk.addAttributeDestination(att);
+		}
+		
+		
+		fk.setName(name);
+		if (name==null){
+			fk.createAndSetName();
+		}
+
+		tableSource.addConstraint(fk);
+		
+		
+		
+		return added;
+	}
+	
+	private List<Attribute> getAttributesFromString(Table tableSource, String[] attributesSourcesNames) {
+		ArrayList<Attribute> retour = new ArrayList<Attribute>();
+		
+		for (String attName : attributesSourcesNames){
+			for (Attribute att : tableSource.getAttributes()){
+				if (att.getName().equals(attName)){
+					retour.add(att);
+				}
+			}
+		}
+		return retour;
+		
+	}
+
+
+	/**
+	 * ajoute une clé étrangère si c'est possible
+	 * Le nom de la fk sera automatiquement généré
+	 * @see TableSet#addForeignKey(String name, String, String[], String, String[])
+	 * 
+	 * @param tableSourceName
+	 * @param AttributesSourcesNames
+	 * @param tableDestinationName
+	 * @param attributesDestinationsNames
+	 * @return
+	 */
+	public boolean addForeignKey(String tableSourceName, String[] AttributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
+		return this.addForeignKey(null, tableSourceName, AttributesSourcesNames, tableDestinationName, attributesDestinationsNames);
+	}
+	
 
 	/**
 	 * retourne une liste de requettes permettant de modifier la table
