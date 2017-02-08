@@ -194,7 +194,7 @@ public class TableSet
 	 * @param attributesNames
 	 */
 	public void addUnique(String name, String tableName, String[] attributesNames){
-		Table table = this.getTableWithName(tableName);
+		Table table = this.getTableByName(tableName);
 		UniqueConstraint un = new UniqueConstraint();
 		un.setTable(table);
 		for (Attribute att : table.getAttributes()){
