@@ -208,7 +208,18 @@ public class DDLController
 	 */
 	public ResponseData<String[]> getAttributes(String table)
 	{	
-		return getAttributeFromDBMS(table);
+//		if (! this.facade.isLoaded(table)) {
+			ResponseData<String[]> result = getAttributeFromDBMS(table);
+			List<String[]> attributes = result.getCollection();
+			for (String [] att : attributes) {
+				this.facade.addAttribute(table, att);
+			}
+			return result;
+//		}
+//		else {
+//			return null;
+//		}
+		
 	}
 
 
@@ -225,8 +236,8 @@ public class DDLController
 			return new ResponseData<String[]>(false, "Clées primaires non récupérées.");
 		}
 		
-		List<String[]> collection = new ArrayList<String[]>();
 		String [] attribute;
+		List<String[]> collection = new ArrayList<String[]>();
 		for (String [] att : attributesData.getCollection()) {
 			attribute = this.createAttribute(att, primaries.getCollection());
 			collection.add(attribute);
@@ -314,5 +325,12 @@ public class DDLController
 
 	public ResponseData<String[]> getPrimaryFromForeign(String string) {
 		return this.facade.getPrimaryFromForeign(string);
+	}
+
+
+	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
+			String[] attributesDestinationsNames) {
+		
+		return this.facade.addForeignKey(tableSourceName,attributesSourcesNames,tableDestinationName,attributesDestinationsNames);
 	}
 }

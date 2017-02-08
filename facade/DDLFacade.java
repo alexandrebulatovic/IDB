@@ -55,6 +55,51 @@ extends AbstractDDLCRUDFacade
 
 	
 	/**
+	 * @param table
+	 * @return vrai ssi $table a déjà étée chargée depuis le SGBD,
+	 * faux sinon.
+	 */
+	public boolean isLoaded(String table)
+	{
+		return this.tables.isLoaded(table);
+	}
+	
+	
+//	/**
+//	 * Ajoute $attribute à la $table.
+//	 * 
+//	 * @param table : nom de la table, null interdit.
+//	 * @param attribute : nom de l'attribut, null interdit.
+//	 * @param type : nom du type, null interdit.
+//	 * @param size : taille du type, 0 < taille.
+//	 * @param notNull : vrai ssi $attribut est sous contrainte not null, faux sinon.
+//	 * @param primary : vrai ssi $attribut est sous contrainte primary, faux sinon.
+//	 * @return vrai ssi $attribute est ajouté avec succès à $table, faux sinon.
+//	 */
+//	public boolean addAttribute
+//		(String table, String attribute, String type, int size, boolean notNull, boolean primary)
+//	{
+//		return this.tables.addAttribute(table, attribute, type, size, notNull, primary);
+//	}
+	
+	
+	/**
+	 * Ajoute $attribute à la table.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @param attribute : nom de l'attribut, null interdit.
+	 * @return vrai ssi $attribute est ajouté avec succès à $table, faux sinon.
+	 */
+	public boolean addAttribute(String table, String [] att)
+	{
+		return this.tables.addAttribute(table, att[0], att[1], 
+				Integer.parseInt(att[2]), 
+				"NOTNULL".equals(att[3]), 
+				"PRIMARY".equals(att[4]));
+	}
+	
+	
+	/**
 	 * @return la liste des types de données disponibles pour le SGBD.
 	 */
 	public String[] getAttributeTypes()
@@ -171,6 +216,22 @@ extends AbstractDDLCRUDFacade
 	}
 
 
+	public ResponseData<String[]> getForeignFromPrimary(String string) {
+		return this.manager.getForeignFromPrimary(string);
+	}
+
+
+	public ResponseData<String> getUniqueAttribute(String string) {
+		return this.manager.getUniqueAttribute(string);
+		
+	}
+
+
+	public ResponseData<String[]> getPrimaryFromForeign(String string) {
+		return this.manager.getPrimaryFromForeign(string);
+	}
+
+
 	/**
 	 * tente de créer $table dans les classes métiers.
 	 * 
@@ -197,7 +258,7 @@ extends AbstractDDLCRUDFacade
 		return addable;
 	}
 
-	 
+
 	/**
 	 * Tente de créer $table dans le SGBD.
 	 * 
@@ -223,19 +284,25 @@ extends AbstractDDLCRUDFacade
 		return result;
 	}
 
-
-	public ResponseData<String[]> getForeignFromPrimary(String string) {
-		return this.manager.getForeignFromPrimary(string);
+	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
+			String[] attributesDestinationsNames) {
+		boolean addable = this.tables.addForeignKey(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
+		Response added;
+		if(addable){
+			added = new Response(false,"Cette contrainte existe déjà.");
+		}else{
+			added = this.addForeignKeyDBMS(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
+			if (! added.hasSuccess()) {
+				//this.tables.removeTable(table.getName());
+			}
+		}
+		return added;
 	}
 
 
-	public ResponseData<String> getUniqueAttribute(String string) {
-		return this.manager.getUniqueAttribute(string);
-		
-	}
-
-
-	public ResponseData<String[]> getPrimaryFromForeign(String string) {
-		return this.manager.getPrimaryFromForeign(string);
+	private Response addForeignKeyDBMS(String tableSourceName, String[] attributesSourcesNames,
+			String tableDestinationName, String[] attributesDestinationsNames) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
