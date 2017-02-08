@@ -36,34 +36,34 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 
 	/** Liste déroulantes contenant les tables disponibles.*/
 	private JComboBox<String> fkTableNameComboBox;
-	
+
 	/** Tableau contenant le nom attributs sources. */
 	private JTable namesAttributeSourceTable;
-	
+
 	/** Tableau contenant lle nom attributs référencés. */
 	private JTable namesAttributeReferenceTable;
-	
+
 	/** Tableau contenant les contraintes de la table source. */
 	private JTable constraintsTable;
-	
+
 	/** Bouton pour envoyer la requête de création d'une contrainte.*/
 	private JButton createButton;
-	
+
 	/** Bouton pour envoyer la requête de suppression d'une contrainte.*/
 	private JButton deleteButton;
 
 	/** Model pour la Table des attributs Source.*/
 	private DefaultTableModel modelSource;
-	
+
 	/**  Model pour la Table des attributs Référencés.*/
 	private DefaultTableModel modelFk;
-	
+
 	/** Model pour la Table des contraintes.*/
 	private DefaultTableModel constraintsListModel;
-	
+
 	/** ScrollPane pour la Table des attributs Référencés*/
 	private JScrollPane fkAttributesNameScrollPane;
-	
+
 	/** Label pour les tables référencées.*/
 	private JLabel fkTableLabel;
 
@@ -82,7 +82,7 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		this.addListener();
 	}
 
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
@@ -91,6 +91,7 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		}
 		if (o == this.tableNameComboBox) {
 			this.fillTableAttribute(this.tableNameComboBox,this.modelSource);
+			this.fillTableConstraints();
 		}
 		if (o == this.fkTableNameComboBox) {
 			this.fillTableAttribute(this.fkTableNameComboBox,this.modelFk);
@@ -114,7 +115,7 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		this.modelSource = new DefaultTableModel(header,0);
 		this.modelFk = new DefaultTableModel(header,0);
 		this.constraintsListModel = new DefaultTableModel(header2,0);
-		
+
 		this.bindAndAdd(new JLabel("Type de contrainte"),3,true);
 
 		this.typeConstraintComboBox = new JComboBox<String>(constraintsTypes);
@@ -128,7 +129,7 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		this.bindAndAdd(this.tableNameComboBox,6,true);
 
 		this.increaseLeft(120);
-		
+
 		this.fkTableLabel = new JLabel("Table référencée : ");
 		this.bindAndAdd(fkTableLabel ,5,true);
 
@@ -200,6 +201,7 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		this.fillComboBox();
 		this.fillTableAttribute(this.tableNameComboBox,this.modelSource);
 		this.fillTableAttribute(this.fkTableNameComboBox,this.modelFk);
+		this.fillTableConstraints();
 	}
 
 	/**
@@ -243,8 +245,45 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 				model.addRow(v);
 			}
 		}
+
 	}
-	
+
+	private void fillTableConstraints()
+	{
+		ResponseData<String[]> 
+		response = this.control.getForeignFromPrimary(this.tableNameComboBox.getSelectedItem().toString());
+		while(this.constraintsListModel.getRowCount() != 0){
+			constraintsListModel.removeRow(0);
+		}
+		if (response.hasSuccess()) {
+			for (String[] s : response.getCollection()) {
+				Vector<String> v = new Vector<String>();
+				v.addElement(s[5]);
+				v.addElement("FOREIGN KEY");
+				v.addElement(s[0]);
+				v.addElement(s[1]);
+				v.addElement(s[3]);
+				v.addElement(s[4]);
+				
+				this.constraintsListModel.addRow(v);
+			}
+		}
+		ResponseData<String> rep = this.control.getUniqueAttribute(this.tableNameComboBox.getSelectedItem().toString());
+		if (response.hasSuccess()) {
+			int i=0;
+			for (String s : rep.getCollection()){
+				if (i != 0){
+				Vector<String> v = new Vector<String>();
+				v.addElement(s);
+				v.addElement("UNIQUE");
+				v.addElement(this.tableNameComboBox.getSelectedItem().toString());
+				this.constraintsListModel.addRow(v);
+			}
+				i++;
+			}
+		}
+	}
+
 	/**
 	 * Détermine ce qu'il se passe lors de la sélection d'une FOREIGN KEY
 	 * dans la ComboBox du type de la contrainte.

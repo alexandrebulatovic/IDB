@@ -252,4 +252,14 @@ public class DDLController
 		gui.setVisible(true);
 		gui.toFront();
 	}
+
+
+	public ResponseData<String[]> getForeignFromPrimary(String string) {
+		return this.facade.getForeignFromPrimary(string);
+	}
+
+
+	public ResponseData<String> getUniqueAttribute(String string) {
+		return this.facade.getUniqueAttribute(string);
+	}
 }

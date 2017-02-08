@@ -221,4 +221,15 @@ extends AbstractDDLCRUDFacade
 		}
 		return result;
 	}
+
+
+	public ResponseData<String[]> getForeignFromPrimary(String string) {
+		return this.manager.getForeignFromPrimary(string);
+	}
+
+
+	public ResponseData<String> getUniqueAttribute(String string) {
+		return this.manager.getUniqueAttribute(string);
+		
+	}
 }
