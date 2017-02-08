@@ -390,6 +390,26 @@ public class TableSet
 		return retour;
 	}
 	
+	
+	public String getSQLADDConstraint(String tableName, String attributeName, String ConstraintName){
+		return this.getConstraintWithName(tableName, attributeName, ConstraintName).toAddConstraintSQL();
+	}
+	
+	public String getSQLDropConstraint(String tableName, String attributeName, String ConstraintName){
+		return this.getConstraintWithName(tableName, attributeName, ConstraintName).toDropConstraintSQL();
+	}
+	
+
+
+	private Constraint getConstraintWithName(String tableName, String attributeName, String constraintName) {
+		for (Constraint c : this.getAttributeWithName(tableName, attributeName).getConstraints()){
+			if (c.getName().equals(constraintName)){
+				return c;
+			}
+		}
+		return null;
+		
+	}
 
 
 	/**
