@@ -208,6 +208,9 @@ public class SQLManager {
 
 				for (int i = 1; i <= size; i++) {
 					vector.add(rs.getObject(i));
+
+					if (rs.wasNull())
+						vector.set(i-1, "<null>");
 				}
 				data.add(vector);
 			}
@@ -246,9 +249,11 @@ public class SQLManager {
 			rs.moveToInsertRow();
 
 			int columnPosition = 1;
+
 			for (int i = 0; i < vector.size() ; i++, columnPosition++) 
 			{ 
-				if (vector.get(i) == null){
+				if ( vector.get(i) == null || ((String)vector.get(i)).equals("<null>") 
+						|| ((String)vector.get(i)).equals("NULL") || ((String)vector.get(i)).equals("")){
 					rs.updateNull(columnPosition);
 				} else {
 
@@ -332,7 +337,8 @@ public class SQLManager {
 		try {
 			rs.absolute(index);
 			// TODO utiliser updateObject
-			if (value == null)
+			if ( value == null || ((String)value).equals("<null>") || 
+					((String)value).equals("NULL") || ((String)value).equals(""))
 				rs.updateNull(column);
 			else if (value instanceof Integer)
 				rs.updateInt(column, (int) value);

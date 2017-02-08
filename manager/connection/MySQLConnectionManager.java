@@ -19,7 +19,7 @@ extends AbstractConnectionManager
 	 * Constructeur commun.
 	 */
 	public MySQLConnectionManager(){super("com.mysql.jdbc.Driver");}
-	
+
 
 	//Protected
 	@Override
@@ -32,8 +32,8 @@ extends AbstractConnectionManager
 		default 	: return e.getErrorCode() + " : " + e.getMessage();
 		}
 	}
-	
-	
+
+
 	//Privates
 	@Override
 	protected String entireUrl(ConnectionStrings param)
