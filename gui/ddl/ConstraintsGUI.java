@@ -303,9 +303,11 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 				this.constraintsListModel.addRow(v);
 			}
 		}
-		ResponseData<String> rep = this.control.getUniqueAttribute(this.tableNameComboBox.getSelectedItem().toString());
+		ResponseData<String[]> rep = this.control.getUniqueAttribute(this.tableNameComboBox.getSelectedItem().toString());
 		if (rep.hasSuccess()) {
 			int i=0;
+			// [0] : nom index
+			// [1] : nom attribut
 			for (String s : rep.getCollection()){
 				if (i != 0){
 				Vector<String> v = new Vector<String>();

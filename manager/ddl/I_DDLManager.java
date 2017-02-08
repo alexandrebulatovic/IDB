@@ -126,12 +126,12 @@ public interface I_DDLManager
 
 
 	/**
-	 * TODO : ne gère pas les groupes d'uniques...
 	 * @param table : table où chercher les attributs avec contrainte unique, null interdit.
-	 * @return une réponse personnalisée contenant le nom des attributs de $table
-	 * qui sont soumis à une contrainte UNIQUE.
+	 * @return une réponse personnalisée contenant : <br/>
+	 * - Le nom de l'index,<br/>
+	 * - le nom des attributs de $table qui sont soumis à une contrainte UNIQUE.
 	 */
-	public abstract ResponseData<String> getUniqueAttribute(String table);
+	public abstract ResponseData<String[]> getUniqueAttribute(String table);
 	
 	
 	/**

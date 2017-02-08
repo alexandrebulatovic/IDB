@@ -90,12 +90,11 @@ extends AbstractSuccesDDLManager
 	
 	
 	@Override
-	public ResponseData<String> getUniqueAttribute(String table) {
-		int [] columns = {9};
-		 ResponseData<String[]> r = 
-				 this.procedureToGetMetadata
+	public ResponseData<String[]> getUniqueAttribute(String table) {
+		int [] columns = {6, 9};
+		 return this.procedureToGetMetadata
 				 (UNIQUE, table, columns, GET_UNIQUE);
-		 return new ResponseData<String>(r);
+
 	}
 	
 	
@@ -131,7 +130,6 @@ extends AbstractSuccesDDLManager
 		ResponseData<String> temporary;
 		ResponseData<String[]> allTables = this.getForeignFromPrimary(table);
 		String [] differentTables = extractTables(allTables.getCollection());
-		
 		
 		for (String t : differentTables) {
 			if (! t.equals(table)) {

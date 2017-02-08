@@ -237,7 +237,7 @@ extends AbstractDDLCRUDFacade
 	}
 
 
-	public ResponseData<String> getUniqueAttribute(String string) {
+	public ResponseData<String[]> getUniqueAttribute(String string) {
 		return this.manager.getUniqueAttribute(string);
 		
 	}
