@@ -232,6 +232,80 @@ public class TableSet
 		return this.tables.remove(laTable);
 	}
 	
+	/**
+	 * retourne un tableau en 2 dimentions,<br>
+	 * la première permet de sélectionner un attribut d'une table<br>
+	 * la seconde de récupérer les informations de l'attribut<br>
+	 * voir @return pour le contenu de la description de chaque attribut
+	 * @param tableName
+	 * @return
+	 * 0 - name
+	 * 1 - type
+	 * 2 - size
+	 * 3 - 'NOT NULL'/null
+	 * 4 - 'PRIMARY KEY'/null
+	 */
+	public String[][] getTableWithoutComplexConstraints(String tableName){
+		Table table = this.getTableWithName(tableName);
+		
+		LinkedHashSet<Attribute> attributes = table.getAttributes();
+		String[] attribute = new String[5];
+		String[][] toReturn = new String[attributes.size()][attribute.length];
+		
+		int a = 0;
+		for (Attribute att:attributes){
+			toReturn[a][0] = att.getName();
+			toReturn[a][1] = att.type;
+			toReturn[a][2] = String.valueOf(att.size);
+			toReturn[a][3] = att.isNotNull()?"NOT NULL":null;
+			toReturn[a][4] = att.isPk()?"PRIMARY KEY":null;					
+			a++;
+		}
+		
+		return toReturn;
+	}
+	
+	
+	/**
+	 * retourne un tableau composé de (voir @return)
+	 * @param tableName
+	 * @return
+	 * 0 - name
+	 * 1 - type
+	 * 2 - size
+	 * 3 - 'NOT NULL'/null
+	 * 4 - 'PRIMARY KEY'/null
+	 */
+	public String[] getTableWithoutComplexConstraints(String tableName, String attributeName){
+		Attribute attribute = this.getAttributeWithName(tableName, attributeName);
+		String[] attributeReturn = new String[5];
+
+		attributeReturn[0] = attribute.getName();
+		attributeReturn[1] = attribute.type;
+		attributeReturn[2] = String.valueOf(attribute.size);
+		attributeReturn[3] = attribute.isNotNull()?"NOT NULL":null;
+		attributeReturn[4] = attribute.isPk()?"PRIMARY KEY":null;					
+			
+		return attributeReturn;
+	}
+	
+	/**
+	 * retourne une liste d'object<br>
+	 * la première permet de sélectionner un attribut d'une table<br>
+	 * la seconde de récupérer les informations de l'attribut<br>
+	 * voir @return pour le contenu de la description de chaque attribut
+	 * @param tableName
+	 * @return
+	 * 0 - name
+	 * 1 - type
+	 * 2 - size
+	 * 3 - 'UNIQUE'/null
+	 * 4 - {String tableSource, String[]}/null
+	 */
+	public String[] getTableWithJustComplexConstraintsAndBaseInformationsAttributes(){
+		//TODO
+		return null;
+	}
 	
 	private List<Attribute> getAttributesFromString(Table tableSource, String[] attributesSourcesNames) {
 		ArrayList<Attribute> retour = new ArrayList<Attribute>();
@@ -257,6 +331,15 @@ public class TableSet
 		for (Table table : tables){
 			if (table.getName().equals(name)){
 				return table;
+			}
+		}
+		return null;
+	}
+	
+	private Attribute getAttributeWithName(String tableName, String attributeName){
+		for (Attribute a : this.getTableWithName(tableName).getAttributes()){
+			if (a.getName().equals(attributeName)){
+				return a;
 			}
 		}
 		return null;
