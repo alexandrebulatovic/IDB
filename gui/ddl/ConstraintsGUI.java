@@ -2,17 +2,22 @@ package gui.ddl;
 
 import gui.abstrct.AbstractBasicGUI;
 
+import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import controller.DDLController;
 import controller.HomeController;
@@ -22,78 +27,124 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 
 	DDLController control;
 	public ConstraintsGUI() {
-		super("Création de table",null, 400, 300, 25);
+		super("Création de table",null, 600, 600, 25);
 		this.handleComponents();
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
+		this.enableFkComponents(false);
 		//this.control=control;
 	}
 
-	
+	private JScrollPane j;
+
+	private JScrollPane jj;
 	private JLabel typeConstraintLabel;
+
+	private JLabel listConstraintLabel;
 	
 	private JComboBox typeConstraintComboBox;
-	
-	private JComboBox fkTableNameComboBox;
-	
+
+	private  JComboBox tableNameComboBox;
+
+	private  JComboBox fkTableNameComboBox;
+
 	private JLabel attributeLabelOne;
-	
+
 	private JLabel attributeLabelTwo;
-	
+
 	private JTable namesAttributeSourceTable;
-	
+
 	private JTable namesAttributeReferenceTable;
-	
+
 	private JButton createButton;
-	
+
 	private Object[] types = new Object[]{"UNIQUE", "FOREIGN KEY"};
 	String [] header={"attributs"};
 	DefaultTableModel model = new DefaultTableModel(header,10);
-	
+
+	private JLabel tableLabel;
+
+	private JComponent fkTableLabel;
+
+	private JTable constraintsTable;
+
+	private JScrollPane jjj;
+
+	String [] header2={"Nom de la contrainte","Type","Table cible","Attributs","Table référencée","Attributs"};
+	private TableModel model2 = new DefaultTableModel(header2,10);
+
+	private JButton deleteButton;
+
 	private void handleComponents(){
-		
+
 		this.typeConstraintLabel = new JLabel("Type de contrainte");
 		this.bindAndAdd(this.typeConstraintLabel,3,true);
-		
+
 		this.typeConstraintComboBox = new JComboBox(types);
+		this.typeConstraintComboBox.addActionListener(this);
 		this.bindAndAdd(this.typeConstraintComboBox,3,false);
-		
-		this.attributeLabelOne = new JLabel("Attributs Source");
-		this.bindAndAdd(this.attributeLabelOne,3,true);
-		
-		this.attributeLabelTwo = new JLabel("Attributs référencé");
-		this.bindAndAdd(this.attributeLabelTwo,3,false);
-		this.attributeLabelTwo.setBounds(240, 25, 150, 100);
-		
-		
+
+
+		this.tableLabel = new JLabel("Table : ");
+		this.bindAndAdd(this.tableLabel,8,true);
+
+		this.tableNameComboBox = new JComboBox(types);
+		this.bindAndAdd(this.tableNameComboBox,6,true);
+
+		this.increaseLeft(120);
+		this.fkTableLabel = new JLabel("Table référencée : ");
+		this.bindAndAdd(this.fkTableLabel,5,true);
+
+		this.fkTableNameComboBox = new JComboBox(types);
+		this.bindAndAdd(this.fkTableNameComboBox,6,false);
+
 		this.namesAttributeSourceTable = new JTable(model);
-		JScrollPane jj = new JScrollPane(namesAttributeSourceTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		this.jj = new JScrollPane(namesAttributeSourceTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		namesAttributeSourceTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		this.bindAndAdd(jj,7,true);
-		jj.setBounds(20, 90, 100, 100);
+		namesAttributeSourceTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+		this.bindAndAdd(jj,3,true);
+		jj.setSize(new Dimension(220,100));
 		jj.setVisible(true);
-		
-		this.typeConstraintComboBox = new JComboBox(types);
-		this.bindAndAdd(this.typeConstraintComboBox,3,true);
-		this.typeConstraintComboBox.setBounds(130, 90, 100, 20);
-		
+
+		this.increaseLeft(100);
+
+
 		this.namesAttributeReferenceTable = new JTable(model);
-		JScrollPane j =new JScrollPane(namesAttributeReferenceTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		this.j =new JScrollPane(namesAttributeReferenceTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		namesAttributeReferenceTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		this.bindAndAdd(j,7,false);
-		j.setBounds(240, 90, 100, 100);
+		namesAttributeReferenceTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+		this.bindAndAdd(j,3,false);
+		j.setSize(new Dimension(220,100));
 		j.setVisible(true);
 		
-		this.createButton = new JButton("Creer la contrainte");
-		this.bindAndAdd(this.createButton);
-		createButton.setBounds(20, 220, 150, 20);
+		this.increaseTop(90);
 		
+		this.createButton = new JButton("Ajouter la contrainte");
+		this.bindAndAdd(this.createButton);
+
+		this.increaseTop(15);
+		
+		this.bindAndAdd(new JSeparator(SwingConstants.HORIZONTAL));
+		
+		this.tableLabel = new JLabel("Liste des contraintes sur la table source : ");
+		this.bindAndAdd(this.tableLabel);
+
+		this.constraintsTable = new JTable(this.model2);
+		this.jjj = new JScrollPane(constraintsTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		constraintsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		constraintsTable.getColumnModel().getColumn(0).setPreferredWidth(120);
+		constraintsTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+		this.bindAndAdd(jjj,150);
+		jj.setVisible(true);
+		
+		this.deleteButton = new JButton("Supprimer la contrainte");
+		this.bindAndAdd(this.deleteButton);
 		
 		
 	}
-	
-	
-	
-	
+
+
+
+
 	@Override
 	public boolean isComplete() {
 		// TODO Auto-generated method stub
@@ -101,9 +152,31 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if (o == this.typeConstraintComboBox) {
+			this.selectTypeConstraintComboBoxAction();
+		}
+
+	}
+
+
+
+
+	private void selectTypeConstraintComboBoxAction() {
+		Object selected = this.typeConstraintComboBox.getSelectedItem();
+		enableFkComponents("FOREIGN KEY".equals(selected.toString()));
+
+	}
+
+
+
+
+	private void enableFkComponents(boolean b) {
+		this.fkTableLabel.setVisible(b);
+		this.fkTableNameComboBox.setVisible(b);
+		this.j.setVisible(b);
+		this.namesAttributeReferenceTable.setVisible(b);
 	}
 
 }
