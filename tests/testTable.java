@@ -138,7 +138,8 @@ public class testTable {
 		
 		att1.addConstraint(fk);
 		
-		System.out.println("clean : "+this.table.cleanAll());
+	
+		assertTrue(this.table.cleanAll());
 
 		assertEquals(0,att0.getConstraints().size());
 		

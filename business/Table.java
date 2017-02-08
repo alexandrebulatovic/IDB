@@ -254,8 +254,8 @@ public class Table {
 	private void modifyAttributes(Table tableSource, ArrayList<String> results) {
 		
 		for (Attribute[] attribute : attributesToChange(tableSource)){
-			System.out.println(attribute[0]);
-			System.out.println(attribute[1]);
+			System.out.println("to modify : à obtenir :"+attribute[0]);
+			System.out.println("to modify : actuel :"+attribute[1]);
 //			Attribute attSrc = attribute[0];
 //			Attribute attDest = attribute[1];
 //			if (attSrc.foreignKey != attDest.foreignKey){
@@ -542,12 +542,6 @@ public class Table {
 		ArrayList<Constraint> constraintsDeleted;
 		for (Attribute a : attributes){
 			constraintsDeleted = a.cleanAll();
-			
-			for (Constraint c : constraintsDeleted){
-				System.out.println("\n\ncons : "+this.constraints.get(0)+"\n\n");
-				System.out.println("\n\ntoDel : "+c+"\n\n");
-				System.out.println("============="+String.valueOf(c.equals(this.constraints.get(0)))+"=============");
-			}
 			
 			this.constraints.removeAll(constraintsDeleted);
 			constraintsDeleted.clear();

@@ -27,7 +27,6 @@ public class ForeignKeyConstraint extends Constraint {
 	 */
 	public ForeignKeyConstraint(){
 		super();
-		System.out.println("INSTANCIATION DE FK");
 		this.attributesDestination = new ArrayList<Attribute>();
 		
 		this.keyWord = "FOREIGN KEY";
