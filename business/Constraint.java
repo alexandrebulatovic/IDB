@@ -14,10 +14,10 @@ public abstract class Constraint
 	//Attributs
 	/** Mot clé définissant la contrainte exemple : PRIMARY KEY.*/
 
-	public String keyWord = "NO_KEY_WORD";//TODO PASSER EN PROTECTED
+	protected String keyWord = "NO_KEY_WORD";
 	
 	/** Attributs ciblés par la contrainte.*/
-	public List<Attribute> attributes;
+	protected List<Attribute> attributes;
 	
 	/** Une contrainte appartient à une table.*/
 	protected Table table;
