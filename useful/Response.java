@@ -12,7 +12,7 @@ package useful;
  * Pour maintenir cette séparation, cette classe met à disposition un premier attribut de type
  * boolean, qui est vrai si et seulement si la requête a réussie, faux sinon. Le deuxième 
  * attribut est une chaîne de caractères qui dans l'idéal contient le message d'erreur obtenu
- * lorsque la requête échoue (disponible via Exception.getMessage()), ou bien un message de 
+ * lorsque la requête échoue (disponible via {@link Exception#getMessage()}), ou bien un message de 
  * réussite à la charge du développeur lorsque la requête réussit.<br/>
  * 
  * @author UGOLINI Romain

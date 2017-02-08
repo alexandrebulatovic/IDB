@@ -107,8 +107,8 @@ extends Response
 	
 	/**
 	 * Constructeur à partir d'une réponse personnalisée contenant
-	 * une liste de tableau de données. Les éléments sont sortit du tableau
-	 * et ajouté à la suite dans la liste. Utile pour les tableaux de une case.
+	 * une liste de tableau de données. Les éléments sont sorti du tableau
+	 * et ajoutés à la suite dans la liste. Utile pour les tableaux d'une case.
 	 * 
 	 * @param rd : null interdit.
 	 */
