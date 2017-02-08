@@ -194,7 +194,7 @@ public class TableSet
 	 * @param attributesNames
 	 */
 	public void addUnique(String name, String tableName, String[] attributesNames){
-		Table table = this.getTableByName(tableName);
+		Table table = this.getTableWithName(tableName);
 		UniqueConstraint un = new UniqueConstraint();
 		un.setTable(table);
 		for (Attribute att : table.getAttributes()){
@@ -228,7 +228,7 @@ public class TableSet
 	}
 	
 	/**
-	 * 
+	 * retourne une liste de SQL permettant de modifier la tableName pour obtenir la tableTarget
 	 * @param tableName la table qui existe toujours
 	 * @param tableTarget la table qu'on veut obtenir
 	 * @param newName
