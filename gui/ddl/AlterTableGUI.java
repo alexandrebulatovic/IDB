@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JComboBox;
 
 import controller.DDLController;
+import ddl.I_AttributeModel;
 
 import useful.ResponseData;
 
@@ -57,7 +58,7 @@ extends CreateTableGUI
 		super.itemStateChanged(e);
 		if (e.getStateChange() == ItemEvent.SELECTED) {
 			if (e.getSource() == this.tablesCombo){
-				if ("".equals(e.getItem().toString())){
+				if (! "".equals(e.getItem().toString())){
 					String table = e.getItem().toString();
 					this.fillGuiWithAttribute(table);
 				}
@@ -97,21 +98,26 @@ extends CreateTableGUI
 	//TODO : nom de merde
 	private void fillGuiWithAttribute(String table)
 	{
-		
-		ResponseData<String[]> response = 
+		ResponseData<String[]> attributesData = 
 				this.control.getAttributes(table);
-		
 		this.tableNameField.setText(table);
-		if (response.hasSuccess()) {
-			for (String [] attribute : response.getCollection()) {
-				this.showExistingAttribute(attribute);
-			}
+		this.models.removeAll();
+		for (String [] att : attributesData.getCollection()) {
+			this.showExistingAttribute(att);
 		}
 	}
 	
 	
-	private void showExistingAttribute(String [] attribute)
+	private void showExistingAttribute(String [] att)
 	{
+		int size = (att[2] == "" || att[2] == null 
+				? 1 
+				: Integer.parseInt(att[2]));
+		boolean nul = "NOTNULL".equals(att[3]);
+		boolean primary = "PRIMARY".equals(att[4]);
 		
+		I_AttributeModel iam = this.control.getAttributeModel
+				(att[0], att[1], size, nul, primary);
+		this.addAttributeToTable(iam);
 	}
 }

@@ -1,5 +1,8 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import facade.DDLFacade;
 import gui.ddl.CreateTableGUI;
 import gui.ddl.DropTableGUI;
@@ -197,17 +200,62 @@ public class DDLController
 	 * @return une réponse personnalisée.<br/>
 	 * Lorsque la récupération réussi, la réponse contient dans l'ordre :<br/>
 	 * -le nom d'un attribut de $table,<br/>
-	 * -la taille de cet attribut,<br/>
 	 * -le nom de son type SQL,<br/>
-	 * -"NO" si et seulement si cet attribut est NOT NULL.<br/><br/>
-	 * 
+	 * -la taille de cet attribut,<br/>
+	 * -"NO" si et seulement si cet attribut est NOT NULL.<br/>
+	 * -"OUI" si et seulement si cet attribut est membre de la clée.<br/><br/>
 	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée.
 	 */
 	public ResponseData<String[]> getAttributes(String table)
-	{
-		return this.facade.getAttributes(table);
+	{	
+		return getAttributeFromDBMS(table);
 	}
 
+
+	private ResponseData<String[]> getAttributeFromDBMS(String table) 
+	{
+		ResponseData<String[]> attributesData; 
+		ResponseData<String> primaries; 
+
+		attributesData = this.facade.getAttributes(table);
+		if (! attributesData.hasSuccess()) return attributesData;
+
+		primaries = this.facade.getPrimaryKey(table);
+		if (! attributesData.hasSuccess()) {
+			return new ResponseData<String[]>(false, "Clées primaires non récupérées.");
+		}
+		
+		List<String[]> collection = new ArrayList<String[]>();
+		String [] attribute;
+		for (String [] att : attributesData.getCollection()) {
+			attribute = this.createAttribute(att, primaries.getCollection());
+			collection.add(attribute);
+		}
+		return new ResponseData<String[]>(true, "Attributs récupérés.", collection);
+	}
+
+	
+	
+	private String [] createAttribute(String [] att, List<String> primaries)
+	{
+		String [] result = new String [5];
+		int i = 0, size = primaries.size();
+		boolean primary = false;
+		
+		while (i < size && !primary) {
+			primary = att[0].equals(primaries.get(i));
+			i++;
+		}
+		
+		for (int j=0; j < 3; j++) {
+			result[j] = att[j];
+		}
+		
+		result[3] = !primary && "NO".equals(att[3]) ? "NOTNULL" : "NULL";
+		result[4] = primary ? "PRIMARY" : "COMMON";
+		return result;
+	}
+	
 	
 	/**
 	 * Modifie une table existante

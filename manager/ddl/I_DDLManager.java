@@ -139,8 +139,8 @@ public interface I_DDLManager
 	 * @return une réponse personnalisée.<br/>
 	 * Lorsque la récupération réussi, la réponse contient dans l'ordre :<br/>
 	 * -le nom d'un attribut de $table,<br/>
-	 * -la taille de cet attribut,<br/>
 	 * -le nom de son type SQL,<br/>
+	 * -la taille de cet attribut,<br/>
 	 * -"NO" si et seulement si cet attribut est NOT NULL.<br/><br/>
 	 * 
 	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée.
