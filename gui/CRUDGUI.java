@@ -4,6 +4,7 @@ import gui.abstrct.AbstractBasicGUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -313,7 +314,9 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 	{
 		ResponseData<String> response = this.crud_controller.getTables();
 		String msg = response.getMessage();
-
+		
+		this.tableComboBox.removeAllItems();
+		
 		if (response.hasSuccess()) 
 		{
 			msg += " : " + response.getCollection().size();
@@ -420,6 +423,12 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 	public DefaultTableModel getTableModel() {
 		return tableModel;
+	}
+
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		this.fillComboBox();
 	}
 
 }

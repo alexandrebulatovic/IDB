@@ -294,7 +294,7 @@ public class SQLManager {
 			conn.commit();
 			return true;   
 
-		} catch (SQLException exception) {
+		} catch (Exception exception) {
 			this.exception = exception;
 			return false;
 		}
@@ -315,7 +315,7 @@ public class SQLManager {
 			conn.commit();
 			return true;
 
-		} catch (SQLException exception) {
+		} catch (Exception exception) {
 			this.exception = exception;
 			return false;
 		}
@@ -361,9 +361,6 @@ public class SQLManager {
 			conn.commit();
 			return true;
 
-		} catch (SQLException exception) {
-			this.exception = exception;
-			return false;
 		} catch (Exception exception) {
 			this.exception = exception;
 			return false;
