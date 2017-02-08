@@ -39,7 +39,7 @@ public class TableSet
 	
 	
 	public boolean isLoaded(String tableName){
-		Table table = this.getTableWithName(tableName);
+		Table table = this.getTableByName(tableName);
 		if (table.getAttributes().size()<=0){
 			return false;
 		}
@@ -139,8 +139,8 @@ public class TableSet
 	public boolean addForeignKey(String name, String tableSourceName, String[] attributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
 		boolean added = false;
 		
-		Table tableSource = this.getTableWithName(tableSourceName);
-		Table tableDestination = this.getTableWithName(tableDestinationName);
+		Table tableSource = this.getTableByName(tableSourceName);
+		Table tableDestination = this.getTableByName(tableDestinationName);
 		
 		ForeignKeyConstraint fk = new ForeignKeyConstraint();
 		fk.setTable(tableSource);
@@ -249,43 +249,38 @@ public class TableSet
 	 */
 	public boolean removeTable(String table)
 	{
-		Table laTable = this.getTableWithName(table);
+		Table laTable = this.getTableByName(table);
 		laTable.cleanAll();
 		
 		return this.tables.remove(laTable);
 	}
 	
+
 	/**
-	 * retourne un tableau en 2 dimentions,<br>
-	 * la première permet de sélectionner un attribut d'une table<br>
-	 * la seconde de récupérer les informations de l'attribut<br>
-	 * voir @return pour le contenu de la description de chaque attribut
-	 * @param tableName
-	 * @return
-	 * 0 - name
-	 * 1 - type
-	 * 2 - size
-	 * 3 - 'NOT NULL'/null
-	 * 4 - 'PRIMARY KEY'/null
+	 * @param tableName : nom de la table, null interdit.
+	 * @return tous les attributs de $tables, avec :<br/>
+	 * - le nom de l'attribut,<br/>
+	 * - le type de l'attribut,<br/>
+	 * - la taille de l'attribut,<br/>
+	 * - "NOTNULL" ssi l'attribut est sous contrainte NOT NULL,<br/>
+	 * - "PRIMARY" ssi l'attribut est membre de la clée primaire.
 	 */
-	public String[][] getTableWithoutComplexConstraints(String tableName){
-		Table table = this.getTableWithName(tableName);
+	public List<String[]> getAttributes(String tableName){
 		
-		LinkedHashSet<Attribute> attributes = table.getAttributes();
-		String[] attribute = new String[5];
-		String[][] toReturn = new String[attributes.size()][attribute.length];
+		Table table = this.getTableByName(tableName);
+		String[] attribute;
+		List<String[]> result = new ArrayList<String[]>();
 		
-		int a = 0;
-		for (Attribute att:attributes){
-			toReturn[a][0] = att.getName();
-			toReturn[a][1] = att.type;
-			toReturn[a][2] = String.valueOf(att.size);
-			toReturn[a][3] = att.isNotNull()?"NOT NULL":null;
-			toReturn[a][4] = att.isPk()?"PRIMARY KEY":null;					
-			a++;
+		for (Attribute att : table.getAttributes()){
+			attribute = new String[5];
+			attribute[0] = att.getName();
+			attribute[1] = att.type;
+			attribute[2] = String.valueOf(att.size);
+			attribute[3] = att.isNotNull() ? "NOTNULL" : "";
+			attribute[4] = att.isPk() ? "PRIMARY" : "";
+			result.add(attribute);
 		}
-		
-		return toReturn;
+		return result;
 	}
 	
 	
@@ -299,17 +294,17 @@ public class TableSet
 	 * 3 - 'NOT NULL'/null
 	 * 4 - 'PRIMARY KEY'/null
 	 */
-	public String[] getTableWithoutComplexConstraints(String tableName, String attributeName){
+	public String[] getAttribute(String tableName, String attributeName){
 		Attribute attribute = this.getAttributeWithName(tableName, attributeName);
-		String[] attributeReturn = new String[5];
+		String[] result = new String[5];
 
-		attributeReturn[0] = attribute.getName();
-		attributeReturn[1] = attribute.type;
-		attributeReturn[2] = String.valueOf(attribute.size);
-		attributeReturn[3] = attribute.isNotNull()?"NOT NULL":null;
-		attributeReturn[4] = attribute.isPk()?"PRIMARY KEY":null;					
+		result[0] = attribute.getName();
+		result[1] = attribute.type;
+		result[2] = String.valueOf(attribute.size);
+		result[3] = attribute.isNotNull() ? "NOTNULL" : null;
+		result[4] = attribute.isPk() ? "PRIMARY KEY" : null;					
 			
-		return attributeReturn;
+		return result;
 	}
 	
 	/**
@@ -368,7 +363,7 @@ public class TableSet
 	 * 		attributes<String>
 	 */
 	public List<Object> getUniqueConstraint(String tableSource){
-		Table table = this.getTableWithName(tableSource);
+		Table table = this.getTableByName(tableSource);
 
 		
 		List<Object> retour = new ArrayList<Object>();
@@ -395,7 +390,7 @@ public class TableSet
 	 * 		tableDest
 	 */
 	public List<Object> getFkConstraint(String tableSource){
-		Table table = this.getTableWithName(tableSource);
+		Table table = this.getTableByName(tableSource);
 
 		
 		List<Object> retour = new ArrayList<Object>();
@@ -440,7 +435,7 @@ public class TableSet
 	 * @return une table nommée $name si et seulement si elle existe,<br>
 	 * null sinon.
 	 */
-	private Table getTableWithName(String name){		
+	private Table getTableByName(String name){		
 		for (Table table : tables){
 			if (table.getName().equals(name)){
 				return table;
@@ -450,7 +445,7 @@ public class TableSet
 	}
 	
 	private Attribute getAttributeWithName(String tableName, String attributeName){
-		for (Attribute a : this.getTableWithName(tableName).getAttributes()){
+		for (Attribute a : this.getTableByName(tableName).getAttributes()){
 			if (a.getName().equals(attributeName)){
 				return a;
 			}
@@ -491,6 +486,6 @@ public class TableSet
 	 */
 	private boolean isAddable(String table)
 	{
-		return this.getTableWithName(table)==null;
+		return this.getTableByName(table)==null;
 	}
 }

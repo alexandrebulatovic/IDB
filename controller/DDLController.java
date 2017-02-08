@@ -202,23 +202,25 @@ public class DDLController
 	 * -le nom d'un attribut de $table,<br/>
 	 * -le nom de son type SQL,<br/>
 	 * -la taille de cet attribut,<br/>
-	 * -"NO" si et seulement si cet attribut est NOT NULL.<br/>
-	 * -"OUI" si et seulement si cet attribut est membre de la clée.<br/><br/>
+	 * -"NOTNULL" si et seulement si cet attribut est NOT NULL.<br/>
+	 * -"PRIMARY" si et seulement si cet attribut est membre de la clée.<br/><br/>
 	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée.
 	 */
 	public ResponseData<String[]> getAttributes(String table)
 	{	
-//		if (! this.facade.isLoaded(table)) {
-			ResponseData<String[]> result = getAttributeFromDBMS(table);
+		ResponseData<String[]> result;
+		if (this.facade.isLoaded(table)) {
+			List<String[]> latt = this.facade.getAttributesFromBusiness(table);
+			result = new ResponseData<String[]> (true, "Attributs récupérés.", latt);
+		} 
+		else {
+			result = getAttributeFromDBMS(table);
 			List<String[]> attributes = result.getCollection();
 			for (String [] att : attributes) {
 				this.facade.addAttribute(table, att);
 			}
-			return result;
-//		}
-//		else {
-//			return null;
-//		}
+		}
+		return result;
 		
 	}
 
@@ -228,7 +230,7 @@ public class DDLController
 		ResponseData<String[]> attributesData; 
 		ResponseData<String> primaries; 
 
-		attributesData = this.facade.getAttributes(table);
+		attributesData = this.facade.getAttributesFromDBMS(table);
 		if (! attributesData.hasSuccess()) return attributesData;
 
 		primaries = this.facade.getPrimaryKey(table);

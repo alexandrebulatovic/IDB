@@ -93,10 +93,11 @@ extends AbstractDDLCRUDFacade
 	public boolean addAttribute(String table, String [] att)
 	{
 		return this.tables.addAttribute(table, att[0], att[1], 
-				Integer.parseInt(att[2]), 
+				Integer.parseInt(("".equals(att[2]) || null == att[2]) ? "1" : att[2]), 
 				"NOTNULL".equals(att[3]), 
 				"PRIMARY".equals(att[4]));
 	}
+	
 	
 	
 	/**
@@ -168,9 +169,24 @@ extends AbstractDDLCRUDFacade
 	 * 
 	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée.
 	 */
-	public ResponseData<String[]>getAttributes(String table)
+	public ResponseData<String[]>getAttributesFromDBMS(String table)
 	{
 		return this.manager.getAttributes(table);
+	}
+	
+	
+	/**
+	 * @param tableName : nom de la table, null interdit.
+	 * @return tous les attributs de $tables, avec :<br/>
+	 * - le nom de l'attribut,<br/>
+	 * - le type de l'attribut,<br/>
+	 * - la taille de l'attribut,<br/>
+	 * - "NOTNULL" ssi l'attribut est sous contrainte NOT NULL,<br/>
+	 * - "PRIMARY" ssi l'attribut est membre de la clée primaire.
+	 */
+	public List<String[]> getAttributesFromBusiness(String table)
+	{
+		return this.tables.getAttributes(table);
 	}
 	
 	
