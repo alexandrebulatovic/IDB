@@ -134,10 +134,9 @@ public class TableSet
 	 * @param attributesSourcesNames
 	 * @param tableDestinationName
 	 * @param attributesDestinationsNames
-	 * @return
+	 * @return nom de la contrainte
 	 */
-	public boolean addForeignKey(String name, String tableSourceName, String[] attributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
-		boolean added = false;
+	public String addForeignKey(String name, String tableSourceName, String[] attributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
 		
 		Table tableSource = this.getTableByName(tableSourceName);
 		Table tableDestination = this.getTableByName(tableDestinationName);
@@ -168,7 +167,7 @@ public class TableSet
 		
 		
 		
-		return added;
+		return fk.getName();
 	}
 	
 	/**
@@ -182,7 +181,7 @@ public class TableSet
 	 * @param attributesDestinationsNames
 	 * @return
 	 */
-	public boolean addForeignKey(String tableSourceName, String[] AttributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
+	public String addForeignKey(String tableSourceName, String[] AttributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
 		return this.addForeignKey(null, tableSourceName, AttributesSourcesNames, tableDestinationName, attributesDestinationsNames);
 	}
 	
