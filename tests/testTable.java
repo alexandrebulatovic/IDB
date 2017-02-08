@@ -12,6 +12,7 @@ import business.Constraint;
 import business.ForeignKeyConstraint;
 import business.PrimaryKeyConstraint;
 import business.Table;
+import business.oracle.TableOracle;
 
 public class testTable {
 
@@ -32,8 +33,8 @@ public class testTable {
 
 	@Before
 	public void init(){
-		table = new Table("PROFILS");
-		tableRecupere = new Table("PROFILS");
+		table = new TableOracle("PROFILS");
+		tableRecupere = new TableOracle("PROFILS");
 		
 		
 			att0 = new Attribute("id","NUMBER",10);

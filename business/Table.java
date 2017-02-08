@@ -159,17 +159,18 @@ public abstract class Table {
 	/**
 	 * Retourne les requetes SQL qui modifient
 	 * La table avec des ALTER TABLE
+	 * @param tableModified représente la nouvelle table à avoir
 	 */
-	public List<String> toModify(Table tableSource) {
+	public List<String> toModify(Table tableModified) {
 		ArrayList<String> results = new ArrayList<String>();
 		
-		addAttributes(tableSource, results);
+		addAttributes(tableModified, results);
 		
-		dropAttributes(tableSource, results);
+		dropAttributes(tableModified, results);
 		
-		modifyAttributes(tableSource, results);
+		modifyAttributes(tableModified, results);
 		
-		modifyName(tableSource, results);
+		modifyName(tableModified, results);
 		
 
 	 
@@ -233,7 +234,18 @@ public abstract class Table {
 
 
 	/**
-	 * TODO uniquement valable sur Oracle
+	 * Retourne une requette sql pour renomme la table this en tableSource
+	 * @exemple RENAME tableName TO tableName
+	 * @param tableSource
+	 * @return
+	 */
+	protected String toRenameTableSQL(Table tableSource){
+		return "RENAME "+this.getName()+" TO "+tableSource.getName();
+	}
+
+
+
+	/**
 	 * @param tableSource
 	 * @param results
 	 */
@@ -243,9 +255,6 @@ public abstract class Table {
 		}
 	}
 
-
-
-	protected abstract String toRenameTableSQL(Table tableSource);
 
 
 	/**
