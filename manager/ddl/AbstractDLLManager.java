@@ -94,7 +94,6 @@ extends AbstractSuccesDDLManager
 		int [] columns = {6, 9};
 		 return this.procedureToGetMetadata
 				 (UNIQUE, table, columns, GET_UNIQUE);
-
 	}
 	
 	

@@ -1,6 +1,7 @@
 package gui.ddl;
 
 import gui.abstrct.AbstractBasicGUI;
+import useful.Response;
 import useful.ResponseData;
 
 import java.awt.Dimension;
@@ -106,28 +107,30 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 
 
 	private void addConstraintButtonAction() {
-		if("FOREIGN KEY".equals(this.typeConstraintComboBox.getSelectedItem().toString())){
-			String tableSourceName = this.tableNameComboBox.getSelectedItem().toString();
-			
-			int selected[] = this.namesAttributeSourceTable.getSelectedColumns();
-			String attributesSourcesNames[] = new String[selected.length];
-			int c = 0;
-			for(int i : selected){
-				String attribut = (String) this.modelSource.getValueAt(i, 0);
-				attributesSourcesNames[c] = attribut;
-				c++;
+		if(isValidSelectedAttributesCount()){
+			if("FOREIGN KEY".equals(this.typeConstraintComboBox.getSelectedItem().toString())){
+				String tableSourceName = this.tableNameComboBox.getSelectedItem().toString();
+
+				int selected[] = this.namesAttributeSourceTable.getSelectedColumns();
+				String attributesSourcesNames[] = new String[selected.length];
+				int c = 0;
+				for(int i : selected){
+					String attribut = (String) this.modelSource.getValueAt(i, 0);
+					attributesSourcesNames[c] = attribut;
+					c++;
+				}
+
+				String tableDestinationName = this.fkTableNameComboBox.getSelectedItem().toString();
+				selected = this.namesAttributeReferenceTable.getSelectedColumns();
+				String attributesDestinationsNames[] = new String[selected.length];
+				c = 0;
+				for(int i : selected){
+					String attribut = (String) this.modelSource.getValueAt(i, 0);
+					attributesSourcesNames[c] = attribut;
+					c++;
+				}
+				this.control.addForeignKey(tableSourceName,attributesSourcesNames,tableDestinationName,attributesDestinationsNames);
 			}
-			
-			String tableDestinationName = this.fkTableNameComboBox.getSelectedItem().toString();
-			selected = this.namesAttributeReferenceTable.getSelectedColumns();
-			String attributesDestinationsNames[] = new String[selected.length];
-			c = 0;
-			for(int i : selected){
-				String attribut = (String) this.modelSource.getValueAt(i, 0);
-				attributesSourcesNames[c] = attribut;
-				c++;
-			}
-			this.control.addForeignKey(tableSourceName,attributesSourcesNames,tableDestinationName,attributesDestinationsNames);
 		}
 	}
 
@@ -299,23 +302,26 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 				v.addElement(s[4]);
 				v.addElement(s[0]);
 				v.addElement(s[1]);
-				
+
 				this.constraintsListModel.addRow(v);
 			}
 		}
 		ResponseData<String[]> rep = this.control.getUniqueAttribute(this.tableNameComboBox.getSelectedItem().toString());
 		if (rep.hasSuccess()) {
 			int i=0;
+
 			// [0] : nom index
 			// [1] : nom attribut
-			for (String s : rep.getCollection()){
+			for (String[] s : rep.getCollection()){
+
 				if (i != 0){
-				Vector<String> v = new Vector<String>();
-				v.addElement(s);
-				v.addElement("UNIQUE");
-				v.addElement(this.tableNameComboBox.getSelectedItem().toString());
-				this.constraintsListModel.addRow(v);
-			}
+					Vector<String> v = new Vector<String>();
+					v.addElement(s[0]);
+					v.addElement("UNIQUE");
+					v.addElement(this.tableNameComboBox.getSelectedItem().toString());
+					v.addElement(s[1]);
+					this.constraintsListModel.addRow(v);
+				}
 				i++;
 			}
 		}
@@ -329,6 +335,23 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		Object selected = this.typeConstraintComboBox.getSelectedItem();
 		enableFkComponents("FOREIGN KEY".equals(selected.toString()));
 
+	}
+
+
+	private boolean isValidSelectedAttributesCount(){
+		boolean b = false;
+		int nbSelectedRowsSource = this.namesAttributeSourceTable.getSelectedRows().length;
+		int nbSelectedRowsDest = this.namesAttributeReferenceTable.getSelectedRows().length;
+		if(nbSelectedRowsSource == 0 && nbSelectedRowsDest == 0){
+			this.talk(new Response(false,"Aucun attributs selectionnés"));
+			b =  false;
+		}else if (nbSelectedRowsSource != nbSelectedRowsDest){
+			this.talk(new Response(false,"Le nombre d'attributs sélectionnés doit être le même pour les deux tables."));
+			b = false;
+		}else{
+			b = true;
+		}
+		return b;
 	}
 
 	/**
