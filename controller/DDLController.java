@@ -45,6 +45,7 @@ public class DDLController
 	public DDLController(DDLFacade facade)
 	{
 		this.facade = facade;
+		this.facade.getTables();
 	}
 
 

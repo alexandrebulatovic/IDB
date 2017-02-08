@@ -117,7 +117,6 @@ implements ActionListener
 	 */
 	private void fillComboBox()
 	{
-		
 		String msg;
 		ResponseData<String> 
 			response = this.control.getTables();
