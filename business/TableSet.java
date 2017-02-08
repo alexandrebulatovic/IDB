@@ -33,7 +33,18 @@ public class TableSet
 	 * @return vrai si et seulement si les tables ont toutes été chargées 
 	 * depuis la base de données. 
 	 */
-	public boolean isLoaded(){return this.tablesLoaded;}
+	public boolean isLoaded(){
+		return this.tablesLoaded;
+	}
+	
+	
+	public boolean isLoaded(String tableName){
+		Table table = this.getTableWithName(tableName);
+		if (table.getAttributes().size()<=0){
+			return false;
+		}
+		return true;
+	}
 	
 	
 	/**
