@@ -588,6 +588,16 @@ public class Table {
 	}
 
 
+	/**
+	 * Supprime la contrainte
+	 * @param c
+	 */
+	public void dropConstraint(Constraint c) {
+		this.constraints.remove(c);
+		c.cleanAll();
+	}
+
+
 
 
 

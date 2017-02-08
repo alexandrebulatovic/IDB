@@ -192,8 +192,9 @@ public class TableSet
 	 * @param name
 	 * @param tableName
 	 * @param attributesNames
+	 * @return nom de la contrainte généré ou non
 	 */
-	public void addUnique(String name, String tableName, String[] attributesNames){
+	public String addUnique(String name, String tableName, String[] attributesNames){
 		Table table = this.getTableByName(tableName);
 		UniqueConstraint un = new UniqueConstraint();
 		un.setTable(table);
@@ -205,7 +206,21 @@ public class TableSet
 			}
 			
 		}
-		un.createAndSetName();
+		if (name==null){
+			un.createAndSetName();
+		}
+		else{
+			un.setName(name);
+		}
+		return un.getName();
+	}
+	
+	
+	public void removeConstraint(String tableName, String attributeName, String constraintName){
+		Table table = this.getTableByName(tableName);
+		//TODO
+		Constraint c = this.getConstraintWithName(tableName, attributeName, constraintName);
+		table.dropConstraint(c);
 	}
 	
 	
@@ -411,6 +426,13 @@ public class TableSet
 	}
 	
 	
+	/**
+	 * @exemple ALTER TABLE tableName ADD CONSTRAINT un_tableName_att UNIQUE(att)
+	 * @param tableName
+	 * @param attributeName
+	 * @param ConstraintName
+	 * @return
+	 */
 	public String getSQLADDConstraint(String tableName, String attributeName, String ConstraintName){
 		return this.getConstraintWithName(tableName, attributeName, ConstraintName).toAddConstraintSQL();
 	}
