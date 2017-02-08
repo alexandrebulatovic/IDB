@@ -73,7 +73,7 @@ public class testTableSet {
 	}
 	
 	@Test
-	public void testForeignKey(){
+	public void testAddForeignKey(){
 		ensembleTable.addAttribute("table1", "attFk1", "VARCHAR2", 2, false, false);
 		ensembleTable.addAttribute("table1", "attFk2", "VARCHAR2", 2, false, false);
 		

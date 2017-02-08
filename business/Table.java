@@ -137,7 +137,7 @@ public class Table {
 	public List<String> toCreate(){
 		List<String> sqls = new ArrayList<String>();
 		
-		String sql = this.tableNameToSQL() + "\n(\n";
+		String sql = this.tableNameToCreateSQL() + "\n(\n";
 		int i=0;
 		for (Attribute att : attributes){
 			if (i!=0){
@@ -256,10 +256,13 @@ public class Table {
 		for (Attribute[] attribute : attributesToChange(tableSource)){
 			System.out.println("to modify : à obtenir :"+attribute[0]);
 			System.out.println("to modify : actuel :"+attribute[1]);
-//			Attribute attSrc = attribute[0];
-//			Attribute attDest = attribute[1];
-//			if (attSrc.foreignKey != attDest.foreignKey){
+			Attribute attDest = attribute[0];
+			Attribute attsrc = attribute[1];
+			results.add(attDest.toModify());
+			
+//			if (!attSrc.getFk().equalsName(attDest.getFk())){
 //				StringBuilder sql = new StringBuilder();
+//				sql.append(attSrc.toModify(attDest));
 //				sql.append("ALTER TABLE ");
 //				sql.append(this.name);
 //				sql.append("\n");
@@ -275,7 +278,7 @@ public class Table {
 //					sql.append(attDest.toSQLReferences());
 //				}
 //				results.add(sql.toString());
-//			}
+			}
 //			if (attSrc.unique != attDest.unique){
 //				StringBuilder sql = new StringBuilder();
 //				sql.append("ALTER TABLE ");
@@ -333,7 +336,7 @@ public class Table {
 //				results.add(sql.toString());
 //				
 //			}
-		}
+//		}
 	}
 
 
@@ -485,7 +488,7 @@ public class Table {
 	 * 
 	 * @return String
 	 */
-	private String tableNameToSQL()
+	private String tableNameToCreateSQL()
 	{
 		return "CREATE TABLE " + this.name;
 	}
