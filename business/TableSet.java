@@ -186,6 +186,29 @@ public class TableSet
 		return this.addForeignKey(null, tableSourceName, AttributesSourcesNames, tableDestinationName, attributesDestinationsNames);
 	}
 	
+	
+	/**
+	 * ajoute une contrainte unique pouvant porter sur plusieurs attributs d'une meme table
+	 * @param name
+	 * @param tableName
+	 * @param attributesNames
+	 */
+	public void addUnique(String name, String tableName, String[] attributesNames){
+		Table table = this.getTableWithName(tableName);
+		UniqueConstraint un = new UniqueConstraint();
+		un.setTable(table);
+		for (Attribute att : table.getAttributes()){
+			for (String attIn : attributesNames){
+				if (att.getName().equals(attIn)){
+					un.addAttribute(att);
+				}
+			}
+			
+		}
+		un.createAndSetName();
+	}
+	
+	
 
 	/**
 	 * retourne une liste de requettes permettant de modifier la table
