@@ -40,7 +40,6 @@ extends CreateTableGUI
 		this.tablesCombo = new JComboBox<String>();
 		this.tablesCombo.addItemListener(this);
 		this.bindAndAdd(this.tablesCombo, 6, true);
-//		this.bindAndAdd(new JLabel("Modifier le nom : "), 6, true);
 		super.handleTableInputs();
 	}
 		
@@ -110,7 +109,7 @@ extends CreateTableGUI
 	
 	private void showExistingAttribute(String [] att)
 	{
-		int size = (att[2] == "" || att[2] == null 
+		int size = ("".equals(att[2]) || att[2] == null 
 				? 1 
 				: Integer.parseInt(att[2]));
 		boolean nul = "NOTNULL".equals(att[3]);
