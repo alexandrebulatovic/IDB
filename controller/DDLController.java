@@ -326,4 +326,11 @@ public class DDLController
 	public ResponseData<String[]> getPrimaryFromForeign(String string) {
 		return this.facade.getPrimaryFromForeign(string);
 	}
+
+
+	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
+			String[] attributesDestinationsNames) {
+		
+		return this.facade.addForeignKey(tableSourceName,attributesSourcesNames,tableDestinationName,attributesDestinationsNames);
+	}
 }

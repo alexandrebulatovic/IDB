@@ -47,7 +47,7 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 	private JTable constraintsTable;
 
 	/** Bouton pour envoyer la requête de création d'une contrainte.*/
-	private JButton createButton;
+	private JButton addButton;
 
 	/** Bouton pour envoyer la requête de suppression d'une contrainte.*/
 	private JButton deleteButton;
@@ -95,6 +95,39 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		}
 		if (o == this.fkTableNameComboBox) {
 			this.fillTableAttribute(this.fkTableNameComboBox,this.modelFk);
+		}
+		if (o == this.addButton) {
+			this.addConstraintButtonAction();
+		}
+		if (o == this.deleteButton) {
+			this.fillTableAttribute(this.fkTableNameComboBox,this.modelFk);
+		}
+	}
+
+
+	private void addConstraintButtonAction() {
+		if("FOREIGN KEY".equals(this.typeConstraintComboBox.getSelectedItem().toString())){
+			String tableSourceName = this.tableNameComboBox.getSelectedItem().toString();
+			
+			int selected[] = this.namesAttributeSourceTable.getSelectedColumns();
+			String attributesSourcesNames[] = new String[selected.length];
+			int c = 0;
+			for(int i : selected){
+				String attribut = (String) this.modelSource.getValueAt(i, 0);
+				attributesSourcesNames[c] = attribut;
+				c++;
+			}
+			
+			String tableDestinationName = this.fkTableNameComboBox.getSelectedItem().toString();
+			selected = this.namesAttributeReferenceTable.getSelectedColumns();
+			String attributesDestinationsNames[] = new String[selected.length];
+			c = 0;
+			for(int i : selected){
+				String attribut = (String) this.modelSource.getValueAt(i, 0);
+				attributesSourcesNames[c] = attribut;
+				c++;
+			}
+			this.control.addForeignKey(tableSourceName,attributesSourcesNames,tableDestinationName,attributesDestinationsNames);
 		}
 	}
 
@@ -161,8 +194,8 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 
 		this.increaseTop(90);
 
-		this.createButton = new JButton("Ajouter la contrainte");
-		this.bindAndAdd(this.createButton);
+		this.addButton = new JButton("Ajouter la contrainte");
+		this.bindAndAdd(this.addButton);
 
 		this.increaseTop(15);
 
@@ -189,6 +222,8 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 	private void addListener() {
 		this.tableNameComboBox.addActionListener(this);
 		this.fkTableNameComboBox.addActionListener(this);
+		this.addButton.addActionListener(this);
+		this.deleteButton.addActionListener(this);
 	}
 
 	/**
@@ -269,7 +304,7 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 			}
 		}
 		ResponseData<String> rep = this.control.getUniqueAttribute(this.tableNameComboBox.getSelectedItem().toString());
-		if (response.hasSuccess()) {
+		if (rep.hasSuccess()) {
 			int i=0;
 			for (String s : rep.getCollection()){
 				if (i != 0){

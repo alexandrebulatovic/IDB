@@ -283,4 +283,26 @@ extends AbstractDDLCRUDFacade
 		}
 		return result;
 	}
+
+	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
+			String[] attributesDestinationsNames) {
+		boolean addable = this.tables.addForeignKey(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
+		Response added;
+		if(addable){
+			added = new Response(false,"Cette contrainte existe déjà.");
+		}else{
+			added = this.addForeignKeyDBMS(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
+			if (! added.hasSuccess()) {
+				//this.tables.removeTable(table.getName());
+			}
+		}
+		return added;
+	}
+
+
+	private Response addForeignKeyDBMS(String tableSourceName, String[] attributesSourcesNames,
+			String tableDestinationName, String[] attributesDestinationsNames) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
