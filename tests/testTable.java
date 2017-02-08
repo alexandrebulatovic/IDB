@@ -83,7 +83,7 @@ public class testTable {
 		
 		tableRecupere.addAttribute(att_a);
 		//tableRecupere.addAttribute(att_b); //on n'ajoute pas le nom volontairement
-		tableRecupere.addAttribute(att_c);//volontairement, le prénom à changé de taille
+		tableRecupere.addAttribute(att_c);//volontairement, le prénom à changé de taille & de nom
 		tableRecupere.addAttribute(att_d);
 		
 			
@@ -116,7 +116,9 @@ public class testTable {
 		String attendu = "ALTER TABLE PROFILS\n"
 					   + "ADD dateNaissance DATE;\n"
 					   + "ALTER TABLE PROFILS\n"
-					   + "DROP nom;\n";
+					   + "DROP nom;\n"
+					   + "ALTER TABLE PROFILS\n"
+					   + "MODIFY prenom VARCHAR2 (27);\n";
 		String actual = "";
 //		System.out.println(this.tableRecupere);
 		for (String sql : this.table.toModify(this.tableRecupere)){
