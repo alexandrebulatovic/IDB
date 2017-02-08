@@ -33,14 +33,6 @@ public class UniqueConstraint extends Constraint {
 		return null;
 	}
 
-	public List<String> getAttributesNames() {
-		List<String> retour = new ArrayList<String>();
-		
-		for (Attribute att : this.attributes){
-			retour.add(att.getName());
-		}
-		
-		return retour;
-	}
+
 
 }

@@ -109,7 +109,7 @@ public class ForeignKeyConstraint extends Constraint {
 		return liste;
 	}
 
-	private List<String> getAttributesDestinationNames() {
+	public List<String> getAttributesDestinationNames() {
 		ArrayList<String> retour = new ArrayList<String>();
 		for (Attribute att : this.getAttributesDestination()){
 			retour.add(att.getName());
@@ -117,12 +117,5 @@ public class ForeignKeyConstraint extends Constraint {
 		return retour;
 	}
 
-	private List<String> getAttributesNames() {
-		ArrayList<String> retour = new ArrayList<String>();
-		for (Attribute att : this.getAttributes()){
-			retour.add(att.getName());
-		}
-		return retour;
-	}
 
 }

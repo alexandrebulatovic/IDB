@@ -360,6 +360,36 @@ public class TableSet
 		return retour;
 	}
 	
+	
+	/**
+	 * @return
+	 * list of<br>
+	 * 	name,<br>
+	 * 	fk desc : list of <br>
+	 * 		tableSrc
+	 * 		attributesSrc
+	 * 		attributesDest<String>
+	 * 		tableDest
+	 */
+	public List<Object> getFkConstraint(String tableSource){
+		Table table = this.getTableWithName(tableSource);
+
+		
+		List<Object> retour = new ArrayList<Object>();
+		
+		for (ForeignKeyConstraint fk : table.getFks()){
+			ArrayList<Object> fkStr = new ArrayList<Object>();
+			
+			fkStr.add(tableSource);
+			fkStr.add(fk.getAttributesNames());
+			fkStr.add(fk.getTableDestination().getName());
+			fkStr.add(fk.getAttributesDestinationNames());
+			retour.add(fkStr);
+			fkStr.clear();
+		}
+		return retour;
+	}
+	
 
 
 	/**
