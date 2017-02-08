@@ -158,6 +158,13 @@ public class HomeController
 		this.ddlControl.openDropGUI();
 	}
 	
+	public void openConstraintsGUI() {
+		this.createOrNotDDLControl();
+		this.ddlControl.openConstraintsGUI();
+		
+	}
+
+
 	/**
 	 *  Ouvre l'IHM pour les opérations {@code Create - Read - Update - Delete. }
 	 */

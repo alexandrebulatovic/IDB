@@ -38,9 +38,10 @@ implements ActionListener
 	/** Bouton pour ouvrir l'IHM de suppression des tables.*/
 	private JButton dropButton;
 
+	private JButton constraintsButton;
+
 	/** Bouton pour ouvrir l'IHM du CRUD.*/
 	private JButton crudButton;
-
 
 	//Constructeur
 	/**
@@ -74,8 +75,12 @@ implements ActionListener
 					if (o == this.alterButton) this.alterButtonAction();
 					else
 						if (o == this.crudButton) this.crudButtonAction();
-
+						else 
+							if(o == this.constraintsButton) this.constraintsButtonAction();
 	}
+
+
+
 
 
 	@Override
@@ -114,6 +119,9 @@ implements ActionListener
 		this.dropButton = new JButton("LDD : supprimer tables");
 		this.dropButton.setActionCommand("ldd_drop_table");
 
+		this.constraintsButton = new JButton("LDD : créer supprimer contraintes");
+		this.constraintsButton.setActionCommand("ldd_create_drop_constraints");
+		
 		this.crudButton = new JButton("CRUD");
 		this.crudButton.setActionCommand("crud");
 
@@ -134,6 +142,7 @@ implements ActionListener
 		this.bindAndAdd(this.createButton);
 		this.bindAndAdd(this.alterButton);
 		this.bindAndAdd(this.dropButton);
+		this.bindAndAdd(this.constraintsButton);
 		this.bindAndAdd(this.crudButton);
 		for (JComponent jc : this.components) {
 			if (jc.getClass().getName().endsWith("JButton")) {
@@ -173,6 +182,12 @@ implements ActionListener
 	{
 		this.control.openModifyGui();
 	}
+
+	private void constraintsButtonAction() {
+		this.control.openConstraintsGUI();
+		
+	}
+
 
 	/**
 	 * Gère l'action du bouton 'CRUD'.

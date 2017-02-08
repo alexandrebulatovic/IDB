@@ -26,12 +26,13 @@ import controller.HomeController;
 public class ConstraintsGUI extends AbstractBasicGUI{
 
 	DDLController control;
-	public ConstraintsGUI() {
+	
+	public ConstraintsGUI(DDLController ddlController) {
 		super("Création de table",null, 600, 600, 25);
 		this.handleComponents();
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
 		this.enableFkComponents(false);
-		//this.control=control;
+		this.control=control;
 	}
 
 	private JScrollPane j;
@@ -109,7 +110,7 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 
 
 		this.namesAttributeReferenceTable = new JTable(model);
-		this.j =new JScrollPane(namesAttributeReferenceTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		this.j =new JScrollPane(namesAttributeReferenceTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		namesAttributeReferenceTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		namesAttributeReferenceTable.getColumnModel().getColumn(0).setPreferredWidth(200);
 		this.bindAndAdd(j,3,false);
@@ -129,10 +130,11 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		this.bindAndAdd(this.tableLabel);
 
 		this.constraintsTable = new JTable(this.model2);
-		this.jjj = new JScrollPane(constraintsTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		this.jjj = new JScrollPane(constraintsTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		constraintsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		constraintsTable.getColumnModel().getColumn(0).setPreferredWidth(120);
 		constraintsTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+		this.constraintsTable.setFillsViewportHeight(true);
 		this.bindAndAdd(jjj,150);
 		jj.setVisible(true);
 		

@@ -4,6 +4,7 @@ import facade.DDLFacade;
 import gui.ddl.CreateTableGUI;
 import gui.ddl.DropTableGUI;
 import gui.ddl.AlterTableGUI;
+import gui.ddl.ConstraintsGUI;
 
 import javax.swing.JFrame;
 
@@ -34,6 +35,8 @@ public class DDLController
 
 	/** Facade pour la définition des données.*/
 	private DDLFacade facade;
+
+	private ConstraintsGUI constraintsGUI;
 
 
 	//Contructeur
@@ -86,6 +89,17 @@ public class DDLController
 		else{
 			showGUI(this.dropGUI);
 		}
+	}
+
+
+	public void openConstraintsGUI() {
+		if (this.constraintsGUI == null) {
+			this.constraintsGUI = new ConstraintsGUI(this);
+		}
+		else {
+			showGUI(this.constraintsGUI);
+		}
+		
 	}
 
 
