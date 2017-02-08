@@ -43,8 +43,28 @@ extends CreateTableGUI
 		super.handleTableInputs();
 	}
 		
-		@Override
+	@Override
 	protected void createTableButtonAction(){}
+
+
+	@Override
+	public void windowActivated(WindowEvent e) {this.fillTablesComboBox();}
+
+
+	@Override
+    public void itemStateChanged(ItemEvent e) 
+	{
+		super.itemStateChanged(e);
+		if (e.getStateChange() == ItemEvent.SELECTED) {
+			if (e.getSource() == this.tablesCombo){
+				if ("".equals(e.getItem().toString())){
+					String table = e.getItem().toString();
+					this.fillGuiWithAttribute(table);
+				}
+			}
+
+		}
+	}
 
 
 	/**
@@ -56,13 +76,13 @@ extends CreateTableGUI
 		this.setTitle("Modifier une table");
 		this.createTableButton.setText("Modifier");
 	}
-	
-	
+
+
 	/**
 	 * Met à jour la liste déroulante contenant le noms des tables
 	 * enregistrées en base.
 	 */
-	private void synchronizeTablesComboBox()
+	private void fillTablesComboBox()
 	{
 		this.tablesCombo.removeAllItems();
 		ResponseData<String> response = this.control.getTables();
@@ -72,27 +92,26 @@ extends CreateTableGUI
 			this.tablesCombo.addItem(table);
 		}
 	}
+
+
+	//TODO : nom de merde
+	private void fillGuiWithAttribute(String table)
+	{
+		
+		ResponseData<String[]> response = 
+				this.control.getAttributes(table);
+		
+		this.tableNameField.setText(table);
+		if (response.hasSuccess()) {
+			for (String [] attribute : response.getCollection()) {
+				this.showExistingAttribute(attribute);
+			}
+		}
+	}
 	
-
-    @Override
-	public void windowActivated(WindowEvent e) {this.synchronizeTablesComboBox();}
-
-
-	@Override
-    public void itemStateChanged(ItemEvent e) {
-    	super.itemStateChanged(e);
-       if (e.getStateChange() == ItemEvent.SELECTED) {
-    	   if (e.getSource() == this.tablesCombo){
-    		   if (!e.getItem().toString().equals("")){
-    				String tableSelected = e.getItem().toString();
-//    				this.setValuesView(tableSelected);
-    				this.tableNameField.setText(tableSelected);
-//    				this.tableSource = this.getTable();
-    		   }
-    	   }
-
-       }
-    }
-
-
+	
+	private void showExistingAttribute(String [] attribute)
+	{
+		
+	}
 }
