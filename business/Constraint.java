@@ -240,12 +240,24 @@ public abstract class Constraint
 				+ "]";
 	}
 	
+	
 	/**
 	 * Compare 2 contraintes d'après un id écrit en brut
 	 */
 	@Override
 	public boolean equals(Object o){
 		if (((Constraint)o).thisId==this.thisId ){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Compare 2 contraintes d'après leurs nom
+	 * @return
+	 */
+	public boolean equalsName(Constraint c){
+		if (c.getName().equals(this.getName())){
 			return true;
 		}
 		return false;
