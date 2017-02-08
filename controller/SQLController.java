@@ -71,8 +71,8 @@ public class SQLController {
 
 			if (!((Response) reply).hasSuccess()) { // si c'est une erreur
 
-				SQLException sqlException = this.sql_manager.getSqlException(); // on récupère l'exception
-				String errorMsg = this.crud_facade.generateErrorMsg(sqlException); // on crée un message d'erreur
+				Exception exception = this.sql_manager.getLastException(); // on récupère l'exception
+				String errorMsg = this.crud_facade.generateErrorMsg(exception); // on crée un message d'erreur
 
 				this.sql_view.showError(errorMsg); // on affiche le message d'erreur
 

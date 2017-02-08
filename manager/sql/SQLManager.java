@@ -52,7 +52,7 @@ public class SQLManager {
 	private Connection conn;
 
 	/** Dernière exception levée. */
-	private SQLException sqlException;
+	private Exception exception;
 
 
 	/* CONSTRUCTEUR */
@@ -69,10 +69,10 @@ public class SQLManager {
 
 	/**
 	 * Permet d'obtenir la dernière exception levée par le SGBD.
-	 * @return un objet {@code SQLException}.
+	 * @return un objet {@code Exception}.
 	 */
-	public SQLException getSqlException() {
-		return sqlException;
+	public Exception getLastException() {
+		return exception;
 	}
 
 	/** Initialise l'attribut {@code Statement} nécessaire pour envoyer les requêtes SQL. 
@@ -123,7 +123,7 @@ public class SQLManager {
 			}
 
 		} catch (SQLException exception) {
-			this.sqlException = exception;
+			this.exception = exception;
 			return new Response(false);
 		}
 	}
@@ -159,7 +159,7 @@ public class SQLManager {
 			}
 
 		} catch (SQLException exception) {	
-			this.sqlException = exception;
+			this.exception = exception;
 		} catch (NullPointerException exception) {
 			System.out.println("il n'y a pas de requête à parser.");
 		}
@@ -295,7 +295,7 @@ public class SQLManager {
 			return true;   
 
 		} catch (SQLException exception) {
-			this.sqlException = exception;
+			this.exception = exception;
 			return false;
 		}
 	}
@@ -316,7 +316,7 @@ public class SQLManager {
 			return true;
 
 		} catch (SQLException exception) {
-			this.sqlException = exception;
+			this.exception = exception;
 			return false;
 		}
 	}
@@ -362,7 +362,10 @@ public class SQLManager {
 			return true;
 
 		} catch (SQLException exception) {
-			this.sqlException = exception;
+			this.exception = exception;
+			return false;
+		} catch (Exception exception) {
+			this.exception = exception;
 			return false;
 		}
 	}

@@ -47,8 +47,8 @@ extends AbstractDDLCRUDFacade
 	 */
 	public Response deleteRow(int index) {
 		if (!this.sql_manager.removeTuple(index)) {
-			SQLException sqlException = this.sql_manager.getSqlException();
-			String msgException = generateErrorMsg(sqlException);
+			Exception exception = this.sql_manager.getLastException();
+			String msgException = generateErrorMsg(exception);
 			return new Response(false, msgException);
 		} else
 			return new Response(true);
@@ -65,8 +65,8 @@ extends AbstractDDLCRUDFacade
 	public Response updateRow(int index, int column, Object updateBuffer)
 	{
 		if (!this.sql_manager.updateTuple(index, column, updateBuffer)) {
-			SQLException sqlException = this.sql_manager.getSqlException();
-			String msgException = generateErrorMsg(sqlException);
+			Exception exception = this.sql_manager.getLastException();
+			String msgException = generateErrorMsg(exception);
 			return new Response(false, msgException);
 		} else
 			return new Response(true);
@@ -79,16 +79,23 @@ extends AbstractDDLCRUDFacade
 	 */
 	public Response addTuple(Vector<Object> row_to_add) {
 		if (!this.sql_manager.addTuple(row_to_add)) {
-			SQLException sqlException = this.sql_manager.getSqlException();
-			String msgException = generateErrorMsg(sqlException);
+			Exception exception = this.sql_manager.getLastException();
+			String msgException = generateErrorMsg(exception);
 			return new Response(false, msgException);
 		} else
 			return new Response(true);
 	}
 
-	/** {@link I_ConnectionManager#errorMessage(SQLException)} */
-	public String generateErrorMsg(SQLException sqlException) {
-		return connector.errorMessage(sqlException);
+	/**
+	 *  Parse l'objet {@code Exception} levée par le système. 
+	 * @param exception {@code Exception} à parser. 
+	 * @return un message explicite de l'erreur.
+	 */
+	public String generateErrorMsg(Exception exception) {
+		if (exception instanceof SQLException)
+			return connector.errorMessage((SQLException)exception);
+		else
+			return exception.getMessage();
 	}
 
 
