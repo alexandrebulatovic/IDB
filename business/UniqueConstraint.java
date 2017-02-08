@@ -1,5 +1,8 @@
 package business;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UniqueConstraint extends Constraint {
 
 	public UniqueConstraint(){
@@ -28,6 +31,16 @@ public class UniqueConstraint extends Constraint {
 			return this.attributes.get(0);
 		}
 		return null;
+	}
+
+	public List<String> getAttributesNames() {
+		List<String> retour = new ArrayList<String>();
+		
+		for (Attribute att : this.attributes){
+			retour.add(att.getName());
+		}
+		
+		return retour;
 	}
 
 }

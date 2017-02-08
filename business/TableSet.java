@@ -336,6 +336,30 @@ public class TableSet
 		return retour;
 		
 	}
+	
+	/**
+	 * @return
+	 * list of<br>
+	 * 	name,<br>
+	 * 	unique desc : list of <br>
+	 * 		attributes<String>
+	 */
+	public List<Object> getUniqueConstraint(String tableSource){
+		Table table = this.getTableWithName(tableSource);
+
+		
+		List<Object> retour = new ArrayList<Object>();
+		
+		for (UniqueConstraint u : table.getUniques()){
+			ArrayList<Object> unStr = new ArrayList<Object>();
+			unStr.add(u.getName());
+			unStr.add(u.getAttributesNames());
+			retour.add(unStr);
+			unStr.clear();
+		}
+		return retour;
+	}
+	
 
 
 	/**

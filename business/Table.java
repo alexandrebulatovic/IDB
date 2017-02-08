@@ -558,6 +558,28 @@ public class Table {
 
 
 
+	public List<UniqueConstraint> getUniques() {
+		
+		ArrayList<UniqueConstraint> uniques = new ArrayList<UniqueConstraint>();
+		for (Constraint c : this.constraints){
+			if (c instanceof UniqueConstraint){
+				uniques.add((UniqueConstraint) c);
+			}
+		}
+		return uniques;
+	}
+	
+	
+	public List<ForeignKeyConstraint> getFks() {
+		
+		ArrayList<ForeignKeyConstraint> fks = new ArrayList<ForeignKeyConstraint>();
+		for (Constraint c : this.constraints){
+			if (c instanceof ForeignKeyConstraint){
+				fks.add((ForeignKeyConstraint) c);
+			}
+		}
+		return fks;
+	}
 
 
 
