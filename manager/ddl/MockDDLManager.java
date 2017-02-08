@@ -68,7 +68,7 @@ extends AbstractSuccesDDLManager
 	@Override
 	public ResponseData<String[]> getUniqueAttribute(String table) 
 	{
-		return new ResponseData<String>(true, GET_UNIQUE);
+		return new ResponseData<String[]>(true, GET_UNIQUE);
 	}
 
 	@Override

@@ -48,6 +48,18 @@ extends CreateTableGUI
 
 
 	@Override
+	protected void resetView()
+	{
+		super.resetView();
+		if (this.tablesCombo.getItemCount() > 0) {
+			String table = this.tablesCombo.getItemAt(0).toString();
+			this.tablesCombo.setSelectedItem(table);
+			this.fillGuiWithAttribute(table);
+		}
+	}
+
+
+	@Override
 	public void windowActivated(WindowEvent e) {this.fillTablesComboBox();}
 
 
@@ -104,6 +116,7 @@ extends CreateTableGUI
 		for (String [] att : attributesData.getCollection()) {
 			this.showExistingAttribute(att);
 		}
+		this.talk("");
 	}
 	
 	
