@@ -215,10 +215,19 @@ public class TableSet
 		return un.getName();
 	}
 	
+	/**
+	 * ajoute une contrainte unique pouvant porter sur plusieurs attributs d'une meme table
+	 * @param tableName
+	 * @param attributesNames
+	 * @return nom de la contrainte généré ou non
+	 */
+	public String addUnique(String tableName, String[] attributesNames){
+		return addUnique(null, tableName, attributesNames);
+	}
+	
 	
 	public void removeConstraint(String tableName, String attributeName, String constraintName){
 		Table table = this.getTableByName(tableName);
-		//TODO
 		Constraint c = this.getConstraintWithName(tableName, attributeName, constraintName);
 		table.dropConstraint(c);
 	}
@@ -433,7 +442,7 @@ public class TableSet
 	 * @param ConstraintName
 	 * @return
 	 */
-	public String getSQLADDConstraint(String tableName, String attributeName, String ConstraintName){
+	public String getSQLADDConstraint(String tableName,String attributeName, String ConstraintName){
 		return this.getConstraintWithName(tableName, attributeName, ConstraintName).toAddConstraintSQL();
 	}
 	

@@ -591,10 +591,13 @@ public class Table {
 	/**
 	 * Supprime la contrainte
 	 * @param c
+	 * @return 
 	 */
-	public void dropConstraint(Constraint c) {
-		this.constraints.remove(c);
+	public boolean dropConstraint(Constraint c) {
 		c.cleanAll();
+		this.attributes.getConstrains.remove(c);
+		return this.constraints.remove(c);
+		
 	}
 
 
