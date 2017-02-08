@@ -228,14 +228,16 @@ public class TableSet
 	}
 	
 	/**
-	 * retourne une liste de requettes permettant de modifier la table
-	 * passé en paramètres
-	 * @see business.Table#toModify(Table)
-	 * @param tableName
-	 * @return ArrayList<String> sqlString
+	 * 
+	 * @param tableName la table qui existe toujours
+	 * @param tableTarget la table qu'on veut obtenir
+	 * @param newName
+	 * @return
 	 */
-	public ArrayList<String> getSQLTableToModify(String tableName){
-		return null;//TODO
+	public List<String> getSQLTableToModify(String tableName, String tableTarget, String newName){
+		Table newTable = this.getTableByName(tableTarget);
+		newTable.setName(newName);
+		return newTable.toModify(this.getTableByName(tableName));
 	}
 	
 	
