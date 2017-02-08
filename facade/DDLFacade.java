@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import business.TableSet;
-import ddl.I_Attribute;
-import ddl.I_Table;
+import ddl.I_AttributeModel;
+import ddl.I_TableModel;
 import useful.Response;
 import useful.ResponseData;
 import factory.MainFactory;
@@ -38,56 +38,21 @@ extends AbstractDDLCRUDFacade
 	 * 
 	 * @param table : une table à créer. L'objet peut être erroné;
 	 */
-	public Response createTable(I_Table table)
+	public Response createTable(I_TableModel table)
 	{
 		boolean addable = this.createtableBusiness(table);
+		Response added;
+		
 		if (!addable) 
-			return new Response(false, "Cette table existe déjà.");
-		else 
-			return this.createTableDBMS(table);
+			added = new Response(false, "Cette table existe déjà.");
+		else {
+			added = this.createTableDBMS(table);
+			if (! added.hasSuccess()) 
+				this.tables.removeTable(table.getName());
+		}
+		return added;
 	}
 
-	
-	/**
-	 * 
-	 * @param table
-	 * @return
-	 */
-	private boolean createtableBusiness(I_Table table)
-	{
-		String name = table.getName();
-		boolean addable = this.tables.isAddable(name);
-		
-		if (addable) {
-			for(I_Attribute attribute : table.getAttributes()){
-				this.tables.addAttributeToTable(
-						table.getName(),
-						attribute.getName(),
-						attribute.getType(),
-						attribute.getSize(),
-						attribute.isNotNull(),
-						attribute.isPrimaryKey());
-			}
-		}
-		return addable;
-	}
-	
-	
-	private Response createTableDBMS(I_Table table)
-	{
-		String name = table.getName();
-		List<String> sql = this.tables.getSQLTableToCreate(name);
-		Iterator<String> statement = sql.iterator();
-		
-		String create = statement.next(); 
-		Response result = this.manager.createTable(create);
-		
-		while (statement.hasNext() && result.hasSuccess()) {
-			result = this.manager.altertable(statement.next());
-		}
-		return result;
-	}
-	
 	
 	/**
 	 * @return la liste des types de données disponibles pour le SGBD.
@@ -174,8 +139,70 @@ extends AbstractDDLCRUDFacade
 	 * @param name 
 	 * @return un model d'attribut pour les IHM de DDL.
 	 */
-	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey)
+	public I_AttributeModel getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey)
 	{
 		return this.factory.getAttributeModel(name,type,parseInt, notNull,primaryKey);
+	}
+	
+	
+	/**
+	 * @return un modèle de table vide pour l'IHM de création des tables.
+	 */
+	public I_TableModel getTableModel()
+	{
+		return this.factory.getTableModel();
+	}
+
+
+	/**
+	 * tente de créer $table dans les classes métiers.
+	 * 
+	 * @param table : une table à ajouté, faux sinon.
+	 * @return vrai si et seulement si $table a pu être ajoutée aux
+	 * classes métiers, faux sinon.
+	 */
+	private boolean createtableBusiness(I_TableModel table)
+	{
+		String name = table.getName();
+		boolean addable = this.tables.addTable(name);
+		
+		if (addable) {
+			for(I_AttributeModel attribute : table.getAttributes()){
+				this.tables.addAttribute(
+						table.getName(),
+						attribute.getName(),
+						attribute.getType(),
+						attribute.getSize(),
+						attribute.isNotNull(),
+						attribute.isPrimaryKey());
+			}
+		}
+		return addable;
+	}
+
+	 
+	/**
+	 * Tente de créer $table dans le SGBD.
+	 * 
+	 * @param table : une table à ajouter, null interdit.
+	 * @return une reponse personnalisée décrivant la tentative
+	 * de création de la table dans le SGBD.
+	 */
+	private Response createTableDBMS(I_TableModel table)
+	{
+		String name = table.getName();
+		List<String> sql = this.tables.getSQLTableToCreate(name);
+		Iterator<String> statement = sql.iterator();
+		
+		String create = statement.next(); 
+		Response result = this.manager.createTable(create);
+		System.out.println(create); //TODO : remove
+		String alter; //TODO : remove
+		while (statement.hasNext() && result.hasSuccess()) {
+			alter = statement.next();
+			System.out.println(alter);//TODO : remove
+			result = this.manager.altertable(alter);
+		}
+		return result;
 	}
 }

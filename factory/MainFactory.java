@@ -2,7 +2,8 @@ package factory;
 
 import java.sql.Connection;
 
-import ddl.I_Attribute;
+import ddl.I_AttributeModel;
+import ddl.I_TableModel;
 import manager.connection.I_ConnectionManager;
 import manager.ddl.I_DDLManager;
 
@@ -78,9 +79,18 @@ public class MainFactory
 	 * @param name 
 	 * @return un model d'attribut pour les IHM de DDL.
 	 */
-	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey)
+	public I_AttributeModel getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey)
 	{
 		return this.factory.getAttributeModel(name,type,parseInt, notNull,primaryKey);
+	}
+	
+	
+	/**
+	 * @return un modèle de table vide pour l'IHM de création des tables.
+	 */
+	public I_TableModel getTableModel()
+	{
+		return this.factory.getTableModel();
 	}
 	
 	

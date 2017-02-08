@@ -16,9 +16,6 @@ public class TableSet
 	 */
 	private boolean tablesLoaded = false;
 	
-	/** Une table en attente d'être ajoutée.*/
-	private Table candidate;
-	
 	
 	//Constructeur
 	/**
@@ -27,7 +24,6 @@ public class TableSet
 	public TableSet()
 	{
 		tables = new ArrayList<Table>();
-		candidate = new Table();
 	}
 	
 	
@@ -69,36 +65,21 @@ public class TableSet
 	
 	
 	/**
-	 * ajoute une table si c'est possible (si aucune autres table n'existe),
+	 * ajoute une table si c'est possible (si aucune autre table de même nom n'existe),
 	 * sinon garde l'ancienne.<br>
 	 * il est nécessaire d'utiliser {@link business.TableSet#isAddable(String)} avant d'ajouter une table
 	 * (de préférence)
-	 * @param tableName
-	 * @param cascadeConstraint
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @return vrai si et seulement si $table à pu être ajoutée à l'ensemble,
+	 * faux sinon.
 	 * @see business.TableSet#isAddable(String)
 	 */
-	public void addTable(String tableName){
-		if (this.isAddable(tableName)){
-			this.tables.add(new Table(tableName));
+	public boolean addTable(String table){
+		if (this.isAddable(table)){
+			return this.tables.add(new Table(table));
 		}
-	}
-	
-	
-	/**
-	 * Instancie $table et le stocke en tant que candidat,
-	 * si et seulement si $table est ajoutable à l'ensemble.
-	 * 
-	 * @param table : nom d'une table à ajouter, null interdit.
-	 * @return vrai si et seulement si il est possible d'ajouter
-	 * $table à l'ensemble, faux sinon.
-	 */
-	public boolean isAddable(String table)
-	{
-		if (this.getTableWithName(table)==null){
-			this.candidate = new Table(table);
-			return true;
-		}
-		return false;
+		else return false;
 	}
 	
 	
@@ -109,6 +90,7 @@ public class TableSet
 	 * Cette méthode part du principe qu'il ne peut y avoir qu'une clé primaire
 	 * par table (gère automatiquement les groupes de clé primaires pour
 	 * un attribut donné)
+	 * 
 	 * @param tableName
 	 * @param attributeName
 	 * @param type
@@ -117,15 +99,14 @@ public class TableSet
 	 * @param primaryKey
 	 * @return boolean
 	 */
-	public boolean addAttributeToTable(String tableName,String attributeName, String type, int size, boolean notNull,boolean primaryKey){
+	public boolean addAttribute(String tableName,String attributeName, String type, int size, boolean notNull,boolean primaryKey){
 		for (Table table:tables){
 			if (table.getName().equals(tableName) && !table.containsAttributeName(attributeName)){
 				Attribute newAttribute = new Attribute(attributeName, type, size, null, tableName, notNull);
 				
 				if (primaryKey){
-					ajouterPrimaryKey(table, newAttribute);
+					addPrimaryKey(table, newAttribute);
 				}
-				
 				
 				return table.addAttribute(newAttribute);
 			}
@@ -193,22 +174,39 @@ public class TableSet
 		return null;
 	}
 
-
-	private void ajouterPrimaryKey(Table table, Attribute a) {
+	
+	/**
+	 * Définit $att comme étant membre de la clée primaire de $table.
+	 * 
+	 * @param table : null interdit.
+	 * @param att : null interdit.
+	 */
+	private void addPrimaryKey(Table table, Attribute att) {
 		boolean havePk = false;
 		for (Attribute attributeActual : table.getAttributes()){
 			if (attributeActual.isPk()){
 				havePk = true;
 				PrimaryKeyConstraint pk = attributeActual.getPk();
-				pk.addAttribute(a);
+				pk.addAttribute(att);
 			}
 		}
 		if (!havePk){
 			PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
-			pk.addAttribute(a);
+			pk.addAttribute(att);
 			pk.setTable(table);
-			a.addConstraint(pk);
+			att.addConstraint(pk);
 			table.addConstraint(pk);
 		}
+	}
+
+
+	/**
+	 * @param table : nom d'une table à ajouter, null interdit.
+	 * @return vrai si et seulement si il est possible d'ajouter
+	 * $table à l'ensemble, faux sinon.
+	 */
+	private boolean isAddable(String table)
+	{
+		return this.getTableWithName(table)==null;
 	}
 }

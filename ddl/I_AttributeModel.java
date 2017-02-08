@@ -1,6 +1,6 @@
 package ddl;
 
-public interface I_Attribute 
+public interface I_AttributeModel 
 {
 	/**
 	 * @return le nom de l'attribut.

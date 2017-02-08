@@ -7,8 +7,8 @@ import gui.ddl.AlterTableGUI;
 
 import javax.swing.JFrame;
 
-import ddl.I_Attribute;
-import ddl.I_Table;
+import ddl.I_AttributeModel;
+import ddl.I_TableModel;
 import business.Table;
 import useful.Response;
 import useful.ResponseData;
@@ -172,7 +172,7 @@ public class DDLController
 	 * 
 	 * @param table : une table à créer. L'objet peut être erroné;
 	 */
-	public Response createTable(I_Table table)
+	public Response createTable(I_TableModel table)
 	{
 		return this.facade.createTable(table);
 	}
@@ -188,12 +188,28 @@ public class DDLController
 
 	}
 
-
-	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) {
+	/**
+	 * 
+	 * @param name
+	 * @param type
+	 * @param parseInt
+	 * @param notNull
+	 * @param primaryKey
+	 * @return
+	 */
+	public I_AttributeModel getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) {
 		return this.facade.getAttributeModel(name,type,parseInt,notNull,primaryKey);
 	}
 
-
+	/**
+	 * @return un modèle de table vide pour l'IHM de création des tables.
+	 */
+	public I_TableModel getTableModel()
+	{
+		return this.facade.getTableModel();
+	}
+	
+	
 	//Privées
 	/**
 	 * Affiche $gui au premier plan.

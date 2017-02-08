@@ -21,9 +21,9 @@ import useful.ConnectionStrings;
 
 import controller.DDLController;
 import controller.HomeController;
-import ddl.MockAttribute;
-import ddl.MySQLAttribute;
-import ddl.OracleAttribute;
+import ddl.MockAttributeModel;
+import ddl.MySQLAttributeModel;
+import ddl.OracleAttributeModel;
 
 import facade.DDLFacade;
 import facade.HomeFacade;
@@ -106,20 +106,20 @@ public class TestsConnecte
 		assertEquals(true, factory.getConnectionManager() instanceof MockConnectionManager);
 		assertEquals(true, factory.getDDLManager(connection) instanceof MockDDLManager);
 		assertEquals(true, factory.getAttributeModel
-				(name, type, size, nn, pk) instanceof MockAttribute);
+				(name, type, size, nn, pk) instanceof MockAttributeModel);
 		
 		factory.setDBMS(MainFactory.ORACLE);
 		assertEquals("Fabrique pour Oracle.", factory.toString());
 		assertEquals(true, factory.getConnectionManager() instanceof OracleConnectionManager);
 		assertEquals(true, factory.getDDLManager(connection) instanceof OracleDDLManager);
 		assertEquals(true, factory.getAttributeModel
-				(name, type, size, nn, pk) instanceof OracleAttribute);
+				(name, type, size, nn, pk) instanceof OracleAttributeModel);
 		
 		factory.setDBMS(MainFactory.MYSQL);
 		assertEquals("Fabrique pour MySQL.", factory.toString());
 		assertEquals(true, factory.getConnectionManager() instanceof MySQLConnectionManager);
 		assertEquals(true, factory.getDDLManager(connection) instanceof MySQLDDLManager);
 		assertEquals(true, factory.getAttributeModel
-				(name, type, size, nn, pk) instanceof MySQLAttribute);
+				(name, type, size, nn, pk) instanceof MySQLAttributeModel);
 	}
 }

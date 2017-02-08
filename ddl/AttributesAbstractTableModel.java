@@ -18,7 +18,7 @@ extends AbstractTableModel {
 	/**
 	 * Liste des attributs présent dans le tableau
 	 */
-	private LinkedHashSet<I_Attribute> attributes = new LinkedHashSet<I_Attribute>();
+	private LinkedHashSet<I_AttributeModel> attributes = new LinkedHashSet<I_AttributeModel>();
 
 	/**
 	 * Initialise l'en-tête
@@ -48,10 +48,10 @@ extends AbstractTableModel {
 	 * @param rowIndex
 	 * @return AttributeModel
 	 */
-	public I_Attribute getAttributeAt(int rowIndex){
+	public I_AttributeModel getAttributeAt(int rowIndex){
 		int i = 0;
-		Iterator <I_Attribute> iterator = this.attributes.iterator();
-		I_Attribute result = null; //compilateur chiale
+		Iterator <I_AttributeModel> iterator = this.attributes.iterator();
+		I_AttributeModel result = null; //compilateur chiale
 
 		while (iterator.hasNext() && i <= rowIndex) {
 			result = iterator.next();
@@ -64,7 +64,7 @@ extends AbstractTableModel {
 
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		I_Attribute a = this.getAttributeAt(rowIndex);
+		I_AttributeModel a = this.getAttributeAt(rowIndex);
 		switch(columnIndex){
 		case 0:
 			return a.getName();
@@ -82,7 +82,7 @@ extends AbstractTableModel {
 	}
 
 	public void setAttributeValueAt(int rowIndex, String name, String type, int size, boolean notNull, boolean primaryKey){
-		I_Attribute select = this.getAttributeAt(rowIndex);
+		I_AttributeModel select = this.getAttributeAt(rowIndex);
 		select.setName(name);
 		select.setType(type);
 		select.setSize(size);
@@ -91,8 +91,8 @@ extends AbstractTableModel {
 
 	}
 
-	public void setAttributeValueAt(int rowIndex, I_Attribute a){
-		I_Attribute select = this.getAttributeAt(rowIndex);
+	public void setAttributeValueAt(int rowIndex, I_AttributeModel a){
+		I_AttributeModel select = this.getAttributeAt(rowIndex);
 		select.setName(a.getName());
 		select.setType(a.getType());
 		select.setSize(a.getSize());
@@ -103,9 +103,9 @@ extends AbstractTableModel {
 	 * @param a
 	 * @return booleans
 	 */
-	public boolean isDuplicateAttributeName(I_Attribute attribute){
+	public boolean isDuplicateAttributeName(I_AttributeModel attribute){
 		boolean res = false;
-		for(I_Attribute object: attributes){
+		for(I_AttributeModel object: attributes){
 			if(object.getName().equals(attribute.getName())){
 				res=true;
 			}	
@@ -119,7 +119,7 @@ extends AbstractTableModel {
 	 * @param attribute
 	 * @return int
 	 */
-	public int addAttribute(I_Attribute attribute) {
+	public int addAttribute(I_AttributeModel attribute) {
 		if(!(isDuplicateAttributeName(attribute))){
 			attributes.add(attribute);
 			this.fireTableRowsInserted(0, attributes.size());
@@ -150,9 +150,9 @@ extends AbstractTableModel {
 	}
 
 	private void changePosition(int rowIndex,int direction ) {
-		I_Attribute select = this.getAttributeAt(rowIndex);
-		I_Attribute overSelect = this.getAttributeAt(rowIndex+direction);
-		I_Attribute overSelectCache = this.createGUI.control.getAttributeModel(overSelect.getName(), overSelect.getType(), overSelect.getSize(), overSelect.isNotNull(), overSelect.isPrimaryKey());
+		I_AttributeModel select = this.getAttributeAt(rowIndex);
+		I_AttributeModel overSelect = this.getAttributeAt(rowIndex+direction);
+		I_AttributeModel overSelectCache = this.createGUI.control.getAttributeModel(overSelect.getName(), overSelect.getType(), overSelect.getSize(), overSelect.isNotNull(), overSelect.isPrimaryKey());
 		this.setAttributeValueAt(rowIndex+direction, select.getName(), select.getType(), select.getSize(), select.isNotNull(), select.isPrimaryKey());
 		this.setAttributeValueAt(rowIndex, overSelectCache.getName(), overSelectCache.getType(), overSelectCache.getSize(), overSelectCache.isNotNull(), overSelectCache.isPrimaryKey());
 		this.fireTableRowsUpdated(rowIndex, rowIndex+direction);
@@ -170,7 +170,7 @@ extends AbstractTableModel {
 	/**
 	 * @return ArrayList<Attribute>
 	 */
-	public LinkedHashSet<I_Attribute> getAttributes(){
+	public LinkedHashSet<I_AttributeModel> getAttributes(){
 		return this.attributes;
 	}
 

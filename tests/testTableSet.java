@@ -30,7 +30,7 @@ public class testTableSet {
 		tablesNames.add("table3");
 		
 		ensembleTable.loadTables(tablesNames);
-		ensembleTable.addAttributeToTable("table1", "att1", "VARCHAR2", 20, false, true);
+		ensembleTable.addAttribute("table1", "att1", "VARCHAR2", 20, false, true);
 		
 		String sqlAttendu = "CREATE TABLE table1\n"
 				+ "(\n"
@@ -44,11 +44,11 @@ public class testTableSet {
 		}
 		assertEquals (sqlAttendu, sqlTotal);
 		
-		ensembleTable.addAttributeToTable("table1", "att2", "VARCHAR23", 44, false, true);
-		ensembleTable.addAttributeToTable("table1", "att3", "VARCHAR2", 22, true, false);
-		ensembleTable.addAttributeToTable("table1", "attDate", "DATE", 13, false, false);
+		ensembleTable.addAttribute("table1", "att2", "VARCHAR23", 44, false, true);
+		ensembleTable.addAttribute("table1", "att3", "VARCHAR2", 22, true, false);
+		ensembleTable.addAttribute("table1", "attDate", "DATE", 13, false, false);
 		
-		assertEquals("L'attribut ne doit pas pouvoir être créé en double",false,ensembleTable.addAttributeToTable("table1", "att2", "VARCHAR2", 22, false, false));
+		assertEquals("L'attribut ne doit pas pouvoir être créé en double",false,ensembleTable.addAttribute("table1", "att2", "VARCHAR2", 22, false, false));
 		
 		
 		sqlAttendu = "CREATE TABLE table1\n"

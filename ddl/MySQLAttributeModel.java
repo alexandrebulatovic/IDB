@@ -1,9 +1,18 @@
 package ddl;
 
-public class MySQLAttribute
-extends AbstractAttribute
+public class MySQLAttributeModel
+extends AbstractAttributeModel
 {
-
+	//Constructeur
+	/**
+	 * Constructeur vide.
+	 */
+	public MySQLAttributeModel()
+	{
+		super();
+	}
+	
+	
 	/**
 	 * Constructeur commun.
 	 * 
@@ -15,7 +24,7 @@ extends AbstractAttribute
 	 * @param primaryKey : vrai si et seulement si l'attribut est membre de la 
 	 * clée primaire, faux sinon.
 	 */
-	public MySQLAttribute
+	public MySQLAttributeModel
 	(String name, String type, int size, boolean notNull, boolean primaryKey) 
 	{
 		super(name, type ,size, notNull, primaryKey);
@@ -27,12 +36,13 @@ extends AbstractAttribute
 	 * 
 	 * @param attribute : null interdit.
 	 */
-	public MySQLAttribute(MySQLAttribute attributeAt) 
+	public MySQLAttributeModel(MySQLAttributeModel attributeAt) 
 	{
 		super(attributeAt);
 	}
 
 
+	//Méthodes.
 	@Override
 	public String sizeErrorMsg()
 	{

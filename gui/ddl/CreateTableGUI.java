@@ -13,9 +13,8 @@ import controller.DDLController;
 import ddl.AttributesAbstractTableModel;
 import ddl.ControlTableResult;
 import ddl.CreateModifyProperties;
-import ddl.I_Attribute;
-import ddl.I_Table;
-import ddl.TableModel;
+import ddl.I_AttributeModel;
+import ddl.I_TableModel;
 import useful.FieldsKeyAdapter;
 import useful.MaxLengthTextDocument;
 import useful.Response;
@@ -169,7 +168,7 @@ implements ItemListener
 	 * 
 	 * @param attribute : null interdit.
 	 */
-	protected void addAttributeToTable(I_Attribute attribute){
+	protected void addAttributeToTable(I_AttributeModel attribute){
 		this.models.addAttribute(attribute);
 		this.talk(new Response(true,"Attribut ajouté."));
 		this.clearAttribute();
@@ -364,7 +363,7 @@ implements ItemListener
 	 * -la taille renseignée est correcte en fonction du type,<br/> 
 	 * -le nom est unique dans la table.
 	 */
-	private boolean isValidateAttribute(I_Attribute attribute)
+	private boolean isValidateAttribute(I_AttributeModel attribute)
 	{
 		String msg;
 		
@@ -387,7 +386,7 @@ implements ItemListener
 			} 
 			else {
 				int rowIndex = this.table.getSelectedRow();
-				I_Attribute test = this.models.getAttributeAt(rowIndex);
+				I_AttributeModel test = this.models.getAttributeAt(rowIndex);
 				result = attribute.equals(test);
 				msg = result ? "" : msgDoublon;
 			}
@@ -506,7 +505,7 @@ implements ItemListener
 			int size = Integer.parseInt(attributeSizeField.getText());
 			boolean notNull = this.notNullCheckBox.isSelected();
 			boolean primaryKey = this.primaryKeyCheckBox.isSelected();
-			I_Attribute attribute = this.control.getAttributeModel
+			I_AttributeModel attribute = this.control.getAttributeModel
 					(name, type, size, notNull, primaryKey);
 			if(this.isValidateAttribute(attribute))
 				this.addAttributeToTable(attribute);
@@ -581,7 +580,7 @@ implements ItemListener
 			int size = Integer.parseInt(attributeSizeField.getText());
 			boolean notNull = this.notNullCheckBox.isSelected();
 			boolean primaryKey = this.primaryKeyCheckBox.isSelected();
-			I_Attribute attribute = this.control.getAttributeModel(name,type,size,notNull,primaryKey);
+			I_AttributeModel attribute = this.control.getAttributeModel(name,type,size,notNull,primaryKey);
 			if(isValidateAttribute(attribute)){
 				this.models.setAttributeValueAt(this.table.getSelectedRow(),attribute);
 				this.talk(new Response(true,"Attribut modifé."));
@@ -633,13 +632,20 @@ implements ItemListener
 	}
 
 	
+	/**
+	 * Détermine ce qu'il se passe en appuyant sur le bouton 
+	 * "Créer table".
+	 */
 	protected void createTableButtonAction() 
 	{
-		I_Table table = new TableModel(this.tableNameField.getText());
-		LinkedHashSet<I_Attribute> attributes = this.models.getAttributes();
-		for(I_Attribute attribute : attributes){
+		I_TableModel table = this.control.getTableModel();
+		table.setName(this.tableNameField.getText());
+		LinkedHashSet<I_AttributeModel> attributes = this.models.getAttributes();
+		
+		for(I_AttributeModel attribute : attributes){
 			table.addAttribute(attribute);
 		}
+		
 		Response r = this.control.createTable(table);
 		if (r.hasSuccess()) {
 			this.resetView();

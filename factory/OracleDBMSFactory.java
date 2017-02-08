@@ -2,8 +2,10 @@ package factory;
 
 import java.sql.Connection;
 
-import ddl.I_Attribute;
-import ddl.OracleAttribute;
+import ddl.I_AttributeModel;
+import ddl.I_TableModel;
+import ddl.OracleAttributeModel;
+import ddl.OracleTableModel;
 import manager.connection.I_ConnectionManager;
 
 import manager.connection.OracleConnectionManager;
@@ -33,9 +35,16 @@ implements I_DBMSFactory
 	
 	
 	@Override
-	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) 
+	public I_AttributeModel getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) 
 	{
-		return new OracleAttribute(name,type,parseInt, notNull,primaryKey);
+		return new OracleAttributeModel(name,type,parseInt, notNull,primaryKey);
+	}
+	
+	
+	@Override
+	public I_TableModel getTableModel()
+	{
+		return new OracleTableModel();
 	}
 	
 	

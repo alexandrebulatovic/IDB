@@ -2,8 +2,10 @@ package factory;
 
 import java.sql.Connection;
 
-import ddl.I_Attribute;
-import ddl.MySQLAttribute;
+import ddl.I_AttributeModel;
+import ddl.I_TableModel;
+import ddl.MySQLAttributeModel;
+import ddl.MySQLTableModel;
 import manager.connection.I_ConnectionManager;
 import manager.connection.MySQLConnectionManager;
 import manager.ddl.I_DDLManager;
@@ -21,7 +23,7 @@ implements I_DBMSFactory
 	{
 		return new MySQLConnectionManager();
 	}
-
+	
 	
 	@Override
 	public I_DDLManager getDDLManager(Connection connection) 
@@ -31,9 +33,16 @@ implements I_DBMSFactory
 
 	
 	@Override
-	public I_Attribute getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) 
+	public I_AttributeModel getAttributeModel(String name, String type, int parseInt, boolean notNull, boolean primaryKey) 
 	{
-		return new MySQLAttribute(name,type,parseInt, notNull,primaryKey);
+		return new MySQLAttributeModel(name,type,parseInt, notNull,primaryKey);
+	}
+	
+	
+	@Override
+	public I_TableModel getTableModel()
+	{
+		return new MySQLTableModel();
 	}
 	
 	

@@ -3,15 +3,17 @@ package ddl;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TableModel implements I_Table{
+public abstract class AbstractTableModel 
+implements I_TableModel
+{
 
 	private String name;
 
-	private List<I_Attribute> attributes;
+	private List<I_AttributeModel> attributes;
 
-	public TableModel(String name){
+	public AbstractTableModel(String name){
 		this.setName(name);
-		attributes = new ArrayList<I_Attribute>();
+		attributes = new ArrayList<I_AttributeModel>();
 	}
 
 	@Override
@@ -20,7 +22,7 @@ public class TableModel implements I_Table{
 	}
 
 	@Override
-	public List<I_Attribute> getAttributes() {
+	public List<I_AttributeModel> getAttributes() {
 		return this.attributes;
 	}
 
@@ -30,8 +32,8 @@ public class TableModel implements I_Table{
 	}
 
 	@Override
-	public I_Attribute getAttribute(String name) {
-		for (I_Attribute attribute : attributes){
+	public I_AttributeModel getAttribute(String name) {
+		for (I_AttributeModel attribute : attributes){
 			if(attribute.getName().equals(name)){
 				return attribute;
 			}
@@ -40,13 +42,13 @@ public class TableModel implements I_Table{
 	}
 
 	@Override
-	public void addAttribute(I_Attribute attribute) {
+	public void addAttribute(I_AttributeModel attribute) {
 		if(!attributes.contains(attribute))
 			this.attributes.add(attribute);
 	}
 
 	@Override
-	public void removeAttribute(I_Attribute attribute) {
+	public void removeAttribute(I_AttributeModel attribute) {
 		this.attributes.remove(attribute);
 	}
 

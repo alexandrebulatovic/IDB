@@ -1,7 +1,7 @@
 package ddl;
 
-public abstract class AbstractAttribute 
-implements I_Attribute
+public abstract class AbstractAttributeModel 
+implements I_AttributeModel
 {
 	//Attributs
 	/** le nom de l'attribut.*/
@@ -21,6 +21,12 @@ implements I_Attribute
 	
 	
 	//Constructeur
+	protected AbstractAttributeModel()
+	{
+		this("a", "CHAR", 1, false, false);
+	}
+	
+	
 	/**
 	 * Constructeur commun.
 	 * 
@@ -32,14 +38,14 @@ implements I_Attribute
 	 * @param primaryKey : vrai si et seulement si l'attribut est membre de la 
 	 * clée primaire, faux sinon.
 	 */
-	protected AbstractAttribute
+	protected AbstractAttributeModel
 	(String name, String type, int size, boolean notNull, boolean primaryKey)
 	{
-		this.name = name;
-		this.type = type;
-		this.size = size;
-		this.notNull = notNull;
-		this.primaryKey = primaryKey;
+		this.setName(name);
+		this.setType(type);
+		this.setSize(size);
+		this.setNotNull(notNull);
+		this.setPrimaryKey(primaryKey);
 	}
 	
 	
@@ -48,13 +54,10 @@ implements I_Attribute
 	 * 
 	 * @param attribute : null interdit.
 	 */
-	protected AbstractAttribute(AbstractAttribute attribute) 
+	protected AbstractAttributeModel(AbstractAttributeModel attribute) 
 	{
-		this.name = attribute.name;
-		this.type = attribute.type;
-		this.size = attribute.size;
-		this.notNull = attribute.notNull;
-		this.primaryKey = attribute.primaryKey;
+		this(attribute.name, attribute.type, attribute.size,
+				attribute.notNull, attribute.primaryKey);
 	}
 	
 	
@@ -137,6 +140,6 @@ implements I_Attribute
 	{
 		return (o == null 
 				? false 
-				: ((AbstractAttribute)o).name.equals(this.name));
+				: ((AbstractAttributeModel)o).name.equals(this.name));
 	}
 }

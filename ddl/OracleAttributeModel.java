@@ -1,9 +1,17 @@
 package ddl;
 
-public class OracleAttribute 
-extends AbstractAttribute
+public class OracleAttributeModel 
+extends AbstractAttributeModel
 {
 	//Constructeur
+	/**
+	 * Constructeur vide.
+	 */
+	public OracleAttributeModel()
+	{
+		super();
+	}
+	
 	/**
 	 * Constructeur commun.
 	 * 
@@ -15,7 +23,7 @@ extends AbstractAttribute
 	 * @param primaryKey : vrai si et seulement si l'attribut est membre de la 
 	 * clée primaire, faux sinon.
 	 */
-	public OracleAttribute
+	public OracleAttributeModel
 	(String name, String type, int size, boolean notNull, boolean primaryKey) 
 	{
 		super(name, type ,size, notNull, primaryKey);
@@ -27,11 +35,19 @@ extends AbstractAttribute
 	 * 
 	 * @param attribute : null interdit.
 	 */
-	public OracleAttribute(OracleAttribute attributeAt) 
+	public OracleAttributeModel(OracleAttributeModel attributeAt) 
 	{
 		super(attributeAt);
 	}
 
+	
+	//Méthodes
+	@Override
+	public void setName(String name)
+	{
+		super.setName(name.toUpperCase());
+	}
+	
 	
 	@Override
 	public String sizeErrorMsg()

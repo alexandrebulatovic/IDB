@@ -1,8 +1,18 @@
 package ddl;
 
-public class MockAttribute 
-extends AbstractAttribute
+public class MockAttributeModel 
+extends AbstractAttributeModel
 {
+	//Constructeurs
+	/**
+	 * Constructeur vide.
+	 */
+	public MockAttributeModel()
+	{
+		super();
+	}
+	
+	
 	/**
 	 * Constructeur commun.
 	 * 
@@ -14,19 +24,20 @@ extends AbstractAttribute
 	 * @param primaryKey : vrai si et seulement si l'attribut est membre de la 
 	 * clée primaire, faux sinon.
 	 */
-	public MockAttribute(String name, String type, int size,
+	public MockAttributeModel(String name, String type, int size,
 			boolean notNull, boolean primaryKey) 
 	{
 		super(name, type, size, notNull, primaryKey);
 
 	}
 
-	public MockAttribute(MockAttribute mock)
+	public MockAttributeModel(MockAttributeModel mock)
 	{
 		super(mock);
 	}
 	
 	
+	//Méthodes
 	@Override
 	public String sizeErrorMsg() 
 	{
