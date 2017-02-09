@@ -93,4 +93,24 @@ extends AbstractSuccesDDLManager
 	{
 		return new Response(true, CREATE_TABLE);
 	}
+
+
+	@Override
+	public Response addForeignKey(String sql) {
+		return new Response (true, "Clée étrangère ajoutée.");
+	}
+
+
+	@Override
+	public Response addUnique(String sql) {
+		return new Response(true, "Contrainte unique ajoutée.");
+	}
+
+
+	@Override
+	public Response dropConstraint(String sql) {
+		// TODO Généraliser les alter si possible
+		// TODO céer des statiques avec les messages
+		return new Response(true, "Contrainte supprimée.");
+	}
 }
