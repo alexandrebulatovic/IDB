@@ -7,11 +7,8 @@ import java.util.Iterator;
 
 import javax.swing.table.AbstractTableModel;
 
-import business.Attribute;
 
-
-
-
+@SuppressWarnings("serial")
 public class AttributesAbstractTableModel 
 extends AbstractTableModel {
 	private CreateTableGUI createGUI;

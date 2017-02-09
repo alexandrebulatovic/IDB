@@ -13,7 +13,6 @@ import javax.swing.JFrame;
 
 import ddl.I_AttributeModel;
 import ddl.I_TableModel;
-import business.Table;
 import useful.Response;
 import useful.ResponseData;
 
