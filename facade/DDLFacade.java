@@ -128,7 +128,7 @@ extends AbstractDDLCRUDFacade
 	
 	/**
 	 * @return vrai si et seulement si le SGBD permet de "droper" une 
-	 * table avec l'option "CASCADE"
+	 * table avec l'option "CASCADE", faux sinon.
 	 */
 	public boolean dbmsAllowsDropCascade()
 	{
@@ -256,8 +256,8 @@ extends AbstractDDLCRUDFacade
 
 
 
-	public ResponseData<String[]> getUniqueAttribute(String string) {
-		return this.manager.getUniqueAttribute(string);
+	public ResponseData<String[]> getUniqueAttributes(String string) {
+		return this.manager.getUniqueAttributes(string);
 		
 	}
 

@@ -131,7 +131,7 @@ public interface I_DDLManager
 	 * - Le nom de l'index,<br/>
 	 * - le nom des attributs de $table qui sont soumis à une contrainte UNIQUE.
 	 */
-	public abstract ResponseData<String[]> getUniqueAttribute(String table);
+	public abstract ResponseData<String[]> getUniqueAttributes(String table);
 	
 	
 	/**

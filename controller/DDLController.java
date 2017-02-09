@@ -128,7 +128,7 @@ public class DDLController
 
 	/**
 	 * @return vrai si et seulement si le SGBD permet de "droper" une 
-	 * table avec l'option "CASCADE"
+	 * table avec l'option "CASCADE", faux sinon.
 	 */
 	public boolean dbmsAllowsDropCascade()
 	{
@@ -137,6 +137,7 @@ public class DDLController
 
 
 	/**
+	 * TODO déplacer l'intelligence de la facade ici.
 	 * Supprime $table, si c'est possible.
 	 * 
 	 * @param table : une table à supprimer, null interdit.
@@ -152,6 +153,7 @@ public class DDLController
 
 
 	/**
+	 * TODO : déplacer l'intelligence de la facade ici.
 	 * Supprime $table et toutes les tables de la bases qui utilisent la clée primaire
 	 * de $table.
 	 * 
@@ -166,6 +168,7 @@ public class DDLController
 	
 	
 	/**
+	 * TODO : aller chercher dans les classes métiers une fois clées chargées.
 	 * Retourne une réponse personnalisée qui contient les membres
 	 * de la clée primaire de $table.
 	 * 
@@ -214,7 +217,16 @@ public class DDLController
 			result = new ResponseData<String[]> (true, "Attributs récupérés.", latt);
 		} 
 		else {
-			result = getAttributeFromDBMS(table);
+			result = getAttributesFromDBMS(table);
+//			//---unique
+//			ResponseData<String[]> uniques = this.facade.getUniqueAttributes(table);
+//			for (String [] un : uniques.getCollection()) {
+//				this.facade.addUnique(table, un);
+//			}
+//			//---fin unique
+//			//--foreign
+//			ResponseData<String[]> foreigns
+//			//--finforeign
 			List<String[]> attributes = result.getCollection();
 			for (String [] att : attributes) {
 				this.facade.addAttribute(table, att);
@@ -225,51 +237,6 @@ public class DDLController
 	}
 
 
-	private ResponseData<String[]> getAttributeFromDBMS(String table) 
-	{
-		ResponseData<String[]> attributesData; 
-		ResponseData<String> primaries; 
-
-		attributesData = this.facade.getAttributesFromDBMS(table);
-		if (! attributesData.hasSuccess()) return attributesData;
-
-		primaries = this.facade.getPrimaryKey(table);
-		if (! attributesData.hasSuccess()) {
-			return new ResponseData<String[]>(false, "Clées primaires non récupérées.");
-		}
-		
-		String [] attribute;
-		List<String[]> collection = new ArrayList<String[]>();
-		for (String [] att : attributesData.getCollection()) {
-			attribute = this.createAttribute(att, primaries.getCollection());
-			collection.add(attribute);
-		}
-		return new ResponseData<String[]>(true, "Attributs récupérés.", collection);
-	}
-
-	
-	
-	private String [] createAttribute(String [] att, List<String> primaries)
-	{
-		String [] result = new String [5];
-		int i = 0, size = primaries.size();
-		boolean primary = false;
-		
-		while (i < size && !primary) {
-			primary = att[0].equals(primaries.get(i));
-			i++;
-		}
-		
-		for (int j=0; j < 3; j++) {
-			result[j] = att[j];
-		}
-		
-		result[3] = !primary && "NO".equals(att[3]) ? "NOTNULL" : "NULL";
-		result[4] = primary ? "PRIMARY" : "COMMON";
-		return result;
-	}
-	
-	
 	/**
 	 * Modifie une table existante
 	 */
@@ -301,26 +268,13 @@ public class DDLController
 	}
 	
 	
-	//Privées
-	/**
-	 * Affiche $gui au premier plan.
-	 * 
-	 * @param gui : une IHM, null interdit.
-	 */
-	private static void showGUI(JFrame gui)
-	{
-		gui.setVisible(true);
-		gui.toFront();
-	}
-
-
 	public ResponseData<String[]> getForeignFromPrimary(String string) {
 		return this.facade.getForeignFromPrimary(string);
 	}
 
 
-	public ResponseData<String[]> getUniqueAttribute(String string) {
-		return this.facade.getUniqueAttribute(string);
+	public ResponseData<String[]> getUniqueAttributes(String string) {
+		return this.facade.getUniqueAttributes(string);
 	}
 
 
@@ -344,5 +298,73 @@ public class DDLController
 	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
 		return this.facade.removeConstraint(tableSourceName,attribute,constraint);
 		
+	}
+
+	
+	private String [] convertAttribute(String [] att, List<String> primaries)
+	{
+		String [] result = new String [5];
+		int i = 0, size = primaries.size();
+		boolean primary = false;
+		
+		while (i < size && !primary) {
+			primary = att[0].equals(primaries.get(i));
+			i++;
+		}
+		
+		for (int j=0; j < 3; j++) {
+			result[j] = att[j];
+		}
+		
+		result[3] = !primary && "NO".equals(att[3]) ? "NOTNULL" : "NULL";
+		result[4] = primary ? "PRIMARY" : "COMMON";
+		return result;
+	}
+
+	
+	/**
+	 * Récupère les informations depuis le SGBD.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @return Une réponse personnalisée avec :
+	 * - le nom des attributs,<br/>
+	 * - le type des attributs,<br/>
+	 * - la taile des attributs,<br/>
+	 * - vrai ssi les attributs sont soumit à des contraintes NOT NULL, <br/>
+	 * - vrai ssi les attributs sont membre de la clée primaire.
+	 */
+	private ResponseData<String[]> getAttributesFromDBMS(String table) 
+	{
+		ResponseData<String[]> attributesData; 
+		ResponseData<String> primaries; 
+	
+		attributesData = this.facade.getAttributesFromDBMS(table);
+		if (! attributesData.hasSuccess()) return attributesData;
+	
+		primaries = this.facade.getPrimaryKey(table);
+		if (! attributesData.hasSuccess()) {
+			return new ResponseData<String[]>(false, "Clées primaires non récupérées.");
+		}
+		
+		String [] attribute;
+		List<String[]> collection = new ArrayList<String[]>();
+		for (String [] att : attributesData.getCollection()) {
+			attribute = this.convertAttribute(att, primaries.getCollection());
+			collection.add(attribute);
+		}
+		return new ResponseData<String[]>(true, "Attributs récupérés.", collection);
+	}
+
+
+	//Privées
+	/**
+	 * Affiche $gui au premier plan.
+	 * 
+	 * @param gui : une IHM, null interdit.
+	 */
+	private static void showGUI(JFrame gui)
+	{
+		gui.setVisible(true);
+		gui.toFront();
 	}
 }
