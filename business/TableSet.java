@@ -211,6 +211,7 @@ public class TableSet
 			}
 			
 		}
+		this.getTableByName(tableName).addConstraint(un);
 		if (name==null){
 			un.createAndSetName();
 		}
@@ -233,7 +234,7 @@ public class TableSet
 	
 	public void removeConstraint(String tableName, String attributeName, String constraintName){
 		Table table = this.getTableByName(tableName);
-		Constraint c = this.getConstraintWithName(tableName, attributeName, constraintName);
+		Constraint c = this.getConstraintWithName(tableName, constraintName);
 		table.dropConstraint(c);
 	}
 	
@@ -448,17 +449,18 @@ public class TableSet
 	 * @return
 	 */
 	public String getSQLADDConstraint(String tableName,String attributeName, String ConstraintName){
-		return this.getConstraintWithName(tableName, attributeName, ConstraintName).toAddConstraintSQL();
+		Constraint c = this.getConstraintWithName(tableName, ConstraintName);
+		return c.toAddConstraintSQL();
 	}
 	
 	public String getSQLDropConstraint(String tableName, String attributeName, String ConstraintName){
-		return this.getConstraintWithName(tableName, attributeName, ConstraintName).toDropConstraintSQL();
+		return this.getConstraintWithName(tableName, ConstraintName).toDropConstraintSQL();
 	}
 	
 
 
-	private Constraint getConstraintWithName(String tableName, String attributeName, String constraintName) {
-		for (Constraint c : this.getAttributeWithName(tableName, attributeName).getConstraints()){
+	private Constraint getConstraintWithName(String tableName, String constraintName) {
+		for (Constraint c : this.getTableByName(tableName).getConstraints()){
 			if (c.getName().equals(constraintName)){
 				return c;
 			}

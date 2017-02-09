@@ -90,5 +90,12 @@ public class testTableSet {
 				
 				ensembleTable.getSQLTableToCreate("table1").get(2));
 	}
+	
+	@Test
+	public void testAccesseurs(){
+		ensembleTable.addAttribute("table1", "att1", "VARCHAR2", 2, false, false);
+		String name = ensembleTable.addUnique("table1", new String[] {"att1"});
+		assertEquals("ALTER TABLE table1\nADD CONSTRAINT un_table1_att1 UNIQUE(att1)",ensembleTable.getSQLADDConstraint("table1", "att1", name));
+	}
 
 }
