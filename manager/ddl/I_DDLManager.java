@@ -157,4 +157,10 @@ public interface I_DDLManager
 
 	public Response addForeignKey(String sql);
 
+
+	public Response addUnique(String sql);
+
+
+	public Response dropConstraint(String sql);
+
 }

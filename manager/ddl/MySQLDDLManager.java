@@ -59,4 +59,16 @@ extends AbstractDLLManager
 	public Response addForeignKey(String sql) {
 		return this.executeUpdate(sql, "Contrainte créée");
 	}
+
+
+	@Override
+	public Response addUnique(String sql) {
+		return this.executeUpdate(sql, "Contrainte unique créée");
+	}
+
+
+	@Override
+	public Response dropConstraint(String sql) {
+		return this.executeUpdate(sql, "Contrainte supprimée");
+	}
 }

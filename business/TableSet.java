@@ -235,6 +235,7 @@ public class TableSet
 	public void removeConstraint(String tableName, String attributeName, String constraintName){
 		Table table = this.getTableByName(tableName);
 		Constraint c = this.getConstraintWithName(tableName, constraintName);
+		System.out.println(c);
 		table.dropConstraint(c);
 	}
 	

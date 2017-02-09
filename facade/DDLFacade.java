@@ -330,7 +330,32 @@ extends AbstractDDLCRUDFacade
 
 	private Response addForeignKeyDBMS(String tableSourceName, String[] attributesSourcesNames,String ConstraintName) {
 		String sql = this.tables.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], ConstraintName);
-//		Response result = this.manager.addForeignKey(sql);
-		return null;
+		Response result = this.manager.addForeignKey(sql);
+		return result;
+	}
+
+
+	public Response addUnique(String tableSourceName, String[] attributesSourcesNames) {
+		String contrainte = this.tables.addUnique(tableSourceName, attributesSourcesNames);
+		Response added = this.addUniqueDBMS(tableSourceName, attributesSourcesNames, contrainte);
+		return added;
+	}
+
+
+	private Response addUniqueDBMS(String tableSourceName, String[] attributesSourcesNames, String contrainte) {
+		String sql = this.tables.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], contrainte);
+		Response result = this.manager.addUnique(sql);
+		return result;
+	}
+
+
+	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
+		this.tables.removeConstraint(tableSourceName, attribute, constraint);
+		String sql = this.tables.getSQLDropConstraint(tableSourceName,attribute, constraint);
+		System.out.println(sql);
+		Response result = this.manager.dropConstraint(sql);
+		System.out.println(result.getMessage());
+		return result;
+		
 	}
 }

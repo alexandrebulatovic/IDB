@@ -208,6 +208,7 @@ public class DDLController
 	 */
 	public ResponseData<String[]> getAttributes(String table)
 	{	
+		//TODO Romain tu peux charger aussi les uniques / clef Etrangères stp
 		ResponseData<String[]> result;
 		if (this.facade.isLoaded(table)) {
 			List<String[]> latt = this.facade.getAttributesFromBusiness(table);
@@ -331,7 +332,18 @@ public class DDLController
 
 	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
 			String[] attributesDestinationsNames) {
-		
 		return this.facade.addForeignKey(tableSourceName,attributesSourcesNames,tableDestinationName,attributesDestinationsNames);
+	}
+
+
+	public Response addUnique(String tableSourceName, String[] attributesSourcesNames) {
+		return this.facade.addUnique(tableSourceName,attributesSourcesNames);
+		
+	}
+
+
+	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
+		return this.facade.removeConstraint(tableSourceName,attribute,constraint);
+		
 	}
 }

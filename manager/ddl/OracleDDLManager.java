@@ -64,7 +64,18 @@ extends AbstractDLLManager
 
 	@Override
 	public Response addForeignKey(String sql) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.executeUpdate(sql, "Contrainte fk créée");
+	}
+
+
+	@Override
+	public Response addUnique(String sql) {
+		return this.executeUpdate(sql, "Contrainte unique créée");
+	}
+
+
+	@Override
+	public Response dropConstraint(String sql) {
+		return this.executeUpdate(sql, "Contrainte supprimée");
 	}
 }

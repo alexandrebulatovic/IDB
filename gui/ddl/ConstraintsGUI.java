@@ -101,44 +101,85 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 			this.addConstraintButtonAction();
 		}
 		if (o == this.deleteButton) {
-			this.fillTableAttribute(this.fkTableNameComboBox,this.modelFk);
+			this.dropConstraintButtonAction();
 		}
 	}
 
 
-	private void addConstraintButtonAction() {
-		if(isValidSelectedAttributesCount()){
-			if("FOREIGN KEY".equals(this.typeConstraintComboBox.getSelectedItem().toString())){
-				String tableSourceName = this.tableNameComboBox.getSelectedItem().toString();
+	private void dropConstraintButtonAction() {
+		if(this.constraintsTable.getSelectedRowCount() != 0){
+			String constraint = this.constraintsListModel.getValueAt(this.constraintsTable.getSelectedRow(),0).toString();
+			String tableSourceName = this.constraintsListModel.getValueAt(this.constraintsTable.getSelectedRow(),2).toString();
+			String attribute = this.constraintsListModel.getValueAt(this.constraintsTable.getSelectedRow(),3).toString();
+			Response response = this.control.removeConstraint(tableSourceName,attribute,constraint);
+			this.talk(response);
+			if(response.hasSuccess()){
+				this.fillTableConstraints();
+			}
+		}else{
+			this.talk(new Response(false,"Il faut selectionner la contrainte à supprimer."));
+		}
+	}
 
-				int selected[] = this.namesAttributeSourceTable.getSelectedColumns();
+
+
+	private void addConstraintButtonAction() {
+		if("FOREIGN KEY".equals(this.typeConstraintComboBox.getSelectedItem().toString())){
+			if(isValidSelectedAttributesCount()){
+				String tableSourceName = this.tableNameComboBox.getSelectedItem().toString();
+				System.out.println(tableSourceName);
+				int selected[] = this.namesAttributeSourceTable.getSelectedRows();
 				String attributesSourcesNames[] = new String[selected.length];
 				int c = 0;
 				for(int i : selected){
 					String attribut = (String) this.modelSource.getValueAt(i, 0);
 					attributesSourcesNames[c] = attribut;
+					System.out.println(attribut);
 					c++;
 				}
 
 				String tableDestinationName = this.fkTableNameComboBox.getSelectedItem().toString();
+				System.out.println(tableDestinationName);
 				selected = this.namesAttributeReferenceTable.getSelectedColumns();
 				String attributesDestinationsNames[] = new String[selected.length];
 				c = 0;
 				for(int i : selected){
-					String attribut = (String) this.modelSource.getValueAt(i, 0);
-					attributesSourcesNames[c] = attribut;
+					String attribut = (String) this.modelFk.getValueAt(i, 0);
+					attributesDestinationsNames[c] = attribut;
+					System.out.println(attribut);
 					c++;
 				}
-				this.control.addForeignKey(tableSourceName,attributesSourcesNames,tableDestinationName,attributesDestinationsNames);
+				Response response = this.control.addForeignKey(tableSourceName,attributesSourcesNames,tableDestinationName,attributesDestinationsNames);
+				this.talk(response);
+				if(response.hasSuccess()){
+					this.fillTableConstraints();
+				}
 			}
-			if("UNIQUE".equals(this.typeConstraintComboBox.getSelectedItem().toString())){
-				
-				
-				
-				//this.control.addUnique(String tableName, String[] attributesNames);
+		}
+		if("UNIQUE".equals(this.typeConstraintComboBox.getSelectedItem().toString())){
+			if(this.namesAttributeSourceTable.getSelectedRowCount() != 0){
+				String tableSourceName = this.tableNameComboBox.getSelectedItem().toString();
+				System.out.println(tableSourceName);
+				int selected[] = this.namesAttributeSourceTable.getSelectedRows();
+				String attributesSourcesNames[] = new String[selected.length];
+				int c = 0;
+				for(int i : selected){
+					String attribut = (String) this.modelSource.getValueAt(i, 0);
+					attributesSourcesNames[c] = attribut;
+					System.out.println(attribut);
+					c++;
+				}
+				Response response = this.control.addUnique(tableSourceName,attributesSourcesNames);
+				this.talk(response);
+				if(response.hasSuccess()){
+					this.fillTableConstraints();
+				}
+			}else{
+				this.talk(new Response(false,"Il faut selectionner au moins 1 attribut pour créer une contrainte."));
 			}
 		}
 	}
+
 
 
 	@Override
@@ -212,7 +253,11 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 
 		this.bindAndAdd(new JLabel("Liste des contraintes sur la table source : "));
 
-		this.constraintsTable = new JTable(this.constraintsListModel);
+		this.constraintsTable = new JTable(this.constraintsListModel){
+			public boolean isCellEditable(int row, int col) {
+				return false;
+			}
+		};
 		JScrollPane constraintsListScrollPane = new JScrollPane(constraintsTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		constraintsTable.getColumnModel().getColumn(0).setPreferredWidth(120);
@@ -289,7 +334,6 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 				model.addRow(v);
 			}
 		}
-
 	}
 
 	private void fillTableConstraints()
