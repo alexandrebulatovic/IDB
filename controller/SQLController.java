@@ -1,11 +1,12 @@
 package controller;
 
-import facade.CRUDFacade;
+import facade.CRUD_SQL_Facade;
 import gui.SQLGUI;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.swing.JFrame;
 import javax.swing.JTable;
 
 import useful.Response;
@@ -23,10 +24,7 @@ public class SQLController {
 	/** IHM pour taper des requetes SQL. */
 	private SQLGUI sql_view;
 
-	/** Objet pour envoyer des requetes au SGBD. */
-	private SQLManager sql_manager;
-
-	private CRUDFacade crud_facade;
+	private CRUD_SQL_Facade crud_facade;
 
 	/* CONSTRUCTEUR */
 
@@ -34,10 +32,10 @@ public class SQLController {
 	 * @param conn : l'objet Connection résultant de la connexion à la base de données. 
 	 * @param facade : null interdit.
 	 * */
-	public SQLController(Connection conn, CRUDFacade facade)
+	public SQLController(Connection conn, CRUD_SQL_Facade facade)
 	{
 		this.crud_facade = facade;
-		this.sql_manager = new SQLManager(conn, SQLManager.TYPE_PLAIN_RESULTSET);
+		this.crud_facade.optimizeStatement(SQLManager.TYPE_PLAIN_RESULTSET);
 	}
 
 
@@ -49,44 +47,46 @@ public class SQLController {
 		if (this.sql_view == null) {
 			this.sql_view = new SQLGUI(this);
 		} else {
-			this.sql_view.setVisible(true);
-			this.sql_view.toFront();
+			showGUI(this.sql_view);
 		}
+	}
+
+	/**
+	 * Affiche une fenêtre au premier plan.
+	 * 
+	 * @param gui : une IHM, null interdit.
+	 */
+	private static void showGUI(JFrame gui)
+	{
+		gui.setVisible(true);
+		gui.toFront();
 	}
 
 	/** Demande au {@code SQLManager} d'exécuter la requête SQL.
 	 * @param qry : requête sous forme de {@code String} à transmettre au SGBD. */
 	public void transmitQuery(String qry)
 	{
-		Object reply = this.sql_manager.sendSQL(qry);
+
+		Object reply = this.crud_facade.transmitQuery(qry);
 		transmitReply(reply);
 	}
 
 	/** Demande à {@code SQLView} d'afficher un message d'information ou 
-	 * une {@code JTable} en fonction de la réponse du {@code SQLManager}.
+	 * une {@code JTable} en fonction de la réponse du serveur.
 	 * @param reply : la réponse du serveur, un {@code String} ou un {@code JTable}. */
 	private void transmitReply(Object reply) 
 	{
-		if (reply instanceof Response) {
+		Object replyParsed = this.crud_facade.transmitReply(reply);
 
-			if (!((Response) reply).hasSuccess()) { // si c'est une erreur
-
-				Exception exception = this.sql_manager.getLastException(); // on récupère l'exception
-				String errorMsg = this.crud_facade.generateErrorMsg(exception); // on crée un message d'erreur
-
-				this.sql_view.showError(errorMsg); // on affiche le message d'erreur
-
-			} else {
-
-				String msg = ((Response) reply).getMessage();
-
-				this.sql_view.showReply(msg); // on affiche une notification à l'utilisateur
-
-			}
-		}
-
-		else if (reply instanceof JTable)
+		if (replyParsed instanceof JTable)
 			this.sql_view.showTable((JTable) reply); // on affiche la JTable retournée
-	}
 
+		else if (replyParsed instanceof Response) 
+		{
+			if (!((Response) replyParsed).hasSuccess())  // si c'est une erreur
+				this.sql_view.showError(((Response) replyParsed).getMessage()); // on affiche le message d'erreur
+			else
+				this.sql_view.showReply(((Response) replyParsed).getMessage()); // on affiche une notification à l'utilisateur
+		}
+	}
 }

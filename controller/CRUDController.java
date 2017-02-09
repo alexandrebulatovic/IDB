@@ -1,7 +1,8 @@
 package controller;
 
-import facade.CRUDFacade;
+import facade.CRUD_SQL_Facade;
 import gui.CRUDGUI;
+import manager.sql.SQLManager;
 
 import java.util.Vector;
 
@@ -19,15 +20,16 @@ public class CRUDController
 	private CRUDGUI crud_view;
 
 	/** Facade pour le CRUD des données.*/
-	private CRUDFacade crud_facade;
+	private CRUD_SQL_Facade crud_facade;
 
 	/**
 	 * Constructeur commun.
 	 * @param facade : null interdit.
 	 */
-	public CRUDController(CRUDFacade facade)
+	public CRUDController(CRUD_SQL_Facade facade)
 	{
 		this.crud_facade = facade;
+		this.crud_facade.optimizeStatement(SQLManager.TYPE_UPDATABLE_RESULTSET);
 	}
 
 

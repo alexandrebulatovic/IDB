@@ -6,15 +6,12 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.SQLTimeoutException;
 import java.sql.Statement;
 import java.util.Vector;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
-import manager.connection.I_ConnectionManager;
 import useful.Response;
 
 /**
@@ -54,15 +51,17 @@ public class SQLManager {
 	/** Dernière exception levée. */
 	private Exception exception;
 
+	/** Type de statement utilisé actuellement. */
+	private int statementType;
+
 
 	/* CONSTRUCTEUR */
 
-	/** Fabrique un {@code SQLManager}.
-	 * @param conn : {@code Connection} à partir duquel initialiser le {@code SQLManager}. */
-	public SQLManager(Connection conn, int statementType)
+	/** Fabrique un {@code SQLManager}. 
+	 * @param conn : {@code Connection} à la base de données. */
+	public SQLManager(Connection conn)
 	{
 		this.conn = conn;
-		this.initStatement(conn, statementType);
 	}
 
 	/* METHODES*/
@@ -75,11 +74,40 @@ public class SQLManager {
 		return exception;
 	}
 
+
+	/**
+	 * Change le type d'objet {@code Statement} utilisé pour envoyer les requêtes SQL.
+	 * @param newStatementType : constantes parmi {@code TYPE_UPDATABLE_RESULTSET} pour avoir un {@code ResultSet} dynamique, 
+	 * {@code TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe et optimisé.
+	 */
+	public void setStatementType(int newStatementType ) {
+
+		if (newStatementType == TYPE_PLAIN_RESULTSET && this.statementType != TYPE_PLAIN_RESULTSET ) {
+
+			this.initStatement( TYPE_PLAIN_RESULTSET);
+			this.statementType= TYPE_PLAIN_RESULTSET;
+
+		}
+		else if (newStatementType == TYPE_UPDATABLE_RESULTSET && this.statementType != TYPE_UPDATABLE_RESULTSET) {
+
+			this.initStatement(TYPE_UPDATABLE_RESULTSET);
+			this.statementType = TYPE_UPDATABLE_RESULTSET;
+
+		}
+
+	}
+
+	/** @return le type de {@code Statement} utilisé  parmi {@code TYPE_UPDATABLE_RESULTSET} 
+	 * ou {@code TYPE_PLAIN_RESULTSET}. */
+	public int getStatementType() {
+		return this.statementType;
+	}
+
 	/** Initialise l'attribut {@code Statement} nécessaire pour envoyer les requêtes SQL. 
-	 * @param conn : {@code Connection} à partir duquel initialiser le {@code Statement}.
 	 * @param statementType : constantes parmi {@code TYPE_UPDATABLE_RESULTSET} pour avoir un {@code ResultSet} dynamique, 
-	 * {@code TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe et optimisé. */
-	private void initStatement(Connection conn, int statementType)
+	 * {@code TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe et optimisé.
+	 * @return Vrai en cas de réussite, faux sinon et l'attribut {@code this.exception} est mis à jour. */
+	public boolean initStatement(int statementType)
 	{
 		try {
 
@@ -94,9 +122,12 @@ public class SQLManager {
 				this.stat.setFetchSize(100);
 			}
 
+			return true;
+
 
 		} catch (SQLException exception) {	
-			System.out.println(errorHandler(exception));
+			this.exception = exception;
+			return false;
 		}
 	}
 
@@ -188,6 +219,7 @@ public class SQLManager {
 	 * @param rs : {@code ResultSet} à partir duquel générer la représentation.
 	 * @return un {@code JTable} qui représente la table.
 	 */
+	@SuppressWarnings("serial")
 	public static JTable buildJTable(ResultSet rs, ResultSetMetaData rsmd) 
 	{
 
@@ -239,7 +271,7 @@ public class SQLManager {
 
 	/** Insère un nouveau tuple dans la base de données.
 	 * @param vector : {@code Vector} représentant les données à insérer dans l'ordre.
-	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code this.sqlException}
+	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code this.exception}
 	 * est mis à jour.
 	 */
 	public boolean addTuple(Vector<Object> vector)
@@ -302,7 +334,7 @@ public class SQLManager {
 
 	/** Supprime un tuple de la base de données.
 	 * @param index : index du tuple à supprimer affiché dans la {@code JTable} (commence à 0).
-	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code sqlException}
+	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code this.exception}
 	 * est mis à jour.
 	 */
 	public boolean removeTuple(int index) 
@@ -325,7 +357,7 @@ public class SQLManager {
 	 * @param index : numéro d'index du tuple de la valeur à mettre à jour, commence à 0.
 	 * @param column : numéro de colonne de la valeur à mettre à jour, commence à 0.
 	 * @param value : nouvelle valeur de l'attribut.
-	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code sqlException}
+	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code this.exception}
 	 * est mis à jour.
 	 */
 	public boolean updateTuple(int index, int column, Object value)

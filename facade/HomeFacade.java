@@ -178,8 +178,8 @@ public class HomeFacade
 	 * 
 	 * @return une facade pour le CRUD des données.
 	 */
-	public CRUDFacade getCRUDFacade()
+	public CRUD_SQL_Facade getCRUDFacade()
 	{
-		return new CRUDFacade(this.factory.getDDLManager(this.getConnection()), connector, tables);
+		return new CRUD_SQL_Facade(this.factory.getDDLManager(this.getConnection()), connector, tables);
 	}
 }

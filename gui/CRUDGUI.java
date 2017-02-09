@@ -425,10 +425,11 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 		return tableModel;
 	}
 
-
 	@Override
 	public void windowActivated(WindowEvent e) {
+		this.disableComboBoxListener();
 		this.fillComboBox();
+		this.enableComboBoxListener();
 	}
 
 }
