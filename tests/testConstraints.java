@@ -12,11 +12,13 @@ public class testConstraints {
 	public void testFk() {
 		ForeignKeyConstraint fk = new ForeignKeyConstraint();
 		Attribute a1 = getAttribute("test");
+		Attribute a2 = getAttribute("test2");
 		Attribute dest1 = getAttribute("testDest");
 		Attribute dest2 = getAttribute("testDest2");
 		
 				
 		fk.addAttribute(a1);
+		fk.addAttribute(a2);
 		fk.setTable(this.getTable("tableSrc"));
 		
 		fk.setTableDestination(new Table("tableDest"));
@@ -24,7 +26,7 @@ public class testConstraints {
 		fk.addAttributeDestination(dest2);
 		
 		fk.createAndSetName();
-		assertEquals("fk_tableSrc_test FOREIGN KEY (test) REFERENCES tableDest(testDest,testDest2)",fk.getNameSQL());
+		assertEquals("fk_tableSrc_test_test2 FOREIGN KEY (test,test2) REFERENCES tableDest(testDest,testDest2)",fk.getNameSQL());
 	}
 	
 	@Test

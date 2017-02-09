@@ -82,9 +82,10 @@ public class testTableSet {
 
 		
 		ensembleTable.addForeignKey("table1", new String[] {"attFk1","attFk2"}, "table2", new String[] {"attPk1","attPk2"});
+		System.out.println(ensembleTable.getSQLADDConstraint("table1", "attFk1", "fk_table1_attFk1_attFk2"));
 		assertEquals("ALTER TABLE table1\n"
 				+ "ADD CONSTRAINT fk_table1_attFk1_attFk2 "
-				+ "FOREIGN KEY (attFk1) "
+				+ "FOREIGN KEY (attFk1,attFk2) "
 				+ "REFERENCES table2(attPk1,attPk2)",
 				
 				ensembleTable.getSQLTableToCreate("table1").get(2));
