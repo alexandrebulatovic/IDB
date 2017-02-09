@@ -53,4 +53,10 @@ extends AbstractDLLManager
 		String sql = "DROP TABLE " + table + (cascade ? " CASCADE" : "") ;
 		return this.executeUpdate(sql, DROP_TABLE);
 	}
+
+
+	@Override
+	public Response addForeignKey(String sql) {
+		return this.executeUpdate(sql, "Contrainte créée");
+	}
 }

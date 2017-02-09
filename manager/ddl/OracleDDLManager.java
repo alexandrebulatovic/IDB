@@ -60,4 +60,11 @@ extends AbstractDLLManager
 		String sql = "DROP TABLE " + table + (cascade ? " CASCADE CONSTRAINT" : "");
 		return this.executeUpdate(sql, DROP_TABLE);
 	}
+
+
+	@Override
+	public Response addForeignKey(String sql) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

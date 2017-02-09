@@ -154,4 +154,7 @@ public interface I_DDLManager
 	 */
 	public abstract void closeStatement();
 
+
+	public Response addForeignKey(String sql);
+
 }

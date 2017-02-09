@@ -131,6 +131,12 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 				}
 				this.control.addForeignKey(tableSourceName,attributesSourcesNames,tableDestinationName,attributesDestinationsNames);
 			}
+			if("UNIQUE".equals(this.typeConstraintComboBox.getSelectedItem().toString())){
+				
+				
+				
+				//this.control.addUnique(String tableName, String[] attributesNames);
+			}
 		}
 	}
 
