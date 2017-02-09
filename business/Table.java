@@ -558,6 +558,53 @@ public class Table {
 
 
 
+	public List<UniqueConstraint> getUniques() {
+		
+		ArrayList<UniqueConstraint> uniques = new ArrayList<UniqueConstraint>();
+		for (Constraint c : this.constraints){
+			if (c instanceof UniqueConstraint){
+				uniques.add((UniqueConstraint) c);
+			}
+		}
+		return uniques;
+	}
+	
+	
+	public List<ForeignKeyConstraint> getFks() {
+		
+		ArrayList<ForeignKeyConstraint> fks = new ArrayList<ForeignKeyConstraint>();
+		for (Constraint c : this.constraints){
+			if (c instanceof ForeignKeyConstraint){
+				fks.add((ForeignKeyConstraint) c);
+			}
+		}
+		return fks;
+	}
+
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	/**
+	 * Supprime la contrainte
+	 * @param c
+	 * @return 
+	 */
+	public boolean dropConstraint(Constraint c) {
+		c.cleanAll();
+
+		for (Attribute att : c.getAttributes()){
+			att.getConstraints().remove(c);
+		}
+
+		return this.constraints.remove(c);
+		
+	}
+
+
 
 
 

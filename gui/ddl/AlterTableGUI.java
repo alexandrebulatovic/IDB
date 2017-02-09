@@ -8,6 +8,7 @@ import javax.swing.JComboBox;
 import controller.DDLController;
 import ddl.I_AttributeModel;
 
+import useful.Response;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
@@ -43,8 +44,29 @@ extends CreateTableGUI
 		super.handleTableInputs();
 	}
 		
+	
 	@Override
-	protected void createTableButtonAction(){}
+	protected void createTableButtonAction()
+	{
+		//TODO : raté
+		this.createTable("TEMPORARY");
+		String oldTable = this.tablesCombo.getSelectedItem().toString();
+		String newTable = this.tableNameField.getText();
+		Response r = this.control.alterTable(oldTable, newTable);
+		this.talk(r);
+	}
+
+
+	@Override
+	protected void resetView()
+	{
+		super.resetView();
+		if (this.tablesCombo.getItemCount() > 0) {
+			String table = this.tablesCombo.getItemAt(0).toString();
+			this.tablesCombo.setSelectedItem(table);
+			this.fillGuiWithAttribute(table);
+		}
+	}
 
 
 	@Override
@@ -104,6 +126,7 @@ extends CreateTableGUI
 		for (String [] att : attributesData.getCollection()) {
 			this.showExistingAttribute(att);
 		}
+		this.talk("");
 	}
 	
 	

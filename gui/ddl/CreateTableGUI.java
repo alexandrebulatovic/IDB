@@ -176,6 +176,39 @@ implements ItemListener
 
 
 	/**
+	 * Détermine ce qu'il se passe en appuyant sur le bouton 
+	 * "Créer table".
+	 */
+	protected void createTableButtonAction() 
+	{
+		this.createTable(this.tableNameField.getText());
+	}
+
+	
+	/**
+	 * Créé la table nommée $name dans le SGBD.
+	 * 
+	 * @param name : nom de la table, null interdit.
+	 */
+	protected void createTable(String name)
+	{
+		I_TableModel table = this.control.getTableModel();
+		table.setName(name);
+		LinkedHashSet<I_AttributeModel> attributes = this.models.getAttributes();
+		
+		for(I_AttributeModel attribute : attributes){
+			table.addAttribute(attribute);
+		}
+		
+		Response r = this.control.createTable(table);
+		if (r.hasSuccess()) {
+			this.resetView();
+		}
+		this.talk(r);
+	}
+	
+	
+	/**
 	 * Réinitialise les champs de saisie des attributs.<br/>
 	 * Décoche les cases à cocher.<br/>
 	 * Replace les listes déroulantes sur le premier item.<br/>
@@ -629,27 +662,5 @@ implements ItemListener
 			index++;
 		}
 		return -1;
-	}
-
-	
-	/**
-	 * Détermine ce qu'il se passe en appuyant sur le bouton 
-	 * "Créer table".
-	 */
-	protected void createTableButtonAction() 
-	{
-		I_TableModel table = this.control.getTableModel();
-		table.setName(this.tableNameField.getText());
-		LinkedHashSet<I_AttributeModel> attributes = this.models.getAttributes();
-		
-		for(I_AttributeModel attribute : attributes){
-			table.addAttribute(attribute);
-		}
-		
-		Response r = this.control.createTable(table);
-		if (r.hasSuccess()) {
-			this.resetView();
-		}
-		this.talk(r);
 	}
 }

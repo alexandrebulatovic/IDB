@@ -38,9 +38,15 @@ public class TableSet
 	}
 	
 	
-	public boolean isLoaded(String tableName){
-		Table table = this.getTableWithName(tableName);
-		if (table.getAttributes().size()<=0){
+	/**
+	 * @param table : nom d'une table, null interdit.
+	 * @return vrai ssi $table a déjà été chargée depuis le SGBD,
+	 * faux sinon.
+	 */
+	public boolean isLoaded(String table)
+	{
+		Table t = this.getTableByName(table);
+		if (t.getAttributes().size()<=0){
 			return false;
 		}
 		return true;
@@ -134,13 +140,12 @@ public class TableSet
 	 * @param attributesSourcesNames
 	 * @param tableDestinationName
 	 * @param attributesDestinationsNames
-	 * @return
+	 * @return nom de la contrainte
 	 */
-	public boolean addForeignKey(String name, String tableSourceName, String[] attributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
-		boolean added = false;
+	public String addForeignKey(String name, String tableSourceName, String[] attributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
 		
-		Table tableSource = this.getTableWithName(tableSourceName);
-		Table tableDestination = this.getTableWithName(tableDestinationName);
+		Table tableSource = this.getTableByName(tableSourceName);
+		Table tableDestination = this.getTableByName(tableDestinationName);
 		
 		ForeignKeyConstraint fk = new ForeignKeyConstraint();
 		fk.setTable(tableSource);
@@ -168,7 +173,7 @@ public class TableSet
 		
 		
 		
-		return added;
+		return fk.getName();
 	}
 	
 	/**
@@ -182,9 +187,57 @@ public class TableSet
 	 * @param attributesDestinationsNames
 	 * @return
 	 */
-	public boolean addForeignKey(String tableSourceName, String[] AttributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
+	public String addForeignKey(String tableSourceName, String[] AttributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
 		return this.addForeignKey(null, tableSourceName, AttributesSourcesNames, tableDestinationName, attributesDestinationsNames);
 	}
+	
+	
+	/**
+	 * ajoute une contrainte unique pouvant porter sur plusieurs attributs d'une meme table
+	 * @param name
+	 * @param tableName
+	 * @param attributesNames
+	 * @return nom de la contrainte généré ou non
+	 */
+	public String addUnique(String name, String tableName, String[] attributesNames){
+		Table table = this.getTableByName(tableName);
+		UniqueConstraint un = new UniqueConstraint();
+		un.setTable(table);
+		for (Attribute att : table.getAttributes()){
+			for (String attIn : attributesNames){
+				if (att.getName().equals(attIn)){
+					un.addAttribute(att);
+				}
+			}
+			
+		}
+		this.getTableByName(tableName).addConstraint(un);
+		if (name==null){
+			un.createAndSetName();
+		}
+		else{
+			un.setName(name);
+		}
+		return un.getName();
+	}
+	
+	/**
+	 * ajoute une contrainte unique pouvant porter sur plusieurs attributs d'une meme table
+	 * @param tableName
+	 * @param attributesNames
+	 * @return nom de la contrainte généré ou non
+	 */
+	public String addUnique(String tableName, String[] attributesNames){
+		return addUnique(null, tableName, attributesNames);
+	}
+	
+	
+	public void removeConstraint(String tableName, String attributeName, String constraintName){
+		Table table = this.getTableByName(tableName);
+		Constraint c = this.getConstraintWithName(tableName, constraintName);
+		table.dropConstraint(c);
+	}
+	
 	
 
 	/**
@@ -204,15 +257,17 @@ public class TableSet
 		return null;
 	}
 	
+	
 	/**
-	 * retourne une liste de requettes permettant de modifier la table
-	 * passé en paramètres
-	 * @see business.Table#toModify(Table)
-	 * @param tableName
-	 * @return ArrayList<String> sqlString
+	 * @param oldTable : ancien nom de la table, null interdit.
+	 * @param newTable : nouveau nom de la table, null interdit.
+	 * @return une liste de requêtes SQL pour altérer la table $oldname.
 	 */
-	public ArrayList<String> getSQLTableToModify(String tableName){
-		return null;//TODO
+	public List<String> getSQLTableToModify(String oldTable, String newTable)
+	{
+		Table newT = this.getTableByName("TEMPORARY");
+		newT.setName(newTable);
+		return newT.toModify(this.getTableByName(oldTable));
 	}
 	
 	
@@ -226,43 +281,38 @@ public class TableSet
 	 */
 	public boolean removeTable(String table)
 	{
-		Table laTable = this.getTableWithName(table);
+		Table laTable = this.getTableByName(table);
 		laTable.cleanAll();
 		
 		return this.tables.remove(laTable);
 	}
 	
+
 	/**
-	 * retourne un tableau en 2 dimentions,<br>
-	 * la première permet de sélectionner un attribut d'une table<br>
-	 * la seconde de récupérer les informations de l'attribut<br>
-	 * voir @return pour le contenu de la description de chaque attribut
-	 * @param tableName
-	 * @return
-	 * 0 - name
-	 * 1 - type
-	 * 2 - size
-	 * 3 - 'NOT NULL'/null
-	 * 4 - 'PRIMARY KEY'/null
+	 * @param tableName : nom de la table, null interdit.
+	 * @return tous les attributs de $tables, avec :<br/>
+	 * - le nom de l'attribut,<br/>
+	 * - le type de l'attribut,<br/>
+	 * - la taille de l'attribut,<br/>
+	 * - "NOTNULL" ssi l'attribut est sous contrainte NOT NULL,<br/>
+	 * - "PRIMARY" ssi l'attribut est membre de la clée primaire.
 	 */
-	public String[][] getTableWithoutComplexConstraints(String tableName){
-		Table table = this.getTableWithName(tableName);
+	public List<String[]> getAttributes(String tableName){
 		
-		LinkedHashSet<Attribute> attributes = table.getAttributes();
-		String[] attribute = new String[5];
-		String[][] toReturn = new String[attributes.size()][attribute.length];
+		Table table = this.getTableByName(tableName);
+		String[] attribute;
+		List<String[]> result = new ArrayList<String[]>();
 		
-		int a = 0;
-		for (Attribute att:attributes){
-			toReturn[a][0] = att.getName();
-			toReturn[a][1] = att.type;
-			toReturn[a][2] = String.valueOf(att.size);
-			toReturn[a][3] = att.isNotNull()?"NOT NULL":null;
-			toReturn[a][4] = att.isPk()?"PRIMARY KEY":null;					
-			a++;
+		for (Attribute att : table.getAttributes()){
+			attribute = new String[5];
+			attribute[0] = att.getName();
+			attribute[1] = att.type;
+			attribute[2] = String.valueOf(att.size);
+			attribute[3] = att.isNotNull() ? "NOTNULL" : "";
+			attribute[4] = att.isPk() ? "PRIMARY" : "";
+			result.add(attribute);
 		}
-		
-		return toReturn;
+		return result;
 	}
 	
 	
@@ -276,17 +326,17 @@ public class TableSet
 	 * 3 - 'NOT NULL'/null
 	 * 4 - 'PRIMARY KEY'/null
 	 */
-	public String[] getTableWithoutComplexConstraints(String tableName, String attributeName){
+	public String[] getAttribute(String tableName, String attributeName){
 		Attribute attribute = this.getAttributeWithName(tableName, attributeName);
-		String[] attributeReturn = new String[5];
+		String[] result = new String[5];
 
-		attributeReturn[0] = attribute.getName();
-		attributeReturn[1] = attribute.type;
-		attributeReturn[2] = String.valueOf(attribute.size);
-		attributeReturn[3] = attribute.isNotNull()?"NOT NULL":null;
-		attributeReturn[4] = attribute.isPk()?"PRIMARY KEY":null;					
+		result[0] = attribute.getName();
+		result[1] = attribute.type;
+		result[2] = String.valueOf(attribute.size);
+		result[3] = attribute.isNotNull() ? "NOTNULL" : null;
+		result[4] = attribute.isPk() ? "PRIMARY KEY" : null;					
 			
-		return attributeReturn;
+		return result;
 	}
 	
 	/**
@@ -296,15 +346,31 @@ public class TableSet
 	 * voir @return pour le contenu de la description de chaque attribut
 	 * @param tableName
 	 * @return
-	 * 0 - name
-	 * 1 - type
-	 * 2 - size
-	 * 3 - 'UNIQUE'/null
-	 * 4 - {String tableSource, String[]}/null
+	 * 0 - name string
+	 * 1 - type string
+	 * 2 - size int
+	 * 3 - null/nomConstrainte : String
+	 * 4 - null/liste fk composé de 
+	 * 		0 - nomFk String
+	 * 		1 - tableSource String
+	 * 		2 - liste<String> attSources String
+	 * 		3 - tableDest String 
+	 * 		4 - listattDest String
 	 */
-	public String[] getTableWithJustComplexConstraintsAndBaseInformationsAttributes(){
-		//TODO
-		return null;
+	public List<Object> getTableWithJustComplexConstraintsAndBaseInformationsAttributes(String tableName, String attributeName){
+		Attribute attribute = this.getAttributeWithName(tableName, attributeName);
+		List<Object> attributeReturn = new ArrayList();
+		
+		attributeReturn.add(attribute.getName());
+		attributeReturn.add(attribute.type);
+		attributeReturn.add(attribute.size);
+		attributeReturn.add(attribute.isUnique());
+		
+		List<Object> fk = attribute.getFk().toListOfString();
+		
+		attributeReturn.add(fk);
+		
+		return attributeReturn;
 	}
 	
 	private List<Attribute> getAttributesFromString(Table tableSource, String[] attributesSourcesNames) {
@@ -320,6 +386,88 @@ public class TableSet
 		return retour;
 		
 	}
+	
+	/**
+	 * @return
+	 * list of<br>
+	 * 	name,<br>
+	 * 	unique desc : list of <br>
+	 * 		attributes<String>
+	 */
+	public List<Object> getUniqueConstraint(String tableSource){
+		Table table = this.getTableByName(tableSource);
+
+		
+		List<Object> retour = new ArrayList<Object>();
+		
+		for (UniqueConstraint u : table.getUniques()){
+			ArrayList<Object> unStr = new ArrayList<Object>();
+			unStr.add(u.getName());
+			unStr.add(u.getAttributesNames());
+			retour.add(unStr);
+			unStr.clear();
+		}
+		return retour;
+	}
+	
+	
+	/**
+	 * @return
+	 * list of<br>
+	 * 	name,<br>
+	 * 	fk desc : list of <br>
+	 * 		tableSrc
+	 * 		attributesSrc
+	 * 		attributesDest<String>
+	 * 		tableDest
+	 */
+	public List<Object> getFkConstraint(String tableSource){
+		Table table = this.getTableByName(tableSource);
+
+		
+		List<Object> retour = new ArrayList<Object>();
+		
+		for (ForeignKeyConstraint fk : table.getFks()){
+			ArrayList<Object> fkStr = new ArrayList<Object>();
+			
+			fkStr.add(tableSource);
+			fkStr.add(fk.getAttributesNames());
+			fkStr.add(fk.getTableDestination().getName());
+			fkStr.add(fk.getAttributesDestinationNames());
+			retour.add(fkStr);
+			fkStr.clear();
+		}
+		return retour;
+	}
+	
+	
+	/**
+	 * @exemple ALTER TABLE tableName ADD CONSTRAINT un_tableName_att UNIQUE(att)
+	 * @param tableName
+	 * @param attributeName
+	 * @param ConstraintName
+	 * @return
+	 */
+	public String getSQLADDConstraint(String tableName,String attributeName, String ConstraintName){
+		Constraint c = this.getConstraintWithName(tableName, ConstraintName);
+		return c.toAddConstraintSQL();
+	}
+	
+	public String getSQLDropConstraint(String tableName, String attributeName, String ConstraintName){
+		return this.getConstraintWithName(tableName, ConstraintName).toDropConstraintSQL();
+	}
+	
+
+
+	private Constraint getConstraintWithName(String tableName, String constraintName) {
+		for (Constraint c : this.getTableByName(tableName).getConstraints()){
+			if (c.getName().equals(constraintName)){
+				return c;
+			}
+		}
+		return null;
+		
+	}
 
 
 	/**
@@ -327,7 +475,7 @@ public class TableSet
 	 * @return une table nommée $name si et seulement si elle existe,<br>
 	 * null sinon.
 	 */
-	private Table getTableWithName(String name){		
+	private Table getTableByName(String name){		
 		for (Table table : tables){
 			if (table.getName().equals(name)){
 				return table;
@@ -337,7 +485,7 @@ public class TableSet
 	}
 	
 	private Attribute getAttributeWithName(String tableName, String attributeName){
-		for (Attribute a : this.getTableWithName(tableName).getAttributes()){
+		for (Attribute a : this.getTableByName(tableName).getAttributes()){
 			if (a.getName().equals(attributeName)){
 				return a;
 			}
@@ -378,6 +526,6 @@ public class TableSet
 	 */
 	private boolean isAddable(String table)
 	{
-		return this.getTableWithName(table)==null;
+		return this.getTableByName(table)==null;
 	}
 }

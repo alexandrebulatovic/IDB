@@ -65,6 +65,24 @@ extends AbstractDDLCRUDFacade
 	}
 	
 	
+	public Response alterTable(String oldTable, String newTable)
+	{
+		String sql;
+		Response result;
+		List<String> queries = this.tables.getSQLTableToModify(oldTable, newTable);
+		Iterator<String> it = queries.iterator();
+		boolean stop = false;
+		result = new Response(true, "Table modifiée.");
+		
+		while (it.hasNext() && !stop) {
+			sql = it.next();
+//			result = this.manager.alterTable(sql);
+			stop = ! result.hasSuccess();
+		}
+		return result;
+	}
+	
+	
 //	/**
 //	 * Ajoute $attribute à la $table.
 //	 * 
@@ -93,10 +111,11 @@ extends AbstractDDLCRUDFacade
 	public boolean addAttribute(String table, String [] att)
 	{
 		return this.tables.addAttribute(table, att[0], att[1], 
-				Integer.parseInt(att[2]), 
+				Integer.parseInt(("".equals(att[2]) || null == att[2]) ? "1" : att[2]), 
 				"NOTNULL".equals(att[3]), 
 				"PRIMARY".equals(att[4]));
 	}
+	
 	
 	
 	/**
@@ -168,9 +187,24 @@ extends AbstractDDLCRUDFacade
 	 * 
 	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée.
 	 */
-	public ResponseData<String[]>getAttributes(String table)
+	public ResponseData<String[]>getAttributesFromDBMS(String table)
 	{
 		return this.manager.getAttributes(table);
+	}
+	
+	
+	/**
+	 * @param tableName : nom de la table, null interdit.
+	 * @return tous les attributs de $tables, avec :<br/>
+	 * - le nom de l'attribut,<br/>
+	 * - le type de l'attribut,<br/>
+	 * - la taille de l'attribut,<br/>
+	 * - "NOTNULL" ssi l'attribut est sous contrainte NOT NULL,<br/>
+	 * - "PRIMARY" ssi l'attribut est membre de la clée primaire.
+	 */
+	public List<String[]> getAttributesFromBusiness(String table)
+	{
+		return this.tables.getAttributes(table);
 	}
 	
 	
@@ -221,7 +255,8 @@ extends AbstractDDLCRUDFacade
 	}
 
 
-	public ResponseData<String> getUniqueAttribute(String string) {
+
+	public ResponseData<String[]> getUniqueAttribute(String string) {
 		return this.manager.getUniqueAttribute(string);
 		
 	}
@@ -268,41 +303,34 @@ extends AbstractDDLCRUDFacade
 	 */
 	private Response createTableDBMS(I_TableModel table)
 	{
-		String name = table.getName();
-		List<String> sql = this.tables.getSQLTableToCreate(name);
-		Iterator<String> statement = sql.iterator();
-		
-		String create = statement.next(); 
-		Response result = this.manager.createTable(create);
-		System.out.println(create); //TODO : remove
-		String alter; //TODO : remove
-		while (statement.hasNext() && result.hasSuccess()) {
-			alter = statement.next();
-			System.out.println(alter);//TODO : remove
-			result = this.manager.altertable(alter);
-		}
-		return result;
+//		String name = table.getName();
+//		List<String> sql = this.tables.getSQLTableToCreate(name);
+//		Iterator<String> statement = sql.iterator();
+//		
+//		String create = statement.next(); 
+//		Response result = this.manager.createTable(create);
+//		System.out.println(create); //TODO : remove
+//		String alter; //TODO : remove
+//		while (statement.hasNext() && result.hasSuccess()) {
+//			alter = statement.next();
+//			System.out.println(alter);//TODO : remove
+//			result = this.manager.alterTable(alter);
+//		}
+//		return result;
+		return null;
 	}
 
 	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
 			String[] attributesDestinationsNames) {
-		boolean addable = this.tables.addForeignKey(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
-		Response added;
-		if(addable){
-			added = new Response(false,"Cette contrainte existe déjà.");
-		}else{
-			added = this.addForeignKeyDBMS(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
-			if (! added.hasSuccess()) {
-				//this.tables.removeTable(table.getName());
-			}
-		}
+		String contrainte = this.tables.addForeignKey(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
+		Response added = this.addForeignKeyDBMS(tableSourceName, attributesSourcesNames, contrainte);
 		return added;
 	}
 
 
-	private Response addForeignKeyDBMS(String tableSourceName, String[] attributesSourcesNames,
-			String tableDestinationName, String[] attributesDestinationsNames) {
-		// TODO Auto-generated method stub
+	private Response addForeignKeyDBMS(String tableSourceName, String[] attributesSourcesNames,String ConstraintName) {
+		String sql = this.tables.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], ConstraintName);
+//		Response result = this.manager.addForeignKey(sql);
 		return null;
 	}
 }

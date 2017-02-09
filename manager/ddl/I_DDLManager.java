@@ -43,7 +43,7 @@ public interface I_DDLManager
 	 * @return une réponse personnalisée décrivant si l'atltération des
 	 * tables & réussie ou ratée. 
 	 */
-	public abstract Response altertable(String sql);
+	public abstract Response alterTable(String sql);
 	
 	
 	public abstract ArrayList<Response> modifyTable(ArrayList<String> sqls);
@@ -126,12 +126,12 @@ public interface I_DDLManager
 
 
 	/**
-	 * TODO : ne gère pas les groupes d'uniques...
 	 * @param table : table où chercher les attributs avec contrainte unique, null interdit.
-	 * @return une réponse personnalisée contenant le nom des attributs de $table
-	 * qui sont soumis à une contrainte UNIQUE.
+	 * @return une réponse personnalisée contenant : <br/>
+	 * - Le nom de l'index,<br/>
+	 * - le nom des attributs de $table qui sont soumis à une contrainte UNIQUE.
 	 */
-	public abstract ResponseData<String> getUniqueAttribute(String table);
+	public abstract ResponseData<String[]> getUniqueAttribute(String table);
 	
 	
 	/**
@@ -153,5 +153,8 @@ public interface I_DDLManager
 	 * Ne fait rien en cas d'erreur et n'avertit pas l'utilisateur.
 	 */
 	public abstract void closeStatement();
+
+
+	public Response addForeignKey(String sql);
 
 }

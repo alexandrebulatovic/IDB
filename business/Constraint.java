@@ -163,6 +163,17 @@ public abstract class Constraint
 		return this.toAlterSQL()+"DROP CONSTRAINT "+this.name;
 	}
 	
+	
+	public List<String> getAttributesNames() {
+		List<String> retour = new ArrayList<String>();
+		
+		for (Attribute att : this.attributes){
+			retour.add(att.getName());
+		}
+		
+		return retour;
+	}
+	
 	/**
 	 * @exemple ALTER TABLE $tableName\n
 	 * @return String

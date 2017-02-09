@@ -32,22 +32,22 @@ public class ForeignKeyConstraint extends Constraint {
 		this.keyWord = "FOREIGN KEY";
 		this.prefix = "fk";
 	}
-	
-	/**
-	 * @deprecated il est LARGEMENT préférable d'utiliser les add
-	 * afin d'éviter les incohérences ou ajouts de contrôles
-	 * @param tableSource
-	 * @param attributesSources
-	 * @param tableDestination
-	 * @param attributesDestinations
-	 */
-	public ForeignKeyConstraint(Table tableSource, List<Attribute> attributesSources, Table tableDestination,List<Attribute> attributesDestinations){
-		this.setTable(tableSource);
-		this.setTableDestination(tableDestination);
-		this.attributes = attributesSources;
-		this.attributesDestination = attributesDestinations;
-	}
-	
+//	
+//	/**
+//	 * @deprecated il est LARGEMENT préférable d'utiliser les add
+//	 * afin d'éviter les incohérences ou ajouts de contrôles
+//	 * @param tableSource
+//	 * @param attributesSources
+//	 * @param tableDestination
+//	 * @param attributesDestinations
+//	 */
+//	public ForeignKeyConstraint(Table tableSource, List<Attribute> attributesSources, Table tableDestination,List<Attribute> attributesDestinations){
+//		this.setTable(tableSource);
+//		this.setTableDestination(tableDestination);
+//		this.attributes = attributesSources;
+//		this.attributesDestination = attributesDestinations;
+//	}
+//	
 	@Override
 	public String getNameSQL() {
 		String attDest = "";
@@ -60,8 +60,16 @@ public class ForeignKeyConstraint extends Constraint {
 			i++;
 		}
 
-
-		return this.getEntete()+" ("+this.attributes.get(0).name+") REFERENCES "+this.tableDestination.getName()+"("+attDest+")";
+		String attSrc = "";
+		i=0;
+		for (Attribute att : this.attributes){
+			if (i!=0){
+				attSrc+=",";
+			}
+			attSrc+=att.name;
+			i++;
+		}
+		return this.getEntete()+" ("+attSrc+") REFERENCES "+this.tableDestination.getName()+"("+attDest+")";
 	}
 
 	/**
@@ -93,5 +101,29 @@ public class ForeignKeyConstraint extends Constraint {
 		this.tableDestination = null;
 		this.attributesDestination.clear();
 	}
+
+	
+	public List<Object> toListOfString() {
+		ArrayList<Object> liste = new ArrayList();
+		
+		liste.add(this.name);
+		liste.add(this.getTable());
+		liste.add(this.getAttributesNames());
+		liste.add(this.tableDestination);
+		liste.add(this.getAttributesDestinationNames());
+		
+		
+		
+		return liste;
+	}
+
+	public List<String> getAttributesDestinationNames() {
+		ArrayList<String> retour = new ArrayList<String>();
+		for (Attribute att : this.getAttributesDestination()){
+			retour.add(att.getName());
+		}
+		return retour;
+	}
+
 
 }
