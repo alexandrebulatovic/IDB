@@ -303,21 +303,20 @@ extends AbstractDDLCRUDFacade
 	 */
 	private Response createTableDBMS(I_TableModel table)
 	{
-//		String name = table.getName();
-//		List<String> sql = this.tables.getSQLTableToCreate(name);
-//		Iterator<String> statement = sql.iterator();
-//		
-//		String create = statement.next(); 
-//		Response result = this.manager.createTable(create);
-//		System.out.println(create); //TODO : remove
-//		String alter; //TODO : remove
-//		while (statement.hasNext() && result.hasSuccess()) {
-//			alter = statement.next();
-//			System.out.println(alter);//TODO : remove
-//			result = this.manager.alterTable(alter);
-//		}
-//		return result;
-		return null;
+		String name = table.getName();
+		List<String> sql = this.tables.getSQLTableToCreate(name);
+		Iterator<String> statement = sql.iterator();
+		
+		String create = statement.next(); 
+		Response result = this.manager.createTable(create);
+		System.out.println(create); //TODO : remove
+		String alter; //TODO : remove
+		while (statement.hasNext() && result.hasSuccess()) {
+			alter = statement.next();
+			System.out.println(alter);//TODO : remove
+			result = this.manager.alterTable(alter);
+		}
+		return result;
 	}
 
 	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
