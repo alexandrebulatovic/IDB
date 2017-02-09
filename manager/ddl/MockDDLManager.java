@@ -113,4 +113,11 @@ extends AbstractSuccesDDLManager
 		// TODO céer des statiques avec les messages
 		return new Response(true, "Contrainte supprimée.");
 	}
+
+
+	@Override
+	public Response dropForeignKey(String table, String fkName) 
+	{
+		return new Response(true, DROP_FK);
+	}
 }

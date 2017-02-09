@@ -78,4 +78,12 @@ extends AbstractDLLManager
 	public Response dropConstraint(String sql) {
 		return this.executeUpdate(sql, "Contrainte supprimée");
 	}
+
+
+	@Override
+	public Response dropForeignKey(String table, String fkName)
+	{
+		String sql = "ALTER TABLE " + table + " DROP CONSTRAINT " + fkName; 
+		return this.executeUpdate(sql, DROP_FK);
+	}
 }

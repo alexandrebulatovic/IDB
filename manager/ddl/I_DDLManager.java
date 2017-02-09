@@ -147,14 +147,25 @@ public interface I_DDLManager
 	 */
 	public abstract ResponseData<String[]> getAttributes(String table);
 	
-
+	
+	/**
+	 * Supprime la contrainte de clée étrangère nommée $fkName dans $table.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @param fkName : nom de la contrainte, null interdit.
+	 * @return une réponse personnalisée décrivant la tentative de suppression
+	 * de la contrainte.
+	 */
+	public abstract Response dropForeignKey(String table, String fkName);
+	
+	
 	/**
 	 * Ferme proprement les objets statements.
 	 * Ne fait rien en cas d'erreur et n'avertit pas l'utilisateur.
 	 */
 	public abstract void closeStatement();
 
-
+	
 	public Response addForeignKey(String sql);
 
 

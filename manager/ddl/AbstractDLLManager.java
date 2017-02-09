@@ -6,7 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import useful.Response;
 import useful.ResponseData;
@@ -125,24 +128,99 @@ extends AbstractSuccesDDLManager
 	@Override
 	public ResponseData<String> dropTableDomino(String table)
 	{
-		ResponseData<String> result = new ResponseData<String>(true, DOMINO);
-		ResponseData<String> temporary;
-		ResponseData<String[]> allTables = this.getForeignFromPrimary(table);
-		String [] differentTables = extractTables(allTables.getCollection());
+		int i = 0;
+		List<String> toDrop = new ArrayList<String>();
+		ResponseData<String[]> primaries;
+		Response dropFk;
+		String currentTable;
+
+		toDrop.add(table);
+		do{
+			currentTable = toDrop.get(i);
+			primaries = this.getForeignFromPrimary(currentTable);
+			dropFk = this.fillDropableTableAndDropConstraint
+						(toDrop, primaries.getCollection());
+			i++;
+		}while (primaries.hasSuccess() 
+				&& dropFk.hasSuccess()
+				&& i < toDrop.size());
+
+		if ( ! primaries.hasSuccess()) 
+			return new ResponseData<String>(false, primaries.getMessage());
+		else if (! dropFk.hasSuccess())
+			return new ResponseData<String>(false, dropFk.getMessage());
+		else
+			return this.dropTables(toDrop);
+	}
+	
+	
+	public ResponseData<String> dropTables(List<String> tables)
+	{
+		Iterator<String> it = tables.iterator();
+		ResponseData<String> result = new ResponseData<String>(true, DROP_TABLE);
+		Response drop;
+		String table;
 		
-		for (String t : differentTables) {
-			if (! t.equals(table)) {
-				temporary = this.dropTableDomino(t);
-				//TODO : vérifier que temporary n'ait pas échoué.
-				result.add(temporary.getCollection());
+		while (it.hasNext() && result.hasSuccess()) {
+			table = it.next();
+			drop = this.dropTable(table, true);
+			if (drop.hasSuccess()) {
+				result.add(table);
 			}
 		}
-		
-		//TODO : vérifier que dropTable n'ait pas échoué.
-		this.dropTable(table, false);
-		result.add(table);
 		return result;
 	}
+	
+	
+	/**
+	 * Ajoute à $toDrop les tables contenues dans $primaries
+	 * qui n'existent pas dans $toDrop.<br/>
+	 * Supprime les contraintes de clées étrangères des tables ajoutées.
+	 * 
+	 * @param toDrop : une liste de table à supprimer, null interdit.
+	 * @param primaries : résultat d'une méthode getForeignFromPrimary().
+	 * @return une réponse personnalisée décrivant si les contraintes
+	 * ont étées supprimées avec succès.
+	 */
+	private  Response fillDropableTableAndDropConstraint
+	(List<String> toDrop, List<String[]> primaries)
+	{
+		Iterator<String[]> it = primaries.iterator();
+		Response result = new Response (true, DROP_FK);
+		String [] bloc;
+		String table, fkName;
+
+		while(it.hasNext() && result.hasSuccess()) {
+			bloc = it.next();
+			table = bloc[3];
+			fkName = bloc[5];
+			if (! toDrop.contains(table)){
+				toDrop.add(table);
+				result = this.dropForeignKey(table, fkName);
+			}
+		}
+		return result;
+	}
+		
+		
+//		ResponseData<String> result = new ResponseData<String>(true, DOMINO);
+//		ResponseData<String> temporary;
+//		ResponseData<String[]> allTables = this.getForeignFromPrimary(table);
+//		String [] differentTables = extractTables(allTables.getCollection());
+//		
+//		for (String t : differentTables) {
+//			if (! t.equals(table)) {
+//				temporary = this.dropTableDomino(t);
+//				//TODO : vérifier que temporary n'ait pas échoué.
+//				result.add(temporary.getCollection());
+//			}
+//		}
+//		
+//		//TODO : vérifier que dropTable n'ait pas échoué.
+//		this.dropTable(table, false);
+//		result.add(table);
+//		return result;
+//	}
 	
 	
 	@Override

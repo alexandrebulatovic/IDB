@@ -34,4 +34,10 @@ implements I_DDLManager
 	
 	/** Message pour la suppression en chaîne des tables.*/
 	protected static final String DOMINO = "Tables supprimées.";
+	
+	/** Message pour l'altération des tables.*/
+	protected static final String ALTER_TABLE = "Tables altérées.";
+	
+	/** Message pour la suppression des clées étrangères.*/
+	protected static final String DROP_FK = "Contrainte de clée étrangère supprimée.";
 }
