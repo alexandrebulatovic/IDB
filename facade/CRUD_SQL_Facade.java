@@ -3,18 +3,21 @@ package facade;
 import java.sql.SQLException;
 import java.util.Vector;
 
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import useful.Response;
 import useful.ResponseData;
 import business.TableSet;
+import gui.CRUDGUI;
 import manager.connection.I_ConnectionManager;
 import manager.connection.MySQLConnectionManager;
 import manager.ddl.AbstractDLLManager;
 import manager.ddl.I_DDLManager;
 import manager.sql.SQLManager;
+import sun.nio.cs.MS1250;
 
-public class CRUDFacade 
+public class CRUD_SQL_Facade 
 extends AbstractDDLCRUDFacade
 {
 
@@ -23,10 +26,18 @@ extends AbstractDDLCRUDFacade
 
 	private SQLManager sql_manager;
 
-	public CRUDFacade(I_DDLManager manager, I_ConnectionManager connector, TableSet tables) {
+	public CRUD_SQL_Facade(I_DDLManager manager, I_ConnectionManager connector, TableSet tables) {
 		super(manager,tables);
 		this.connector = connector;
-		this.sql_manager = new SQLManager(this.connector.getConnection(), SQLManager.TYPE_UPDATABLE_RESULTSET);
+		this.sql_manager = new SQLManager(this.connector.getConnection());
+
+
+		if (!this.sql_manager.initStatement(SQLManager.TYPE_PLAIN_RESULTSET))
+		{
+			Exception exception = this.sql_manager.getLastException();
+			String msgException = generateErrorMsg(exception);
+			System.out.println(msgException);
+		}
 	}
 
 	/**
@@ -91,7 +102,7 @@ extends AbstractDDLCRUDFacade
 	 * @param exception {@code Exception} à parser. 
 	 * @return un message explicite de l'erreur.
 	 */
-	public String generateErrorMsg(Exception exception) {
+	private String generateErrorMsg(Exception exception) {
 		if (exception instanceof SQLException)
 			return connector.errorMessage((SQLException)exception);
 		else
@@ -99,4 +110,49 @@ extends AbstractDDLCRUDFacade
 	}
 
 
+
+	/**
+	 * Optimise le {@code SQLManager} selon le type d'opération à effectuer.
+	 * @param statementTypeRequired : constantes parmi {@code SQLManager.TYPE_UPDATABLE_RESULTSET} pour avoir un {@code ResultSet} dynamique, 
+	 * {@code SQLManager.TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe et optimisé.
+	 */
+	public void optimizeStatement(int statementTypeRequired) {
+		int statementType = this.sql_manager.getStatementType();
+
+		if (statementType != statementTypeRequired)
+			this.sql_manager.setStatementType(statementTypeRequired);
+	}
+
+
+	/** Demande au {@code SQLManager} d'exécuter la requête SQL.
+	 * @param qry : requête sous forme de {@code String} à transmettre au SGBD. 
+	 * @return un {@code JTable} si c'est un SELECT, sinon un {@code String} de la réponse du serveur. */
+	public Object transmitQuery(String qry) {
+		return this.sql_manager.sendSQL(qry);
+	}
+
+	/** Demande à {@code SQLView} d'afficher un message d'information ou 
+	 * une {@code JTable} en fonction de la réponse du {@code SQLManager}.
+	 * @param reply : la réponse du serveur, un {@code String} ou un {@code JTable}. */
+	public Object transmitReply(Object reply) 
+	{
+		if (reply instanceof Response) {
+
+			if (!((Response) reply).hasSuccess()) { // si c'est une erreur
+
+				Exception lastException = this.sql_manager.getLastException();
+				String errorMsg = this.generateErrorMsg(lastException);
+				return new Response(false, errorMsg); // on affiche le message d'erreur
+
+			} else {
+
+				String msg = ((Response) reply).getMessage();
+				return new Response(true, msg); // on affiche une notification à l'utilisateur
+			}
+		}
+		else if (reply instanceof JTable)
+			return ((JTable) reply); // on affiche la JTable retournée
+		
+		return reply;
+	}
 }
