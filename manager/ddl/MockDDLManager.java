@@ -89,7 +89,7 @@ extends AbstractSuccesDDLManager
 
 
 	@Override
-	public Response altertable(String sql) 
+	public Response alterTable(String sql) 
 	{
 		return new Response(true, CREATE_TABLE);
 	}

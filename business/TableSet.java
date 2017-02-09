@@ -38,9 +38,15 @@ public class TableSet
 	}
 	
 	
-	public boolean isLoaded(String tableName){
-		Table table = this.getTableByName(tableName);
-		if (table.getAttributes().size()<=0){
+	/**
+	 * @param table : nom d'une table, null interdit.
+	 * @return vrai ssi $table a déjà été chargée depuis le SGBD,
+	 * faux sinon.
+	 */
+	public boolean isLoaded(String table)
+	{
+		Table t = this.getTableByName(table);
+		if (t.getAttributes().size()<=0){
 			return false;
 		}
 		return true;
@@ -250,17 +256,17 @@ public class TableSet
 		return null;
 	}
 	
+	
 	/**
-	 * retourne une liste de SQL permettant de modifier la tableName pour obtenir la tableTarget
-	 * @param tableName la table qui existe toujours
-	 * @param tableTarget la table qu'on veut obtenir
-	 * @param newName
-	 * @return
+	 * @param oldTable : ancien nom de la table, null interdit.
+	 * @param newTable : nouveau nom de la table, null interdit.
+	 * @return une liste de requêtes SQL pour altérer la table $oldname.
 	 */
-	public List<String> getSQLTableToModify(String tableName, String tableTarget, String newName){
-		Table newTable = this.getTableByName(tableTarget);
-		newTable.setName(newName);
-		return newTable.toModify(this.getTableByName(tableName));
+	public List<String> getSQLTableToModify(String oldTable, String newTable)
+	{
+		Table newT = this.getTableByName("TEMPORARY");
+		newT.setName(newTable);
+		return newT.toModify(this.getTableByName(oldTable));
 	}
 	
 	

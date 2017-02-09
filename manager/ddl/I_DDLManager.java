@@ -43,7 +43,7 @@ public interface I_DDLManager
 	 * @return une réponse personnalisée décrivant si l'atltération des
 	 * tables & réussie ou ratée. 
 	 */
-	public abstract Response altertable(String sql);
+	public abstract Response alterTable(String sql);
 	
 	
 	public abstract ArrayList<Response> modifyTable(ArrayList<String> sqls);

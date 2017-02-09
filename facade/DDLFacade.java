@@ -65,6 +65,24 @@ extends AbstractDDLCRUDFacade
 	}
 	
 	
+	public Response alterTable(String oldTable, String newTable)
+	{
+		String sql;
+		Response result;
+		List<String> queries = this.tables.getSQLTableToModify(oldTable, newTable);
+		Iterator<String> it = queries.iterator();
+		boolean stop = false;
+		result = new Response(true, "Table modifiée.");
+		
+		while (it.hasNext() && !stop) {
+			sql = it.next();
+			result = this.manager.alterTable(sql);
+			stop = ! result.hasSuccess();
+		}
+		return result;
+	}
+	
+	
 //	/**
 //	 * Ajoute $attribute à la $table.
 //	 * 
@@ -296,7 +314,7 @@ extends AbstractDDLCRUDFacade
 		while (statement.hasNext() && result.hasSuccess()) {
 			alter = statement.next();
 			System.out.println(alter);//TODO : remove
-			result = this.manager.altertable(alter);
+			result = this.manager.alterTable(alter);
 		}
 		return result;
 	}

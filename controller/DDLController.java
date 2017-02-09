@@ -273,13 +273,12 @@ public class DDLController
 	/**
 	 * Modifie une table existante
 	 */
-	public Response modifyTable(Table table,Table tableSource) {
-		//TODO : à revoir complètement
-		//TODO : mettre une méthode dans la facade
-		return null;
-
+	public Response alterTable(String oldTable, String newTable) 
+	{
+		return this.facade.alterTable(oldTable, newTable);
 	}
 
+	
 	/**
 	 * 
 	 * @param name

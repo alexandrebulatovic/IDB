@@ -595,9 +595,11 @@ public class Table {
 	 */
 	public boolean dropConstraint(Constraint c) {
 		c.cleanAll();
+
 		for (Attribute att : c.getAttributes()){
 			att.getConstraints().remove(c);
 		}
+
 		return this.constraints.remove(c);
 		
 	}

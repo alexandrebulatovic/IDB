@@ -116,7 +116,7 @@ extends AbstractSuccesDDLManager
 	
 	
 	@Override
-	public Response altertable(String sql) 
+	public Response alterTable(String sql) 
 	{
 		return this.executeUpdate(sql, CREATE_TABLE);
 	}
