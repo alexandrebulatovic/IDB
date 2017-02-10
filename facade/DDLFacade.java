@@ -121,7 +121,7 @@ extends AbstractDDLCRUDFacade
 	/**
 	 * @return la liste des types de données disponibles pour le SGBD.
 	 */
-	public String[] getAttributeTypes()
+	public String[] getDataTypes()
 	{
 		return this.manager.getAttributeTypes();
 	}
@@ -169,19 +169,10 @@ extends AbstractDDLCRUDFacade
 	 * @return une réponse personnalisée qui contient le nom de toutes les tables 
 	 * supprimées, ou une réponse vide en cas d'erreur.
 	 */
-	public Response dropTableDomino(String table)
+	public ResponseData<String> dropTableDominoFromDBMS(String table)
 	{
-		ResponseData<String> result = this.manager.dropTableDomino(table);
-		if (result.hasSuccess()) {
-			for (String t : result.getCollection()) {
-				this.tables.removeTable(t);
-			}
-		}
-		return result;
-	}
-	
-	
-	
+		return this.manager.dropTableDomino(table);
+	}	
 	
 	
 	/**
@@ -264,7 +255,7 @@ extends AbstractDDLCRUDFacade
 
 
 
-	public ResponseData<String[]> getUniqueAttributes(String string) {
+	public ResponseData<String[]> getUniqueFromDBMS(String string) {
 		return this.manager.getUniqueAttributes(string);
 		
 	}

@@ -282,7 +282,7 @@ implements ItemListener
 		this.attributeNameField = new JTextField();
 		this.bindAndAdd(this.attributeNameField, b,true);
 
-		this.types = this.control.getAttributeTypes();
+		this.types = this.control.getDataTypes();
 		this.attributeTypeComboBox = new JComboBox<String>(types);
 		this.attributeTypeComboBox.addActionListener(this);
 		this.bindAndAdd(this.attributeTypeComboBox, b,true);

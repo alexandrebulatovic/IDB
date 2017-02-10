@@ -119,9 +119,9 @@ public class DDLController
 	/**
 	 * @return la liste des types de données disponibles pour le SGBD.
 	 */
-	public String[] getAttributeTypes()
+	public String[] getDataTypes()
 	{
-		return this.facade.getAttributeTypes();
+		return this.facade.getDataTypes();
 	}
 
 
@@ -133,6 +133,17 @@ public class DDLController
 	public boolean dbmsAllowsDropCascade()
 	{
 		return this.facade.dbmsAllowsDropCascade();
+	}
+
+
+	/**
+	 * Envoie $table au DDLManager dans l'optique de la créer.
+	 * 
+	 * @param table : une table à créer. L'objet peut être erroné;
+	 */
+	public Response createTable(I_TableModel table)
+	{
+		return this.facade.createTable(table);
 	}
 
 
@@ -156,7 +167,6 @@ public class DDLController
 
 
 	/**
-	 * TODO : déplacer l'intelligence de la facade ici.
 	 * Supprime $table et toutes les tables de la bases qui utilisent la clée primaire
 	 * de $table.
 	 * 
@@ -166,7 +176,13 @@ public class DDLController
 	 */
 	public Response dropTableDomino(String table)
 	{
-		return this.facade.dropTableDomino(table);
+		ResponseData<String> result = this.facade.dropTableDominoFromDBMS(table);
+		if (result.hasSuccess()) {
+			for (String t : result.getCollection()) {
+				this.facade.dropTableFromBusiness(t);
+			}
+		}
+		return result;
 	}
 	
 	
@@ -189,16 +205,6 @@ public class DDLController
 	 */
 	public void closeStatement(){this.facade.closeStatement();}
 
-
-	/**
-	 * Envoie $table au DDLManager dans l'optique de la créer.
-	 * 
-	 * @param table : une table à créer. L'objet peut être erroné;
-	 */
-	public Response createTable(I_TableModel table)
-	{
-		return this.facade.createTable(table);
-	}
 
 	/**
 	 * @param table : nom de la table où récupérer les attributs, null interdit.
@@ -277,7 +283,7 @@ public class DDLController
 
 
 	public ResponseData<String[]> getUniqueAttributes(String string) {
-		return this.facade.getUniqueAttributes(string);
+		return this.facade.getUniqueFromDBMS(string);
 	}
 
 
