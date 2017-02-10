@@ -66,7 +66,7 @@ extends AbstractSuccesDDLManager
 	}
 
 	@Override
-	public ResponseData<String[]> getUniqueAttributes(String table) 
+	public ResponseData<String[]> getUniques(String table) 
 	{
 		return new ResponseData<String[]>(true, GET_UNIQUE);
 	}

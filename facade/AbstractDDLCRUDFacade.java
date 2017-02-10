@@ -8,7 +8,7 @@ public class AbstractDDLCRUDFacade
 {
 	//Attributs
 	/** Tables disponibles.*/
-	protected TableSet tables;
+	protected TableSet business;
 
 	/** Gestionnaire de définition des données.*/
 	protected I_DDLManager manager;
@@ -22,7 +22,7 @@ public class AbstractDDLCRUDFacade
 	 */
 	protected AbstractDDLCRUDFacade(I_DDLManager ddlmanager, TableSet tables)
 	{
-		this.tables = tables;
+		this.business = tables;
 		this.manager = ddlmanager;
 	}
 
@@ -34,15 +34,13 @@ public class AbstractDDLCRUDFacade
 	public ResponseData<String> getTables()
 	{
 		ResponseData<String> response;
-		if (tables.isLoaded()) {
+		if (business.isLoaded()) {
 			response = new ResponseData<String>
-			(true, "Tables récupérées.", this.tables.getTablesNames());
-			System.out.println("Metier");
+			(true, "Tables récupérées.", this.business.getTablesNames());
 		} 
 		else {
 			response = this.manager.getTables();
-			tables.loadTables(response.getCollection());
-			System.out.println("SGBD");
+			business.loadTables(response.getCollection());
 		}
 		return response;
 	}

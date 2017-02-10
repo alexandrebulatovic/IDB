@@ -158,9 +158,9 @@ public class DDLController
 	 */
 	public Response dropTable(String table, boolean cascade)
 	{
-		Response result = this.facade.dropTableFromDBMS(table, cascade);
+		Response result = this.facade.dropTableDBMS(table, cascade);
 		if (result.hasSuccess()) {
-			this.facade.dropTableFromBusiness(table);
+			this.facade.dropTableBusiness(table);
 		}
 		return result;
 	}
@@ -176,37 +176,26 @@ public class DDLController
 	 */
 	public Response dropTableDomino(String table)
 	{
-		ResponseData<String> result = this.facade.dropTableDominoFromDBMS(table);
+		ResponseData<String> result = this.facade.dropTableDominoDBMS(table);
 		if (result.hasSuccess()) {
 			for (String t : result.getCollection()) {
-				this.facade.dropTableFromBusiness(t);
+				this.facade.dropTableBusiness(t);
 			}
 		}
 		return result;
-	}
-	
-	
-	/**
-	 * TODO : aller chercher dans les classes métiers une fois clées chargées.
-	 * Retourne une réponse personnalisée qui contient les membres
-	 * de la clée primaire de $table.
-	 * 
-	 * @param table : nom de la table, ne doit pas être null.
-	 * @return CustomizedResponseWithData
-	 */
-	public ResponseData<String> getPrimaryKey(String table)
-	{
-		return this.facade.getPrimaryKey(table);
 	}
 
 
 	/**
 	 * Ferme proprement les objets Statements.
 	 */
-	public void closeStatement(){this.facade.closeStatement();}
+	public void closeStatement(){this.facade.closeDDL();}
 
 
 	/**
+	 * Récupère les informations utiles pour la vue depuis le SGBD ou les classes métiers.<br/>
+	 * Charge ces informations et les contraintes uniques dans les classes métiers.
+	 * 
 	 * @param table : nom de la table où récupérer les attributs, null interdit.
 	 * @return une réponse personnalisée.<br/>
 	 * Lorsque la récupération réussi, la réponse contient dans l'ordre :<br/>
@@ -219,30 +208,17 @@ public class DDLController
 	 */
 	public ResponseData<String[]> getAttributes(String table)
 	{	
-		//TODO Romain tu peux charger aussi les uniques / clef Etrangères stp
 		ResponseData<String[]> result;
 		if (this.facade.isLoaded(table)) {
-			List<String[]> latt = this.facade.getAttributesFromBusiness(table);
+			List<String[]> latt = this.facade.getAttributesBusiness(table);
 			result = new ResponseData<String[]> (true, "Attributs récupérés.", latt);
 		} 
 		else {
-			result = getAttributesFromDBMS(table);
-//			//---unique
-//			ResponseData<String[]> uniques = this.facade.getUniqueAttributes(table);
-//			for (String [] un : uniques.getCollection()) {
-//				this.facade.addUnique(table, un);
-//			}
-//			//---fin unique
-//			//--foreign
-//			ResponseData<String[]> foreigns
-//			//--finforeign
-			List<String[]> attributes = result.getCollection();
-			for (String [] att : attributes) {
-				this.facade.addAttribute(table, att);
-			}
+			result = this.getAttributesAndPrimaries(table);
+			this.facade.addAttributesToBusiness(table, result.getCollection());
+			this.loadUniques(table);
 		}
 		return result;
-		
 	}
 
 
@@ -283,7 +259,7 @@ public class DDLController
 
 
 	public ResponseData<String[]> getUniqueAttributes(String string) {
-		return this.facade.getUniqueFromDBMS(string);
+		return this.facade.getUniquesFromDBMS(string);
 	}
 
 
@@ -310,7 +286,60 @@ public class DDLController
 	}
 
 	
-	private String [] convertAttribute(String [] att, List<String> primaries)
+	/**
+	 * Interroge le SGBD pour récupérer les attributs sous contraintes uniques.<br/>
+	 * Enregistre ces contraintes dans les classes métiers.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @return une réponse personnalisée décrivant l'interrogation du SGBD.
+	 */
+	private Response loadUniques(String table)
+	{
+		ResponseData<String[]> ins_uns = this.facade.getUniquesFromDBMS(table);
+		AttributeGroup groups = new AttributeGroup(ins_uns.getCollection());
+		for (String index : groups.getIndexs()) {
+			this.facade.addUniqueBusiness(index, table, groups.getGroup(index));
+		}
+		return ins_uns;
+	}
+
+
+	
+	/**
+	 * Récupère les informations depuis le SGBD.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @return Une réponse personnalisée avec :<br/>
+	 * - le nom des attributs,<br/>
+	 * - le type des attributs,<br/>
+	 * - la taile des attributs,<br/>
+	 * - vrai ssi les attributs sont soumis à des contraintes NOT NULL, <br/>
+	 * - vrai ssi les attributs sont membre de la clée primaire.
+	 */
+	private ResponseData<String[]> getAttributesAndPrimaries(String table) 
+	{
+		ResponseData<String[]> attributesData = 
+				this.facade.getAttributesDBMS(table);
+		if (! attributesData.hasSuccess()) {
+			return attributesData;
+		}
+		
+		ResponseData<String> primaries = 
+				this.facade.getPrimaryKeyDBMS(table);
+		if (! attributesData.hasSuccess()) {
+			return new ResponseData<String[]>(false, "Clées primaires non récupérées.");
+		}
+		
+		List<String[]> collection = new ArrayList<String[]>();
+		for (String [] att : attributesData.getCollection()) {
+			collection.add(convertAttribute(att, primaries.getCollection()));
+		}
+		return new ResponseData<String[]>(true, "Attributs récupérés.", collection);
+	}
+
+
+	
+	private static String [] convertAttribute(String [] att, List<String> primaries)
 	{
 		String [] result = new String [5];
 		int i = 0, size = primaries.size();
@@ -328,40 +357,6 @@ public class DDLController
 		result[3] = !primary && "NO".equals(att[3]) ? "NOTNULL" : "NULL";
 		result[4] = primary ? "PRIMARY" : "COMMON";
 		return result;
-	}
-
-	
-	/**
-	 * Récupère les informations depuis le SGBD.
-	 * 
-	 * @param table : nom de la table, null interdit.
-	 * @return Une réponse personnalisée avec :
-	 * - le nom des attributs,<br/>
-	 * - le type des attributs,<br/>
-	 * - la taile des attributs,<br/>
-	 * - vrai ssi les attributs sont soumit à des contraintes NOT NULL, <br/>
-	 * - vrai ssi les attributs sont membre de la clée primaire.
-	 */
-	private ResponseData<String[]> getAttributesFromDBMS(String table) 
-	{
-		ResponseData<String[]> attributesData; 
-		ResponseData<String> primaries; 
-	
-		attributesData = this.facade.getAttributesFromDBMS(table);
-		if (! attributesData.hasSuccess()) return attributesData;
-	
-		primaries = this.facade.getPrimaryKey(table);
-		if (! attributesData.hasSuccess()) {
-			return new ResponseData<String[]>(false, "Clées primaires non récupérées.");
-		}
-		
-		String [] attribute;
-		List<String[]> collection = new ArrayList<String[]>();
-		for (String [] att : attributesData.getCollection()) {
-			attribute = this.convertAttribute(att, primaries.getCollection());
-			collection.add(attribute);
-		}
-		return new ResponseData<String[]>(true, "Attributs récupérés.", collection);
 	}
 
 

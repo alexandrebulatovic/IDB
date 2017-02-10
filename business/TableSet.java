@@ -194,12 +194,12 @@ public class TableSet
 	
 	/**
 	 * ajoute une contrainte unique pouvant porter sur plusieurs attributs d'une meme table
-	 * @param name
+	 * @param uniqueName
 	 * @param tableName
 	 * @param attributesNames
 	 * @return nom de la contrainte généré ou non
 	 */
-	public String addUnique(String name, String tableName, String[] attributesNames){
+	public String addUnique(String uniqueName, String tableName, String[] attributesNames){
 		Table table = this.getTableByName(tableName);
 		UniqueConstraint un = new UniqueConstraint();
 		un.setTable(table);
@@ -212,11 +212,11 @@ public class TableSet
 			
 		}
 		this.getTableByName(tableName).addConstraint(un);
-		if (name==null){
+		if (uniqueName==null){
 			un.createAndSetName();
 		}
 		else{
-			un.setName(name);
+			un.setName(uniqueName);
 		}
 		return un.getName();
 	}

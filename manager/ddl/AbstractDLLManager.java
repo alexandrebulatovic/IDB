@@ -93,7 +93,7 @@ extends AbstractSuccesDDLManager
 	
 	
 	@Override
-	public ResponseData<String[]> getUniqueAttributes(String table) {
+	public ResponseData<String[]> getUniques(String table) {
 		int [] columns = {6, 9};
 		 return this.procedureToGetMetadata
 				 (UNIQUE, table, columns, GET_UNIQUE);
