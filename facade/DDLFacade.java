@@ -135,26 +135,32 @@ extends AbstractDDLCRUDFacade
 		return this.manager.allowsDropCascade();
 	}
 
-
+	
 	/**
-	 * Supprime $table, si c'est possible.
+	 * Supprime $table du SGBD.
 	 * 
-	 * @param table : une table à supprimer, null interdit.
-	 * @param cascade : vrai si et seulement si $table peut être supprimée 
-	 * alors qu'elle est référencée par d'autres tables, faux sinon.
-	 * @return une réponse personnalisée décrivant si la suppression de toutes
-	 * les tables a réussi ou non.
+	 * @param table : nom de la table à supprimer, null interdit.
+	 * @param cascade : vrai ssi $table peut être supprimée malgré les références, faux sinon.
+	 * @return une réponse personnalisée décrivant la tentative de suppression.
 	 */
-	public Response dropTable(String table, boolean cascade)
+	public Response dropTableFromDBMS(String table, boolean cascade)
 	{
-		Response result = this.manager.dropTable(table, cascade);
-		if (result.hasSuccess()) {
-			this.tables.removeTable(table);
-		}
-		return result;
+		return this.manager.dropTable(table, cascade);
 	}
-
-
+	
+	
+	/**
+	 * Supprime $table des classes métiers.
+	 * 
+	 * @param table : nom de la table à supprimer, null interdit.
+	 * @return vrai ssi $table a été supprimée des classes métiers, faux sinon.
+	 */
+	public boolean dropTableFromBusiness(String table)
+	{
+		return this.tables.removeTable(table);
+	}
+	
+	
 	/**
 	 * Supprime $table et toutes les tables de la bases qui utilisent la clée primaire
 	 * de $table.
@@ -165,7 +171,6 @@ extends AbstractDDLCRUDFacade
 	 */
 	public Response dropTableDomino(String table)
 	{
-
 		ResponseData<String> result = this.manager.dropTableDomino(table);
 		if (result.hasSuccess()) {
 			for (String t : result.getCollection()) {
@@ -174,6 +179,9 @@ extends AbstractDDLCRUDFacade
 		}
 		return result;
 	}
+	
+	
+	
 	
 	
 	/**

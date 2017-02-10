@@ -137,7 +137,6 @@ public class DDLController
 
 
 	/**
-	 * TODO déplacer l'intelligence de la facade ici.
 	 * Supprime $table, si c'est possible.
 	 * 
 	 * @param table : une table à supprimer, null interdit.
@@ -148,7 +147,11 @@ public class DDLController
 	 */
 	public Response dropTable(String table, boolean cascade)
 	{
-		return this.facade.dropTable(table, cascade);
+		Response result = this.facade.dropTableFromDBMS(table, cascade);
+		if (result.hasSuccess()) {
+			this.facade.dropTableFromBusiness(table);
+		}
+		return result;
 	}
 
 
