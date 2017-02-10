@@ -3,6 +3,8 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import manager.connection.MockConnectionManager;
 import manager.connection.MySQLConnectionManager;
@@ -19,6 +21,7 @@ import org.junit.Test;
 import business.TableSet;
 import useful.ConnectionStrings;
 import useful.Response;
+import useful.ResponseData;
 import controller.DDLController;
 import controller.HomeController;
 import ddl.MockAttributeModel;
@@ -198,5 +201,67 @@ public class TestsConnecte
 		copy.setMessage("");
 		assertEquals("", copy.getMessage());
 		assertEquals("Erreur : ", copy.toString());
+	}
+	
+	
+	@Test
+	public void checkResponseData()
+	{
+		ResponseData<String> r = new ResponseData<String>(true, "Message récupéré.");
+		assertEquals(0, r.getCollection().size());
+		assertEquals("Message récupéré.\n[]", r.toString());
+		
+		r.add("Bonjour");
+		assertEquals(1, r.getCollection().size());
+		assertEquals("Message récupéré.\n[Bonjour]", r.toString());
+		
+		r.add("Bonjour");
+		assertEquals(1, r.getCollection().size());
+		assertEquals("Message récupéré.\n[Bonjour]", r.toString());
+		
+		List<String> lst = new ArrayList<String>();
+		lst.add("Hello"); lst.add("Bonjour"); lst.add("Au revoir");
+		r.add(lst);
+		assertEquals(3, r.getCollection().size());
+		assertEquals("Message récupéré.\n[Bonjour, Hello, Au revoir]", r.toString());
+		
+		assertEquals("Bonjour", r.getCollection().get(0));
+		assertEquals("Hello", r.getCollection().get(1));
+		assertEquals("Au revoir", r.getCollection().get(2));
+		
+		ResponseData<String[]> rr = new ResponseData<String[]>(false, "Compte à rebours non récupéré.");
+		String [] ss;
+		List<String []> lstc = new ArrayList<String[]>();
+		ss = new String [3];
+		ss[0] = "1";
+		ss[1] = "2";
+		ss[2] = "3";
+		lstc.add(ss);
+		
+		ss = new String [2];
+		ss[0] = "4";
+		ss[1] = "5";
+		lstc.add(ss);
+		
+		ss = new String [4];
+		ss[0] = "6";
+		ss[1] = "7";
+		ss[2] = "8";
+		ss[3] = "9";
+		lstc.add(ss);
+		rr.add(lstc);
+		
+		r = new ResponseData<String>(rr);
+		assertEquals(9, r.getCollection().size());
+		assertEquals(rr.hasSuccess(), r.hasSuccess());
+		assertEquals(rr.getMessage(), r.getMessage());
+		assertEquals("Erreur : Compte à rebours non récupéré.\n[1, 2, 3, 4, 5, 6, 7, 8, 9]", r.toString());
+	
+		Exception e = new Exception("Ceci est une erreur.");
+		r = new ResponseData<String>(e);
+		assertEquals(false, r.hasSuccess());
+		assertEquals(e.getMessage(), r.getMessage());
+		assertEquals("Erreur : " + e.getMessage() + "\n[]", r.toString());
+	
 	}
 }
