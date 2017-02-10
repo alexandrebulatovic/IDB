@@ -41,6 +41,16 @@ public class MainFactory
 	
 	//Méthodes
 	/**
+	 * @return la liste des SGBD disponibles.
+	 */
+	public String [] getAvailableDBMS() 
+	{
+		String [] result = {ORACLE, MYSQL};
+		return result; 
+	}
+
+
+	/**
 	 * @return null si et seulement si cette fabrique n'est pas liée
 	 * à une autre fabrique de SGBD, un gestionnaire de connexion sinon.
 	 */
@@ -61,16 +71,6 @@ public class MainFactory
 	}
 	
 	
-	/**
-	 * @return la liste des SGBD disponibles.
-	 */
-	public String [] getAvailableDBMS() 
-	{
-		String [] result = {ORACLE, MYSQL};
-		return result; 
-	}
-		
-
 	/**
 	 * @param primaryKey 
 	 * @param notNull 

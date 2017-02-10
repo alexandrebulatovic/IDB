@@ -46,7 +46,7 @@ extends Response
 	public ResponseData(boolean response, String msg, List<T> data)
 	{
 		super(response, msg);
-		this.data = data; //TODO : virer ce pointeur par un ajout element par élément
+		this.data = data;
 	}
 	
 	

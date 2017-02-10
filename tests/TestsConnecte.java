@@ -13,18 +13,20 @@ import manager.ddl.OracleDDLManager;
 import manager.xml.DefaultValueManager;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import business.TableSet;
 import useful.ConnectionStrings;
-
+import useful.Response;
 import controller.DDLController;
 import controller.HomeController;
 import ddl.MockAttributeModel;
+import ddl.MockTableModel;
 import ddl.MySQLAttributeModel;
+import ddl.MySQLTableModel;
 import ddl.OracleAttributeModel;
-
+import ddl.OracleTableModel;
 import facade.DDLFacade;
 import facade.HomeFacade;
 import factory.MainFactory;
@@ -35,6 +37,8 @@ import factory.MainFactory;
  * 
  * Se faire une classe Perso, contenant deux variable static final String
  * LOGIN et MDP dans le package test, et les ajouter au .gitignore.
+ * 
+ * 
  */
 public class TestsConnecte 
 {
@@ -44,6 +48,7 @@ public class TestsConnecte
 	private static Connection connection;
 	private static HomeFacade homeFacade;
 	private static DDLFacade ddlFacade;
+	private static TableSet business;
 	private static DDLController ddlControl;
 	private static String dbms;
 	
@@ -53,7 +58,8 @@ public class TestsConnecte
 	{
 		dvm = new DefaultValueManager();
 		factory = new MainFactory(MainFactory.MOCK);
-		homeFacade = new HomeFacade(dvm, factory, null);
+		business = new TableSet();
+		homeFacade = new HomeFacade(dvm, factory, business);
 		homeControl = new HomeController(homeFacade);
 		ConnectionStrings parameters = homeControl.getDefaultValues();
 		parameters.password = Perso.MDP;
@@ -107,6 +113,7 @@ public class TestsConnecte
 		assertEquals(true, factory.getDDLManager(connection) instanceof MockDDLManager);
 		assertEquals(true, factory.getAttributeModel
 				(name, type, size, nn, pk) instanceof MockAttributeModel);
+		assertEquals(true, factory.getTableModel() instanceof MockTableModel);
 		
 		factory.setDBMS(MainFactory.ORACLE);
 		assertEquals("Fabrique pour Oracle.", factory.toString());
@@ -114,6 +121,7 @@ public class TestsConnecte
 		assertEquals(true, factory.getDDLManager(connection) instanceof OracleDDLManager);
 		assertEquals(true, factory.getAttributeModel
 				(name, type, size, nn, pk) instanceof OracleAttributeModel);
+		assertEquals(true, factory.getTableModel() instanceof OracleTableModel);
 		
 		factory.setDBMS(MainFactory.MYSQL);
 		assertEquals("Fabrique pour MySQL.", factory.toString());
@@ -121,5 +129,74 @@ public class TestsConnecte
 		assertEquals(true, factory.getDDLManager(connection) instanceof MySQLDDLManager);
 		assertEquals(true, factory.getAttributeModel
 				(name, type, size, nn, pk) instanceof MySQLAttributeModel);
+		assertEquals(true, factory.getTableModel() instanceof MySQLTableModel);
+
+	}
+	
+	
+	@Test
+	public void checkConnectionStrings()
+	{
+		ConnectionStrings cs1 = new ConnectionStrings();
+		assertEquals("", cs1.driver);
+		assertEquals("", cs1.url);
+		assertEquals("", cs1.user);
+		assertEquals("", cs1.password);
+		assertEquals("", cs1.baseName);
+		assertEquals("", cs1.port);
+		
+		ConnectionStrings cs2 = new ConnectionStrings("driver", "url", "user", "password", "base", "0000");
+		assertEquals("driver", cs2.driver);
+		assertEquals("url", cs2.url);
+		assertEquals("user", cs2.user);
+		assertEquals("password", cs2.password);
+		assertEquals("base", cs2.baseName);
+		assertEquals("0000", cs2.port);
+	}
+	
+	
+	@Test
+	public void checkResponse()
+	{
+		Response r = new Response(true);
+		assertEquals(true, r.hasSuccess());
+		assertEquals("", r.getMessage());
+		assertEquals("", r.toString());
+		r.setMessage("hello");
+		assertEquals("hello", r.getMessage());
+		assertEquals("hello", r.toString());
+		
+		r = new Response(false);
+		assertEquals(false, r.hasSuccess());
+		assertEquals("", r.getMessage());
+		assertEquals("Erreur : ", r.toString());
+		r.setMessage("hello");
+		assertEquals("hello", r.getMessage());
+		assertEquals("Erreur : hello", r.toString());
+		
+		r = new Response(true, "Message reçu.");
+		assertEquals(true, r.hasSuccess());
+		assertEquals("Message reçu.", r.toString());
+		assertEquals("Message reçu.", r.getMessage());
+		r.setMessage("hello");
+		assertEquals("hello", r.getMessage());
+		assertEquals("hello", r.toString());
+		
+		r = new Response(false, "Message non reçu.");
+		assertEquals(false, r.hasSuccess());
+		assertEquals("Erreur : Message non reçu.", r.toString());
+		assertEquals("Message non reçu.", r.getMessage());
+		r.setMessage("hello");
+		assertEquals("hello", r.getMessage());
+		assertEquals("Erreur : hello", r.toString());
+
+		
+		Response copy = new Response(r);
+		assertEquals(false, copy.hasSuccess());
+		assertEquals("Erreur : hello", r.toString());
+		assertEquals("hello", copy.getMessage());
+		copy.setMessage("");
+		assertEquals("", copy.getMessage());
+		assertEquals("Erreur : ", copy.toString());
 	}
 }
