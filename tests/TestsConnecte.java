@@ -9,6 +9,7 @@ import java.util.List;
 import manager.connection.MockConnectionManager;
 import manager.connection.MySQLConnectionManager;
 import manager.connection.OracleConnectionManager;
+import manager.ddl.I_DDLManager;
 import manager.ddl.MockDDLManager;
 import manager.ddl.MySQLDDLManager;
 import manager.ddl.OracleDDLManager;
@@ -262,6 +263,20 @@ public class TestsConnecte
 		assertEquals(false, r.hasSuccess());
 		assertEquals(e.getMessage(), r.getMessage());
 		assertEquals("Erreur : " + e.getMessage() + "\n[]", r.toString());
+	}
 	
+	
+	@Test
+	public void checkConnectionManager()
+	{
+		//Encapsulé, l'instance en cours ne peut pas être testée.
+	}
+	
+	@Test
+	public void checkDDLManager()
+	{
+		factory.setDBMS(dbms);
+		I_DDLManager ddl = factory.getDDLManager(connection);
+		
 	}
 }

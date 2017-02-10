@@ -4,7 +4,6 @@ import facade.CRUD_SQL_Facade;
 import gui.SQLGUI;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JTable;
@@ -51,17 +50,6 @@ public class SQLController {
 		}
 	}
 
-	/**
-	 * Affiche une fenêtre au premier plan.
-	 * 
-	 * @param gui : une IHM, null interdit.
-	 */
-	private static void showGUI(JFrame gui)
-	{
-		gui.setVisible(true);
-		gui.toFront();
-	}
-
 	/** Demande au {@code SQLManager} d'exécuter la requête SQL.
 	 * @param qry : requête sous forme de {@code String} à transmettre au SGBD. */
 	public void transmitQuery(String qry)
@@ -88,5 +76,17 @@ public class SQLController {
 			else
 				this.sql_view.showReply(((Response) replyParsed).getMessage()); // on affiche une notification à l'utilisateur
 		}
+	}
+
+
+	/**
+	 * Affiche une fenêtre au premier plan.
+	 * 
+	 * @param gui : une IHM, null interdit.
+	 */
+	private static void showGUI(JFrame gui)
+	{
+		gui.setVisible(true);
+		gui.toFront();
 	}
 }

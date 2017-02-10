@@ -105,8 +105,8 @@ implements I_ConnectionManager
 		try {this.dbms.close();} 
 		catch (SQLException e) {}
 	}
-	
-	
+
+
 	@Override
 	public String toString()
 	{
@@ -177,13 +177,6 @@ implements I_ConnectionManager
 				param.password);
 		this.set(dbms, param);
 	}
-	
-	
-	/**
-	 * @return Un message d'erreur plus lisible 
-	 * que celui retourné par le SGBD après une tentative de connexion.
-	 */
-	public abstract String errorMessage(SQLException e);
 	
 	
 	/**
