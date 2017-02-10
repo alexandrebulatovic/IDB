@@ -132,36 +132,42 @@ public class TableSet
 		return false;
 	}
 	
+	
 	/**
-	 * ajoute une clé étrangère si c'est possible
-	 * Les attributs doivent exister !!
-	 * @param nameOfConstraint
-	 * @param tableSourceName
-	 * @param attributesSourcesNames
-	 * @param tableDestinationName
-	 * @param attributesDestinationsNames
-	 * @return nom de la contrainte
+	 * Ajoute une clée étrangère dans les classes métiers.
+	 * 
+	 * @param constraintName : nom de la contrainte, null interdit.
+	 * @param foreignTable : nom de la table qui contient la clée étrangère, null interdit.
+	 * @param foreignAttributes : nom des attributs membres de la clée étrangère, null interdit.
+	 * @param primaryTable : nom de la table contenant la clée primaire référencée.
+	 * @param primaryAttributes : nom des attributs membres de la clée primaire référencées, null interdit.
+	 * @return le nom de la contrainte de clée étrangère.
 	 */
-	public String addForeignKey(String name, String tableSourceName, String[] attributesSourcesNames, String tableDestinationName, String[] attributesDestinationsNames){
+	public String addForeignKey(
+			String constraintName, 
+			String foreignTable, 
+			String[] foreignAttributes, 
+			String primaryTable, 
+			String[] primaryAttributes){
 		
-		Table tableSource = this.getTableByName(tableSourceName);
-		Table tableDestination = this.getTableByName(tableDestinationName);
+		Table tableSource = this.getTableByName(foreignTable);
+		Table tableDestination = this.getTableByName(primaryTable);
 		
 		ForeignKeyConstraint fk = new ForeignKeyConstraint();
 		fk.setTable(tableSource);
 		fk.setTableDestination(tableDestination);
 		
-		for (Attribute att : getAttributesFromString(tableSource,attributesSourcesNames)){
+		for (Attribute att : getAttributesFromString(tableSource,foreignAttributes)){
 			att.addConstraint(fk);
 			fk.addAttribute(att);
 		}
-		for (Attribute att : getAttributesFromString(tableDestination,attributesDestinationsNames)){
+		for (Attribute att : getAttributesFromString(tableDestination,primaryAttributes)){
 			att.addConstraint(fk);
 			fk.addAttributeDestination(att);
 		}
 		
-		fk.setName(name);
-		if (name==null){
+		fk.setName(constraintName);
+		if (constraintName==null){
 			fk.createAndSetName();
 		}
 		tableSource.addConstraint(fk);

@@ -217,7 +217,8 @@ public class DDLController
 		else {
 			result = this.getAttributesAndPrimaries(table);
 			this.facade.addAttributesToBusiness(table, result.getCollection());
-			this.loadUniques(table);
+			this.loadForeigns(table); //TODO : se soucier de la reponse retournée
+			this.loadUniques(table); //TODO : se soucier de la reponse retournée
 		}
 		return result;
 	}
@@ -288,7 +289,7 @@ public class DDLController
 
 	
 	/**
-	 * Interroge le SGBD pour récupérer les attributs sous contraintes uniques.<br/>
+	 * Interroge le SGBD pour récupérer les attributs sous contraintes UNIQUE.<br/>
 	 * Enregistre ces contraintes dans les classes métiers.
 	 * 
 	 * @param table : nom de la table, null interdit.
@@ -297,7 +298,7 @@ public class DDLController
 	private Response loadUniques(String table)
 	{
 		ResponseData<String[]> ins_uns = this.facade.getUniquesFromDBMS(table);
-		AttributeGroup groups = new AttributeGroup(ins_uns.getCollection(), 0, 1);
+		GroupByIndex groups = new GroupByIndex(ins_uns.getCollection(), 0, 1);
 		for (String index : groups.getIndexs()) {
 			this.facade.addUniqueBusiness(index, table, groups.getGroup(index));
 		}
@@ -305,15 +306,29 @@ public class DDLController
 	}
 
 
-	//TODO
-	private Response loadForeign(String table)
+	/**
+	 * Interroge le SGBD pour récupérer les attributs sous contraintes FOREIGN KEY.<br/>
+	 * Enregistre ces contraintes dans les classes métiers.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @return une réponse personnalisée décrivant l'interrogation du SGBD.
+	 */
+	private Response loadForeigns(String table)
 	{
-		ResponseData<String[]> foreigns = this.facade.getPrimaryFromForeign(table);
-		AttributeGroup groups = new AttributeGroup(foreigns.getCollection());
-		for (String index : groups.getIndexs()) {
-			this.facade.addUniqueBusiness(index, table, groups.getGroup(index));
+		ResponseData<String[]> ddl = this.facade.getPrimaryFromForeign(table);
+		GroupByIndex primaryTable = new GroupByIndex(ddl.getCollection(), 5, 0);
+		GroupByIndex foreignTable = new GroupByIndex(ddl.getCollection(), 5, 3);
+		GroupByIndex primariesAtt = new GroupByIndex(ddl.getCollection(), 5, 1);
+		GroupByIndex foreignsAtt  = new GroupByIndex(ddl.getCollection(), 5, 4);
+		for (String index : primaryTable.getIndexs()) {
+			this.facade.addForeignKeyToBusiness(
+					index, 
+					foreignTable.getGroup(index)[0], 
+					foreignsAtt.getGroup(index), 
+					primaryTable.getGroup(index)[0], 
+					primariesAtt.getGroup(index));
 		}
-		return foreigns;
+		return ddl;
 	}
 	
 	

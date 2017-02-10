@@ -7,14 +7,17 @@ import java.util.List;
 /**
  * Regroupe des attributs par indexs.
  */
-public class AttributeGroup 
+public class GroupByIndex 
 {
 	//Attributs
 	/** Liste des couples index / attributs.*/
 	private List<String []> origin;
 	
-	/** Liste des différents index*/
+	/** Ensemble des différents index*/
 	private List<String> indexs;
+	
+	/** Ensemble des attributs.*/
+	private List<String> attributes;
 	
 	/** Liste du nombre d'attributs présents dans l'index.*/
 	private List<Integer> numbers;
@@ -22,11 +25,13 @@ public class AttributeGroup
 	/** Liste des groupes d'attributs présents dans l'index.*/
 	private List<String []> groups;
 	
-	/** Cellue de $origin où se trouve le nom d'index.*/
+	/** Cellule de $origin où se trouve le nom d'index.*/
 	private int indexCell;
 	
 	/** Cellule de origin où se trouve le nom de l'attribut.*/
 	private int attributeCell;
+
+	
 	
 	
 	//Constructeur
@@ -35,17 +40,15 @@ public class AttributeGroup
 	 * 
 	 * @param group : Liste des couples index / attribut, null interdit.
 	 */
-	public AttributeGroup(List<String[]> group, int indexCell, int attributeCell)
+	public GroupByIndex(List<String[]> group, int indexCell, int attributeCell)
 	{
 		this.indexCell = indexCell;
 		this.attributeCell = attributeCell;
 		this.killPhantom(group);
 		this.initIndexs();
-		this.initCountone();
+		this.initCountOne();
 		this.initCountTwo();
 		this.initGroups();
-		
-		System.out.println(this);
 	}
 	
 	
@@ -130,7 +133,7 @@ public class AttributeGroup
 	{
 		this.origin = new ArrayList<String[]>();
 		for (String [] ins_uns : group) {
-			if (ins_uns[0] != null && ins_uns[0] != null) {
+			if (ins_uns[indexCell] != null && ins_uns[attributeCell] != null) {
 				this.origin.add(ins_uns);
 			}
 		}
@@ -144,8 +147,8 @@ public class AttributeGroup
 	{
 		this.indexs = new ArrayList<String>();
 		for (String [] ins_uns : this.origin) {
-			if (! this.containsIndex(ins_uns[0])) {
-				this.indexs.add(ins_uns[0]);
+			if (! this.containsIndex(ins_uns[indexCell])) {
+				this.indexs.add(ins_uns[indexCell]);
 			}
 		}
 	}
@@ -154,7 +157,7 @@ public class AttributeGroup
 	/**
 	 * Initialise sur zéro le nombre d'attribut par index.
 	 */
-	private void initCountone()
+	private void initCountOne()
 	{
 		this.numbers = new ArrayList<Integer>();
 		for (int i=0; i < this.indexs.size(); i++) {
@@ -163,6 +166,27 @@ public class AttributeGroup
 	}
 	
 	
+	/**
+	 * Compte le nombre d'attribut par index et met à jours
+	 * le groupe en conséquence.
+	 */
+	private void initCountTwo()
+	{
+		int i = 0;
+		int count;
+		this.attributes = new ArrayList<String>();
+		
+		for (String index : this.indexs) {
+			count = countAttributes(index);
+			this.numbers.set(i, new Integer(count));
+			i++;
+		}
+	}
+
+
+	/**
+	 * Initialise les groupes d'attributs concernés par la même contrainte. 
+	 */
 	private void initGroups()
 	{
 		this.groups = new ArrayList<String[]>();
@@ -172,28 +196,6 @@ public class AttributeGroup
 	}
 
 
-	/**
-	 * Compte le nombre d'attribut par index et met à jours
-	 * le groupe en conséquence.
-	 */
-	private void initCountTwo()
-	{
-		int i = 0;
-		int count;
-
-		for (String in : this.indexs) {
-			count = 0;
-			for (String [] in2 : this.origin) {
-				if (in.equals(in2[0])) {
-					count ++;
-				}
-			}
-			this.numbers.set(i, new Integer(count));
-			i++;
-		}
-	}
-	
-	
 	/**
 	 * @param index : nom de l'index, null interdit.
 	 * @return un groupe d'attribut soumis à la même contrainte $index.
@@ -209,8 +211,8 @@ public class AttributeGroup
 		Iterator<String []> it = this.origin.iterator();
 		while (count < size && it.hasNext()) {
 			next = it.next();
-			index2 = next[0];
-			attribut = next[1];
+			index2 = next[indexCell];
+			attribut = next[attributeCell];
 			if (index2.equals(index)) {
 				result[count] = attribut;
 				count++;
@@ -246,5 +248,27 @@ public class AttributeGroup
 			i++;
 		}
 		return found ? i -1 : -1;
+	}
+
+
+	/**
+	 * @param index : le nom de l'index, null interdit.
+	 * @return le nombre d'attributs concernés par $index.
+	 */
+	private int countAttributes(String index) {
+		int result = 0;
+		String indx, attribute;
+		
+		for (String [] or : this.origin) {
+			indx = or[this.indexCell];
+			attribute = or[this.attributeCell];
+			if (index.equals(indx) 
+//					&& ! attributes.contains(attribute)
+					) {
+				attributes.add(attribute);
+				result ++;
+			}
+		}
+		return result;
 	}
 }

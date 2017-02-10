@@ -137,20 +137,37 @@ extends AbstractDDLCRUDFacade
 	}
 	
 	
+	//TODO : trompeur
 	public Response addUniqueDBMS(String tableSourceName, String[] attributesSourcesNames, String contrainte) {
 		String sql = this.business.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], contrainte);
 		Response result = this.manager.addUnique(sql);
 		return result;
 	}
 
-	//TODO
-	public String addForeignKey(String name, 
-			String tableSourceName, 
-			String[] attributesSourcesNames, 
-			String tableDestinationName, 
-			String[] attributesDestinationsNames)
+	
+	/**
+	 * Ajoute une clée étrangère dans les classes métiers.
+	 * 
+	 * @param constraintName : nom de la contrainte, null interdit.
+	 * @param foreignTable : nom de la table qui contient la clée étrangère, null interdit.
+	 * @param foreignAttributes : nom des attributs membres de la clée étrangère, null interdit.
+	 * @param primaryTable : nom de la table contenant la clée primaire référencée.
+	 * @param primaryAttributes : nom des attributs membres de la clée primaire référencées, null interdit.
+	 * @return le nom de la contrainte de clée étrangère.
+	 */
+	public String addForeignKeyToBusiness(
+			String constraintName, 
+			String foreignTable, 
+			String[] foreignAttributes, 
+			String primaryTable, 
+			String[] primaryAttributes)
 	{
-		return null;
+		return this.business.addForeignKey(
+				constraintName, 
+				foreignTable, 
+				foreignAttributes, 
+				primaryTable, 
+				primaryAttributes);
 	}
 	
 	
@@ -295,9 +312,9 @@ extends AbstractDDLCRUDFacade
 	 * Pour résumer : FOREIGN KEY ($a2) REFERENCES $t($a) <br/>
 	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée. 
 	 */ 
-	public ResponseData<String[]> getPrimaryFromForeign(String string) 
+	public ResponseData<String[]> getPrimaryFromForeign(String table) 
 	{
-		return this.manager.getPrimaryFromForeign(string);
+		return this.manager.getPrimaryFromForeign(table);
 	}
 
 
