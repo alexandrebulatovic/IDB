@@ -151,28 +151,20 @@ public class TableSet
 		fk.setTable(tableSource);
 		fk.setTableDestination(tableDestination);
 		
-		
-		
 		for (Attribute att : getAttributesFromString(tableSource,attributesSourcesNames)){
 			att.addConstraint(fk);
 			fk.addAttribute(att);
 		}
-		
 		for (Attribute att : getAttributesFromString(tableDestination,attributesDestinationsNames)){
 			att.addConstraint(fk);
 			fk.addAttributeDestination(att);
 		}
 		
-		
 		fk.setName(name);
 		if (name==null){
 			fk.createAndSetName();
 		}
-
 		tableSource.addConstraint(fk);
-		
-		
-		
 		return fk.getName();
 	}
 	

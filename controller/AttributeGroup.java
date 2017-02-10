@@ -22,6 +22,12 @@ public class AttributeGroup
 	/** Liste des groupes d'attributs présents dans l'index.*/
 	private List<String []> groups;
 	
+	/** Cellue de $origin où se trouve le nom d'index.*/
+	private int indexCell;
+	
+	/** Cellule de origin où se trouve le nom de l'attribut.*/
+	private int attributeCell;
+	
 	
 	//Constructeur
 	/**
@@ -29,8 +35,10 @@ public class AttributeGroup
 	 * 
 	 * @param group : Liste des couples index / attribut, null interdit.
 	 */
-	public AttributeGroup(List<String[]> group)
+	public AttributeGroup(List<String[]> group, int indexCell, int attributeCell)
 	{
+		this.indexCell = indexCell;
+		this.attributeCell = attributeCell;
 		this.killPhantom(group);
 		this.initIndexs();
 		this.initCountone();
@@ -195,17 +203,18 @@ public class AttributeGroup
 		int id = this.getIdByName(index);
 		int size = this.numbers.get(id);
 		String [] result = new String [size], next;
-		String index2;
-		int i = 0;
+		String index2, attribut;
+		int count = 0;
 		
 		Iterator<String []> it = this.origin.iterator();
-		while (i < size && it.hasNext()) {
+		while (count < size && it.hasNext()) {
 			next = it.next();
 			index2 = next[0];
+			attribut = next[1];
 			if (index2.equals(index)) {
-				result[i] = next[1];
+				result[count] = attribut;
+				count++;
 			}
-			i++;
 		}
 		return result;
 	}

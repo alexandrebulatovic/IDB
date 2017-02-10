@@ -83,24 +83,6 @@ extends AbstractDDLCRUDFacade
 	}
 	
 	
-//	/**
-//	 * Ajoute $attribute à la $table.
-//	 * 
-//	 * @param table : nom de la table, null interdit.
-//	 * @param attribute : nom de l'attribut, null interdit.
-//	 * @param type : nom du type, null interdit.
-//	 * @param size : taille du type, 0 < taille.
-//	 * @param notNull : vrai ssi $attribut est sous contrainte not null, faux sinon.
-//	 * @param primary : vrai ssi $attribut est sous contrainte primary, faux sinon.
-//	 * @return vrai ssi $attribute est ajouté avec succès à $table, faux sinon.
-//	 */
-//	public boolean addAttribute
-//		(String table, String attribute, String type, int size, boolean notNull, boolean primary)
-//	{
-//		return this.tables.addAttribute(table, attribute, type, size, notNull, primary);
-//	}
-	
-	
 	/**
 	 * Ajoute $attribute à la table.<br/>
 	 * L'attribut contient son nom, type, taille, NOT NULL et PRIMARY KEY.
@@ -161,7 +143,17 @@ extends AbstractDDLCRUDFacade
 		return result;
 	}
 
-
+	//TODO
+	public String addForeignKey(String name, 
+			String tableSourceName, 
+			String[] attributesSourcesNames, 
+			String tableDestinationName, 
+			String[] attributesDestinationsNames)
+	{
+		return null;
+	}
+	
+	
 	public Response addUnique(String table, String[] attributesGroup) {
 		String contrainte = this.business.addUnique(table, attributesGroup);
 		Response added = this.addUniqueDBMS(table, attributesGroup, contrainte);
@@ -288,8 +280,23 @@ extends AbstractDDLCRUDFacade
 		
 	}
 
-
-	public ResponseData<String[]> getPrimaryFromForeign(String string) {
+	/**
+	 * @param table : table où se trouve les clées étrangères, null interdit.
+	 * @return une réponse personnalisée.<br/>
+	 * 
+	 * Lorsque la récupération réussi, la réponse contient dans l'ordre : <br/>
+	 * - le nom d'une table $t,<br/>
+	 * - le nom d'un attribut $a, clée primaire de $t,<br/>
+	 * - le nom de la contrainte de clée primaire $t($a),<br/>
+	 * - l'argument $table,<br/>
+	 * - le nom d'un attribut $a2, clée étrangère de $table, qui référence $t($a),<br/>
+	 * - le nom de la contrainte de clée étrangère de $table($a2).<br/><br/>
+	 * 
+	 * Pour résumer : FOREIGN KEY ($a2) REFERENCES $t($a) <br/>
+	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée. 
+	 */ 
+	public ResponseData<String[]> getPrimaryFromForeign(String string) 
+	{
 		return this.manager.getPrimaryFromForeign(string);
 	}
 
@@ -357,12 +364,8 @@ extends AbstractDDLCRUDFacade
 		
 		String create = statement.next(); 
 		Response result = this.manager.createTable(create);
-		System.out.println(create); //TODO : remove
-		String alter; //TODO : remove
 		while (statement.hasNext() && result.hasSuccess()) {
-			alter = statement.next();
-			System.out.println(alter);//TODO : remove
-			result = this.manager.alterTable(alter);
+			result = this.manager.alterTable(statement.next());
 		}
 		return result;
 	}

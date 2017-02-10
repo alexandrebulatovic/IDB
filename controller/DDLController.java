@@ -19,9 +19,6 @@ import useful.ResponseData;
 /**
  * Assure le dialogue entre les IHM du langage de définition des données
  * et le gestionnaire de ce même langage.
- * 
- * @author UGOLINI Romain
- * @author MAURY Adrian
  */
 public class DDLController 
 {
@@ -68,6 +65,10 @@ public class DDLController
 		}
 	}
 
+	/**
+	 * Ouvre l'IHM de modifications des tables si et seulement si 
+	 * elle n'existe pas, sinon tente de l'afficher au premier plan.
+	 */
 	public void openModifyGUI() {
 		if (this.modifyGUI == null){
 			this.modifyGUI = new AlterTableGUI(this);
@@ -296,7 +297,7 @@ public class DDLController
 	private Response loadUniques(String table)
 	{
 		ResponseData<String[]> ins_uns = this.facade.getUniquesFromDBMS(table);
-		AttributeGroup groups = new AttributeGroup(ins_uns.getCollection());
+		AttributeGroup groups = new AttributeGroup(ins_uns.getCollection(), 0, 1);
 		for (String index : groups.getIndexs()) {
 			this.facade.addUniqueBusiness(index, table, groups.getGroup(index));
 		}
@@ -304,6 +305,17 @@ public class DDLController
 	}
 
 
+	//TODO
+	private Response loadForeign(String table)
+	{
+		ResponseData<String[]> foreigns = this.facade.getPrimaryFromForeign(table);
+		AttributeGroup groups = new AttributeGroup(foreigns.getCollection());
+		for (String index : groups.getIndexs()) {
+			this.facade.addUniqueBusiness(index, table, groups.getGroup(index));
+		}
+		return foreigns;
+	}
+	
 	
 	/**
 	 * Récupère les informations depuis le SGBD.
