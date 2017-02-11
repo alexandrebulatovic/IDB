@@ -7,15 +7,11 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import useful.Response;
-import useful.ResponseData;
 import business.TableSet;
-import gui.CRUDGUI;
 import manager.connection.I_ConnectionManager;
-import manager.connection.MySQLConnectionManager;
-import manager.ddl.AbstractDLLManager;
+
 import manager.ddl.I_DDLManager;
 import manager.sql.SQLManager;
-import sun.nio.cs.MS1250;
 
 public class CRUD_SQL_Facade 
 extends AbstractDDLCRUDFacade
