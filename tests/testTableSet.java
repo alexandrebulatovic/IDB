@@ -96,13 +96,15 @@ public class testTableSet {
 		ensembleTable.addAttribute("table1", "att1", "VARCHAR2", 2, false, false);
 		String name = ensembleTable.addUnique("table1", new String[] {"att1"});
 		assertEquals("ALTER TABLE table1\nADD CONSTRAINT un_table1_att1 UNIQUE(att1)",ensembleTable.getSQLADDConstraint("table1", "att1", name));
-		assertEquals("ALTER TABLE table1\nDROP CONSTRAINT un_table1_att1",ensembleTable.getSQLDropConstraint("table1", "att1", name));
+		
 	}
 	
 	
 	@Test
 	public void testDropConstraint(){
-		fail();
+		ensembleTable.addAttribute("table1", "att1", "VARCHAR2", 2, false, false);
+		String name = ensembleTable.addUnique("table1", new String[] {"att1"});
+		assertEquals("ALTER TABLE table1\nDROP CONSTRAINT un_table1_att1",ensembleTable.getSQLDropConstraint("table1", "att1", name));
 	}
 
 }
