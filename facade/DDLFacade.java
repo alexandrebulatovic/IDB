@@ -318,8 +318,9 @@ extends AbstractDDLCRUDFacade
 
 
 	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
-		this.business.removeConstraint(tableSourceName, attribute, constraint);
+		
 		String sql = this.business.getSQLDropConstraint(tableSourceName,attribute, constraint);
+		this.business.removeConstraint(tableSourceName, attribute, constraint);
 		System.out.println(sql);
 		Response result = this.manager.dropConstraint(sql);
 		System.out.println(result.getMessage());
