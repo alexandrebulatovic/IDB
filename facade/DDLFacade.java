@@ -185,15 +185,6 @@ extends AbstractDDLCRUDFacade
 	{
 		return this.manager.getDataTypes();
 	}
-	
-	/**
-	 * @return vrai si et seulement si le SGBD permet de "droper" une 
-	 * table avec l'option "CASCADE", faux sinon.
-	 */
-	public boolean dbmsAllowsDropCascade()
-	{
-		return this.manager.allowsDropCascade();
-	}
 
 	
 	/**

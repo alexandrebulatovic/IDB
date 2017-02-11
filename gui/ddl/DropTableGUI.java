@@ -92,13 +92,12 @@ implements ActionListener
 		//Liste déroulante
 		this.tableComboBox = new JComboBox<String>();
 		this.bindAndAdd(this.tableComboBox);
-		
+
 		//Case à cocher
-		if (this.control.dbmsAllowsDropCascade()) {
-			this.cascadeCheckBox = new JCheckBox
-					("Supprimer malgré les références.");
-			this.bindAndAdd(this.cascadeCheckBox);
-		}
+		this.cascadeCheckBox = new JCheckBox
+				("Supprimer malgré les références.");
+		this.bindAndAdd(this.cascadeCheckBox);
+
 
 		this.dominoCheckBox = new JCheckBox("Réaction en chaîne.");
 		this.bindAndAdd(this.dominoCheckBox);

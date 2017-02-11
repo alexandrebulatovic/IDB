@@ -28,10 +28,6 @@ extends AbstractDLLManager
 		String [] result = {"VARCHAR2", "NUMBER", "DATE", "CHAR"};
 		return result;
 	}
-
-
-	@Override
-	public boolean allowsDropCascade() {return true;}
 	
 	
 	@Override

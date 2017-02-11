@@ -3,6 +3,7 @@ package manager.ddl;
 import java.sql.Connection;
 
 import useful.Response;
+import useful.ResponseData;
 
 public class MySQLDDLManager 
 extends AbstractDLLManager 
@@ -26,10 +27,6 @@ extends AbstractDLLManager
 		String [] result = {"VARCHAR", "NUMERIC", "DATE", "CHAR"};
 		return result;
 	}
-
-	
-	@Override
-	public boolean allowsDropCascade() {return false;}
 	
 	
 	@Override
@@ -42,8 +39,20 @@ extends AbstractDLLManager
 	@Override
 	public Response dropTable(String table, boolean cascade) 
 	{
-		String sql = "DROP TABLE " + table + (cascade ? " CASCADE" : "") ;
-		return this.executeUpdate(sql, DROP_TABLE);
+		Response result = null; //Compilateur chiale.
+		if (cascade) {
+			ResponseData<String[]> r = this.getForeignFromPrimary(table);
+			for (String [] ss : r.getCollection()) {
+				this.dropForeignKey(ss[3], ss[5]);
+			}
+			result = r;
+		}
+		
+		if (!cascade || result.hasSuccess()) {
+			String sql = "DROP TABLE " + table;
+			result =  this.executeUpdate(sql, DROP_TABLE);
+		} 
+		return result;
 	}
 
 
@@ -66,8 +75,9 @@ extends AbstractDLLManager
 
 
 	@Override
-	public Response dropForeignKey(String table, String fkName) {
+	public Response dropForeignKey(String table, String fkName) 
+	{
 		String sql = "ALTER TABLE " + table + " DROP FOREIGN KEY " + fkName;
-		return this.executeUpdate(sql, DROP_TABLE);
+		return this.executeUpdate(sql, DROP_FK);
 	}
 }

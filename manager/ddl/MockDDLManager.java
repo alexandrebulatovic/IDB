@@ -16,10 +16,6 @@ extends AbstractSuccesDDLManager
 
 	
 	@Override
-	public boolean allowsDropCascade() {return false;}
-
-	
-	@Override
 	public Response createTable(String sql) 
 	{
 		return new Response(true, GET_TABLES);

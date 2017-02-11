@@ -126,17 +126,6 @@ public class DDLController
 	}
 
 
-
-	/**
-	 * @return vrai si et seulement si le SGBD permet de "droper" une 
-	 * table avec l'option "CASCADE", faux sinon.
-	 */
-	public boolean dbmsAllowsDropCascade()
-	{
-		return this.facade.dbmsAllowsDropCascade();
-	}
-
-
 	/**
 	 * Envoie $table au DDLManager dans l'optique de la créer.
 	 * 
