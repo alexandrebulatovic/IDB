@@ -1,6 +1,5 @@
 package business;
 
-import java.util.List;
 
 public class PrimaryKeyConstraint extends Constraint{
 

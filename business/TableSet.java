@@ -1,7 +1,6 @@
 package business;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /** Conteneur de tables. */
@@ -368,7 +367,7 @@ public class TableSet
 	 */
 	public List<Object> getTableWithJustComplexConstraintsAndBaseInformationsAttributes(String tableName, String attributeName){
 		Attribute attribute = this.getAttributeWithName(tableName, attributeName);
-		List<Object> attributeReturn = new ArrayList();
+		List<Object> attributeReturn = new ArrayList<Object>();
 		
 		attributeReturn.add(attribute.getName());
 		attributeReturn.add(attribute.type);
