@@ -15,7 +15,7 @@ import manager.connection.MySQLConnectionManager;
 import manager.ddl.AbstractDLLManager;
 import manager.ddl.I_DDLManager;
 import manager.sql.SQLManager;
-//import sun.nio.cs.MS1250;
+import sun.nio.cs.MS1250;
 
 public class CRUD_SQL_Facade 
 extends AbstractDDLCRUDFacade

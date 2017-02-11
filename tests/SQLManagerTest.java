@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class SQLManagerTest {
 
-	SQLManager sqlManager = null;
+	SQLManager sqlManager = new SQLManager(null, -1);
 
 	@Test
 	public void testFormatSQL() throws Exception {
