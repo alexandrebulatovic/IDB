@@ -57,6 +57,18 @@ implements I_TableModel
 		this.attributes.remove(attribute);
 	}
 
+	
+	@Override
+	public List<String[]> attributesToArray()
+	{
+		List<String[]>result = new ArrayList<String[]>();
+		for (I_AttributeModel ia : this.attributes) {
+			result.add(ia.toArray());
+		}
+		return result;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "TableModel [name=" + name + ", attributes=" + attributes + "]";

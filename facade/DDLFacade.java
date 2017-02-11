@@ -55,6 +55,55 @@ extends AbstractDDLCRUDFacade
 
 	
 	/**
+	 * Tente de créer $table dans le SGBD.
+	 * 
+	 * @param table : une table à ajouter, null interdit.
+	 * @return une reponse personnalisée décrivant la tentative
+	 * de création de la table dans le SGBD.
+	 */
+	public Response createTableDBMS(I_TableModel table)
+	{
+		String name = table.getName();
+		List<String> sql = this.business.getSQLTableToCreate(name);
+		Iterator<String> statement = sql.iterator();
+		
+		String create = statement.next(); 
+		Response result = this.manager.createTable(create);
+		while (statement.hasNext() && result.hasSuccess()) {
+			result = this.manager.alterTable(statement.next());
+		}
+		return result;
+	}
+
+
+	/**
+	 * tente de créer $table dans les classes métiers.
+	 * 
+	 * @param table : une table à ajouté, faux sinon.
+	 * @return vrai si et seulement si $table a pu être ajoutée aux
+	 * classes métiers, faux sinon.
+	 */
+	public boolean createtableBusiness(I_TableModel table)
+	{
+		String name = table.getName();
+		boolean addable = this.business.addTable(name);
+		
+		if (addable) {
+			for(I_AttributeModel attribute : table.getAttributes()){
+				this.business.addAttribute(
+						table.getName(),
+						attribute.getName(),
+						attribute.getType(),
+						attribute.getSize(),
+						attribute.isNotNull(),
+						attribute.isPrimaryKey());
+			}
+		}
+		return addable;
+	}
+
+
+	/**
 	 * @param table
 	 * @return vrai ssi $table a déjà étée chargée depuis le SGBD,
 	 * faux sinon.
@@ -358,58 +407,9 @@ extends AbstractDDLCRUDFacade
 	}
 
 
-	/**
-	 * Tente de créer $table dans le SGBD.
-	 * 
-	 * @param table : une table à ajouter, null interdit.
-	 * @return une reponse personnalisée décrivant la tentative
-	 * de création de la table dans le SGBD.
-	 */
-	private Response createTableDBMS(I_TableModel table)
-	{
-		String name = table.getName();
-		List<String> sql = this.business.getSQLTableToCreate(name);
-		Iterator<String> statement = sql.iterator();
-		
-		String create = statement.next(); 
-		Response result = this.manager.createTable(create);
-		while (statement.hasNext() && result.hasSuccess()) {
-			result = this.manager.alterTable(statement.next());
-		}
-		return result;
-	}
-
-
 	private Response addForeignKeyDBMS(String tableSourceName, String[] attributesSourcesNames,String ConstraintName) {
 		String sql = this.business.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], ConstraintName);
 		Response result = this.manager.addForeignKey(sql);
 		return result;
-	}
-
-
-	/**
-	 * tente de créer $table dans les classes métiers.
-	 * 
-	 * @param table : une table à ajouté, faux sinon.
-	 * @return vrai si et seulement si $table a pu être ajoutée aux
-	 * classes métiers, faux sinon.
-	 */
-	private boolean createtableBusiness(I_TableModel table)
-	{
-		String name = table.getName();
-		boolean addable = this.business.addTable(name);
-		
-		if (addable) {
-			for(I_AttributeModel attribute : table.getAttributes()){
-				this.business.addAttribute(
-						table.getName(),
-						attribute.getName(),
-						attribute.getType(),
-						attribute.getSize(),
-						attribute.isNotNull(),
-						attribute.isPrimaryKey());
-			}
-		}
-		return addable;
 	}
 }

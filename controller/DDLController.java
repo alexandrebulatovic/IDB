@@ -136,7 +136,14 @@ public class DDLController
 		return this.facade.createTable(table);
 	}
 
-
+	//TODO
+	public Response createTable(String table, List<String[]> attributes)
+	{
+		
+		return null;
+	}
+	
+	
 	/**
 	 * Supprime $table, si c'est possible.
 	 * 

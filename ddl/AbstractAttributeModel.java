@@ -10,11 +10,11 @@ implements I_AttributeModel
 	/** le type de l'attribut.*/
 	protected String type;
 	
-	/** vrai si et seulement si l'attribut ne peut pas être null, faux sinon.*/
-	protected boolean notNull;
-	
 	/** la taille de l'attribut.*/
 	protected int size;
+
+	/** vrai si et seulement si l'attribut ne peut pas être null, faux sinon.*/
+	protected boolean notNull;
 	
 	/** vrai si et seulement si l'attribut est membre de la clée primaire, faux sinon.*/
 	protected boolean primaryKey;
@@ -132,6 +132,19 @@ implements I_AttributeModel
 	@Override
 	public boolean checkSize() {
 		return this.errorSizeCode() >= 0;
+	}
+	
+	
+	@Override
+	public String [] toArray()
+	{
+		String [] result = new String [5];
+		result[0] = this.name;
+		result[1] = this.type;
+		result[2] = "" + this.size;
+		result[3] = notNull ? "NOTNULL" : "";
+		result[4] = primaryKey ? "PRIMARY" : "";
+		return result;
 	}
 	
 	
