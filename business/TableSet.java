@@ -202,20 +202,29 @@ public class TableSet
 		UniqueConstraint un = new UniqueConstraint();
 		un.setTable(table);
 		for (Attribute att : table.getAttributes()){
-			for (String attIn : attributesNames){
-				if (att.getName().equals(attIn)){
+			for (String attributeName : attributesNames){
+				if (att.getName().equals(attributeName)){
+					if (uniqueName==null){
+						un.createAndSetName();
+					}
+					else{
+						un.setName(uniqueName);
+					}
 					un.addAttribute(att);
+					for (Constraint c : att.getConstraints()){
+						if (c.getName().equals(un.getName())){
+							
+							return null;
+						}
+					}
+					this.getAttributeWithName(tableName, attributeName).addConstraint(un);
+					
 				}
 			}
 			
 		}
 		this.getTableByName(tableName).addConstraint(un);
-		if (uniqueName==null){
-			un.createAndSetName();
-		}
-		else{
-			un.setName(uniqueName);
-		}
+
 		return un.getName();
 	}
 	
