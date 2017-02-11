@@ -1,4 +1,4 @@
-package ddl;
+package gui.ddl.tools;
 
 import java.util.List;
 

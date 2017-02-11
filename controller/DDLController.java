@@ -9,11 +9,11 @@ import gui.ddl.CreateTableGUI;
 import gui.ddl.DropTableGUI;
 import gui.ddl.AlterTableGUI;
 import gui.ddl.ConstraintsGUI;
+import gui.ddl.tools.I_AttributeModel;
+import gui.ddl.tools.I_TableModel;
 
 import javax.swing.JFrame;
 
-import ddl.I_AttributeModel;
-import ddl.I_TableModel;
 import useful.Response;
 import useful.ResponseData;
 

@@ -1,12 +1,13 @@
 package gui.ddl;
 
+import gui.ddl.tools.I_AttributeModel;
+
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JComboBox;
 
 import controller.DDLController;
-import ddl.I_AttributeModel;
 
 import useful.ResponseData;
 

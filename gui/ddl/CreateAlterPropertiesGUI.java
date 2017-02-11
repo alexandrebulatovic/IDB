@@ -1,4 +1,4 @@
-package ddl;
+package gui.ddl;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -10,9 +10,10 @@ import javax.swing.JTextField;
 import controller.DDLController;
 
 import gui.abstrct.AbstractBasicGUI;
+import gui.ddl.tools.AttributesAbstractTableModel;
 
 @SuppressWarnings("serial")
-public abstract class CreateModifyProperties 
+public abstract class CreateAlterPropertiesGUI 
 extends AbstractBasicGUI
 {
 	//Statique
@@ -97,7 +98,7 @@ extends AbstractBasicGUI
 	/**
 	 * Constructeur vide.
 	 */
-	protected CreateModifyProperties() 
+	protected CreateAlterPropertiesGUI() 
 	{
 		super("Création de table",null, 900, 550, 20);
 	}

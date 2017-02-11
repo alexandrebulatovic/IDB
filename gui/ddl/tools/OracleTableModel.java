@@ -1,4 +1,4 @@
-package ddl;
+package gui.ddl.tools;
 
 public class OracleTableModel 
 extends AbstractTableModel 

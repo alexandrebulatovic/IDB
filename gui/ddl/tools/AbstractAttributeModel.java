@@ -1,4 +1,4 @@
-package ddl;
+package gui.ddl.tools;
 
 public abstract class AbstractAttributeModel 
 implements I_AttributeModel

@@ -1,16 +1,17 @@
 package factory;
 
+import gui.ddl.tools.I_AttributeModel;
+import gui.ddl.tools.I_TableModel;
+import gui.ddl.tools.MockAttributeModel;
+import gui.ddl.tools.MockTableModel;
+
 import java.sql.Connection;
 
-import ddl.I_AttributeModel;
-import ddl.I_TableModel;
-import ddl.MockTableModel;
 
 import manager.connection.I_ConnectionManager;
 import manager.connection.MockConnectionManager;
 import manager.ddl.I_DDLManager;
 import manager.ddl.MockDDLManager;
-import ddl.MockAttributeModel;
 
 /**
  * Fabrique à utilisé si aucun SGBD n'est encore sélectionné.

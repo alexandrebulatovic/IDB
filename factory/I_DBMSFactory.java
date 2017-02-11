@@ -1,9 +1,10 @@
 package factory;
 
+import gui.ddl.tools.I_AttributeModel;
+import gui.ddl.tools.I_TableModel;
+
 import java.sql.Connection;
 
-import ddl.I_AttributeModel;
-import ddl.I_TableModel;
 import manager.connection.I_ConnectionManager;
 import manager.ddl.I_DDLManager;
 

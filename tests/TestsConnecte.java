@@ -25,15 +25,15 @@ import useful.Response;
 import useful.ResponseData;
 import controller.DDLController;
 import controller.HomeController;
-import ddl.MockAttributeModel;
-import ddl.MockTableModel;
-import ddl.MySQLAttributeModel;
-import ddl.MySQLTableModel;
-import ddl.OracleAttributeModel;
-import ddl.OracleTableModel;
 import facade.DDLFacade;
 import facade.HomeFacade;
 import factory.MainFactory;
+import gui.ddl.tools.MockAttributeModel;
+import gui.ddl.tools.MockTableModel;
+import gui.ddl.tools.MySQLAttributeModel;
+import gui.ddl.tools.MySQLTableModel;
+import gui.ddl.tools.OracleAttributeModel;
+import gui.ddl.tools.OracleTableModel;
 
 /**
  * Réaliser ces tests en ayant sur sa base le script 

@@ -3,11 +3,11 @@ package facade;
 import java.util.List;
 
 import business.TableSet;
-import ddl.I_AttributeModel;
-import ddl.I_TableModel;
 import useful.Response;
 import useful.ResponseData;
 import factory.MainFactory;
+import gui.ddl.tools.I_AttributeModel;
+import gui.ddl.tools.I_TableModel;
 import manager.ddl.I_DDLManager;
 
 public class DDLFacade 

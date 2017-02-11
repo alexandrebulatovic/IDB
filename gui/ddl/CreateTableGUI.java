@@ -2,6 +2,11 @@ package gui.ddl;
 
 
 
+import gui.ddl.tools.AttributesAbstractTableModel;
+import gui.ddl.tools.ControlTableResult;
+import gui.ddl.tools.I_AttributeModel;
+import gui.ddl.tools.I_TableModel;
+
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.awt.Font;
@@ -10,11 +15,6 @@ import java.util.LinkedHashSet;
 import javax.swing.*;
 
 import controller.DDLController;
-import ddl.AttributesAbstractTableModel;
-import ddl.ControlTableResult;
-import ddl.CreateModifyProperties;
-import ddl.I_AttributeModel;
-import ddl.I_TableModel;
 import useful.FieldsKeyAdapter;
 import useful.MaxLengthTextDocument;
 import useful.Response;
@@ -26,7 +26,7 @@ import useful.Response;
  * @author MAURY Adrian
  */
 public class CreateTableGUI
-extends CreateModifyProperties
+extends CreateAlterPropertiesGUI
 implements ItemListener
 {
 	
@@ -322,7 +322,7 @@ implements ItemListener
 		this.increaseTop(10);
 
 		this.panelAttributes = new JPanel(new BorderLayout());
-		this.models = new AttributesAbstractTableModel(this);
+		this.models = new AttributesAbstractTableModel(this.control);
 		this.table = new JTable(this.models){
 			public boolean isCellEditable(int row, int col) {
 				return false;
