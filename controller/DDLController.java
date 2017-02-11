@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import facade.DDLFacade;
@@ -32,10 +33,12 @@ public class DDLController
 	/** IHM pour supprimer une table.*/
 	private DropTableGUI dropGUI;
 
+	/** IHM pour jouer sur les contraintes Unique et Foreign key.*/
+	private ConstraintsGUI constraintsGUI;
+	
+	
 	/** Facade pour la définition des données.*/
 	private DDLFacade facade;
-
-	private ConstraintsGUI constraintsGUI;
 
 
 	//Contructeur
@@ -125,22 +128,31 @@ public class DDLController
 		return this.facade.getDataTypes();
 	}
 
-
+	
 	/**
-	 * Envoie $table au DDLManager dans l'optique de la créer.
+	 * Tente de créer une $table.
 	 * 
-	 * @param table : une table à créer. L'objet peut être erroné;
+	 * @param table : nom de la table à créer, null interdit.
+	 * @param attributes : liste des attributs de la tables, suivent le pattern :<br/>
+	 * nom, type, taille, NOTNULL, PRIMARY.
+	 * @return une réponse personnalisée décrivant si la table a pu être créée ou non.
 	 */
-	public Response createTable(I_TableModel table)
-	{
-		return this.facade.createTable(table);
-	}
-
-	//TODO
 	public Response createTable(String table, List<String[]> attributes)
 	{
+		boolean business = this.createTableBusiness(table, attributes);
+		Response result;
 		
-		return null;
+		if (! business) {
+			result = new Response(false, "Cette table existe déjà.");
+		} 
+		else {
+			Response dbms = this.createTableDBMS(table);
+			if (! dbms.hasSuccess()) {
+				this.facade.dropTableBusiness(table);
+			}
+			result = dbms;
+		}
+		return result;
 	}
 	
 	
@@ -218,16 +230,7 @@ public class DDLController
 		}
 		return result;
 	}
-
-
-	/**
-	 * Modifie une table existante
-	 */
-	public Response alterTable(String oldTable, String newTable) 
-	{
-		return this.facade.alterTable(oldTable, newTable);
-	}
-
+	
 	
 	/**
 	 * 
@@ -362,6 +365,45 @@ public class DDLController
 
 
 	
+	private Response createTableDBMS(String table) 
+	{
+		List<String>sql = this.facade.getSQLToCreateTable(table);
+		Iterator<String> statement = sql.iterator();
+		
+		String create = statement.next(); 
+		Response result = this.facade.createTableDBMS(create);
+		while (statement.hasNext() && result.hasSuccess()) {
+			result = this.facade.alterTableDBMS(statement.next());
+		}
+		return result;
+	}
+
+
+	/**
+	 * Créer $table dans les classes métiers, si c'est possible.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @param attributes : liste des attributs de $tables. Ils suivent le pattern <br/>
+	 * - nom, type, taille, NOTNULL, PRIMARY.
+	 * @return vrai ssi $table et créée avec tous ses attributs, faux sinon.
+	 */
+	private boolean createTableBusiness(String table, List<String[]> attributes)
+	{
+		boolean created = this.facade.createTableBusiness(table);
+		boolean filled = false;
+		
+		if (created) {
+			filled = this.facade.addAttributesToBusiness(table, attributes);
+		}
+		
+		if (created && !filled) {
+			this.facade.dropTableBusiness(table);
+		}
+		return created && filled;
+	
+	}
+
+
 	private static String [] convertAttribute(String [] att, List<String> primaries)
 	{
 		String [] result = new String [5];

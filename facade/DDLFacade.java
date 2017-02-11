@@ -34,101 +34,78 @@ extends AbstractDDLCRUDFacade
 
 	//Méthodes
 	/**
-	 * Tente de créer $table dans la base de données.
-	 * 
-	 * @param table : une table à créer. L'objet peut être erroné;
+	 * @param table : nom de la table dont il faut récupérer le SQL pour la créer
+	 * en base, null interdit.
+	 * @return une liste de requête SQL. La première est un CREATE TABLE, les autres des
+	 * ALTER TABLE.
 	 */
-	public Response createTable(I_TableModel table)
+	public List<String> getSQLToCreateTable(String table)
 	{
-		boolean addable = this.createtableBusiness(table);
-		Response added;
-		
-		if (!addable) 
-			added = new Response(false, "Cette table existe déjà.");
-		else {
-			added = this.createTableDBMS(table);
-			if (! added.hasSuccess()) 
-				this.business.removeTable(table.getName());
-		}
-		return added;
+		return this.business.getSQLTableToCreate(table);
 	}
 
 	
 	/**
-	 * Tente de créer $table dans le SGBD.
+	 * Tente de créer une table en base à partir de la requête $sql.
 	 * 
-	 * @param table : une table à ajouter, null interdit.
-	 * @return une reponse personnalisée décrivant la tentative
-	 * de création de la table dans le SGBD.
+	 * @param sql : une requête SQL CREATE TABLE, null interdit.
+	 * @return une réponse personnalisée décrivant si la table a pu être créée ou non.
 	 */
-	public Response createTableDBMS(I_TableModel table)
+	public Response createTableDBMS(String sql)
 	{
-		String name = table.getName();
-		List<String> sql = this.business.getSQLTableToCreate(name);
-		Iterator<String> statement = sql.iterator();
-		
-		String create = statement.next(); 
-		Response result = this.manager.createTable(create);
-		while (statement.hasNext() && result.hasSuccess()) {
-			result = this.manager.alterTable(statement.next());
-		}
-		return result;
+		return this.manager.createTable(sql);
 	}
+
+	
+	/**
+	 * Tente de créer une table en RAM à partir de la requête $sql.
+	 * 
+	 * @param table : nom d'une table à créer, null interdit.
+	 * @return vrai ssi $table a pu être créée, faux sinon.
+	 */
+	public boolean createTableBusiness(String table)
+	{
+		return this.business.addTable(table);
+	}
+	
+	
+	/**
+	 * Tente d'altérer une table en base avec une requête $sql.
+	 * @param sql : une requête SQL ALTER TABLE, null interdit.
+	 * @return une réponse personnalisée décrivant si l'altération a réussi ou non.
+	 */
+	public Response alterTableDBMS(String sql)
+	{
+		return this.manager.alterTable(sql);
+	}
+	
+	
+//	//TODO : useless, IHM modifier à la poubelle
+//	public Response alterTable(String oldTable, String newTable)
+//		{
+//			String sql;
+//			Response result;
+//			List<String> queries = this.business.getSQLTableToModify(oldTable, newTable);
+//			Iterator<String> it = queries.iterator();
+//			boolean stop = false;
+//			result = new Response(true, "Table modifiée.");
+//			
+//			while (it.hasNext() && !stop) {
+//				sql = it.next();
+//	//			result = this.manager.alterTable(sql);
+//				stop = ! result.hasSuccess();
+//			}
+//			return result;
+//		}
 
 
 	/**
-	 * tente de créer $table dans les classes métiers.
-	 * 
-	 * @param table : une table à ajouté, faux sinon.
-	 * @return vrai si et seulement si $table a pu être ajoutée aux
-	 * classes métiers, faux sinon.
-	 */
-	public boolean createtableBusiness(I_TableModel table)
-	{
-		String name = table.getName();
-		boolean addable = this.business.addTable(name);
-		
-		if (addable) {
-			for(I_AttributeModel attribute : table.getAttributes()){
-				this.business.addAttribute(
-						table.getName(),
-						attribute.getName(),
-						attribute.getType(),
-						attribute.getSize(),
-						attribute.isNotNull(),
-						attribute.isPrimaryKey());
-			}
-		}
-		return addable;
-	}
-
-
-	/**
-	 * @param table
-	 * @return vrai ssi $table a déjà étée chargée depuis le SGBD,
-	 * faux sinon.
+	 * @param table : nom de la table, null interdit.
+	 * @return vrai ssi $table existe en RAM, faux sinon.
 	 */
 	public boolean isLoaded(String table)
 	{
 		return this.business.isLoaded(table);
-	}
-	
-	
-	public Response alterTable(String oldTable, String newTable)
-	{
-		String sql;
-		Response result;
-		List<String> queries = this.business.getSQLTableToModify(oldTable, newTable);
-		Iterator<String> it = queries.iterator();
-		boolean stop = false;
-		result = new Response(true, "Table modifiée.");
-		
-		while (it.hasNext() && !stop) {
-			sql = it.next();
-//			result = this.manager.alterTable(sql);
-			stop = ! result.hasSuccess();
-		}
-		return result;
 	}
 	
 	
@@ -155,34 +132,26 @@ extends AbstractDDLCRUDFacade
 	/**
 	 * Ajoute tous les $attributes à $table.
 	 * 
-	 * @param table : nom de la table, null interdit.
+	 * @param table : nom de la table, doit déjà exister, null interdit.
 	 * @param attributes : caractéristiques des attributs à ajouter, null interdit : <br/>
 	 * nom, type, taille, NOTNULL, PRIMARY.
 	 * @return vrai ssi $attributes est ajouté avec succès à $table, faux sinon.
 	 */
 	public boolean addAttributesToBusiness(String table, List<String[]> attributes)
 	{
-		
 		boolean result = true;
 		Iterator<String[]> it = attributes.iterator();
 		
 		while (it.hasNext() && result) {
 			result = this.addAttributeToBusiness(table, it.next());
 		}
-
 		return result;
 	}
 	
 	
-	public String addUniqueBusiness(String table, String [] attributesGroup)
+	public String addUniqueBusiness(String constraintName, String tableName, String[] attributesNames)
 	{
-		return this.business.addUnique(table, attributesGroup);
-	}
-	
-	
-	public String addUniqueBusiness(String uniqueName, String tableName, String[] attributesNames)
-	{
-		return this.business.addUnique(uniqueName, tableName, attributesNames);
+		return this.business.addUnique(constraintName, tableName, attributesNames);
 	}
 	
 	

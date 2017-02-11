@@ -290,8 +290,9 @@ public class TableSet
 	public boolean removeTable(String table)
 	{
 		Table laTable = this.getTableByName(table);
-		laTable.cleanAll();
-		
+		if (laTable != null) {
+			laTable.cleanAll();
+		}
 		return this.tables.remove(laTable);
 	}
 	
