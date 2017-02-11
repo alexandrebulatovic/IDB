@@ -277,6 +277,67 @@ public class TestsConnecte
 	{
 		factory.setDBMS(dbms);
 		I_DDLManager ddl = factory.getDDLManager(connection);
+		String [] dataTypes = ddl.getDataTypes();
+		String charr = dataTypes[3], number = dataTypes[1], varchar = dataTypes[0], date = dataTypes[2];
+		String table1 = "existepas", table2 = "referenceexistepas", table3 = "referenceexistepasbis";
+
+		String createOne = "CREATE TABLE "+ table1 + "\n(\n" +
+						"idexistepas " + charr + "(1),\n" +
+						"txtexistepas " + varchar + "(30),\n" +
+						"nombreexistepas " + number +" NOT NULL,\n" +
+						"dateexistepas " + date + ",\n" +
+						"symbolexistepas " + charr + "(1),\n" +
+						"CONSTRAINT pk_existepas PRIMARY KEY (idexistepas),\n" +
+						"CONSTRAINT un_existepas_date_symbole UNIQUE (dateexistepas, symbolexistepas)\n)";
 		
+		
+		String createTwo = "CREATE TABLE " + table2 + "\n(\n" + 
+						"idreference " + number + ",\n" +
+						"extreference " + charr + "(1),\n" +
+						"CONSTRAINT pk_referenceexistepas PRIMARY KEY(idreference),\n" +
+						"CONSTRAINT fk_referenceexistepas_extref FOREIGN KEY (extreference)\n" +
+						"\t REFERENCES existepas(idexistepas)\n)";
+		
+		String createThree = "CREATE TABLE " + table3 + "\n(\n" + 
+				"idreference " + number + ",\n" +
+				"extreference " + charr + "(1),\n" +
+				"CONSTRAINT pk_referenceexistepasbis PRIMARY KEY(idreference),\n" +
+				"CONSTRAINT fk_referenceexistepasbis_extrf FOREIGN KEY (extreference)\n" +
+				"\t REFERENCES existepas(idexistepas)\n)";
+		
+		ddl.dropTable(table1, true);
+		ddl.dropTable(table2, true);
+		ddl.dropTable(table3, true);
+		
+		assertEquals(true, ddl.createTable(createOne).hasSuccess());
+		assertEquals(false, ddl.createTable(createOne).hasSuccess());
+		
+		assertEquals(true, ddl.createTable(createTwo).hasSuccess());
+		assertEquals(false, ddl.createTable(createTwo).hasSuccess());
+		
+		assertEquals(true, ddl.createTable(createThree).hasSuccess());
+		assertEquals(false, ddl.createTable(createThree).hasSuccess());
+		
+		assertEquals(false, ddl.dropTable(table1, false).hasSuccess());
+		assertEquals(true, ddl.dropTable(table2, false).hasSuccess());
+		assertEquals(true, ddl.dropTable(table3, false).hasSuccess());
+		assertEquals(true, ddl.createTable(createTwo).hasSuccess());
+		assertEquals(true, ddl.createTable(createThree).hasSuccess());
+		
+		assertEquals(true, ddl.dropTable(table1, true).hasSuccess());
+		assertEquals(false, ddl.dropTable(table1, true).hasSuccess());
+		assertEquals(true, ddl.dropTable(table2, true).hasSuccess());
+		assertEquals(false, ddl.dropTable(table2, true).hasSuccess());
+		assertEquals(true, ddl.dropTable(table3, true).hasSuccess());
+		assertEquals(false, ddl.dropTable(table3, true).hasSuccess());
+		
+		//Recréer les deux tables
+		assertEquals(false, ddl.createTable(createTwo).hasSuccess());
+		assertEquals(false, ddl.createTable(createThree).hasSuccess());
+		assertEquals(true, ddl.createTable(createOne).hasSuccess());
+		assertEquals(true, ddl.createTable(createTwo).hasSuccess());
+		assertEquals(true, ddl.createTable(createThree).hasSuccess());
+		
+		//TODO : dropTableDomino pour MySQL
 	}
 }

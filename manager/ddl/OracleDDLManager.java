@@ -1,7 +1,6 @@
 package manager.ddl;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 
 import useful.Response;
 
@@ -24,7 +23,7 @@ extends AbstractDLLManager
 
 	//Méthodes
 	@Override
-	public String[] getAttributeTypes() 
+	public String[] getDataTypes() 
 	{
 		String [] result = {"VARCHAR2", "NUMBER", "DATE", "CHAR"};
 		return result;
@@ -39,18 +38,6 @@ extends AbstractDLLManager
 	public Response createTable(String sql)
 	{	
 		return this.executeUpdate(sql, CREATE_TABLE);
-	}
-	
-	
-	@Override
-	public ArrayList<Response> modifyTable(ArrayList<String> sqls) {
-		
-		ArrayList<Response> rep = new ArrayList<Response>();
-		for (String sql : sqls){
-			System.out.println("=== Requete === : \n"+sql+"\n===");
-			rep.add(this.executeUpdate(sql, "Table Modifiée"));
-		}
-		return rep;
 	}
 
 	

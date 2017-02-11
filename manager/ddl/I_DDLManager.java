@@ -1,6 +1,5 @@
 package manager.ddl;
 
-import java.util.ArrayList;
 
 import useful.Response;
 import useful.ResponseData;
@@ -14,8 +13,9 @@ public interface I_DDLManager
 	//Méthodes
 	/**
 	 * @return la liste des types disponibles dans le SGBD.
+	 * Dans l'ordre : chaîne variable, nombre, date et chaîne fixe. 
 	 */
-	public String [] getAttributeTypes();
+	public String [] getDataTypes();
 	
 	
 	/**
@@ -45,9 +45,6 @@ public interface I_DDLManager
 	 */
 	public abstract Response alterTable(String sql);
 	
-	
-	public abstract ArrayList<Response> modifyTable(ArrayList<String> sqls);
-
 	
 	/**
 	 * Supprime $table, si c'est possible.
@@ -171,7 +168,7 @@ public interface I_DDLManager
 
 	public Response addUnique(String sql);
 
-
+	
 	public Response dropConstraint(String sql);
 
 }

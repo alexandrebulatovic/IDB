@@ -183,7 +183,7 @@ extends AbstractDDLCRUDFacade
 	 */
 	public String[] getDataTypes()
 	{
-		return this.manager.getAttributeTypes();
+		return this.manager.getDataTypes();
 	}
 	
 	/**

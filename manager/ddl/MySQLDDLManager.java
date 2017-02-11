@@ -1,7 +1,6 @@
 package manager.ddl;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 
 import useful.Response;
 
@@ -22,7 +21,7 @@ extends AbstractDLLManager
 	
 	//Méthodes
 	@Override
-	public String[] getAttributeTypes() 
+	public String[] getDataTypes() 
 	{
 		String [] result = {"VARCHAR", "NUMERIC", "DATE", "CHAR"};
 		return result;
@@ -37,13 +36,6 @@ extends AbstractDLLManager
 	public Response createTable(String sql) 
 	{
 		return this.executeUpdate(sql+"\nENGINE=InnoDB", CREATE_TABLE);
-	}
-
-	
-	@Override
-	public ArrayList<Response> modifyTable(ArrayList<String> sqls) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 
