@@ -224,7 +224,7 @@ public class DDLController
 		} 
 		else {
 			result = this.getAttributesAndPrimaries(table);
-			this.facade.addAttributesToBusiness(table, result.getCollection());
+			this.addAttributesToBusiness(table, result.getCollection());
 			this.loadForeigns(table); //TODO : se soucier de la reponse retournée
 			this.loadUniques(table); //TODO : se soucier de la reponse retournée
 		}
@@ -393,7 +393,7 @@ public class DDLController
 		boolean filled = false;
 		
 		if (created) {
-			filled = this.facade.addAttributesToBusiness(table, attributes);
+			filled = this.addAttributesToBusiness(table, attributes);
 		}
 		
 		if (created && !filled) {
@@ -401,6 +401,59 @@ public class DDLController
 		}
 		return created && filled;
 	
+	}
+
+
+	//Privées	
+	/**
+	 * Ajoute $attribute à la table.<br/>
+	 * L'attribut contient son nom, type, taille, NOT NULL et PRIMARY KEY.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @param attribute : caractéristiques de l'attribut à ajouter, null interdit : <br/>
+	 * nom, type, taille, NOTNULL, PRIMARY.
+	 * @return vrai ssi $attribute est ajouté avec succès à $table, faux sinon.
+	 */
+	private boolean addAttributeToBusiness(String table, String [] att)
+	{
+		return this.facade.addAttributeToBusiness(table, att[0], att[1], 
+				Integer.parseInt(("".equals(att[2]) || null == att[2]) 
+						? "1" 
+						: att[2]), 
+				"NOTNULL".equals(att[3]), 
+				"PRIMARY".equals(att[4]));
+	}
+	
+	
+	/**
+	 * Ajoute tous les $attributes à $table.
+	 * 
+	 * @param table : nom de la table, doit déjà exister, null interdit.
+	 * @param attributes : caractéristiques des attributs à ajouter, null interdit : <br/>
+	 * nom, type, taille, NOTNULL, PRIMARY.
+	 * @return vrai ssi $attributes est ajouté avec succès à $table, faux sinon.
+	 */
+	private boolean addAttributesToBusiness(String table, List<String[]> attributes)
+	{
+		boolean result = true;
+		Iterator<String[]> it = attributes.iterator();
+		
+		while (it.hasNext() && result) {
+			result = this.addAttributeToBusiness(table, it.next());
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Affiche $gui au premier plan.
+	 * 
+	 * @param gui : une IHM, null interdit.
+	 */
+	private static void showGUI(JFrame gui)
+	{
+		gui.setVisible(true);
+		gui.toFront();
 	}
 
 
@@ -422,18 +475,5 @@ public class DDLController
 		result[3] = !primary && "NO".equals(att[3]) ? "NOTNULL" : "NULL";
 		result[4] = primary ? "PRIMARY" : "COMMON";
 		return result;
-	}
-
-
-	//Privées
-	/**
-	 * Affiche $gui au premier plan.
-	 * 
-	 * @param gui : une IHM, null interdit.
-	 */
-	private static void showGUI(JFrame gui)
-	{
-		gui.setVisible(true);
-		gui.toFront();
 	}
 }

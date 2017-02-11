@@ -200,7 +200,6 @@ implements ItemListener
 			table.addAttribute(attribute);
 		}
 		
-//		Response r = this.control.createTable(table);
 		Response r = this.control.createTable
 				(table.getName(), table.attributesToArray());
 		if (r.hasSuccess()) {
