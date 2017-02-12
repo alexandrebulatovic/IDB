@@ -288,7 +288,9 @@ public class SQLManager {
 						|| ((String)vector.get(i)).equals("NULL") || ((String)vector.get(i)).equals("")){
 					rs.updateNull(columnPosition);
 				} else {
-
+					
+					System.out.println(this.rsmd.getColumnClassName(columnPosition)); // TODO : SUPPRIMER ENSUITE
+					
 					switch (this.rsmd.getColumnClassName(columnPosition)) // on récupère la classe de l'objet utilisé pour l'affichage
 					{
 					case "java.lang.String": // type sql : CHAR, VARCHAR, LONGVARCHAR
@@ -298,7 +300,7 @@ public class SQLManager {
 						rs.updateInt(columnPosition, (int) vector.get(i));
 						break;
 					case "java.sql.Date": // DATE
-						rs.updateDate(columnPosition, (Date) vector.get(i));
+						rs.updateDate(columnPosition, new java.sql.Date(((java.util.Date)vector.get(i)).getTime()));
 						break;
 						/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
 						rs.updateBigDecimal(columnPosition, (BigDecimal) vector.get(i));
@@ -376,8 +378,8 @@ public class SQLManager {
 				rs.updateInt(column, (int) value);
 			else if (value instanceof String)
 				rs.updateString(column, (String) value);
-			else if (value instanceof Date)
-				rs.updateDate(column, (Date) value);
+			else if (value instanceof java.util.Date)
+				rs.updateDate(column, new java.sql.Date(((java.util.Date)value).getTime()));
 			else if (value instanceof Float)
 				rs.updateFloat(column, (float) value);
 			else if (value instanceof Double)
