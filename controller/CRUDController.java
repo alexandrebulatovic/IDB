@@ -12,38 +12,43 @@ import javax.swing.table.DefaultTableModel;
 import useful.Response;
 import useful.ResponseData;
 
+/**
+ * S'occupe de toutes les tâches demandées par la fenêtre qui
+ * permet les opérations CRUD.
+ */
 public class CRUDController 
 {
 	/* ATTRIBUTS */
 
 	/** IHM du CRUD.*/
-	private CRUDGUI crud_view;
+	private CRUDGUI crudView;
 
-	/** Facade pour le CRUD des données.*/
-	private CRUD_SQL_Facade crud_facade;
+	/** Facade permettant l'accès au manager.*/
+	private CRUD_SQL_Facade crudFacade;
 
 	/**
-	 * Constructeur commun.
+	 * Constructeur associant une facade au {@code CRUDController}.
 	 * @param facade : null interdit.
 	 */
 	public CRUDController(CRUD_SQL_Facade facade)
 	{
-		this.crud_facade = facade;
-		this.crud_facade.optimizeStatement(SQLManager.TYPE_UPDATABLE_RESULTSET);
+		this.crudFacade = facade;
+		this.crudFacade.setStatement(SQLManager.TYPE_UPDATABLE_RESULTSET);
 	}
 
 
 	/* METHODES */
+
 	/**
-	 * Ouvre l'IHM de CRUD si et seulement si 
-	 * elle n'existe pas, sinon tente de l'afficher au premier plan.
+	 * Ouvre l'IHM de CRUD si et seulement si elle n'existe pas, 
+	 * sinon tente de l'afficher au premier plan.
 	 */
 	public void openCRUDGUI() {
-		if (this.crud_view == null) {
-			this.crud_view = new CRUDGUI(this);
+		if (this.crudView == null) {
+			this.crudView = new CRUDGUI(this);
 		}
 		else{
-			showGUI(this.crud_view);
+			showGUI(this.crudView);
 		}
 	}
 
@@ -67,7 +72,7 @@ public class CRUDController
 	 */
 	public ResponseData<String> getTables()
 	{
-		return this.crud_facade.getTables();
+		return this.crudFacade.getTables();
 	}
 
 	/**
@@ -78,7 +83,7 @@ public class CRUDController
 	 */
 	public DefaultTableModel requestTable(String tableName) 
 	{
-		return this.crud_facade.requestTable(tableName);
+		return this.crudFacade.requestTable(tableName);
 	}
 
 	/**
@@ -88,7 +93,7 @@ public class CRUDController
 	 * @see Response
 	 */
 	public Response deleteRow(int index) {
-		return this.crud_facade.deleteRow(index);
+		return this.crudFacade.deleteRow(index);
 	}
 
 	/**
@@ -100,10 +105,10 @@ public class CRUDController
 	 */
 	public Response addRow(int index, String tableName) 
 	{
-		Vector dataVector = this.crud_view.getTableModel().getDataVector();
+		Vector dataVector = this.crudView.getTableModel().getDataVector();
 		Vector<Object> row_to_add =  (Vector<Object>) dataVector.elementAt(index); // on récupere la ligne concernée
 
-		return this.crud_facade.addTuple(row_to_add);
+		return this.crudFacade.addTuple(row_to_add);
 	}
 
 	/** Met à jour une valeur d'un tuple dans la base de données.
@@ -115,6 +120,6 @@ public class CRUDController
 	 */
 	public Response updateRow(int index, int column, Object updateBuffer)
 	{
-		return this.crud_facade.updateRow(index, column, updateBuffer);
+		return this.crudFacade.updateRow(index, column, updateBuffer);
 	}
 }

@@ -112,7 +112,7 @@ extends AbstractDDLCRUDFacade
 	 * @param statementTypeRequired : constantes parmi {@code SQLManager.TYPE_UPDATABLE_RESULTSET} pour avoir un {@code ResultSet} dynamique, 
 	 * {@code SQLManager.TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe et optimisé.
 	 */
-	public void optimizeStatement(int statementTypeRequired) {
+	public void setStatement(int statementTypeRequired) {
 		int statementType = this.sql_manager.getStatementType();
 
 		if (statementType != statementTypeRequired)
