@@ -165,6 +165,13 @@ public class HomeController
 	}
 
 
+	public void openQbeGUI() {
+		this.createOrNotDDLControl();
+		this.ddlControl.openQbeGUI();
+		
+	}
+
+
 	/**
 	 *  Ouvre l'IHM pour les opérations {@code Create - Read - Update - Delete. }
 	 */

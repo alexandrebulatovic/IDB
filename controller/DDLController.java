@@ -7,6 +7,7 @@ import java.util.List;
 import facade.DDLFacade;
 import gui.ddl.CreateTableGUI;
 import gui.ddl.DropTableGUI;
+import gui.ddl.QbeGUI;
 import gui.ddl.AlterTableGUI;
 import gui.ddl.ConstraintsGUI;
 import gui.ddl.tools.I_AttributeModel;
@@ -39,6 +40,8 @@ public class DDLController
 	
 	/** Facade pour la définition des données.*/
 	private DDLFacade facade;
+
+	private QbeGUI qbeGUI;
 
 
 	//Contructeur
@@ -106,6 +109,16 @@ public class DDLController
 			showGUI(this.constraintsGUI);
 		}
 		
+	}
+
+
+	public void openQbeGUI() {
+		if (this.qbeGUI == null) {
+			this.qbeGUI = new QbeGUI(this);
+		}
+		else {
+			showGUI(this.qbeGUI);
+		}
 	}
 
 

@@ -343,6 +343,7 @@ extends AbstractDDLCRUDFacade
 	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
 			String[] attributesDestinationsNames) {
 		String contrainte = this.business.addForeignKey(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
+		System.out.println(contrainte);
 		Response added = this.addForeignKeyDBMS(tableSourceName, attributesSourcesNames, contrainte);
 		return added;
 	}
@@ -350,6 +351,7 @@ extends AbstractDDLCRUDFacade
 
 	private Response addForeignKeyDBMS(String tableSourceName, String[] attributesSourcesNames,String ConstraintName) {
 		String sql = this.business.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], ConstraintName);
+		System.out.println(sql);
 		Response result = this.dbms.addForeignKey(sql);
 		return result;
 	}
