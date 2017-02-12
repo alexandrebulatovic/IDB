@@ -264,9 +264,16 @@ public class SQLManager {
 	public DefaultTableModel requestTableModel(String tableName) 
 	{
 		String qry = "SELECT T.* FROM "+ tableName+" T";
-		JTable table = (JTable)this.sendSQL(qry);
 
-		return (DefaultTableModel) table.getModel();
+		Object reply = this.sendSQL(qry);
+
+		if (reply instanceof JTable)
+			return (DefaultTableModel) ((JTable) reply).getModel();
+		else {
+			System.out.println(((Response)reply).getMessage());
+			return null;
+		}
+
 	}
 
 	/** Insère un nouveau tuple dans la base de données.
@@ -288,9 +295,9 @@ public class SQLManager {
 						|| ((String)vector.get(i)).equals("NULL") || ((String)vector.get(i)).equals("")){
 					rs.updateNull(columnPosition);
 				} else {
-					
+
 					System.out.println(this.rsmd.getColumnClassName(columnPosition)); // TODO : SUPPRIMER ENSUITE
-					
+
 					switch (this.rsmd.getColumnClassName(columnPosition)) // on récupère la classe de l'objet utilisé pour l'affichage
 					{
 					case "java.lang.String": // type sql : CHAR, VARCHAR, LONGVARCHAR
@@ -300,11 +307,17 @@ public class SQLManager {
 						rs.updateInt(columnPosition, (int) vector.get(i));
 						break;
 					case "java.sql.Date": // DATE
-						rs.updateDate(columnPosition, new java.sql.Date(((java.util.Date)vector.get(i)).getTime()));
+						rs.updateDate(columnPosition, java.sql.Date.valueOf((String) vector.get(i)));
 						break;
 						/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
 						rs.updateBigDecimal(columnPosition, (BigDecimal) vector.get(i));
 						break;*/
+					case "java.sql.Time": // TIME
+						rs.updateTime(columnPosition, java.sql.Time.valueOf((String) vector.get(i)));
+						break;
+					case "java.sql.Timestamp": // TIMESTAMP
+						rs.updateTimestamp(columnPosition, java.sql.Timestamp.valueOf((String) vector.get(i)));
+						break;
 					case "java.lang.Boolean": // BIT
 						rs.updateBoolean(columnPosition, (boolean) vector.get(i));
 						break;
@@ -376,10 +389,40 @@ public class SQLManager {
 				rs.updateNull(column);
 			else if (value instanceof Integer)
 				rs.updateInt(column, (int) value);
-			else if (value instanceof String)
-				rs.updateString(column, (String) value);
-			else if (value instanceof java.util.Date)
-				rs.updateDate(column, new java.sql.Date(((java.util.Date)value).getTime()));
+			else if (value instanceof String) {
+
+				switch (this.rsmd.getColumnClassName(column))
+				{
+				case "java.sql.Date": // DATE
+					rs.updateDate(column, java.sql.Date.valueOf((String) value));
+					break;
+				case "java.sql.Time": // TIME
+					rs.updateTime(column,java.sql.Time.valueOf((String) value));
+					break;
+				case "java.sql.Timestamp": // TIMESTAMP
+					rs.updateTimestamp(column, java.sql.Timestamp.valueOf((String) value));
+					break;
+				case "java.lang.String":
+					rs.updateString(column, (String) value);
+					break;
+				}
+
+			}
+			else if (value instanceof java.util.Date) {
+
+				switch (this.rsmd.getColumnClassName(column))
+				{
+				case "java.sql.Date": // DATE
+					rs.updateDate(column, new java.sql.Date(((java.util.Date) value).getTime()));
+					break;
+				case "java.sql.Time": // TIME
+					rs.updateTime(column,new java.sql.Time(((java.util.Date) value).getTime()));
+					break;
+				case "java.sql.Timestamp": // TIMESTAMP
+					rs.updateTimestamp(column, new java.sql.Timestamp(((java.util.Date) value).getTime()));
+					break;
+				}
+			}
 			else if (value instanceof Float)
 				rs.updateFloat(column, (float) value);
 			else if (value instanceof Double)
@@ -390,7 +433,7 @@ public class SQLManager {
 				rs.updateLong(column,  (long) value);
 			else if (value instanceof BigDecimal)
 				rs.updateBigDecimal(column, (BigDecimal) value);
-			// updateNull ?
+
 			rs.updateRow();
 			conn.commit();
 			return true;
