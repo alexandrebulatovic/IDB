@@ -268,14 +268,34 @@ public class TableSet
 	
 	/**
 	 * @param oldTable : ancien nom de la table, null interdit.
-	 * @param newTable : nouveau nom de la table, null interdit.
+	 * @param newTableName : nouveau nom de la table, null interdit.
+	 * @param attributes : liste décrivant les attributes : 
+	 * 		-le nom String
+	 * 		-type String
+	 * 		-taille int
+	 * 		-isNotNull boolean
+	 * 		-isPrimaryKey boolean
 	 * @return une liste de requêtes SQL pour altérer la table $oldname.
 	 */
-	public List<String> getSQLTableToModify(String oldTable, String newTable)
+	public List<String> getSQLTableToModify(String oldTable, String newTableName, List<Object[]> attributes)
 	{
-		Table newT = this.getTableByName("TEMPORARY");
-		newT.setName(newTable);
-		return newT.toModify(this.getTableByName(oldTable));
+		this.addTable("TEMPORARY");
+		Table tmpTable = this.getTableByName("TEMPORARY");
+		
+		for (Object[] att : attributes){
+			String name = (String) att[0];
+			String type = (String) att[1];
+			
+			int size = (int) att[2];
+			boolean isNotNull = (boolean) att[3];
+			boolean isPk = (boolean) att[3];
+			
+			this.addAttribute("TEMPORARY", name, type, size, isNotNull, isPk);
+		}
+		
+		this.removeTable("TEMPORARY");
+		
+		return toModifySQL;
 	}
 	
 	

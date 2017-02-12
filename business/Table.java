@@ -161,14 +161,14 @@ public class Table {
 	 * Retourne les requetes SQL qui modifient
 	 * La table avec des ALTER TABLE
 	 */
-	public List<String> toModify(Table tableSource) {
+	public List<String> toModify(Table newTable) {
 		ArrayList<String> results = new ArrayList<String>();
 		
-		addAttributes(tableSource, results);
+		addAttributes(newTable, results);
 		
-		dropAttributes(tableSource, results);
+		dropAttributes(newTable, results);
 		
-		modifyAttributes(tableSource, results);
+		modifyAttributes(newTable, results);
 		
 //		modifyName(tableSource, results);
 		
@@ -258,7 +258,7 @@ public class Table {
 			System.out.println("to modify : actuel :"+attribute[1]);
 			Attribute attDest = attribute[0];
 			Attribute attsrc = attribute[1];
-			results.add(attDest.toModify());
+			results.add(attDest.toModify(this.name));
 			
 //			if (!attSrc.getFk().equalsName(attDest.getFk())){
 //				StringBuilder sql = new StringBuilder();
@@ -348,7 +348,7 @@ public class Table {
 	 */
 	private void dropAttributes(Table tableSource, ArrayList<String> results) {
 		for (Attribute attribute : attributesToDrop(tableSource)){
-			results.add(attribute.toDROPSQL());
+			results.add(attribute.toDROPSQL(this.name));
 		}
 	}
 
@@ -360,7 +360,7 @@ public class Table {
 	 */
 	private void addAttributes(Table tableSource, ArrayList<String> results) {
 		for (Attribute attribute : attributesToAdd(tableSource)){
-			results.add(attribute.toADDSQL());
+			results.add(attribute.toADDSQL(this.name));
 		}
 	}
 	

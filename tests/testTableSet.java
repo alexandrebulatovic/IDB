@@ -106,5 +106,30 @@ public class testTableSet {
 		String name = ensembleTable.addUnique("table1", new String[] {"att1"});
 		assertEquals("ALTER TABLE table1\nDROP CONSTRAINT un_table1_att1",ensembleTable.getSQLDropConstraint("table1", "att1", name));
 	}
+	
+	
+	@Test
+	public void testGetSQLTableToModify(){
+		ensembleTable.addAttribute("table1", "att2", "VARCHAR2", 2, false, false);
+		ensembleTable.addAttribute("table1", "att3", "VARCHAR2", 2, false, false);
+		
+		ensembleTable.addAttribute("table1", "attASupprimer", "TYPEBIDON", 314, false, false);
+		
+//		System.out.println(ensembleTable.getSQLTableToCreate("table1"));
+		
+		List<Object[]> attributes = new ArrayList<Object[]>();
+		
+		attributes.add(new Object[]{"att1","VARCHAR2",20,false,true});//on ne change pas l'attribut1
+		attributes.add(new Object[]{"att2","VARCHAR2",2,false,true});//on ajjoute cette pk
+		attributes.add(new Object[]{"att3","VARCHAR2",2,true,false});//on a un nouvel unique
+		attributes.add(new Object[] {"att4","NUMERIC",33,false,false});//on en ajoute un
+		//et on ne met pas le dernier attribute attASupprimer
+		System.out.println();
+		System.out.println();
+		System.out.println(ensembleTable.getSQLTableToModify("table1", "table1", attributes));
+	}
 
+	
+	
+	
 }
