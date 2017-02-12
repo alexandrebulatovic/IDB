@@ -293,6 +293,8 @@ public class TableSet
 			this.addAttribute("TEMPORARY", name, type, size, isNotNull, isPk);
 		}
 		
+//		List<String> toModifySQL = tmpTable.toModify(this.getTableByName(oldTable));
+		List<String> toModifySQL = this.getTableByName(oldTable).toModify(tmpTable);
 		this.removeTable("TEMPORARY");
 		
 		return toModifySQL;
