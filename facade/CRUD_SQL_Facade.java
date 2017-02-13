@@ -47,47 +47,14 @@ extends AbstractDDLCRUDFacade
 	}
 
 	/**
-	 * Supprime le tuple situé à {@code index} de la base de données.
-	 * @param index : position du tuple à supprimer.
-	 * @return un objet {@code Response}.
-	 * @see Response
+	 * Génère un objet {@code Response} à l'aide du {@code SQLManager} en fonction 
+	 * du résultat d'une opération. 
+	 * @param reply : résultat d'une opération sur un SDBD.
+	 * @return un objet {@code Response} complété.
 	 */
-	public Response deleteRow(int index) {
-		if (!this.sql_manager.removeTuple(index)) {
-			Exception exception = this.sql_manager.getLastException();
-			String msgException = generateErrorMsg(exception);
-			return new Response(false, msgException);
-		} else
-			return new Response(true);
-	}
+	private Response generateResponse(boolean reply) {
 
-
-	/** Met à jour une valeur d'un tuple dans la base de données.
-	 * @param index : position du tuple.
-	 * @param column : colonne de la valeur.
-	 * @param updateBuffer : nouvelle valeur.
-	 * @return un objet {@code Response}.
-	 * @see Response
-	 */
-	public Response updateRow(int index, int column, String updateBuffer)
-	{
-		if (!this.sql_manager.updateTuple(index, column, updateBuffer)) {
-			Exception exception = this.sql_manager.getLastException();
-			System.out.println(exception);
-			String msgException = generateErrorMsg(exception);
-			return new Response(false, msgException);
-		} else
-			return new Response(true);
-	}
-
-	/** Insère un nouveau tuple dans la base de données.
-	 * @param row_to_add : objet {@code Vector} représentant les données à insérer dans l'ordre.
-	 * @return un objet {@code Response}.
-	 * @see Response
-	 */
-	public Response addTuple(Vector<String> row_to_add) {
-
-		if (!this.sql_manager.addTuple(row_to_add)) 
+		if (!reply)
 		{
 			Exception exception = this.sql_manager.getLastException();
 			String msgException = generateErrorMsg(exception);
@@ -96,6 +63,36 @@ extends AbstractDDLCRUDFacade
 		} 
 		else
 			return new Response(true);
+	}
+
+	/**
+	 * Supprime le tuple situé à la {@code index}-ième ligne de la table courante.
+	 * @param index : position du tuple à supprimer.
+	 * @return un objet {@code Response}.
+	 * @see Response
+	 */
+	public Response deleteRow(int index) {
+		return generateResponse(this.sql_manager.removeTuple(index));
+	}
+
+	/** Met à jour une valeur d'un tuple dans la base de données.
+	 * @param index : position du tuple à mettre à jour.
+	 * @param column : colonne à mettre à jour.
+	 * @param updateBuffer : nouvelle valeur.
+	 * @return un objet {@code Response}.
+	 * @see Response
+	 */
+	public Response updateRow(int index, int column, String updateBuffer) {
+		return generateResponse(this.sql_manager.updateTuple(index, column, updateBuffer));
+	}
+
+	/** Insère un nouveau tuple dans la table courante.
+	 * @param newRow : un objet {@code Vector} représentant les données (pouvant être NULL) à insérer dans le bon ordre.
+	 * @return un objet {@code Response}.
+	 * @see Response
+	 */
+	public Response addTuple(Vector<String> newRow) {
+		return generateResponse(this.sql_manager.addTuple(newRow));
 	}
 
 	/**
@@ -114,8 +111,6 @@ extends AbstractDDLCRUDFacade
 		else
 			return exception.getMessage();
 	}
-
-
 
 	/**
 	 * Optimise le {@code SQLManager} selon le type d'opération à effectuer.
