@@ -106,6 +106,7 @@ public class CRUDController
 	public Response addRow(int index, String tableName) 
 	{
 		Vector dataVector = this.crudView.getTableModel().getDataVector();
+		
 		Vector<Object> row_to_add =  (Vector<Object>) dataVector.elementAt(index); // on récupere la ligne concernée
 
 		return this.crudFacade.addTuple(row_to_add);

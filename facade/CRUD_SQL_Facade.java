@@ -85,11 +85,15 @@ extends AbstractDDLCRUDFacade
 	 * @see Response
 	 */
 	public Response addTuple(Vector<Object> row_to_add) {
-		if (!this.sql_manager.addTuple(row_to_add)) {
+
+		if (!this.sql_manager.addTuple(row_to_add)) 
+		{
 			Exception exception = this.sql_manager.getLastException();
 			String msgException = generateErrorMsg(exception);
+			
 			return new Response(false, msgException);
-		} else
+		} 
+		else
 			return new Response(true);
 	}
 
@@ -148,7 +152,7 @@ extends AbstractDDLCRUDFacade
 		}
 		else if (reply instanceof JTable)
 			return ((JTable) reply); // on affiche la JTable retournée
-		
+
 		return reply;
 	}
 }

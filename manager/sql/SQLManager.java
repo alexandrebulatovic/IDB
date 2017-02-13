@@ -281,7 +281,7 @@ public class SQLManager {
 	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code this.exception}
 	 * est mis à jour.
 	 */
-	public boolean addTuple(Vector<Object> vector)
+	public boolean addTuple(Vector<Object> vector) // TODO : a refactorer
 	{
 
 		try {
@@ -309,9 +309,9 @@ public class SQLManager {
 					case "java.sql.Date": // DATE
 						rs.updateDate(columnPosition, java.sql.Date.valueOf((String) vector.get(i)));
 						break;
-						/*case "java.math.BigDecimal": // NUMERIC, DECIMAL
-						rs.updateBigDecimal(columnPosition, (BigDecimal) vector.get(i));
-						break;*/
+					case "java.math.BigDecimal": // NUMERIC, DECIMAL
+						rs.updateBigDecimal(columnPosition, new BigDecimal((String)vector.get(i)));
+						break;
 					case "java.sql.Time": // TIME
 						rs.updateTime(columnPosition, java.sql.Time.valueOf((String) vector.get(i)));
 						break;
@@ -352,7 +352,7 @@ public class SQLManager {
 	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code this.exception}
 	 * est mis à jour.
 	 */
-	public boolean removeTuple(int index) 
+	public boolean removeTuple(int index)
 	{
 		index++; // conversion entre index du TableModel et la methode absolute() où l'index commence à 1
 		try 
@@ -375,7 +375,7 @@ public class SQLManager {
 	 * @return Vrai si l'insertion réussie, sinon faux et l'attribut {@code this.exception}
 	 * est mis à jour.
 	 */
-	public boolean updateTuple(int index, int column, Object value)
+	public boolean updateTuple(int index, int column, Object value) // TODO : a refactorer
 	{
 		//correspondance entre la TableModel (index commence à 0) et le ResultSet (index commence à 1..)
 		column++; 
