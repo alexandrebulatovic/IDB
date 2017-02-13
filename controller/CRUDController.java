@@ -103,11 +103,12 @@ public class CRUDController
 	 * @return un objet {@code Response}.
 	 * @see Response
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Response addRow(int index, String tableName) 
 	{
-		Vector dataVector = this.crudView.getTableModel().getDataVector();
-		
-		Vector<Object> row_to_add =  (Vector<Object>) dataVector.elementAt(index); // on récupere la ligne concernée
+		Vector<Vector> dataVector = this.crudView.getTableModel().getDataVector();
+
+		Vector<String> row_to_add =  (Vector<String>) dataVector.elementAt(index); // on récupere la ligne concernée
 
 		return this.crudFacade.addTuple(row_to_add);
 	}
@@ -119,7 +120,7 @@ public class CRUDController
 	 * @return un objet {@code Response}.
 	 * @see Response
 	 */
-	public Response updateRow(int index, int column, Object updateBuffer)
+	public Response updateRow(int index, int column, String updateBuffer)
 	{
 		return this.crudFacade.updateRow(index, column, updateBuffer);
 	}

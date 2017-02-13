@@ -69,10 +69,11 @@ extends AbstractDDLCRUDFacade
 	 * @return un objet {@code Response}.
 	 * @see Response
 	 */
-	public Response updateRow(int index, int column, Object updateBuffer)
+	public Response updateRow(int index, int column, String updateBuffer)
 	{
 		if (!this.sql_manager.updateTuple(index, column, updateBuffer)) {
 			Exception exception = this.sql_manager.getLastException();
+			System.out.println(exception);
 			String msgException = generateErrorMsg(exception);
 			return new Response(false, msgException);
 		} else
@@ -84,13 +85,13 @@ extends AbstractDDLCRUDFacade
 	 * @return un objet {@code Response}.
 	 * @see Response
 	 */
-	public Response addTuple(Vector<Object> row_to_add) {
+	public Response addTuple(Vector<String> row_to_add) {
 
 		if (!this.sql_manager.addTuple(row_to_add)) 
 		{
 			Exception exception = this.sql_manager.getLastException();
 			String msgException = generateErrorMsg(exception);
-			
+
 			return new Response(false, msgException);
 		} 
 		else
@@ -102,9 +103,14 @@ extends AbstractDDLCRUDFacade
 	 * @param exception {@code Exception} à parser. 
 	 * @return un message explicite de l'erreur.
 	 */
-	private String generateErrorMsg(Exception exception) {
+	private String generateErrorMsg(Exception exception) 
+	{
 		if (exception instanceof SQLException)
 			return connector.errorMessage((SQLException)exception);
+
+		else if (exception instanceof NumberFormatException)
+			return "La valeur entrée est incompatible avec le type de l'attribut.";
+
 		else
 			return exception.getMessage();
 	}
@@ -117,10 +123,11 @@ extends AbstractDDLCRUDFacade
 	 * {@code SQLManager.TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe et optimisé.
 	 */
 	public void setStatement(int statementTypeRequired) {
-		int statementType = this.sql_manager.getStatementType();
-
-		if (statementType != statementTypeRequired)
+		try {
 			this.sql_manager.setStatementType(statementTypeRequired);
+		} catch (SQLException e) {
+			System.out.println(generateErrorMsg(e));
+		}
 	}
 
 
