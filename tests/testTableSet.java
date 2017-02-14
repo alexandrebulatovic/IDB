@@ -121,7 +121,7 @@ public class testTableSet {
 		
 		attributes.add(new Object[]{"att1","VARCHAR2",20,false,true});//on ne change pas l'attribut1
 		attributes.add(new Object[]{"att2","VARCHAR2",2,false,true});//on ajjoute cette pk
-		attributes.add(new Object[]{"att3","VARCHAR2",2,true,false});//on a un nouvel unique
+		attributes.add(new Object[]{"att3","VARCHAR2",2,true,false});//on a un nouvel notNull
 		attributes.add(new Object[] {"att4","NUMERIC",33,false,false});//on en ajoute un
 		//et on ne met pas le dernier attribute attASupprimer
 		System.out.println();

@@ -170,6 +170,8 @@ public class Table {
 		
 		modifyAttributes(newTable, results);
 		
+		modifyConstraints(newTable, results);
+		
 //		modifyName(tableSource, results);
 		
 
@@ -254,91 +256,41 @@ public class Table {
 	private void modifyAttributes(Table tableSource, ArrayList<String> results) {
 		
 		for (Attribute[] attribute : attributesToChange(tableSource)){
-			System.out.println("to modify : à obtenir :"+attribute[0]);
-			System.out.println("to modify : actuel :"+attribute[1]);
+			System.out.println("to modify :"+attribute[0]+"<========>"+attribute[1]);
 			Attribute attDest = attribute[0];
 			Attribute attsrc = attribute[1];
 			results.add(attDest.toModify(this.name));
-			
-//			if (!attSrc.getFk().equalsName(attDest.getFk())){
-//				StringBuilder sql = new StringBuilder();
-//				sql.append(attSrc.toModify(attDest));
-//				sql.append("ALTER TABLE ");
-//				sql.append(this.name);
-//				sql.append("\n");
-//				if (attSrc.foreignKey){
-//					sql.append("DROP ");
-//					sql.append(attSrc.toSQLConstraintName("fk"));
-//
-//				}else{
-//					sql.append("ADD ");
-//					sql.append(attDest.toSQLConstraintName("fk"));
-//					sql.append(attDest.toSQLConstraintType(" FOREIGN KEY", ""));
-//					sql.append(" ");
-//					sql.append(attDest.toSQLReferences());
-//				}
-//				results.add(sql.toString());
-			}
-//			if (attSrc.unique != attDest.unique){
-//				StringBuilder sql = new StringBuilder();
-//				sql.append("ALTER TABLE ");
-//				sql.append(this.name);
-//				sql.append("\n");
-//				if (attSrc.unique){
-//					sql.append("DROP ");
-//					sql.append(attSrc.toSQLConstraintName("un"));
-//				}
-//				else{
-//					sql.append("ADD ");
-//					sql.append(attSrc.toSQLConstraintName("un"));
-//					sql.append(attDest.toSQLConstraintType(" UNIQUE",""));
-//					sql.append(" ");
-//				}
-//				results.add(sql.toString());
-//			}
-//			if (attSrc.primaryKey != attDest.primaryKey){
-//				StringBuilder sql = new StringBuilder();
-//				if (this.hasPrimaryKey()){
-//					sql.append("ALTER TABLE ");
-//					sql.append(this.name);
-//					sql.append("\nDROP CONSTRAINT pk_");
-//					sql.append(this.name);
-//					results.add(sql.toString());
-//				}
-//				
-//				if (this.hasPrimaryKey()){
-//					sql = new StringBuilder();
-//					sql.append("ALTER TABLE ");
-//					sql.append(this.name);
-//					sql.append("\nADD ");
-//					sql.append(this.primaryKeyToSQL());
-//					results.add(sql.toString());
-//				}
-//
-//				
-//			}
-//			if ((attSrc.size != attDest.size) || (!attSrc.type.equals(attDest.type))){
-//				StringBuilder sql = new StringBuilder();
-//				//ALTER TABLE this.name
-//				//ALTER COLUMN attSrc.name
-//				sql.append("ALTER TABLE ");
-//				sql.append(this.name);
-//				sql.append("\nMODIFY ");
-//				sql.append(attSrc.name);
-//				sql.append(" ");
-//				sql.append(attDest.type);
-//				if (!attDest.type.equals("DATE")){
-//					sql.append(" (");
-//					sql.append(attDest.size);
-//					sql.append(")");
-//				}
-//
-//				results.add(sql.toString());
-//				
-//			}
-//		}
+		}
+		
 	}
 
+
+
+	private void modifyConstraints(Table tableSource, ArrayList<String> results) {
+		for (Constraint c : this.constraints){
+			results.add(c.toDropConstraintSQL());
+		}
+		
+		for (Constraint c : tableSource.getConstraints()){
+			results.add(c.toAddConstraintSQL());
+		}		
+		
+		
+		
+		
+//		
+//		for (Constraint[] constraint : constraintsToChange(tableSource)){
+//			System.out.println("to modify cons :"+constraint[0]+"<========>"+constraint[1]);
+//			Constraint consDest = constraint[0];
+//			Constraint consSrc = constraint[1];
+//			
+//			
+//			for (String sql : consDest.toModify(this.name)){
+//				results.add(sql);
+//			}
+//			
+//		}
+	}
 
 
 	/**
@@ -398,7 +350,7 @@ public class Table {
 		for (Attribute attributeSrc : tableSource.getAttributes()){
 			for (Attribute attributeDest : this.attributes){
 				if (attributeSrc.name.equals(attributeDest.name)){
-					if (!attributeSrc.toString().equals(attributeDest.toString())){// on cherche les memes attributs mais différents
+					if (!attributeSrc.toString().equals(attributeDest.toString())){// on cherche les memes attributs mais avec des valeurs différentes
 						attributesToModify.add(new Attribute[]{
 								attributeSrc,
 								attributeDest
@@ -409,6 +361,44 @@ public class Table {
 		}
 		return attributesToModify;
 	}
+
+
+	/**
+	 * Retounre une liste contenant les contraintes portant le meme nom mais différentes<br>
+	 * [0] ConstraintDest<br>
+	 * [1] ConstraintSrc
+	 * @param tableSource
+	 * @return
+	 */
+	private List<Constraint[]> constraintsToChange(Table tableSource) {
+		ArrayList<Constraint[]> constraintToModify = new ArrayList<Constraint[]>();
+		
+		
+		for(Constraint constraintSrc : tableSource.getConstraints()){
+			
+			for (Constraint constraintDest : this.constraints){
+				System.out.println();
+				System.out.println();
+				System.out.println(constraintSrc.toAddConstraintSQL("rien")+"\n°°°°°°°°°°°°°°\n"+constraintDest.toAddConstraintSQL("rien"));
+				System.out.println();
+				System.out.println();
+				if (constraintDest.equalsName(constraintSrc)){
+					
+					if (!constraintDest.toAddConstraintSQL("rien").equals(constraintSrc.toAddConstraintSQL("rien"))){
+						constraintToModify.add(new Constraint[] {
+								constraintSrc,
+								constraintDest
+						});
+						
+					}
+				}
+			}
+		}
+		
+		return constraintToModify;
+		
+	}
+
 
 
 	/**
@@ -585,6 +575,9 @@ public class Table {
 
 	public void setName(String name) {
 		this.name = name;
+		for (Attribute a : this.attributes){
+			a.setTableName(name);
+		}
 	}
 
 
@@ -602,6 +595,17 @@ public class Table {
 
 		return this.constraints.remove(c);
 		
+	}
+
+
+
+	public PrimaryKeyConstraint getPk() {
+		for (Constraint c : this.constraints){
+			if (c instanceof PrimaryKeyConstraint){
+				return (PrimaryKeyConstraint) c;
+			}
+		}
+		return null;
 	}
 
 

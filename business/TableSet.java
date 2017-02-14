@@ -267,7 +267,7 @@ public class TableSet
 	
 	
 	/**
-	 * @param oldTable : ancien nom de la table, null interdit.
+	 * @param oldTableName : ancien nom de la table, null interdit.
 	 * @param newTableName : nouveau nom de la table, null interdit.
 	 * @param attributes : liste décrivant les attributes : 
 	 * 		-le nom String
@@ -277,10 +277,12 @@ public class TableSet
 	 * 		-isPrimaryKey boolean
 	 * @return une liste de requêtes SQL pour altérer la table $oldname.
 	 */
-	public List<String> getSQLTableToModify(String oldTable, String newTableName, List<Object[]> attributes)
+	public List<String> getSQLTableToModify(String oldTableName, String newTableName, List<Object[]> attributes)
 	{
-		this.addTable("TEMPORARY");
-		Table tmpTable = this.getTableByName("TEMPORARY");
+		Table tmpTable = new Table(oldTableName);
+		Table oldTable = this.getTableByName(oldTableName);
+		
+		List<Attribute> attributesPk = new ArrayList<Attribute>();
 		
 		for (Object[] att : attributes){
 			String name = (String) att[0];
@@ -288,19 +290,43 @@ public class TableSet
 			
 			int size = (int) att[2];
 			boolean isNotNull = (boolean) att[3];
-			boolean isPk = (boolean) att[3];
 			
-			this.addAttribute("TEMPORARY", name, type, size, isNotNull, isPk);
+			Attribute a = new Attribute(name, type, size, null, type, isNotNull);
+			
+			
+			if ((boolean) att[4]){//if is pk
+				attributesPk.add(a);
+			}
+			
+			tmpTable.addAttribute(a);
 		}
 		
+		PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
+		pk.setTable(tmpTable);
+		pk.setName(oldTable.getPk().getName());
+		for (Attribute a : attributesPk){
+			pk.addAttribute(a);
+			a.addConstraint(pk);
+		}
+		tmpTable.addConstraint(pk);
+		
+		
+		
+		tmpTable.setName(oldTableName);
+		
 //		List<String> toModifySQL = tmpTable.toModify(this.getTableByName(oldTable));
-		List<String> toModifySQL = this.getTableByName(oldTable).toModify(tmpTable);
-		this.removeTable("TEMPORARY");
+		
+		
+		
+		
+		List<String> toModifySQL = oldTable.toModify(tmpTable);
+		oldTable.setName(newTableName);
 		
 		return toModifySQL;
 	}
 	
 	
+
 	/**
 	 * Supprime une table s'après son nom
 	 * et s'occupe de supprimer les sous attributs
@@ -389,7 +415,7 @@ public class TableSet
 	 */
 	public List<Object> getTableWithJustComplexConstraintsAndBaseInformationsAttributes(String tableName, String attributeName){
 		Attribute attribute = this.getAttributeWithName(tableName, attributeName);
-		List<Object> attributeReturn = new ArrayList();
+		List<Object> attributeReturn = new ArrayList<Object>();
 		
 		attributeReturn.add(attribute.getName());
 		attributeReturn.add(attribute.type);

@@ -32,6 +32,7 @@ public class Attribute
 	 * @param size
 	 * @param constraints
 	 * @param tableName
+	 * @param isNotNull
 	 */
 	public Attribute(String name, String type, int size, List<Constraint> constraints,String tableName, boolean isNotNull){
 		this.name=name;
