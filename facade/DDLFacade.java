@@ -69,6 +69,24 @@ extends AbstractDDLCRUDFacade
 	
 	
 	/**
+	 * Modifie une table dans la bdd
+	 * @param oldTable
+	 * @param newTable
+	 * @param attributes
+	 */
+	public Response modifyTable(String oldTable, String newTable, List<Object[]> attributes) {
+		List<String> sqls = this.business.getSQLTableToModify(oldTable, newTable, attributes);
+		Response rep = null;
+		for (String sql : sqls){
+			rep = this.dbms.alterTable(sql);
+		}
+		return rep;//on retourne la derniere réponse
+		
+		
+	}
+
+
+	/**
 	 * Tente d'altérer une table en base avec une requête $sql.
 	 * @param sql : une requête SQL ALTER TABLE, null interdit.
 	 * @return une réponse personnalisée décrivant si l'altération a réussi ou non.

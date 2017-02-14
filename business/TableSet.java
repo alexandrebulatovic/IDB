@@ -320,7 +320,8 @@ public class TableSet
 		
 		List<String> toModifySQL = oldTable.toModify(tmpTable);
 		oldTable.setName(newTableName);
-		
+		this.tables.remove(oldTable);
+		this.tables.add(tmpTable);
 		return toModifySQL;
 	}
 	

@@ -4,11 +4,13 @@ import gui.ddl.tools.I_AttributeModel;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComboBox;
 
 import controller.DDLController;
-
+import useful.Response;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
@@ -48,12 +50,30 @@ extends CreateTableGUI
 	@Override
 	protected void createTableButtonAction()
 	{
+		
+//		this.control.alterTable();
 		//TODO : ne verras jamais le jour
 //		this.createTable("TEMPORARY");
-//		String oldTable = this.tablesCombo.getSelectedItem().toString();
-//		String newTable = this.tableNameField.getText();
-//		Response r = this.control.alterTable(oldTable, newTable);
-//		this.talk(r);
+		String oldTable = this.tablesCombo.getSelectedItem().toString();
+		String newTable = this.tableNameField.getText();
+		
+		
+		List<Object[]> attributes = new ArrayList<Object[]>();
+		
+		for (int i=0 ; i<this.table.getRowCount() ; i++){
+			attributes.add(new Object[]{
+					this.table.getValueAt(i, 0),
+					this.table.getValueAt(i, 1),
+					this.table.getValueAt(i, 2),
+					this.table.getValueAt(i, 3),
+					this.table.getValueAt(i, 4)
+			});
+			
+			
+		}
+		
+		Response r = this.control.alterTable(oldTable, newTable,attributes);
+		this.talk(r);
 	}
 
 

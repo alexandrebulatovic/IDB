@@ -489,4 +489,9 @@ public class DDLController
 		result[4] = primary ? "PRIMARY" : "COMMON";
 		return result;
 	}
+
+
+	public Response alterTable(String oldTable, String newTable, List<Object[]> attributes) {
+		return facade.modifyTable( oldTable,  newTable, attributes);
+	}
 }
