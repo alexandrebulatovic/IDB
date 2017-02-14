@@ -26,7 +26,11 @@ extends AbstractConnectionManager
 	public String errorMessage(SQLException e)
 	{
 		switch (e.getErrorCode()) {
-		case 0 		: return "adresse IP ou port incorrect.";
+		case 0 		: 
+			if (e.getSQLState().startsWith("08"))
+				return "adresse IP ou port incorrect.";
+			else
+				return e.getMessage().split("\\.")[0]; // retourne la premiere phrase de l'erreur (= le plus significatif sur MySQL)
 		case 1044 	: return "nom de base de données inaccessible.";
 		case 1045 	: return "nom d'utilisateur ou mot de passe incorrect.";
 		default 	: return e.getErrorCode() + " : " + e.getMessage();
