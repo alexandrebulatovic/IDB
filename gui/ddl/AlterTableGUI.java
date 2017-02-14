@@ -1,14 +1,14 @@
 package gui.ddl;
 
+import gui.ddl.tools.I_AttributeModel;
+
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JComboBox;
 
 import controller.DDLController;
-import ddl.I_AttributeModel;
 
-import useful.Response;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
@@ -48,12 +48,12 @@ extends CreateTableGUI
 	@Override
 	protected void createTableButtonAction()
 	{
-		//TODO : raté
-		this.createTable("TEMPORARY");
-		String oldTable = this.tablesCombo.getSelectedItem().toString();
-		String newTable = this.tableNameField.getText();
-		Response r = this.control.alterTable(oldTable, newTable);
-		this.talk(r);
+		//TODO : ne verras jamais le jour
+//		this.createTable("TEMPORARY");
+//		String oldTable = this.tablesCombo.getSelectedItem().toString();
+//		String newTable = this.tableNameField.getText();
+//		Response r = this.control.alterTable(oldTable, newTable);
+//		this.talk(r);
 	}
 
 

@@ -7,15 +7,11 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import useful.Response;
-import useful.ResponseData;
 import business.TableSet;
-import gui.CRUDGUI;
 import manager.connection.I_ConnectionManager;
-import manager.connection.MySQLConnectionManager;
-import manager.ddl.AbstractDLLManager;
+
 import manager.ddl.I_DDLManager;
 import manager.sql.SQLManager;
-import sun.nio.cs.MS1250;
 
 public class CRUD_SQL_Facade 
 extends AbstractDDLCRUDFacade
@@ -51,50 +47,52 @@ extends AbstractDDLCRUDFacade
 	}
 
 	/**
-	 * Supprime le tuple situé à {@code index} de la base de données.
+	 * Génère un objet {@code Response} à l'aide du {@code SQLManager} en fonction 
+	 * du résultat d'une opération. 
+	 * @param reply : résultat d'une opération sur un SDBD.
+	 * @return un objet {@code Response} complété.
+	 */
+	private Response generateResponse(boolean reply) {
+
+		if (!reply)
+		{
+			Exception exception = this.sql_manager.getLastException();
+			String msgException = generateErrorMsg(exception);
+
+			return new Response(false, msgException);
+		} 
+		else
+			return new Response(true);
+	}
+
+	/**
+	 * Supprime le tuple situé à la {@code index}-ième ligne de la table courante.
 	 * @param index : position du tuple à supprimer.
 	 * @return un objet {@code Response}.
 	 * @see Response
 	 */
 	public Response deleteRow(int index) {
-		if (!this.sql_manager.removeTuple(index)) {
-			Exception exception = this.sql_manager.getLastException();
-			String msgException = generateErrorMsg(exception);
-			return new Response(false, msgException);
-		} else
-			return new Response(true);
+		return generateResponse(this.sql_manager.removeTuple(index));
 	}
 
-
 	/** Met à jour une valeur d'un tuple dans la base de données.
-	 * @param index : position du tuple.
-	 * @param column : colonne de la valeur.
+	 * @param index : position du tuple à mettre à jour.
+	 * @param column : colonne à mettre à jour.
 	 * @param updateBuffer : nouvelle valeur.
 	 * @return un objet {@code Response}.
 	 * @see Response
 	 */
-	public Response updateRow(int index, int column, Object updateBuffer)
-	{
-		if (!this.sql_manager.updateTuple(index, column, updateBuffer)) {
-			Exception exception = this.sql_manager.getLastException();
-			String msgException = generateErrorMsg(exception);
-			return new Response(false, msgException);
-		} else
-			return new Response(true);
+	public Response updateRow(int index, int column, String updateBuffer) {
+		return generateResponse(this.sql_manager.updateTuple(index, column, updateBuffer));
 	}
 
-	/** Insère un nouveau tuple dans la base de données.
-	 * @param row_to_add : objet {@code Vector} représentant les données à insérer dans l'ordre.
+	/** Insère un nouveau tuple dans la table courante.
+	 * @param newRow : un objet {@code Vector} représentant les données (pouvant être NULL) à insérer dans le bon ordre.
 	 * @return un objet {@code Response}.
 	 * @see Response
 	 */
-	public Response addTuple(Vector<Object> row_to_add) {
-		if (!this.sql_manager.addTuple(row_to_add)) {
-			Exception exception = this.sql_manager.getLastException();
-			String msgException = generateErrorMsg(exception);
-			return new Response(false, msgException);
-		} else
-			return new Response(true);
+	public Response addTuple(Vector<String> newRow) {
+		return generateResponse(this.sql_manager.addTuple(newRow));
 	}
 
 	/**
@@ -102,25 +100,29 @@ extends AbstractDDLCRUDFacade
 	 * @param exception {@code Exception} à parser. 
 	 * @return un message explicite de l'erreur.
 	 */
-	private String generateErrorMsg(Exception exception) {
+	private String generateErrorMsg(Exception exception) 
+	{
 		if (exception instanceof SQLException)
 			return connector.errorMessage((SQLException)exception);
+
+		else if (exception instanceof NumberFormatException)
+			return "La valeur entrée est incompatible avec le type de l'attribut.";
+
 		else
 			return exception.getMessage();
 	}
-
-
 
 	/**
 	 * Optimise le {@code SQLManager} selon le type d'opération à effectuer.
 	 * @param statementTypeRequired : constantes parmi {@code SQLManager.TYPE_UPDATABLE_RESULTSET} pour avoir un {@code ResultSet} dynamique, 
 	 * {@code SQLManager.TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe et optimisé.
 	 */
-	public void optimizeStatement(int statementTypeRequired) {
-		int statementType = this.sql_manager.getStatementType();
-
-		if (statementType != statementTypeRequired)
+	public void setStatement(int statementTypeRequired) {
+		try {
 			this.sql_manager.setStatementType(statementTypeRequired);
+		} catch (SQLException e) {
+			System.out.println(generateErrorMsg(e));
+		}
 	}
 
 
@@ -152,7 +154,7 @@ extends AbstractDDLCRUDFacade
 		}
 		else if (reply instanceof JTable)
 			return ((JTable) reply); // on affiche la JTable retournée
-		
+
 		return reply;
 	}
 }

@@ -104,7 +104,7 @@ public class ForeignKeyConstraint extends Constraint {
 
 	
 	public List<Object> toListOfString() {
-		ArrayList<Object> liste = new ArrayList();
+		ArrayList<Object> liste = new ArrayList<Object>();
 		
 		liste.add(this.name);
 		liste.add(this.getTable());

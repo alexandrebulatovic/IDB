@@ -1,4 +1,4 @@
-package ddl;
+package gui.ddl.tools;
 
 public interface I_AttributeModel 
 {
@@ -84,5 +84,16 @@ public interface I_AttributeModel
 	 * @return un message indiquant si la taille de l'attribut est cohérente avec son type.
 	 */
 	public abstract String sizeErrorMsg();
+	
+	
+	/**
+	 * @return un tableau contenant :<br/>
+	 * - le nom de l'attribut,<br/>
+	 * - le type de données de l'attribut, <br/>
+	 * - la taille de l'attribut,<br/>
+	 * - NOTNULL ssi l'attribut est sous contrainte not null,<br/>
+	 * - PRIMARY ssi l'attribut est membre de la clée primaire.
+	 */
+	public abstract String [] toArray();
 
 }

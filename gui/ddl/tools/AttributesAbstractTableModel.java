@@ -1,17 +1,19 @@
-package ddl;
-
-import gui.ddl.CreateTableGUI;
+package gui.ddl.tools;
 
 import java.util.LinkedHashSet;
 import java.util.Iterator;
 
 import javax.swing.table.AbstractTableModel;
 
+import controller.DDLController;
+
 
 @SuppressWarnings("serial")
 public class AttributesAbstractTableModel 
-extends AbstractTableModel {
-	private CreateTableGUI createGUI;
+extends AbstractTableModel 
+{
+	private DDLController control;
+	
 	/**
 	 * Liste des attributs présent dans le tableau
 	 */
@@ -25,9 +27,9 @@ extends AbstractTableModel {
 	/**
 	 * Constructeur 
 	 */
-	public AttributesAbstractTableModel(CreateTableGUI createGUI) {
+	public AttributesAbstractTableModel(DDLController control) {
 		super();
-		this.createGUI = createGUI;
+		this.control = control;
 	}
 
 	public int getRowCount() {
@@ -149,7 +151,7 @@ extends AbstractTableModel {
 	private void changePosition(int rowIndex,int direction ) {
 		I_AttributeModel select = this.getAttributeAt(rowIndex);
 		I_AttributeModel overSelect = this.getAttributeAt(rowIndex+direction);
-		I_AttributeModel overSelectCache = this.createGUI.control.getAttributeModel(overSelect.getName(), overSelect.getType(), overSelect.getSize(), overSelect.isNotNull(), overSelect.isPrimaryKey());
+		I_AttributeModel overSelectCache = this.control.getAttributeModel(overSelect.getName(), overSelect.getType(), overSelect.getSize(), overSelect.isNotNull(), overSelect.isPrimaryKey());
 		this.setAttributeValueAt(rowIndex+direction, select.getName(), select.getType(), select.getSize(), select.isNotNull(), select.isPrimaryKey());
 		this.setAttributeValueAt(rowIndex, overSelectCache.getName(), overSelectCache.getType(), overSelectCache.getSize(), overSelectCache.isNotNull(), overSelectCache.isPrimaryKey());
 		this.fireTableRowsUpdated(rowIndex, rowIndex+direction);

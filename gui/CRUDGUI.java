@@ -311,9 +311,9 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 	{
 		ResponseData<String> response = this.crud_controller.getTables();
 		String msg = response.getMessage();
-		
+
 		this.tableComboBox.removeAllItems();
-		
+
 		if (response.hasSuccess()) 
 		{
 			msg += " : " + response.getCollection().size();
@@ -387,7 +387,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 				if (CRUDGUI.this.ALLOW_EDITS) // si le mode "modification" est actif
 				{
-					Response reply = CRUDGUI.this.crud_controller.updateRow(row, column, aValue);
+					Response reply = CRUDGUI.this.crud_controller.updateRow(row, column, (String)aValue);
 
 					if (!reply.hasSuccess())
 						CRUDGUI.this.showError(reply.getMessage());
@@ -424,9 +424,9 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 	@Override
 	public void windowActivated(WindowEvent e) {
-		this.disableComboBoxListener();
-		this.fillComboBox();
-		this.enableComboBoxListener();
+		//		this.disableComboBoxListener();
+		//		this.fillComboBox();
+		//		this.enableComboBoxListener();
 	}
 
 }

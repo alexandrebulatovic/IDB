@@ -1,13 +1,13 @@
-package ddl;
+package gui.ddl.tools;
 
-public class MySQLTableModel 
+public class MockTableModel 
 extends AbstractTableModel 
 {
 	//Constructeur
 	/**
 	 * Constructeur vide.
 	 */
-	public MySQLTableModel()
+	public MockTableModel()
 	{
 		super();
 	}
@@ -17,7 +17,7 @@ extends AbstractTableModel
 	 * 
 	 * @param name : nom de la tavle, null interdit.
 	 */
-	public MySQLTableModel(String name)
+	public MockTableModel(String name)
 	{
 		super(name);
 	}

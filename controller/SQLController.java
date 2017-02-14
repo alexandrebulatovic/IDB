@@ -34,7 +34,7 @@ public class SQLController {
 	public SQLController(Connection conn, CRUD_SQL_Facade facade)
 	{
 		this.crud_facade = facade;
-		this.crud_facade.optimizeStatement(SQLManager.TYPE_PLAIN_RESULTSET);
+		this.crud_facade.setStatement(SQLManager.TYPE_PLAIN_RESULTSET);
 	}
 
 

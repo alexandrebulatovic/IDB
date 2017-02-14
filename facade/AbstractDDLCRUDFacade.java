@@ -11,7 +11,7 @@ public class AbstractDDLCRUDFacade
 	protected TableSet business;
 
 	/** Gestionnaire de définition des données.*/
-	protected I_DDLManager manager;
+	protected I_DDLManager dbms;
 
 
 	//Constructeur
@@ -23,7 +23,7 @@ public class AbstractDDLCRUDFacade
 	protected AbstractDDLCRUDFacade(I_DDLManager ddlmanager, TableSet tables)
 	{
 		this.business = tables;
-		this.manager = ddlmanager;
+		this.dbms = ddlmanager;
 	}
 
 
@@ -39,7 +39,7 @@ public class AbstractDDLCRUDFacade
 			(true, "Tables récupérées.", this.business.getTablesNames());
 		} 
 		else {
-			response = this.manager.getTables();
+			response = this.dbms.getTables();
 			business.loadTables(response.getCollection());
 		}
 		return response;

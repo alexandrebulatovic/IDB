@@ -1,11 +1,8 @@
 package business;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-
-import manager.sql.SQLManager;
-
-
 
 public class Table {
 	
@@ -114,9 +111,9 @@ public class Table {
 	 * @return
 	 */
 	public boolean dropAttribute(Attribute attributeToDrop){
-		boolean noError = true;
+
 		for (Constraint c : attributeToDrop.getConstraints()){
-			noError = c.dropAttribute(attributeToDrop);
+			c.dropAttribute(attributeToDrop);
 			if (c.getAttributes().size()==0){
 				if (!this.constraints.remove(c)){
 					return false;
@@ -240,6 +237,7 @@ public class Table {
 	 * @param tableSource
 	 * @param results
 	 */
+	@SuppressWarnings("unused")
 	private void modifyName(Table tableSource, ArrayList<String> results) {
 		if (!tableSource.name.equals(this.name)){
 			results.add("RENAME "+tableSource.name+" TO "+this.name);	
@@ -258,6 +256,7 @@ public class Table {
 		for (Attribute[] attribute : attributesToChange(tableSource)){
 			System.out.println("to modify :"+attribute[0]+"<========>"+attribute[1]);
 			Attribute attDest = attribute[0];
+
 			Attribute attsrc = attribute[1];
 			results.add(attDest.toModify(this.name));
 		}
@@ -277,19 +276,7 @@ public class Table {
 		
 		
 		
-		
-//		
-//		for (Constraint[] constraint : constraintsToChange(tableSource)){
-//			System.out.println("to modify cons :"+constraint[0]+"<========>"+constraint[1]);
-//			Constraint consDest = constraint[0];
-//			Constraint consSrc = constraint[1];
-//			
-//			
-//			for (String sql : consDest.toModify(this.name)){
-//				results.add(sql);
-//			}
-//			
-//		}
+
 	}
 
 
@@ -462,6 +449,7 @@ public class Table {
 	 * 
 	 * @return boolean
 	 */
+	@SuppressWarnings("unused")
 	private boolean hasPrimaryKey()
 	{
 		return this.countPrimaryKey() != 0;

@@ -1,18 +1,20 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import facade.DDLFacade;
 import gui.ddl.CreateTableGUI;
 import gui.ddl.DropTableGUI;
+import gui.ddl.QbeGUI;
 import gui.ddl.AlterTableGUI;
 import gui.ddl.ConstraintsGUI;
+import gui.ddl.tools.I_AttributeModel;
+import gui.ddl.tools.I_TableModel;
 
 import javax.swing.JFrame;
 
-import ddl.I_AttributeModel;
-import ddl.I_TableModel;
 import useful.Response;
 import useful.ResponseData;
 
@@ -32,10 +34,14 @@ public class DDLController
 	/** IHM pour supprimer une table.*/
 	private DropTableGUI dropGUI;
 
+	/** IHM pour jouer sur les contraintes Unique et Foreign key.*/
+	private ConstraintsGUI constraintsGUI;
+	
+	
 	/** Facade pour la définition des données.*/
 	private DDLFacade facade;
 
-	private ConstraintsGUI constraintsGUI;
+	private QbeGUI qbeGUI;
 
 
 	//Contructeur
@@ -106,6 +112,16 @@ public class DDLController
 	}
 
 
+	public void openQbeGUI() {
+		if (this.qbeGUI == null) {
+			this.qbeGUI = new QbeGUI(this);
+		}
+		else {
+			showGUI(this.qbeGUI);
+		}
+	}
+
+
 	/**
 	 * @return une réponse personnalisée contenant le nom des tables
 	 * de la base, si et seulement si ces dernières existent et 
@@ -125,18 +141,34 @@ public class DDLController
 		return this.facade.getDataTypes();
 	}
 
-
+	
 	/**
-	 * Envoie $table au DDLManager dans l'optique de la créer.
+	 * Tente de créer une $table.
 	 * 
-	 * @param table : une table à créer. L'objet peut être erroné;
+	 * @param table : nom de la table à créer, null interdit.
+	 * @param attributes : liste des attributs de la tables, suivent le pattern :<br/>
+	 * nom, type, taille, NOTNULL, PRIMARY.
+	 * @return une réponse personnalisée décrivant si la table a pu être créée ou non.
 	 */
-	public Response createTable(I_TableModel table)
+	public Response createTable(String table, List<String[]> attributes)
 	{
-		return this.facade.createTable(table);
+		boolean business = this.createTableBusiness(table, attributes);
+		Response result;
+		
+		if (! business) {
+			result = new Response(false, "Cette table existe déjà.");
+		} 
+		else {
+			Response dbms = this.createTableDBMS(table);
+			if (! dbms.hasSuccess()) {
+				this.facade.dropTableBusiness(table);
+			}
+			result = dbms;
+		}
+		return result;
 	}
-
-
+	
+	
 	/**
 	 * Supprime $table, si c'est possible.
 	 * 
@@ -205,22 +237,13 @@ public class DDLController
 		} 
 		else {
 			result = this.getAttributesAndPrimaries(table);
-			this.facade.addAttributesToBusiness(table, result.getCollection());
+			this.addAttributesToBusiness(table, result.getCollection());
 			this.loadForeigns(table); //TODO : se soucier de la reponse retournée
 			this.loadUniques(table); //TODO : se soucier de la reponse retournée
 		}
 		return result;
 	}
-
-
-	/**
-	 * Modifie une table existante
-	 */
-	public Response alterTable(String oldTable, String newTable) 
-	{
-		return this.facade.alterTable(oldTable, newTable);
-	}
-
+	
 	
 	/**
 	 * 
@@ -355,6 +378,98 @@ public class DDLController
 
 
 	
+	private Response createTableDBMS(String table) 
+	{
+		List<String>sql = this.facade.getSQLToCreateTable(table);
+		Iterator<String> statement = sql.iterator();
+		
+		String create = statement.next(); 
+		Response result = this.facade.createTableDBMS(create);
+		while (statement.hasNext() && result.hasSuccess()) {
+			result = this.facade.alterTableDBMS(statement.next());
+		}
+		return result;
+	}
+
+
+	/**
+	 * Créer $table dans les classes métiers, si c'est possible.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @param attributes : liste des attributs de $tables. Ils suivent le pattern <br/>
+	 * - nom, type, taille, NOTNULL, PRIMARY.
+	 * @return vrai ssi $table et créée avec tous ses attributs, faux sinon.
+	 */
+	private boolean createTableBusiness(String table, List<String[]> attributes)
+	{
+		boolean created = this.facade.createTableBusiness(table);
+		boolean filled = false;
+		
+		if (created) {
+			filled = this.addAttributesToBusiness(table, attributes);
+		}
+		
+		if (created && !filled) {
+			this.facade.dropTableBusiness(table);
+		}
+		return created && filled;
+	
+	}
+
+
+	//Privées	
+	/**
+	 * Ajoute $attribute à la table.<br/>
+	 * L'attribut contient son nom, type, taille, NOT NULL et PRIMARY KEY.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @param attribute : caractéristiques de l'attribut à ajouter, null interdit : <br/>
+	 * nom, type, taille, NOTNULL, PRIMARY.
+	 * @return vrai ssi $attribute est ajouté avec succès à $table, faux sinon.
+	 */
+	private boolean addAttributeToBusiness(String table, String [] att)
+	{
+		return this.facade.addAttributeToBusiness(table, att[0], att[1], 
+				Integer.parseInt(("".equals(att[2]) || null == att[2]) 
+						? "1" 
+						: att[2]), 
+				"NOTNULL".equals(att[3]), 
+				"PRIMARY".equals(att[4]));
+	}
+	
+	
+	/**
+	 * Ajoute tous les $attributes à $table.
+	 * 
+	 * @param table : nom de la table, doit déjà exister, null interdit.
+	 * @param attributes : caractéristiques des attributs à ajouter, null interdit : <br/>
+	 * nom, type, taille, NOTNULL, PRIMARY.
+	 * @return vrai ssi $attributes est ajouté avec succès à $table, faux sinon.
+	 */
+	private boolean addAttributesToBusiness(String table, List<String[]> attributes)
+	{
+		boolean result = true;
+		Iterator<String[]> it = attributes.iterator();
+		
+		while (it.hasNext() && result) {
+			result = this.addAttributeToBusiness(table, it.next());
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Affiche $gui au premier plan.
+	 * 
+	 * @param gui : une IHM, null interdit.
+	 */
+	private static void showGUI(JFrame gui)
+	{
+		gui.setVisible(true);
+		gui.toFront();
+	}
+
+
 	private static String [] convertAttribute(String [] att, List<String> primaries)
 	{
 		String [] result = new String [5];
@@ -373,18 +488,5 @@ public class DDLController
 		result[3] = !primary && "NO".equals(att[3]) ? "NOTNULL" : "NULL";
 		result[4] = primary ? "PRIMARY" : "COMMON";
 		return result;
-	}
-
-
-	//Privées
-	/**
-	 * Affiche $gui au premier plan.
-	 * 
-	 * @param gui : une IHM, null interdit.
-	 */
-	private static void showGUI(JFrame gui)
-	{
-		gui.setVisible(true);
-		gui.toFront();
 	}
 }

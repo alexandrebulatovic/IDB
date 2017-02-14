@@ -39,6 +39,8 @@ implements ActionListener
 	private JButton dropButton;
 
 	private JButton constraintsButton;
+	
+	private JButton qbeButton;
 
 	/** Bouton pour ouvrir l'IHM du CRUD.*/
 	private JButton crudButton;
@@ -77,6 +79,8 @@ implements ActionListener
 						if (o == this.crudButton) this.crudButtonAction();
 						else 
 							if(o == this.constraintsButton) this.constraintsButtonAction();
+							else
+								if(o == this.qbeButton) this.qbeButtonAction();
 	}
 
 
@@ -122,6 +126,9 @@ implements ActionListener
 		this.constraintsButton = new JButton("LDD : créer supprimer contraintes");
 		this.constraintsButton.setActionCommand("ldd_create_drop_constraints");
 		
+		this.qbeButton = new JButton("QBE : Requêtes");
+		this.qbeButton.setActionCommand("qbe_request");
+		
 		this.crudButton = new JButton("CRUD");
 		this.crudButton.setActionCommand("crud");
 
@@ -143,6 +150,7 @@ implements ActionListener
 		this.bindAndAdd(this.alterButton);
 		this.bindAndAdd(this.dropButton);
 		this.bindAndAdd(this.constraintsButton);
+		this.bindAndAdd(this.qbeButton);
 		this.bindAndAdd(this.crudButton);
 		for (JComponent jc : this.components) {
 			if (jc.getClass().getName().endsWith("JButton")) {
@@ -185,6 +193,12 @@ implements ActionListener
 
 	private void constraintsButtonAction() {
 		this.control.openConstraintsGUI();
+		
+	}
+
+
+	private void qbeButtonAction() {
+		this.control.openQbeGUI();
 		
 	}
 

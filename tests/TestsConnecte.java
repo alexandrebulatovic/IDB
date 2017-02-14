@@ -25,15 +25,15 @@ import useful.Response;
 import useful.ResponseData;
 import controller.DDLController;
 import controller.HomeController;
-import ddl.MockAttributeModel;
-import ddl.MockTableModel;
-import ddl.MySQLAttributeModel;
-import ddl.MySQLTableModel;
-import ddl.OracleAttributeModel;
-import ddl.OracleTableModel;
 import facade.DDLFacade;
 import facade.HomeFacade;
 import factory.MainFactory;
+import gui.ddl.tools.MockAttributeModel;
+import gui.ddl.tools.MockTableModel;
+import gui.ddl.tools.MySQLAttributeModel;
+import gui.ddl.tools.MySQLTableModel;
+import gui.ddl.tools.OracleAttributeModel;
+import gui.ddl.tools.OracleTableModel;
 
 /**
  * Réaliser ces tests en ayant sur sa base le script 
@@ -267,12 +267,6 @@ public class TestsConnecte
 	
 	
 	@Test
-	public void checkConnectionManager()
-	{
-		//Encapsulé, l'instance en cours ne peut pas être testée.
-	}
-	
-	@Test
 	public void checkDDLManager()
 	{
 		factory.setDBMS(dbms);
@@ -299,16 +293,17 @@ public class TestsConnecte
 						"\t REFERENCES existepas(idexistepas)\n)";
 		
 		String createThree = "CREATE TABLE " + table3 + "\n(\n" + 
-				"idreference " + number + ",\n" +
-				"extreference " + charr + "(1),\n" +
-				"CONSTRAINT pk_referenceexistepasbis PRIMARY KEY(idreference),\n" +
-				"CONSTRAINT fk_referenceexistepasbis_extrf FOREIGN KEY (extreference)\n" +
-				"\t REFERENCES existepas(idexistepas)\n)";
+						"idreference " + number + ",\n" +
+						"extreference " + charr + "(1),\n" +
+						"CONSTRAINT pk_referenceexistepasbis PRIMARY KEY(idreference),\n" +
+						"CONSTRAINT fk_referenceexistepasbis_extrf FOREIGN KEY (extreference)\n" +
+						"\t REFERENCES existepas(idexistepas)\n)";
 		
 		ddl.dropTable(table1, true);
 		ddl.dropTable(table2, true);
 		ddl.dropTable(table3, true);
 		
+		//Créer sans doublons
 		assertEquals(true, ddl.createTable(createOne).hasSuccess());
 		assertEquals(false, ddl.createTable(createOne).hasSuccess());
 		
@@ -318,12 +313,14 @@ public class TestsConnecte
 		assertEquals(true, ddl.createTable(createThree).hasSuccess());
 		assertEquals(false, ddl.createTable(createThree).hasSuccess());
 		
+		//Supprimer sans cascade
 		assertEquals(false, ddl.dropTable(table1, false).hasSuccess());
 		assertEquals(true, ddl.dropTable(table2, false).hasSuccess());
 		assertEquals(true, ddl.dropTable(table3, false).hasSuccess());
 		assertEquals(true, ddl.createTable(createTwo).hasSuccess());
 		assertEquals(true, ddl.createTable(createThree).hasSuccess());
 		
+		//Supprimer avec cascade
 		assertEquals(true, ddl.dropTable(table1, true).hasSuccess());
 		assertEquals(false, ddl.dropTable(table1, true).hasSuccess());
 		assertEquals(true, ddl.dropTable(table2, true).hasSuccess());
@@ -334,10 +331,36 @@ public class TestsConnecte
 		//Recréer les deux tables
 		assertEquals(false, ddl.createTable(createTwo).hasSuccess());
 		assertEquals(false, ddl.createTable(createThree).hasSuccess());
+		this.createTables(ddl, createOne, createTwo, createThree);
+		
+		//Supprimer les tables avec effet domino
+		ResponseData<String> r = ddl.dropTableDomino(table1);
+		assertEquals(true, r.hasSuccess());
+		assertEquals(3, r.getCollection().size());
+		this.createTables(ddl, createOne, createTwo, createThree);
+		
+		r = ddl.dropTableDomino(table2);
+		assertEquals(true, r.hasSuccess());
+		assertEquals(1, r.getCollection().size());
+		r = ddl.dropTableDomino(table3);
+		assertEquals(true, r.hasSuccess());
+		assertEquals(1, r.getCollection().size());
+		r = ddl.dropTableDomino(table1);
+		assertEquals(true, r.hasSuccess());
+		assertEquals(1, r.getCollection().size());
+		
+//		assertEquals(false, ddl.dropTable(table1, false).hasSuccess());
+		assertEquals(false, ddl.dropTableDomino(table1).hasSuccess());
+		assertEquals(false, ddl.dropTableDomino(table2).hasSuccess());
+		assertEquals(false, ddl.dropTableDomino(table3).hasSuccess());
+		this.createTables(ddl, createOne, createTwo, createThree);
+	}
+	
+	
+	private void createTables(I_DDLManager ddl, String createOne, String createTwo, String createThree)
+	{
 		assertEquals(true, ddl.createTable(createOne).hasSuccess());
 		assertEquals(true, ddl.createTable(createTwo).hasSuccess());
 		assertEquals(true, ddl.createTable(createThree).hasSuccess());
-		
-		//TODO : dropTableDomino pour MySQL
 	}
 }

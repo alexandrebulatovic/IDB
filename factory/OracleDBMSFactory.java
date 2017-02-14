@@ -1,11 +1,12 @@
 package factory;
 
+import gui.ddl.tools.I_AttributeModel;
+import gui.ddl.tools.I_TableModel;
+import gui.ddl.tools.OracleAttributeModel;
+import gui.ddl.tools.OracleTableModel;
+
 import java.sql.Connection;
 
-import ddl.I_AttributeModel;
-import ddl.I_TableModel;
-import ddl.OracleAttributeModel;
-import ddl.OracleTableModel;
 import manager.connection.I_ConnectionManager;
 
 import manager.connection.OracleConnectionManager;

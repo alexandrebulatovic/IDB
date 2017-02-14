@@ -1,11 +1,12 @@
 package factory;
 
+import gui.ddl.tools.I_AttributeModel;
+import gui.ddl.tools.I_TableModel;
+import gui.ddl.tools.MySQLAttributeModel;
+import gui.ddl.tools.MySQLTableModel;
+
 import java.sql.Connection;
 
-import ddl.I_AttributeModel;
-import ddl.I_TableModel;
-import ddl.MySQLAttributeModel;
-import ddl.MySQLTableModel;
 import manager.connection.I_ConnectionManager;
 import manager.connection.MySQLConnectionManager;
 import manager.ddl.I_DDLManager;

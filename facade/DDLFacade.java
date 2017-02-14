@@ -1,14 +1,13 @@
 package facade;
 
-import java.util.Iterator;
 import java.util.List;
 
 import business.TableSet;
-import ddl.I_AttributeModel;
-import ddl.I_TableModel;
 import useful.Response;
 import useful.ResponseData;
 import factory.MainFactory;
+import gui.ddl.tools.I_AttributeModel;
+import gui.ddl.tools.I_TableModel;
 import manager.ddl.I_DDLManager;
 
 public class DDLFacade 
@@ -34,30 +33,55 @@ extends AbstractDDLCRUDFacade
 
 	//Méthodes
 	/**
-	 * Tente de créer $table dans la base de données.
-	 * 
-	 * @param table : une table à créer. L'objet peut être erroné;
+	 * @param table : nom de la table dont il faut récupérer le SQL pour la créer
+	 * en base, null interdit.
+	 * @return une liste de requête SQL. La première est un CREATE TABLE, les autres des
+	 * ALTER TABLE.
 	 */
-	public Response createTable(I_TableModel table)
+	public List<String> getSQLToCreateTable(String table)
 	{
-		boolean addable = this.createtableBusiness(table);
-		Response added;
-		
-		if (!addable) 
-			added = new Response(false, "Cette table existe déjà.");
-		else {
-			added = this.createTableDBMS(table);
-			if (! added.hasSuccess()) 
-				this.business.removeTable(table.getName());
-		}
-		return added;
+		return this.business.getSQLTableToCreate(table);
 	}
 
 	
 	/**
-	 * @param table
-	 * @return vrai ssi $table a déjà étée chargée depuis le SGBD,
-	 * faux sinon.
+	 * Tente de créer une table en base à partir de la requête $sql.
+	 * 
+	 * @param sql : une requête SQL CREATE TABLE, null interdit.
+	 * @return une réponse personnalisée décrivant si la table a pu être créée ou non.
+	 */
+	public Response createTableDBMS(String sql)
+	{
+		return this.dbms.createTable(sql);
+	}
+
+	
+	/**
+	 * Tente de créer une table en RAM à partir de la requête $sql.
+	 * 
+	 * @param table : nom d'une table à créer, null interdit.
+	 * @return vrai ssi $table a pu être créée, faux sinon.
+	 */
+	public boolean createTableBusiness(String table)
+	{
+		return this.business.addTable(table);
+	}
+	
+	
+	/**
+	 * Tente d'altérer une table en base avec une requête $sql.
+	 * @param sql : une requête SQL ALTER TABLE, null interdit.
+	 * @return une réponse personnalisée décrivant si l'altération a réussi ou non.
+	 */
+	public Response alterTableDBMS(String sql)
+	{
+		return this.dbms.alterTable(sql);
+	}
+
+
+	/**
+	 * @param table : nom de la table, null interdit.
+	 * @return vrai ssi $table existe en RAM, faux sinon.
 	 */
 	public boolean isLoaded(String table)
 	{
@@ -65,85 +89,38 @@ extends AbstractDDLCRUDFacade
 	}
 	
 	
-	public Response alterTable(String oldTable, String newTable)
+	/**
+	 * Ajoute $attribute à $table en RAM, si c'est possible.
+	 * 
+	 * @param table : nom de la table, null interdit.
+	 * @param attribute : nom de l'attribut, null interdit.
+	 * @param type : type de données de l'attribut, null interdit.
+	 * @param size : taille de l'attribut, 0 < size.
+	 * @param notNull : vrai ssi $attribute est sous contrainte NOT NULL faux sinon.
+	 * @param primaryKey : vrai ssi $attribut est membre de la clée primaire, faux sinon.
+	 * @return vrai ssi $attribute a été ajouté à $table, faux sinon.
+	 */
+	public boolean addAttributeToBusiness
+		(String table, String attribute, String type, int size, boolean notNull, boolean primaryKey)
 	{
-		String sql;
-		Response result;
-		List<String> queries = this.business.getSQLTableToModify(oldTable, newTable);
-		Iterator<String> it = queries.iterator();
-		boolean stop = false;
-		result = new Response(true, "Table modifiée.");
-		
-		while (it.hasNext() && !stop) {
-			sql = it.next();
-//			result = this.manager.alterTable(sql);
-			stop = ! result.hasSuccess();
-		}
-		return result;
+		return this.business.addAttribute(table, attribute, type, size, notNull, primaryKey);
 	}
 	
 	
 	/**
-	 * Ajoute $attribute à la table.<br/>
-	 * L'attribut contient son nom, type, taille, NOT NULL et PRIMARY KEY.
+	 * Ajoute une $constraint UNIQUE sur le groupe d' $attributes de $table 
+	 * en RAM, si c'est possible.
 	 * 
+	 * @param constraint : nom de la contrainte, null interdit.
 	 * @param table : nom de la table, null interdit.
-	 * @param attribute : caractéristiques de l'attribut à ajouter, null interdit : <br/>
-	 * nom, type, taille, NOTNULL, PRIMARY.
-	 * @return vrai ssi $attribute est ajouté avec succès à $table, faux sinon.
+	 * @param attributes : nom des attributs, null interdit.
+	 * @return vrai ssi $constraint a été ajouté, faux sinon.
 	 */
-	public boolean addAttributeToBusiness(String table, String [] att)
+	public String addUniqueBusiness(String constraint, String table, String[] attributes)
 	{
-		return this.business.addAttribute(table, att[0], att[1], 
-				Integer.parseInt(("".equals(att[2]) || null == att[2]) 
-						? "1" 
-						: att[2]), 
-				"NOTNULL".equals(att[3]), 
-				"PRIMARY".equals(att[4]));
+		return this.business.addUnique(constraint, table, attributes);
 	}
 	
-	
-	/**
-	 * Ajoute tous les $attributes à $table.
-	 * 
-	 * @param table : nom de la table, null interdit.
-	 * @param attributes : caractéristiques des attributs à ajouter, null interdit : <br/>
-	 * nom, type, taille, NOTNULL, PRIMARY.
-	 * @return vrai ssi $attributes est ajouté avec succès à $table, faux sinon.
-	 */
-	public boolean addAttributesToBusiness(String table, List<String[]> attributes)
-	{
-		
-		boolean result = true;
-		Iterator<String[]> it = attributes.iterator();
-		
-		while (it.hasNext() && result) {
-			result = this.addAttributeToBusiness(table, it.next());
-		}
-
-		return result;
-	}
-	
-	
-	public String addUniqueBusiness(String table, String [] attributesGroup)
-	{
-		return this.business.addUnique(table, attributesGroup);
-	}
-	
-	
-	public String addUniqueBusiness(String uniqueName, String tableName, String[] attributesNames)
-	{
-		return this.business.addUnique(uniqueName, tableName, attributesNames);
-	}
-	
-	
-	//TODO : trompeur
-	public Response addUniqueDBMS(String tableSourceName, String[] attributesSourcesNames, String contrainte) {
-		String sql = this.business.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], contrainte);
-		Response result = this.manager.addUnique(sql);
-		return result;
-	}
-
 	
 	/**
 	 * Ajoute une clée étrangère dans les classes métiers.
@@ -155,40 +132,24 @@ extends AbstractDDLCRUDFacade
 	 * @param primaryAttributes : nom des attributs membres de la clée primaire référencées, null interdit.
 	 * @return le nom de la contrainte de clée étrangère.
 	 */
-	public String addForeignKeyToBusiness(
-			String constraintName, 
-			String foreignTable, 
-			String[] foreignAttributes, 
-			String primaryTable, 
-			String[] primaryAttributes)
+	public String addForeignKeyToBusiness(String constraintName, String foreignTable, String[] foreignAttributes, String primaryTable, String[] primaryAttributes)
 	{
 		return this.business.addForeignKey(
-				constraintName, 
-				foreignTable, 
-				foreignAttributes, 
-				primaryTable, 
-				primaryAttributes);
+				constraintName, foreignTable, foreignAttributes, primaryTable, primaryAttributes);
 	}
 	
 	
-	public Response addUnique(String table, String[] attributesGroup) {
-		String contrainte = this.business.addUnique(table, attributesGroup);
-		Response added = this.addUniqueDBMS(table, attributesGroup, contrainte);
-		return added;
-	}
-
-
 	/**
 	 * @return la liste des types de données disponibles pour le SGBD.
 	 */
 	public String[] getDataTypes()
 	{
-		return this.manager.getDataTypes();
+		return this.dbms.getDataTypes();
 	}
 
 	
 	/**
-	 * Supprime $table du SGBD.
+	 * Supprime $table du SGBD, si c'est possible.
 	 * 
 	 * @param table : nom de la table à supprimer, null interdit.
 	 * @param cascade : vrai ssi $table peut être supprimée malgré les références, faux sinon.
@@ -196,7 +157,7 @@ extends AbstractDDLCRUDFacade
 	 */
 	public Response dropTableDBMS(String table, boolean cascade)
 	{
-		return this.manager.dropTable(table, cascade);
+		return this.dbms.dropTable(table, cascade);
 	}
 	
 	
@@ -222,7 +183,7 @@ extends AbstractDDLCRUDFacade
 	 */
 	public ResponseData<String> dropTableDominoDBMS(String table)
 	{
-		return this.manager.dropTableDomino(table);
+		return this.dbms.dropTableDomino(table);
 	}	
 	
 	
@@ -239,7 +200,7 @@ extends AbstractDDLCRUDFacade
 	 */
 	public ResponseData<String[]>getAttributesDBMS(String table)
 	{
-		return this.manager.getAttributes(table);
+		return this.dbms.getAttributes(table);
 	}
 	
 	
@@ -259,20 +220,35 @@ extends AbstractDDLCRUDFacade
 	
 	
 	/**
-	 * Retourne une réponse personnalisée qui contient les membres
-	 * de la clée primaire de $table.
-	 * 
-	 * @param table : nom de la table, ne doit pas être null.
-	 * @return CustomizedResponseWithData
+	 * @param table : nom de la table où chercher la clée, null interdit.
+	 * @return Une réponse personnalisée contenant les attributs membres
+	 * de la clée primaire de $table si et seulement si la requête fonctionne,
+	 * sinon une réponse personnalisée détaillant l'erreur survenue.
 	 */
 	public ResponseData<String> getPrimaryKeyDBMS(String table)
 	{
-		return this.manager.getPrimaryKey(table);
+		return this.dbms.getPrimaryKey(table);
 	}
 
-
-	public ResponseData<String[]> getForeignFromPrimary(String string) {
-		return this.manager.getForeignFromPrimary(string);
+	
+	/**
+	 * @param table : table où se les membres de la clée primaire, null interdit.
+	 * @return une réponse personnalisée.<br/>
+	 * 
+	 * Lorsque la récupération réussit, la réponse contient dans l'ordre :<br/>
+	 * - l'argument $table, <br/>
+	 * - le nom d'un attribut $a2, membre de la clée primaire de $table,<br/>
+	 * - le nom de la contrainte de clée primaire de $table,<br/>
+	 * - le nom d'une table $t,<br/>
+	 * - le nom d'un attribut $a, clée étrangère de $t, qui référence $table($a2),<br/>
+	 * - le nom de la contrainte de clée étrangère de $t($a).<br/><br/>
+	 * 
+	 * Pour résumer : FOREIGN KEY($a) REFERENCES $table($a2)
+	 * Lorsque la récupération échoue, la réponse est vide et décrit l'erreur rencontrée.
+	 */
+	public ResponseData<String[]> getForeignFromPrimary(String string) 
+	{
+		return this.dbms.getForeignFromPrimary(string);
 	}
 
 
@@ -284,7 +260,7 @@ extends AbstractDDLCRUDFacade
 	 */
 	public ResponseData<String[]> getUniquesFromDBMS(String table) 
 	{
-		return this.manager.getUniques(table);
+		return this.dbms.getUniques(table);
 		
 	}
 
@@ -305,42 +281,37 @@ extends AbstractDDLCRUDFacade
 	 */ 
 	public ResponseData<String[]> getPrimaryFromForeign(String table) 
 	{
-		return this.manager.getPrimaryFromForeign(table);
+		return this.dbms.getPrimaryFromForeign(table);
 	}
-
-
-	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
-			String[] attributesDestinationsNames) {
-		String contrainte = this.business.addForeignKey(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
-		Response added = this.addForeignKeyDBMS(tableSourceName, attributesSourcesNames, contrainte);
-		return added;
-	}
-
-
-	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
-		
-		String sql = this.business.getSQLDropConstraint(tableSourceName,attribute, constraint);
-		this.business.removeConstraint(tableSourceName, attribute, constraint);
-		System.out.println(sql);
-		Response result = this.manager.dropConstraint(sql);
-		System.out.println(result.getMessage());
-		return result;
-		
-	}
-
-
-	/**
-	 * Ferme proprement les objets Statements.
-	 */
-	public void closeDDL(){this.manager.closeStatement();}
-
-
+	
+	
 	/**
 	 * @return un modèle de table vide pour l'IHM de création des tables.
 	 */
 	public I_TableModel getTableModel()
 	{
 		return this.factory.getTableModel();
+	}
+
+
+	/**
+	 * Ferme proprement les objets Statements.
+	 */
+	public void closeDDL(){this.dbms.closeStatement();}
+
+
+	//TODO : trompeur
+	public Response addUniqueDBMS(String tableSourceName, String[] attributesSourcesNames, String contrainte) {
+		String sql = this.business.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], contrainte);
+		Response result = this.dbms.addUnique(sql);
+		return result;
+	}
+
+
+	public Response addUnique(String table, String[] attributesGroup) {
+		String contrainte = this.business.addUnique(table, attributesGroup);
+		Response added = this.addUniqueDBMS(table, attributesGroup, contrainte);
+		return added;
 	}
 
 
@@ -358,58 +329,30 @@ extends AbstractDDLCRUDFacade
 	}
 
 
-	/**
-	 * Tente de créer $table dans le SGBD.
-	 * 
-	 * @param table : une table à ajouter, null interdit.
-	 * @return une reponse personnalisée décrivant la tentative
-	 * de création de la table dans le SGBD.
-	 */
-	private Response createTableDBMS(I_TableModel table)
-	{
-		String name = table.getName();
-		List<String> sql = this.business.getSQLTableToCreate(name);
-		Iterator<String> statement = sql.iterator();
-		
-		String create = statement.next(); 
-		Response result = this.manager.createTable(create);
-		while (statement.hasNext() && result.hasSuccess()) {
-			result = this.manager.alterTable(statement.next());
-		}
+	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
+		this.business.removeConstraint(tableSourceName, attribute, constraint);
+		String sql = this.business.getSQLDropConstraint(tableSourceName,attribute, constraint);
+		System.out.println(sql);
+		Response result = this.dbms.dropConstraint(sql);
+		System.out.println(result.getMessage());
 		return result;
+		
+	}
+
+
+	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
+			String[] attributesDestinationsNames) {
+		String contrainte = this.business.addForeignKey(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
+		System.out.println(contrainte);
+		Response added = this.addForeignKeyDBMS(tableSourceName, attributesSourcesNames, contrainte);
+		return added;
 	}
 
 
 	private Response addForeignKeyDBMS(String tableSourceName, String[] attributesSourcesNames,String ConstraintName) {
 		String sql = this.business.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], ConstraintName);
-		Response result = this.manager.addForeignKey(sql);
+		System.out.println(sql);
+		Response result = this.dbms.addForeignKey(sql);
 		return result;
-	}
-
-
-	/**
-	 * tente de créer $table dans les classes métiers.
-	 * 
-	 * @param table : une table à ajouté, faux sinon.
-	 * @return vrai si et seulement si $table a pu être ajoutée aux
-	 * classes métiers, faux sinon.
-	 */
-	private boolean createtableBusiness(I_TableModel table)
-	{
-		String name = table.getName();
-		boolean addable = this.business.addTable(name);
-		
-		if (addable) {
-			for(I_AttributeModel attribute : table.getAttributes()){
-				this.business.addAttribute(
-						table.getName(),
-						attribute.getName(),
-						attribute.getType(),
-						attribute.getSize(),
-						attribute.isNotNull(),
-						attribute.isPrimaryKey());
-			}
-		}
-		return addable;
 	}
 }
