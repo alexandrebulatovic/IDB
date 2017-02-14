@@ -32,6 +32,7 @@ public class Attribute
 	 * @param size
 	 * @param constraints
 	 * @param tableName
+	 * @param isNotNull
 	 */
 	public Attribute(String name, String type, int size, List<Constraint> constraints,String tableName, boolean isNotNull){
 		this.name=name;
@@ -294,6 +295,10 @@ public class Attribute
 		return "ALTER TABLE "+this.tableName+"\nADD "+this.toSQL();
 	}
 
+	public String toADDSQL(String tableName) {
+		return "ALTER TABLE "+tableName+"\nADD "+this.toSQL();
+	}
+
 	/**
 	 * @Exemple ALTER TABLE $nomTable DROP $nomAttribut
 	 * @return
@@ -302,8 +307,16 @@ public class Attribute
 		return "ALTER TABLE "+this.tableName+"\nDROP "+this.name;
 	}
 	
+	public String toDROPSQL(String tableName) {
+		return "ALTER TABLE "+tableName+"\nDROP "+this.name;
+	}
+
 	public String toModify(){
 		return "ALTER TABLE "+this.tableName+"\nMODIFY "+this.toSQL();
+	}
+
+	public String toModify(String tableName) {
+		return "ALTER TABLE "+tableName+"\nMODIFY "+this.toSQL();
 	}
 
 	public PrimaryKeyConstraint getPk() {

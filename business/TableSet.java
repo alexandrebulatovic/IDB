@@ -266,18 +266,66 @@ public class TableSet
 	
 	
 	/**
-	 * @param oldTable : ancien nom de la table, null interdit.
-	 * @param newTable : nouveau nom de la table, null interdit.
+	 * @param oldTableName : ancien nom de la table, null interdit.
+	 * @param newTableName : nouveau nom de la table, null interdit.
+	 * @param attributes : liste décrivant les attributes : 
+	 * 		-le nom String
+	 * 		-type String
+	 * 		-taille int
+	 * 		-isNotNull boolean
+	 * 		-isPrimaryKey boolean
 	 * @return une liste de requêtes SQL pour altérer la table $oldname.
 	 */
-	public List<String> getSQLTableToModify(String oldTable, String newTable)
+	public List<String> getSQLTableToModify(String oldTableName, String newTableName, List<Object[]> attributes)
 	{
-		Table newT = this.getTableByName("TEMPORARY");
-		newT.setName(newTable);
-		return newT.toModify(this.getTableByName(oldTable));
+		Table tmpTable = new Table(oldTableName);
+		Table oldTable = this.getTableByName(oldTableName);
+		
+		List<Attribute> attributesPk = new ArrayList<Attribute>();
+		
+		for (Object[] att : attributes){
+			String name = (String) att[0];
+			String type = (String) att[1];
+			
+			int size = (int) att[2];
+			boolean isNotNull = (boolean) att[3];
+			
+			Attribute a = new Attribute(name, type, size, null, type, isNotNull);
+			
+			
+			if ((boolean) att[4]){//if is pk
+				attributesPk.add(a);
+			}
+			
+			tmpTable.addAttribute(a);
+		}
+		
+		PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
+		pk.setTable(tmpTable);
+		pk.setName(oldTable.getPk().getName());
+		for (Attribute a : attributesPk){
+			pk.addAttribute(a);
+			a.addConstraint(pk);
+		}
+		tmpTable.addConstraint(pk);
+		
+		
+		
+		tmpTable.setName(oldTableName);
+		
+//		List<String> toModifySQL = tmpTable.toModify(this.getTableByName(oldTable));
+		
+		
+		
+		
+		List<String> toModifySQL = oldTable.toModify(tmpTable);
+		oldTable.setName(newTableName);
+		
+		return toModifySQL;
 	}
 	
 	
+
 	/**
 	 * Supprime une table s'après son nom
 	 * et s'occupe de supprimer les sous attributs

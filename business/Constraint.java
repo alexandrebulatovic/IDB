@@ -90,10 +90,11 @@ public abstract class Constraint
 	/**
 	 * Retourne une représentation de la contrainte 
 	 * 'brute'
-	 * @exemple CHECK(machin IS NOT NULL)
+	 * @exemple nn_table_att CHECK(machin IS NOT NULL)
 	 * @return String
 	 */
 	public abstract String getNameSQL();
+	
 	
 	
 	/** 
@@ -153,6 +154,14 @@ public abstract class Constraint
 		return this.toAlterSQL()+"ADD CONSTRAINT "+this.getNameSQL();
 	}
 	
+	public String toAddConstraintSQL(String tableName) {
+		return this.toAlterSQL(tableName)+"ADD CONSTRAINT "+this.getNameSQL();
+	}
+
+
+	
+
+
 	/**
 	 * @exemple
 	 * ALTER TABLE tableName<br>
@@ -164,6 +173,11 @@ public abstract class Constraint
 	}
 	
 	
+	public String toDropConstraintSQL(String tableName) {
+		return this.toAlterSQL(tableName)+"DROP CONSTRAINT "+this.name;
+	}
+
+
 	public List<String> getAttributesNames() {
 		List<String> retour = new ArrayList<String>();
 		
@@ -183,6 +197,11 @@ public abstract class Constraint
 			return "spécifiez le nom de la table svp";
 		}
 		return "ALTER TABLE "+this.table.getName()+"\n";
+	}
+
+
+	private String toAlterSQL(String tableName) {
+		return "ALTER TABLE "+tableName+"\n";
 	}
 
 
@@ -286,6 +305,18 @@ public abstract class Constraint
 		this.keyWord = "NO_KEYWORD";
 		
 		
+	}
+
+
+
+	public List<String> toModify(String tableName) {
+		List<String> result = new ArrayList<String>();
+		
+
+		result.add(this.toDropConstraintSQL(tableName));
+		result.add(this.toAddConstraintSQL(tableName));
+		
+		return result;
 	}
 	
 	
