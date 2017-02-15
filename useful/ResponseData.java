@@ -34,6 +34,16 @@ extends Response
 		this.data = new ArrayList<T>();
 	}
 	
+	/**
+	 * Constructeur sans message.
+	 * 
+	 * @param response : vrai ssi la tentative a réussie, faux sinon.
+	 */
+	public ResponseData(boolean response)
+	{
+		super(response);
+		this.data = new ArrayList<T>();
+	}
 	
 	/**
 	 * Constructeur complet 
