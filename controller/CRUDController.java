@@ -4,9 +4,11 @@ import facade.CRUD_SQL_Facade;
 import gui.CRUDGUI;
 import manager.sql.SQLManager;
 
+import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.JFrame;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import useful.Response;
@@ -64,11 +66,7 @@ public class CRUDController
 	}
 
 	/**
-	 * Retourne une réponse personnalisée contenant le nom des tables
-	 * de la base, si et seulement si (ces dernières existent et 
-	 * il n'y a pas eu d'exceptions).
-	 * 
-	 * @return CustomizedResponseWithData
+	 * @return la liste des tables disponibles.
 	 */
 	public ResponseData<String> getTables()
 	{
@@ -76,14 +74,14 @@ public class CRUDController
 	}
 
 	/**
-	 * Demande au {@code SQLManager} un modèle de {@code JTable} avec les données correspondant 
-	 * au nom de la table demandée.
-	 * @param tableName : nom de la table demandée.
-	 * @return un objet {@code DefaultTableModel} contenant les données de la table.
+	 * Permet de récupérer un objet {@code JTable} à partir du nom d'une table stockée dans la base de données.
+	 * @param tableName : nom de la table à récupérer.
+	 * @return un objet {@code ResponseData} contenant une {@code JTable} ou un message d'erreur.
+	 * @see ResponseData
 	 */
-	public DefaultTableModel requestTable(String tableName) 
+	public ResponseData<JTable> getJTableFromTableName(String tableName)
 	{
-		return this.crudFacade.requestTable(tableName);
+		return this.crudFacade.getJTableFromTableName(tableName);
 	}
 
 	/**

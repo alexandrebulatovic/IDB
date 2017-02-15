@@ -7,6 +7,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import useful.Response;
+import useful.ResponseData;
 import business.TableSet;
 import manager.connection.I_ConnectionManager;
 
@@ -35,15 +36,33 @@ extends AbstractDDLCRUDFacade
 			System.out.println(msgException);
 		}
 	}
-
+	
 	/**
-	 * Demande au {@code SQLManager} un modèle de données de {@code JTable}.
-	 * @param tableName : nom de la table demandée.
-	 * @return un objet {@code DefaultTableModel} contenant les données de la table.
+	 * Permet de récupérer un objet {@code JTable} à partir du nom d'une table stockée dans la base de données.
+	 * @param tableName : nom de la table à récupérer.
+	 * @return un objet {@code ResponseData} contenant une {@code JTable} ou un message d'erreur.
 	 */
-	public DefaultTableModel requestTable(String tableName) 
+	public ResponseData<JTable> getJTableFromTableName(String tableName)
 	{
-		return this.sql_manager.requestTableModel(tableName);
+		JTable jTable;
+		ResponseData<JTable> responseData;
+		
+		try 
+		{
+			jTable = this.sql_manager.getJTableFromTableName(tableName);
+		} 
+		catch (SQLException exception) 
+		{
+			String msgException = generateErrorMsg(exception);
+			responseData = new ResponseData<>(false, msgException);
+			
+			return responseData;
+		}
+		
+		responseData = new ResponseData<>(true);
+		responseData.add(jTable);
+		
+		return responseData;
 	}
 
 	/**

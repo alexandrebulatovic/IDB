@@ -146,9 +146,8 @@ public class SQLManager {
 			if (is_resultset) { // SELECT
 
 				this.rs = stat.getResultSet();
-				this.rsmd = this.rs.getMetaData();
 
-				return buildJTable(this.rs, this.rsmd);
+				return buildJTable();
 
 			} else { //  INSERT, UPDATE, DELETE ou LDD
 
@@ -220,10 +219,12 @@ public class SQLManager {
 	/** Créé une représentation d'une table avec ses attributs et ses tuples.
 	 * @param rs : {@code ResultSet} à partir duquel générer la représentation.
 	 * @return un {@code JTable} qui représente la table.
+	 * @throws SQLException 
 	 */
 	@SuppressWarnings("serial")
-	public static JTable buildJTable(ResultSet rs, ResultSetMetaData rsmd)  // TODO : a refactorer
+	public JTable buildJTable() throws SQLException  // TODO : a refactorer
 	{
+		this.rsmd = this.rs.getMetaData();
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		Vector<String> columnNames = new Vector<String>();
@@ -280,19 +281,20 @@ public class SQLManager {
 		};
 	}
 
-	public DefaultTableModel requestTableModel(String tableName) 
+	/**
+	 * Permet de récupérer un objet {@code JTable} à partir du nom d'une table stockée dans la base de données.
+	 * @param tableName : nom de la table à récupérer.
+	 * @return un objet {@code JTable} représentant la table demandée.
+	 * @throws SQLException si l'accès à la base de données échoue.
+	 */
+	public JTable getJTableFromTableName(String tableName) throws SQLException
 	{
-		String qry = "SELECT T.* FROM "+ tableName+" T";
+		String query = "SELECT T.* FROM "+ tableName +" T";
 
-		Object reply = this.sendSQL(qry);
-
-		if (reply instanceof JTable)
-			return (DefaultTableModel) ((JTable) reply).getModel();
-		else {
-			System.out.println(((Response)reply).getMessage());
-			return null;
-		}
-
+		this.rs = this.stat.executeQuery(query);
+		
+		JTable jTable = this.buildJTable();
+		return jTable;
 	}
 
 	/** Insère un nouveau tuple dans la base de données.

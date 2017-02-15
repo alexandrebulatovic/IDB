@@ -228,13 +228,19 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 		}
 	}
 
-	/** Demande au controller d'afficher la table choisie dans la combobox.
-	 * @param tableName : nom de la table demandée. */
+	/** Affiche une table de la base de données dans la vue.
+	 * @param tableName : nom de la table à afficher. */
 	private void requestTable(String tableName) 
 	{
-		DefaultTableModel table = this.crud_controller.requestTable(tableName);
-
-		this.tableDisplay(table);
+		ResponseData<JTable> responseData = this.crud_controller.getJTableFromTableName(tableName);
+		
+		if (responseData.hasSuccess())
+			this.tableDisplay((DefaultTableModel) responseData.getCollection().get(0).getModel());
+		else
+		{
+			String errorMsg = responseData.getMessage();
+			this.showError(errorMsg);
+		}
 	}
 
 	/** Instancie, positionne et dimensionne les différents composants de l'IHM et 
@@ -329,7 +335,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 	/** Affiche une table dans l'IHM.
 	 * @param tableModel : un objet {@code DefaultTableModel} avec les données à afficher. */
-	private void tableDisplay(DefaultTableModel tableModel)
+	public void tableDisplay(DefaultTableModel tableModel)
 	{
 		this.initJTable(tableModel);
 		this.displayJTable();
