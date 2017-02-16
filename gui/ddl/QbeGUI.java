@@ -3,6 +3,8 @@ package gui.ddl;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,6 +21,7 @@ import javax.swing.table.TableCellRenderer;
 
 import controller.DDLController;
 import gui.abstrct.AbstractBasicGUI;
+import gui.ddl.tools.AttributeQBE;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
@@ -125,6 +128,7 @@ public class QbeGUI extends AbstractBasicGUI{
 		this.increaseTop(5);
 
 		this.execRequestButton = new JButton("Executer la requête");
+		this.execRequestButton.addActionListener(this);
 		this.bindAndAdd(execRequestButton,3,true);
 		this.increaseLeft(225);
 		this.resetButton = new JButton("Reset");
@@ -147,9 +151,33 @@ public class QbeGUI extends AbstractBasicGUI{
 			this.addAttributeButtonAction();
 		if(o == this.resetButton)
 			this.resetButtonAction();
+		if(o == this.execRequestButton)
+			this.execRequestButtonAction();
 
 
 	}
+	private void execRequestButtonAction() {
+		int i,a;
+		List<AttributeQBE> attributes = new ArrayList<AttributeQBE>();
+		for(i=1; i<lastColumnUse+1; i++){
+			String tableName = (String) this.model.getValueAt(0, i);
+			String attributeName = (String) this.model.getValueAt(1, i);
+			boolean selected = (boolean) this.model.getValueAt(2, i);
+			List<String> where = new ArrayList<String>();
+			for(a = 3; a<20;a++){
+				if(this.model.getValueAt(a, i) == null){
+					where.add("");
+				}else{
+					where.add((String)this.model.getValueAt(a, i));	
+				}
+			}
+			AttributeQBE attribute = new AttributeQBE(tableName,attributeName,selected,where);
+			System.out.println(attribute);
+			attributes.add(attribute);
+		}
+		//TODO Ajouter lappel au controller pour creer les requetes a partir de la liste D'attributeQBE 'attributes'
+	}
+
 	/**
 	 * Remet à 0 la vue des requètes.
 	 */
