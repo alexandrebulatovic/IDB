@@ -152,7 +152,6 @@ public class QbeGUI extends AbstractBasicGUI{
 			this.addAttributeButtonAction();
 		if(o == this.resetButton)
 			this.resetButtonAction();
-<<<<<<< HEAD
 		if(o == this.execRequestButton)
 			this.execRequestButtonAction();
 
@@ -185,11 +184,6 @@ public class QbeGUI extends AbstractBasicGUI{
 		//TODO Ajouter lappel au controller pour creer les requetes a partir de la liste D'attributeQBE 'attributes'
 	}
 
-	
-=======
-	}
-
->>>>>>> [REFACTORING] Part1 (gestion des exceptions, deplacement des responsabilites de la CRUD_SQL_Facade vers CrudController et SQLController, amelioration javadoc...
 	/**
 	 * Remet à 0 la vue des requètes.
 	 */
