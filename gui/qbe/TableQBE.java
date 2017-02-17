@@ -1,4 +1,5 @@
-package gui.ddl.tools;
+package gui.qbe;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +100,9 @@ public class TableQBE
 	}
 
 	
+	/**
+	 * @return retourne la clause WHERE de la requête. 
+	 */
 	public String getWhere()
 	{
 		final String or = "\nOR ";
@@ -116,7 +120,10 @@ public class TableQBE
 	}
 
 
-	
+	/**
+	 * @param i : numéro de ligne, 0 <= i < nombre de ligne de table.
+	 * @return la condition exprimée à la ligne $i.
+	 */
 	public String getWhereAtRow(int i)
 	{
 		final String and = " AND ";
@@ -136,6 +143,9 @@ public class TableQBE
 
 
 	//Méthodes
+	/**
+	 * @return une requête SQL correspondant au QBE en cours.
+	 */
 	public String getQuery()
 	{
 		StringBuilder result = new StringBuilder(this.getSelect());

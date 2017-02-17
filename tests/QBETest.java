@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import gui.ddl.tools.ColumnQBE;
-import gui.ddl.tools.TableQBE;
+import gui.qbe.ColumnQBE;
+import gui.qbe.TableQBE;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +66,7 @@ public class QBETest
 		columns.add(c4);
 		t3 = new TableQBE(columns);
 		
-		columns = new ArrayList<ColumnQBE>(); //Table avec un seul WHERE pas en première ligne
+		columns = new ArrayList<ColumnQBE>(); //
 		columns.add(c1);
 		columns.add(c2);
 		columns.add(c3);
@@ -157,6 +157,18 @@ public class QBETest
 	
 	
 	@Test
+	public void countWhereAtRow()
+	{
+		assertEquals(0, c1.countWhereRows());
+		assertEquals(1, c2.countWhereRows());
+		assertEquals(1, c3.countWhereRows());
+		assertEquals(2, c4.countWhereRows());
+		assertEquals(3, c5.countWhereRows());
+		
+	}
+	
+	
+	@Test
 	public void checkGetWhereAtRow()
 	{
 		assertEquals("", c1.getWhereAtRow(0));
@@ -240,19 +252,29 @@ public class QBETest
 		assertEquals(3, t4.countWhereRows());
 	}
 	
+	
 	@Test
-	public void rien()
+	public void checkGetQuery()
 	{
-		System.out.println(t1.getQuery());
-		System.out.println();
+		String sql = "SELECT UN.idun, UN.codeun\n"+
+					"FROM UN";
+		assertEquals(sql, t1.getQuery());
 		
-		System.out.println(t2.getQuery());
-		System.out.println();
-
-		System.out.println(t3.getQuery());
-		System.out.println();
-
-		System.out.println(t4.getQuery());
+		sql = "SELECT UN.idun, UN.codeun, UN.numun\n"+
+				"FROM UN\n"+
+				"WHERE (UN.numun <3)";
+		assertEquals(sql, t2.getQuery());
 		
+		sql = "SELECT UN.idun, UN.codeun\n"+
+				"FROM UN\n"+
+				"WHERE (UN.invisibleun >  4)";
+		assertEquals(sql, t3.getQuery());
+		
+		sql = "SELECT UN.idun, UN.codeun, UN.numun, DEUX.iddeux\n"+
+				"FROM UN, DEUX\n"+
+				"WHERE (UN.numun <3 AND DEUX.iddeux <      5)\n"+
+				"OR (UN.invisibleun >  4 AND DEUX.iddeux >  5)\n"+
+				"OR (DEUX.iddeux != 5)";
+		assertEquals(sql, t4.getQuery());
 	}
 }

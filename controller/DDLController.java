@@ -37,11 +37,13 @@ public class DDLController
 	/** IHM pour jouer sur les contraintes Unique et Foreign key.*/
 	private ConstraintsGUI constraintsGUI;
 	
+	/** IHM pour faire du QBE.*/
+	private QbeGUI qbeGUI;
 	
 	/** Facade pour la définition des données.*/
 	private DDLFacade facade;
 
-	private QbeGUI qbeGUI;
+	
 
 
 	//Contructeur
@@ -265,6 +267,7 @@ public class DDLController
 	{
 		return this.facade.getTableModel();
 	}
+	
 	
 	
 	public ResponseData<String[]> getForeignFromPrimary(String string) {

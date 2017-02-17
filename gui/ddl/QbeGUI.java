@@ -21,12 +21,14 @@ import javax.swing.table.TableCellRenderer;
 
 import controller.DDLController;
 import gui.abstrct.AbstractBasicGUI;
-import gui.ddl.tools.ColumnQBE;
-import gui.ddl.tools.TableQBE;
+import gui.qbe.ColumnQBE;
+import gui.qbe.TableQBE;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
-public class QbeGUI extends AbstractBasicGUI{
+public class QbeGUI 
+extends AbstractBasicGUI
+{
 
 	private int lastColumnUse = 0;
 
@@ -178,12 +180,12 @@ public class QbeGUI extends AbstractBasicGUI{
 			ColumnQBE attribute = new ColumnQBE(tableName,attributeName,selected,where);
 			attributes.add(attribute);
 		}
-		TableQBE tabe = new TableQBE(attributes);
-		System.out.println(tabe.getQuery());
-		System.out.println(tabe.countWhereRows());
-		//TODO Ajouter lappel au controller pour creer les requetes a partir de la liste D'attributeQBE 'attributes'
+		TableQBE table = new TableQBE(attributes);
+		
+		table.getQuery(); //A passer au controleur, puis à la facade 
 	}
 
+	
 	/**
 	 * Remet à 0 la vue des requètes.
 	 */
