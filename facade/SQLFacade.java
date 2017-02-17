@@ -1,7 +1,6 @@
 package facade;
 
 import java.sql.SQLException;
-import java.util.Vector;
 
 import javax.swing.JTable;
 
@@ -19,66 +18,52 @@ public class SQLFacade
 extends AbstractDDLCRUDFacade
 {
 
+	/* ATTRIBUTS */
+
 	/** Structure représentant une connexion à un SGBD. */
 	private I_ConnectionManager connector;
 
-	private SQLManager sql_manager;
+	private SQLManager sqlManager;
 
-	
-	//Constructeur
+	/* ----------------------------------------------------------------- */
+
+	/* CONSTRUCTEUR */
+
 	public SQLFacade
-		(I_DDLManager manager, 
+			(I_DDLManager manager, 
 			I_ConnectionManager connector, 
 			TableSet tables, 
 			SQLManager sqlManager) 
 	{
 		super(manager, tables);
 		this.connector = connector;
-		this.sql_manager = sqlManager;
+		this.sqlManager = sqlManager;
 	}
 
-	/** @see SQLManager#getJTableFromTableName(String) */
-	public JTable getJTableFromTableName(String tableName) throws SQLException {
-		return this.sql_manager.getJTableFromTableName(tableName);
-	}
+	/* ----------------------------------------------------------------- */
 
-	/** @see SQLManager#deleteTuple(int) */
-	public void deleteTuple(int index) throws SQLException {
-		this.sql_manager.deleteTuple(index);
-	}
-
-	/** @see SQLManager#updateTuple(int, int, String) */
-	public void updateTuple(int index, int column, String value) 
-			throws UnsupportedOperationException, IllegalArgumentException, SQLException {
-		this.sql_manager.updateTuple(index, column, value);
-	}
-
-	/** @see SQLManager#addTuple(Vector) */
-	public void addTuple(Vector<String> newRow) 
-			throws UnsupportedOperationException, IllegalArgumentException, SQLException {
-		this.sql_manager.addTuple(newRow);
-	}
+	/* METHODES */
 
 	/** @see SQLManager#setStatementType(int) */
 	public void setStatementType(int statementTypeRequired) 
 			throws IllegalArgumentException, SQLException {
-		this.sql_manager.setStatementType(statementTypeRequired);
+		SQLManager.setStatementType(statementTypeRequired);
 	}
 
 	/** @see SQLManager#sendQuery(String) */
 	public boolean sendQuery(String query) 
 			throws IllegalArgumentException, NullPointerException, SQLException {
-		return this.sql_manager.sendQuery(query);
+		return this.sqlManager.sendQuery(query);
 	}
 
 	public JTable getGeneratedJTable() {
-		return this.sql_manager.getGeneratedJTable();
+		return this.sqlManager.getGeneratedJTable();
 	}
 
 	public String getGeneratedReply() {
-		return this.sql_manager.getGeneratedReply();
+		return this.sqlManager.getGeneratedReply();
 	}
-	
+
 	/** @see I_ConnectionManager#generateErrorMessage(SQLException) */
 	public String generateErrorMessage(SQLException exception) {
 		return this.connector.generateErrorMessage(exception);

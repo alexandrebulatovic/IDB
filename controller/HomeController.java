@@ -18,11 +18,11 @@ public class HomeController
 
 	/** Controleur du SQL.*/
 	private SQLController sqlControl;
-	
+
 	/** Controleur du CRUD.*/
 	private CRUDController crudControl;
-	
-	
+
+
 	//Constructeur
 	/**
 	 * Constructeur lambda.
@@ -42,8 +42,8 @@ public class HomeController
 	{
 		this.facade.reloadDefaultValue();
 	}
-	
-	
+
+
 	/**
 	 * @return Les informations de la dernière connexion valide.
 	 */
@@ -102,7 +102,7 @@ public class HomeController
 	 */
 	public String getUser(){return this.facade.getUser();}
 
-	
+
 	/**
 	 * @return la liste des SGBD disponibles.
 	 */
@@ -110,8 +110,8 @@ public class HomeController
 	{
 		return this.facade.getAvailableDBMS();
 	}
-	
-	
+
+
 	/**
 	 * Ferme proprement les objets liés à la connexion.
 	 */
@@ -141,11 +141,11 @@ public class HomeController
 		this.createOrNotDDLController();
 		this.ddlControl.openCreateGUI();
 	}
-	
+
 	public void openModifyGui() {
 		this.createOrNotDDLController();
 		this.ddlControl.openModifyGUI();
-		
+
 	}
 
 
@@ -157,18 +157,18 @@ public class HomeController
 		this.createOrNotDDLController();
 		this.ddlControl.openDropGUI();
 	}
-	
+
 	public void openConstraintsGUI() {
 		this.createOrNotDDLController();
 		this.ddlControl.openConstraintsGUI();
-		
+
 	}
 
 
 	public void openQbeGUI() {
 		this.createOrNotDDLController();
 		this.ddlControl.openQbeGUI();
-		
+
 	}
 
 	/**
@@ -181,7 +181,7 @@ public class HomeController
 		this.createOrNotCRUDController();
 		this.crudControl.openCRUDGUI();
 	}
-	
+
 
 	//Privates
 	/**
@@ -189,29 +189,32 @@ public class HomeController
 	 */
 	private void createOrNotDDLController()
 	{
-		if (this.ddlControl == null) {
+		if (this.ddlControl == null) 
+		{
 			this.ddlControl = new DDLController(this.facade.getDDLFacade());
 		}
 	}
-	
-	
+
+
 	/**
 	 * Définit le controleur du CRUD pour $this si besoin.
 	 */
 	private void createOrNotCRUDController()
 	{
-		if (this.crudControl == null) {
-			this.crudControl = new CRUDController(this.facade.getSQLFacade());
+		if (this.crudControl == null)
+		{
+			this.crudControl = new CRUDController(this.facade.getCRUDFacade());
 		}
 	}
 
-	
+
 	/**
 	 * Définit le controleur de SQL pour $this si besoin.
 	 */
 	private void createOrNotSQLController()
 	{
-		if (this.sqlControl == null) {
+		if (this.sqlControl == null) 
+		{
 			this.sqlControl = new SQLController(this.facade.getSQLFacade());
 		}
 	}

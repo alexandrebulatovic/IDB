@@ -1,9 +1,11 @@
 package facade;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import business.TableSet;
 import manager.connection.I_ConnectionManager;
+import manager.sql.SQLManager;
 import manager.xml.DefaultValueManager;
 import useful.ConnectionStrings;
 import useful.Response;
@@ -17,17 +19,17 @@ public class HomeFacade
 	// Attributs
 	/** Gestionnaire de paramètres de connexion par défaut.*/
 	private DefaultValueManager dvm;
-	
+
 	/** Fabrique principale de l'application.*/
 	private MainFactory factory;
-	
+
 	/** Gestionnaire de connexion.*/
 	private I_ConnectionManager connector;
-	
+
 	/** Tables disponibles.*/
 	private TableSet tables;
-	
-	
+
+
 	//Constructeurs
 	/**
 	 * Constructeur lambda.
@@ -42,8 +44,8 @@ public class HomeFacade
 		this.factory = factory;
 		this.tables = tables;
 	}
-	
-	
+
+
 	//Méthodes
 	/**
 	 * @return la liste des différents SGBD disponibles.
@@ -52,8 +54,8 @@ public class HomeFacade
 	{
 		return this.factory.getAvailableDBMS();
 	}
-	
-	
+
+
 	/**
 	 * Force à relire le fichier XML.
 	 */
@@ -61,8 +63,8 @@ public class HomeFacade
 	{
 		this.dvm.reload();
 	}
-	
-	
+
+
 	/**
 	 * @return les informations de la dernière connexion valide
 	 * du SGBD actuellement référencé dans les paramètres de connexion par défaut.
@@ -77,8 +79,8 @@ public class HomeFacade
 				this.dvm.getDataBase(), 
 				this.dvm.getPort());
 	}
-	
-	
+
+
 	/**
 	 * Enregistre $driver comme étant le dernier SGBD connecté.
 	 * 
@@ -91,8 +93,8 @@ public class HomeFacade
 		this.dvm.setDriver(dbms);
 		return this.getDefaultValues();
 	}
-	
-	
+
+
 	/**
 	 * Tente d'établir une connexion vers un SGBD
 	 * en utilisant les informations de connexion de $parameters. <br/>
@@ -108,8 +110,8 @@ public class HomeFacade
 		this.connector = this.factory.getConnectionManager();
 		return this.connector.connect(parameters);
 	}
-	
-	
+
+
 	/**
 	 * Pré-requis : utilisation de la méthode connect(), avec pour retour
 	 * une réponse personnalisée décrivant le succès de la connexion.
@@ -117,8 +119,8 @@ public class HomeFacade
 	 * @return la connexion établie.
 	 */
 	public Connection getConnection() {return this.connector.getConnection();}
-	
-	
+
+
 	/**
 	 * Enregistre certaines informations de connexion de $parameters
 	 * dans un fichier xml  situé dans le répertoire courant.
@@ -138,8 +140,8 @@ public class HomeFacade
 		this.dvm.setDataBase(param.baseName);
 		this.dvm.save();
 	}
-	
-	
+
+
 	/**
 	 * Pré-requis : utilisation de la méthode connect(), avec pour retour
 	 * une réponse personnalisée décrivant le succès de la connexion.
@@ -148,8 +150,8 @@ public class HomeFacade
 	 * est connectée à un SGBD, null sinon.
 	 */
 	public String getUser(){return this.connector.getUser();}
-	
-	
+
+
 	/**
 	 * Ferme proprement la connexion.<br/>
 	 * Ne soulève pas d'erreur s'il n'existe aucune connexion.
@@ -158,8 +160,8 @@ public class HomeFacade
 	{
 		if (this.connector != null) this.connector.disconnect();
 	}
-	
-	
+
+
 	/**
 	 * Pré-requis : doit être appelée après que la connexion soit faite.
 	 * 
@@ -167,12 +169,21 @@ public class HomeFacade
 	 */
 	public DDLFacade getDDLFacade()
 	{
-		return new DDLFacade
-				(this.factory.getDDLManager(this.getConnection()), 
-				 this.factory, this.tables, this.factory.getSQLManager(this.getConnection()));
+		try 
+		{
+			return new DDLFacade
+					(this.factory.getDDLManager(this.getConnection()), 
+							this.factory, this.tables, this.factory.getSQLManager(this.getConnection(), SQLManager.TYPE_PLAIN_RESULTSET));
+		} 
+		catch (IllegalArgumentException | NullPointerException | SQLException exception) 
+		{
+			System.err.println(exception.getMessage());
+			exception.printStackTrace();
+			return null;
+		}
 	}
-	
-	
+
+
 	/**
 	 * Pré-requis : doit être appelée après que la connexion soit faite.
 	 * 
@@ -180,11 +191,44 @@ public class HomeFacade
 	 */
 	public SQLFacade getSQLFacade()
 	{
-		return new SQLFacade
-				(this.factory.getDDLManager(this.getConnection()), 
-						connector, 
-						tables, 
-						this.factory.getSQLManager(this.getConnection()));
+		try 
+		{
+			return new SQLFacade
+					(this.factory.getDDLManager(this.getConnection()), 
+							connector, 
+							tables, 
+							this.factory.getSQLManager(this.getConnection(), SQLManager.TYPE_PLAIN_RESULTSET));
+		} 
+		catch (IllegalArgumentException | NullPointerException | SQLException exception) 
+		{
+			System.err.println(exception.getMessage());
+			exception.printStackTrace();
+			return null;
+		}
+
+	}
+
+	/**
+	 * Pré-requis : doit être appelée après que la connexion soit faite.
+	 * 
+	 * @return une facade pour le CRUD des données.
+	 */
+	public CRUDFacade getCRUDFacade()
+	{
+		try 
+		{
+			return new CRUDFacade
+					(this.factory.getDDLManager(this.getConnection()), 
+							connector, 
+							tables, 
+							this.factory.getSQLManager(this.getConnection(), SQLManager.TYPE_UPDATABLE_RESULTSET));
+		} 
+		catch (IllegalArgumentException | NullPointerException | SQLException exception) 
+		{
+			System.err.println(exception.getMessage());
+			exception.printStackTrace();
+			return null;
+		}
 
 	}
 }

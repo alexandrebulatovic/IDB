@@ -19,9 +19,9 @@ public class SQLController {
 
 	/* ATTRIBUTS */
 
-	private SQLGUI sql_view;
+	private SQLGUI sqlView;
 
-	private SQLFacade crudFacade;
+	private SQLFacade sqlFacade;
 
 	/* ------------------------------------------------------------------------ */
 
@@ -30,15 +30,15 @@ public class SQLController {
 	/**
 	 * Construit un objet {@code SQLController} avec un {@code ResultSet} fixe (= son curseur est 
 	 * seulement séquentiel) mais optimisé par défaut pour exécuter les requêtes SQL.
-	 * @param facade : un objet {@code CRUD_SQL_Facade} permettant d'utiliser le {@link SQLManager}.
+	 * @param facade : un objet {@code SQLFacade} permettant d'utiliser le {@link SQLManager}.
 	 */
 	public SQLController(SQLFacade facade)
 	{
-		this.crudFacade = facade;
+		this.sqlFacade = facade;
 
 		try 
 		{
-			this.crudFacade.setStatementType(SQLManager.TYPE_PLAIN_RESULTSET);
+			this.sqlFacade.setStatementType(SQLManager.TYPE_PLAIN_RESULTSET);
 		} 
 		catch (IllegalArgumentException exception) 
 		{
@@ -47,7 +47,7 @@ public class SQLController {
 		}
 		catch (SQLException exception)
 		{
-			String msgException = this.crudFacade.generateErrorMessage(exception);
+			String msgException = this.sqlFacade.generateErrorMessage(exception);
 			DialogBox.showError(msgException);
 		}
 	}
@@ -62,11 +62,11 @@ public class SQLController {
 	 */
 	public void openSQLGUI()
 	{
-		if (this.sql_view == null)
-			this.sql_view = new SQLGUI(this);
+		if (this.sqlView == null)
+			this.sqlView = new SQLGUI(this);
 
 		else 
-			showGUI(this.sql_view);
+			showGUI(this.sqlView);
 	}
 
 	/**
@@ -79,12 +79,12 @@ public class SQLController {
 		boolean isJTable;
 		try 
 		{
-			isJTable = this.crudFacade.sendQuery(query);
+			isJTable = this.sqlFacade.sendQuery(query);
 
 			if (isJTable)
-				DialogBox.showTable(this.crudFacade.getGeneratedJTable(), "Résultat");
+				DialogBox.showTable(this.sqlFacade.getGeneratedJTable(), "Résultat");
 			else
-				DialogBox.showMessage(this.crudFacade.getGeneratedReply(), "Résultat");
+				DialogBox.showMessage(this.sqlFacade.getGeneratedReply(), "Résultat");
 		}
 		catch (IllegalArgumentException | NullPointerException exception)
 		{
@@ -93,7 +93,7 @@ public class SQLController {
 		}
 		catch (SQLException exception)
 		{
-			String msgException = this.crudFacade.generateErrorMessage(exception);
+			String msgException = this.sqlFacade.generateErrorMessage(exception);
 			DialogBox.showError(msgException);
 		}
 	}

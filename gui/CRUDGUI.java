@@ -1,16 +1,12 @@
 package gui;
 
-import gui.abstrct.AbstractBasicGUI;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-
 import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -19,13 +15,18 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-
 import controller.CRUDController;
+import gui.abstrct.AbstractBasicGUI;
+import useful.DialogBox;
 import useful.Response;
 import useful.ResponseData;
 
-/** IHM qui permet les opérations {@code Create|Read|Update|Select} sur une base de données
- * en manipulant un objet graphique {@code JTable}.*/
+/**
+ * Un objet servant d'IHM pour pouvoir effectuer les opérations {@code Create|Read|Update|Select}
+ * sur un objet graphique de type {@code JTable} correspondant à une table préalablement sélectionnée.
+ * <P>
+ * Toutes les modifications sont automatiquement propagées sur la base de données.
+ */
 @SuppressWarnings("serial")
 public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
@@ -37,11 +38,11 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 	public static final int CURRENT = 2;
 
+	/* ------------------------------------------------------------------------ */
 
 	/* ATTRIBUTS */
 
-	/** Controller lié à cette view. */
-	private CRUDController crud_controller;
+	private CRUDController crudController;
 
 	/** Liste déroulante contenant les tables disponibles. */
 	private JComboBox<String> tableComboBox;
@@ -76,6 +77,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 	/** Un état pour savoir si la {@code CRUDView} autorise la modification des tuples ou non. */
 	private boolean ALLOW_EDITS;
 
+	/* ------------------------------------------------------------------------ */
 
 	/* CONSTRUCTEUR */
 
@@ -83,7 +85,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 	public CRUDGUI(CRUDController control)
 	{
 		super("CRUD", null, 900, 550, 30);
-		this.crud_controller = control;
+		this.crudController = control;
 		this.handleComponents();
 		this.disableComboBoxListener(); // on désactive avant de peupler la combobox pour ne pas déclencher l'event listener
 		this.fillComboBox();
@@ -93,6 +95,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 
+	/* ------------------------------------------------------------------------ */
 
 	/* METHODES */
 
@@ -130,17 +133,17 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 			this.deleteButton.setEnabled(true);
 			this.updateButton.setEnabled(true);
 
-			int new_row_index = this.tableModel.getRowCount()-1;
-			String table_name = (String)this.tableComboBox.getSelectedItem();
+			int newRowIndex = this.tableModel.getRowCount()-1;
+			String tableName = (String)this.tableComboBox.getSelectedItem();
 
-			Response reply = this.crud_controller.addTuple(new_row_index, table_name);
+			Response reply = this.crudController.addTuple(newRowIndex, tableName);
 
 			if (!reply.hasSuccess()) // en cas d'echec d'insertion
 			{
-				this.showError(reply.getMessage());
-				this.tableModel.removeRow(new_row_index); // on enlève de la JTable le tuple qui a échoué
+				DialogBox.showError(reply.getMessage());
+				this.tableModel.removeRow(newRowIndex); // on enlève de la JTable le tuple qui a échoué
 			} else {
-				this.requestTable(table_name);
+				this.requestTable(tableName);
 			}
 
 			this.INSERTING = false;
@@ -185,20 +188,14 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 	private void deleteButtonAction() 
 	{
 		// on essaie de l'effacer de la base de données
-		Response reply = this.crud_controller.deleteTuple(this.currentIndex);
+		Response reply = this.crudController.deleteTuple(this.currentIndex);
 
 		if (reply.hasSuccess())
 		{
 			tableModel.removeRow(this.currentIndex); // si ça marche on le vire de l'affichage
 			this.changeSelection(CRUDGUI.PREVIOUS); // puis on replace la selection
 		} else
-			showError(reply.getMessage()); // sinon on affiche simplement message d'erreur
-	}
-
-	/** Crée un pop-up du message d'erreur.
-	 * @param errorMessage : message d'erreur à afficher. */
-	private void showError(String errorMessage) {
-		JOptionPane.showMessageDialog(null, errorMessage, "		Erreur", JOptionPane.ERROR_MESSAGE);
+			DialogBox.showError(reply.getMessage()); // sinon on affiche simplement message d'erreur
 	}
 
 	/** Permet de replacer manuellement la nouvelle ligne sélectionnée de 
@@ -232,14 +229,14 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 	 * @param tableName : nom de la table à afficher. */
 	private void requestTable(String tableName) 
 	{
-		ResponseData<JTable> responseData = this.crud_controller.getJTableFromTableName(tableName);
-		
+		ResponseData<JTable> responseData = this.crudController.getJTableFromTableName(tableName);
+
 		if (responseData.hasSuccess())
 			this.tableDisplay((DefaultTableModel) responseData.getCollection().get(0).getModel());
 		else
 		{
 			String errorMsg = responseData.getMessage();
-			this.showError(errorMsg);
+			DialogBox.showError(errorMsg);
 		}
 	}
 
@@ -315,7 +312,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 	 * base de données et affiche le nombre de tables récupérées. */
 	private void fillComboBox()	
 	{
-		ResponseData<String> response = this.crud_controller.getTables();
+		ResponseData<String> response = this.crudController.getTables();
 		String msg = response.getMessage();
 
 		this.tableComboBox.removeAllItems();
@@ -393,10 +390,10 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 				if (CRUDGUI.this.ALLOW_EDITS) // si le mode "modification" est actif
 				{
-					Response reply = CRUDGUI.this.crud_controller.updateTuple(row, column, (String)aValue);
+					Response reply = CRUDGUI.this.crudController.updateTuple(row, column, (String)aValue);
 
 					if (!reply.hasSuccess())
-						CRUDGUI.this.showError(reply.getMessage());
+						DialogBox.showError(reply.getMessage());
 					else
 						super.setValueAt(aValue, row, column);
 				}

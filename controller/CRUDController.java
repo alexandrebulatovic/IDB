@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JTable;
 
 import facade.AbstractDDLCRUDFacade;
-import facade.SQLFacade;
+import facade.CRUDFacade;
 import gui.CRUDGUI;
 import manager.sql.SQLManager;
 import useful.DialogBox;
@@ -15,24 +15,27 @@ import useful.Response;
 import useful.ResponseData;
 
 /**
- * S'occupe de toutes les tâches demandées par la fenêtre qui
- * permet les opérations CRUD.
+ * Un objet qui effectue la communication avec le {@link SQLManager} à partir d'opérations
+ * effectuées sur un objet IHM {@code CRUDGUI}.
  */
-public class CRUDController 
-{
+public class CRUDController {
+
 	/* ATTRIBUTS */
 
-	/** IHM du CRUD.*/
 	private CRUDGUI crudView;
 
-	/** Facade permettant l'accès au manager.*/
-	private SQLFacade crudFacade;
+	private CRUDFacade crudFacade;
+
+
+	/* ------------------------------------------------------------------------ */
+
+	/* CONSTRUCTEUR */
 
 	/**
-	 * Constructeur associant une facade au {@code CRUDController}.
-	 * @param facade : null interdit.
+	 * Construit un objet {@code CRUDController} avec un {@code ResultSet} dynamique.
+	 * @param facade : un objet {@code CRUDFacade} permettant d'utiliser le {@link SQLManager}.
 	 */
-	public CRUDController(SQLFacade facade)
+	public CRUDController(CRUDFacade facade)
 	{
 		this.crudFacade = facade;
 
@@ -57,27 +60,16 @@ public class CRUDController
 	/* METHODES */
 
 	/**
-	 * Ouvre l'IHM de CRUD si et seulement si elle n'existe pas, 
-	 * sinon tente de l'afficher au premier plan.
+	 * Affiche à l'utilisateur l'objet {@code CRUDGUI}.
+	 * @see CRUDGUI
 	 */
-	public void openCRUDGUI() {
-		if (this.crudView == null) {
-			this.crudView = new CRUDGUI(this);
-		}
-		else{
-			showGUI(this.crudView);
-		}
-	}
-
-	/**
-	 * Affiche une fenêtre au premier plan.
-	 * 
-	 * @param gui : une IHM, null interdit.
-	 */
-	private static void showGUI(JFrame gui)
+	public void openCRUDGUI()
 	{
-		gui.setVisible(true);
-		gui.toFront();
+		if (this.crudView == null) 
+			this.crudView = new CRUDGUI(this);
+
+		else
+			showGUI(this.crudView);
 	}
 
 	/** @see AbstractDDLCRUDFacade#getTables() */
@@ -140,35 +132,29 @@ public class CRUDController
 	}
 
 	/**
-	 * Insère dans la base de données le tuple situé à {@code index} dans la {@code JTable}.
+	 * Insère dans la base de données le tuple situé à la {@code index}-ième ligne dans la {@code JTable}.
 	 * @param index : position du tuple à ajouter. 
 	 * @param tableName : nom de la table concernée.
-	 * @return un objet {@code Response}.
+	 * @return un objet {@code Response} positif ou négatif.
 	 * @see Response
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Response addTuple(int index, String tableName) 
 	{
-		Vector<Vector> dataVector = this.crudView.getTableModel().getDataVector();
+		// on récupère le modèle de données de la JTable
+		Vector<Vector> dataVector = this.crudView.getTableModel().getDataVector(); 
 
-		Vector<String> row_to_add =  (Vector<String>) dataVector.elementAt(index); // on récupere la ligne concernée
+		// puis on récupere la ligne concernée
+		Vector<String> newRow =  (Vector<String>) dataVector.elementAt(index);
 
 		Response response;
 
 		try 
 		{
-			this.crudFacade.addTuple(row_to_add);
-
+			this.crudFacade.addTuple(newRow);
 			response = new Response(true);
-			return response;
 		} 
-		catch (UnsupportedOperationException | IllegalArgumentException exception) 
-		{
-			System.err.println(exception.getMessage());
-			exception.printStackTrace();
-			response = new Response(false);
-		}
-		catch (SQLException exception)
+		catch (UnsupportedOperationException | IllegalArgumentException | SQLException exception) 
 		{
 			response = this.generateErrorResponse(exception);
 		}
@@ -176,44 +162,36 @@ public class CRUDController
 		return response;
 	}
 
-	/** Met à jour une valeur d'un tuple dans la base de données.
-	 * @param index : position du tuple.
-	 * @param column : colonne de la valeur.
-	 * @param updateBuffer : nouvelle valeur.
-	 * @return un objet {@code Response}.
+	/** Met à jour un champ d'un tuple dans la base de données.
+	 * @param index : numéro d'index du tuple (commence à 0).
+	 * @param column : numéro d'index de la colonne du champ à mettre à jour (commence à 0).
+	 * @param value : nouvelle valeur du champ.
+	 * @return un objet {@code Response} positif ou négatif.
 	 * @see Response
 	 */
-	public Response updateTuple(int index, int column, String updateBuffer)
+	public Response updateTuple(int index, int column, String value)
 	{
 		Response response;
 
 		try 
 		{
-			this.crudFacade.updateTuple(index, column, updateBuffer);
-
+			this.crudFacade.updateTuple(index, column, value);
 			response = new Response(true);
-			return response;
 		} 
-		catch (UnsupportedOperationException | IllegalArgumentException exception) 
-		{
-			System.err.println(exception.getMessage());
-			exception.printStackTrace();
-			response = new Response(false);
-		}
-		catch (SQLException exception)
+		catch (UnsupportedOperationException | IllegalArgumentException | SQLException exception) 
 		{
 			response = this.generateErrorResponse(exception);
 		}
 
 		return response;
 	}
-	
+
 	/**
 	 *  Analyse une {@code Exception} pour en faire un message d'erreur.
-	 * @param exception : un objet {@code Exception} à parser. 
+	 * @param exception : un objet {@code Exception} à analyser. 
 	 * @return un message explicite de l'erreur.
 	 */
-	public String generateErrorMessage(Exception exception) 
+	private String generateErrorMessage(Exception exception) 
 	{
 		if (exception instanceof SQLException)
 			return this.crudFacade.generateErrorMessage((SQLException)exception);
@@ -224,16 +202,26 @@ public class CRUDController
 		else
 			return exception.getMessage();
 	}
-	
+
 	/**
-	 * Parse une {@code Exception} pour en faire un objet {@code Response} indiquant une erreur.
-	 * @param exception : un objet {@code Exception} à parser.
-	 * @return un objet {@code Response} négatif.
+	 * Analyse une {@code Exception} pour en faire un objet {@code Response} indiquant une erreur.
+	 * @param exception : un objet {@code Exception} à analyser.
+	 * @return un objet {@code Response} négatif avec un message d'erreur.
 	 */
-	public Response generateErrorResponse(Exception exception) 
+	private Response generateErrorResponse(Exception exception) 
 	{
 		String msgException = this.generateErrorMessage(exception);
 
 		return new Response(false, msgException);
+	}
+
+	/**
+	 * Affiche une fenêtre au premier plan.
+	 * @param gui : une IHM, {@code null} interdit.
+	 */
+	private static void showGUI(JFrame gui)
+	{
+		gui.setVisible(true);
+		gui.toFront();
 	}
 }

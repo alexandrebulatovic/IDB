@@ -4,6 +4,7 @@ import gui.ddl.tools.I_AttributeModel;
 import gui.ddl.tools.I_TableModel;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import manager.connection.I_ConnectionManager;
 import manager.ddl.I_DDLManager;
@@ -96,13 +97,10 @@ public class MainFactory
 	}
 	
 	
-	/**
-	 * @param connection : une connexion active vers un SGBD, null interdit.
-	 * @return un gestionnaire de requête SQL.
-	 */
-	public SQLManager getSQLManager(Connection connection)
+	/** @see SQLManager#getSQLManager(Connection, int) */
+	public SQLManager getSQLManager(Connection connection, int requiredStatementType) throws IllegalArgumentException, NullPointerException, SQLException
 	{
-		return new SQLManager(connection, SQLManager.TYPE_PLAIN_RESULTSET);
+		return SQLManager.getSQLManager(connection, requiredStatementType);
 	}
 	
 	

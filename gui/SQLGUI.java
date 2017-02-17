@@ -24,7 +24,7 @@ extends AbstractBasicGUI implements ActionListener
 	/* ATTRIBUTS */
 
 	/** Contrôleur lié à l'objet IHM. */
-	private SQLController sql_controller;
+	private SQLController sqlController;
 
 	/** Zone de texte pour écrire les requêtes SQL. */
 	private JTextArea sqlArea;
@@ -44,7 +44,7 @@ extends AbstractBasicGUI implements ActionListener
 	public SQLGUI(SQLController controller) 
 	{
 		super("Menu SQL", null, 400, 350, 20);
-		this.sql_controller = controller;
+		this.sqlController = controller;
 		this.handleArea();
 		this.handleButtons();
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
@@ -105,7 +105,7 @@ extends AbstractBasicGUI implements ActionListener
 	 */
 	private void transmitSQL(String query) 
 	{
-		this.sql_controller.sendQuery(query);
+		this.sqlController.sendQuery(query);
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public class SQLManager {
 
 	/* ATTRIBUTS */
 	/**  Objet pour exécuter les requêtes SQL. */
-	private Statement stat;
+	private static Statement stat;
 
 	/** Stocke les données et méta-données de la dernière requête executée. */
 	private ResultSet rs;
@@ -44,10 +44,10 @@ public class SQLManager {
 	private ResultSetMetaData rsmd;
 
 	/** Représente la connexion à une base de données. */
-	private Connection conn;
+	private static Connection conn;
 
 	/** Type de {@code Statement} utilisé actuellement. */
-	private int statementType;
+	private static int statementType;
 
 	/** {@code JTable} créée à partir de l'envoi d'une requête SELECT [..]. */
 	private JTable generatedJTable;
@@ -55,29 +55,38 @@ public class SQLManager {
 	/** {@code String} créé à partir de l'envoi d'une requête autre que SELECT [..]. */
 	private String generatedReply;
 
-	/*-----------------------------------------------------------------*/
+	/** L'instance actuelle de {@code SQLManager}. */
+	private static SQLManager INSTANCE;
 
-	/* CONSTRUCTEUR */
 
-	/**
-	 * Fabrique un {@code SQLManager} prêt à envoyer des requêtes SQL.
-	 * @param conn : objet {@code Connection} représentant la connexion à une base de données.
-	 * @param requiredStatementType : constante parmi {@code TYPE_UPDATABLE_RESULTSET} pour avoir un {@code ResultSet} 
-	 * dynamique ou {@code TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe mais optimisé.
-	 * @throws SQLException si l'accès à la base de données échoue; si le driver utilisé 
-	 * ne supporte pas le type de {@code Statement} demandé ou si l'objet {@code Connection} a été fermé.
-	 * @throws IllegalArgumentException si le type de {@code Statement} renseigné n'existe pas.
-	 * @throws NullPointerException si aucune {@code Connection} n'est renseignée.
-	 */
-	public SQLManager(Connection conn, int requiredStatementType) 
-	{
-			this.conn = conn;
-			this.initStatement(requiredStatementType);
-	}
 
 	/*-----------------------------------------------------------------*/
 
 	/* METHODES*/
+
+	/**
+	 * Permet d'obtenir une occurence de {@link SQLManager}.
+	 * @param conn : objet {@code Connection} représentant la connexion à une base de données.
+	 * @param requiredStatementType : constante parmi {@code TYPE_UPDATABLE_RESULTSET} pour avoir un {@code ResultSet} 
+	 * dynamique ou {@code TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe mais optimisé.
+	 * @return une occurence de l'objet {@code SQLManager}.
+	 * @throws IllegalArgumentException si le type de {@code Statement} renseigné n'existe pas.
+	 * @throws NullPointerException si aucune {@code Connection} n'est renseignée.
+	 * @throws SQLException si l'accès à la base de données échoue; si le driver utilisé 
+	 * ne supporte pas le type de {@code Statement} demandé ou si l'objet {@code Connection} a été fermé.
+	 */
+	public static synchronized SQLManager getSQLManager(Connection conn, int requiredStatementType) 
+			throws IllegalArgumentException, NullPointerException, SQLException
+	{
+		if (INSTANCE == null)
+			INSTANCE = new SQLManager(conn, requiredStatementType);
+
+		else
+			setStatementType(requiredStatementType);
+
+		return INSTANCE;
+	}
+
 	public JTable getGeneratedJTable() {
 		return generatedJTable;
 	}
@@ -94,21 +103,21 @@ public class SQLManager {
 	 * pas le type de {@code Statement} demandé.
 	 * @throws IllegalArgumentException si le type de {@code Statement} renseigné n'existe pas.
 	 */
-	public void setStatementType(int newStatementType ) throws SQLException, IllegalArgumentException 
+	public static void setStatementType(int newStatementType ) throws SQLException, IllegalArgumentException 
 	{
 		if (newStatementType != TYPE_PLAIN_RESULTSET && newStatementType != TYPE_UPDATABLE_RESULTSET)
 			throw new IllegalArgumentException("Le type de Statement choisi n'est pas correct");
 		else
 		{
-			if (newStatementType == TYPE_PLAIN_RESULTSET && this.statementType != TYPE_PLAIN_RESULTSET ) 
+			if (newStatementType == TYPE_PLAIN_RESULTSET && statementType != TYPE_PLAIN_RESULTSET ) 
 			{
-				this.stat.close();
-				this.initStatement(TYPE_PLAIN_RESULTSET);
+				stat.close();
+				initStatement(TYPE_PLAIN_RESULTSET);
 			}
-			else if (newStatementType == TYPE_UPDATABLE_RESULTSET && this.statementType != TYPE_UPDATABLE_RESULTSET) 
+			else if (newStatementType == TYPE_UPDATABLE_RESULTSET && statementType != TYPE_UPDATABLE_RESULTSET) 
 			{
-				this.stat.close();
-				this.initStatement(TYPE_UPDATABLE_RESULTSET);
+				stat.close();
+				initStatement(TYPE_UPDATABLE_RESULTSET);
 			}
 		}
 	}
@@ -116,7 +125,7 @@ public class SQLManager {
 	/** @return le type de {@code Statement} utilisé parmi {@code TYPE_UPDATABLE_RESULTSET} 
 	 * ou {@code TYPE_PLAIN_RESULTSET}. */
 	public int getStatementType() {
-		return this.statementType;
+		return SQLManager.statementType;
 	}
 
 	/**
@@ -144,7 +153,7 @@ public class SQLManager {
 
 		if (isResultSet) 
 		{ // SELECT
-			this.rs = this.stat.getResultSet();
+			this.rs = SQLManager.stat.getResultSet();
 			this.generatedJTable = this.buildJTable();
 
 			return true;
@@ -168,7 +177,7 @@ public class SQLManager {
 	{
 		String query = "SELECT T.* FROM "+ tableName +" T";
 
-		this.rs = this.stat.executeQuery(query);
+		this.rs = SQLManager.stat.executeQuery(query);
 
 		JTable jTable = this.buildJTable();
 		return jTable;
@@ -361,7 +370,7 @@ public class SQLManager {
 			case "java.sql.Clob": // CLOB
 			case "oracle.sql.CLOB": 
 			case "oracle.jdbc.OracleClob":
-				java.sql.Clob clob = this.conn.createClob();
+				java.sql.Clob clob = SQLManager.conn.createClob();
 				clob.setString(1, value);
 				rs.updateClob(column,  clob);
 				break;
@@ -406,21 +415,49 @@ public class SQLManager {
 	 * pas le type de {@code Statement} demandé.
 	 * @throws IllegalArgumentException si le type de {@code Statement} renseigné n'existe pas.
 	 */
-	private void initStatement(int requiredStatementType) 
+	private static void initStatement(int requiredStatementType) throws SQLException, IllegalArgumentException
 	{
-		try {
-			conn.setAutoCommit(false);
-			if (requiredStatementType != TYPE_UPDATABLE_RESULTSET) {
-				this.stat = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-				this.stat.setFetchSize(100);
-				this.statementType = TYPE_PLAIN_RESULTSET;
-			}
-			else {
-				this.stat = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-				this.statementType = TYPE_UPDATABLE_RESULTSET;
-			}
-		} 
-		catch (Exception e) {
+		conn.setAutoCommit(false);
+
+		if (requiredStatementType == TYPE_UPDATABLE_RESULTSET)
+		{
+			stat = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			statementType = TYPE_UPDATABLE_RESULTSET;
+		}
+
+		else if (requiredStatementType == TYPE_PLAIN_RESULTSET)
+		{
+			stat = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			stat.setFetchSize(100);
+			statementType = TYPE_PLAIN_RESULTSET;
+		}
+		else
+			throw new IllegalArgumentException("Le type de Statement choisi n'est pas correct");
+	}
+
+	/*-----------------------------------------------------------------*/
+
+	/* CONSTRUCTEUR */
+
+	/**
+	 * Fabrique un {@code SQLManager} prêt à envoyer des requêtes SQL.
+	 * @param conn : objet {@code Connection} représentant la connexion à une base de données.
+	 * @param requiredStatementType : constante parmi {@code TYPE_UPDATABLE_RESULTSET} pour avoir un {@code ResultSet} 
+	 * dynamique ou {@code TYPE_PLAIN_RESULTSET} pour avoir un {@code ResultSet} fixe mais optimisé.
+	 * @throws SQLException si l'accès à la base de données échoue; si le driver utilisé 
+	 * ne supporte pas le type de {@code Statement} demandé ou si l'objet {@code Connection} a été fermé.
+	 * @throws IllegalArgumentException si le type de {@code Statement} renseigné n'existe pas.
+	 * @throws NullPointerException si aucune {@code Connection} n'est renseignée.
+	 */
+	private SQLManager(Connection conn, int requiredStatementType) throws SQLException, IllegalArgumentException, NullPointerException
+	{
+		if (conn == null)
+			throw new NullPointerException("Aucun objet Connection n'a été fourni");
+
+		else 
+		{
+			SQLManager.conn = conn;
+			SQLManager.initStatement(requiredStatementType);
 		}
 	}
 }
