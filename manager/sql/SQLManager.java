@@ -34,9 +34,6 @@ public class SQLManager {
 	/*-----------------------------------------------------------------*/
 
 	/* ATTRIBUTS */
-
-	private static SQLManager INSTANCE;
-
 	/**  Objet pour exécuter les requêtes SQL. */
 	private Statement stat;
 
@@ -87,18 +84,6 @@ public class SQLManager {
 	/*-----------------------------------------------------------------*/
 
 	/* METHODES*/
-	public SQLManager getSQLManager(Connection conn, int requiredStatementType) 
-			throws IllegalArgumentException, NullPointerException, SQLException 
-	{
-		if (INSTANCE == null)
-			INSTANCE = new SQLManager(conn, requiredStatementType);
-
-		else
-			this.setStatementType(requiredStatementType);
-
-		return INSTANCE;
-	}
-
 	public JTable getGeneratedJTable() {
 		return generatedJTable;
 	}
