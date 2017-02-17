@@ -15,6 +15,13 @@ public class TableQBE
 	//Constructeurs
 	public TableQBE() {this.columns = new ArrayList<ColumnQBE>();}
 
+	
+	public TableQBE(List<ColumnQBE> columns)
+	{
+		this.columns = columns;
+		this.distinct = false;
+	}
+	
 	public TableQBE(List<ColumnQBE> columns, boolean distinct)
 	{
 		this.columns = columns;
@@ -29,6 +36,7 @@ public class TableQBE
 	public String getSelect()
 	{
 		StringBuilder result = new StringBuilder("SELECT ");
+		if (this.distinct) result.append("DISTINCT ");
 		for (ColumnQBE c : this.columns) {
 			if (c.isVisible()) {
 				result.append(c.getSelect());
@@ -158,6 +166,7 @@ public class TableQBE
 			result.append('\n');
 			result.append(this.getWhere());
 		}
+		System.out.println(result);
 		return result.toString();
 	}
 
