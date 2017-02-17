@@ -126,26 +126,22 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		if("FOREIGN KEY".equals(this.typeConstraintComboBox.getSelectedItem().toString())){
 			if(isValidSelectedAttributesCount()){
 				String tableSourceName = this.tableNameComboBox.getSelectedItem().toString();
-				System.out.println(tableSourceName);
-				int selected[] = this.namesAttributeSourceTable.getSelectedRows();
-				String attributesSourcesNames[] = new String[selected.length];
+				int selectedSource[] = this.namesAttributeSourceTable.getSelectedRows();
+				String attributesSourcesNames[] = new String[selectedSource.length];
 				int c = 0;
-				for(int i : selected){
+				for(int i : selectedSource){
 					String attribut = (String) this.modelSource.getValueAt(i, 0);
 					attributesSourcesNames[c] = attribut;
-					System.out.println(attribut);
 					c++;
 				}
 
 				String tableDestinationName = this.fkTableNameComboBox.getSelectedItem().toString();
-				System.out.println(tableDestinationName);
-				selected = this.namesAttributeReferenceTable.getSelectedColumns();
-				String attributesDestinationsNames[] = new String[selected.length];
+				int selectedDestination[] = this.namesAttributeReferenceTable.getSelectedRows();
+				String attributesDestinationsNames[] = new String[selectedDestination.length];
 				c = 0;
-				for(int i : selected){
+				for(int i : selectedDestination){
 					String attribut = (String) this.modelFk.getValueAt(i, 0);
 					attributesDestinationsNames[c] = attribut;
-					System.out.println(attribut);
 					c++;
 				}
 				Response response = this.control.addForeignKey(tableSourceName,attributesSourcesNames,tableDestinationName,attributesDestinationsNames);
@@ -158,14 +154,12 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		if("UNIQUE".equals(this.typeConstraintComboBox.getSelectedItem().toString())){
 			if(this.namesAttributeSourceTable.getSelectedRowCount() != 0){
 				String tableSourceName = this.tableNameComboBox.getSelectedItem().toString();
-				System.out.println(tableSourceName);
 				int selected[] = this.namesAttributeSourceTable.getSelectedRows();
 				String attributesSourcesNames[] = new String[selected.length];
 				int c = 0;
 				for(int i : selected){
 					String attribut = (String) this.modelSource.getValueAt(i, 0);
 					attributesSourcesNames[c] = attribut;
-					System.out.println(attribut);
 					c++;
 				}
 				Response response = this.control.addUnique(tableSourceName,attributesSourcesNames);

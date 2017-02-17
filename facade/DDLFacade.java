@@ -348,11 +348,10 @@ extends AbstractDDLCRUDFacade
 
 
 	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
-		this.business.removeConstraint(tableSourceName, attribute, constraint);
 		String sql = this.business.getSQLDropConstraint(tableSourceName,attribute, constraint);
+		this.business.removeConstraint(tableSourceName, attribute, constraint);
 		System.out.println(sql);
 		Response result = this.dbms.dropConstraint(sql);
-		System.out.println(result.getMessage());
 		return result;
 		
 	}
@@ -361,8 +360,10 @@ extends AbstractDDLCRUDFacade
 	public Response addForeignKey(String tableSourceName, String[] attributesSourcesNames, String tableDestinationName,
 			String[] attributesDestinationsNames) {
 		String contrainte = this.business.addForeignKey(tableSourceName, attributesSourcesNames, tableDestinationName, attributesDestinationsNames);
-		System.out.println(contrainte);
 		Response added = this.addForeignKeyDBMS(tableSourceName, attributesSourcesNames, contrainte);
+		if(!added.hasSuccess()){
+			this.business.removeConstraint(tableSourceName, attributesSourcesNames[0], contrainte);
+		}
 		return added;
 	}
 
