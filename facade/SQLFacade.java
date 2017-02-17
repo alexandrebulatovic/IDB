@@ -9,7 +9,7 @@ import business.TableSet;
 import manager.connection.I_ConnectionManager;
 import manager.ddl.I_DDLManager;
 import manager.sql.SQLManager;
-import useful.DialogBox;
+
 
 /**
  * Un objet permettant d'accéder aux fonctionnalités du {@link SQLManager} sans
@@ -23,25 +23,17 @@ public class SQLFacade extends AbstractDDLCRUDFacade
 
 	private SQLManager sql_manager;
 
-	public SQLFacade(I_DDLManager manager, I_ConnectionManager connector, TableSet tables) 
+	
+	//Constructeur
+	public SQLFacade
+		(I_DDLManager manager, 
+			I_ConnectionManager connector, 
+			TableSet tables, 
+			SQLManager sqlManager) 
 	{
 		super(manager, tables);
 		this.connector = connector;
-
-		try 
-		{
-			this.sql_manager = new SQLManager(this.connector.getConnection(), SQLManager.TYPE_PLAIN_RESULTSET);
-		} 
-		catch (IllegalArgumentException | NullPointerException exception) 
-		{
-			System.err.println(exception.getMessage());
-			exception.printStackTrace();
-		}
-		catch (SQLException exception)
-		{
-			String msgException = generateErrorMessage(exception);
-			DialogBox.showError(msgException);
-		}
+		this.sql_manager = sqlManager;
 	}
 
 	/** @see SQLManager#getJTableFromTableName(String) */
