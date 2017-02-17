@@ -23,6 +23,7 @@ import controller.DDLController;
 import gui.abstrct.AbstractBasicGUI;
 import gui.qbe.ColumnQBE;
 import gui.qbe.TableQBE;
+import useful.Response;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
@@ -141,8 +142,20 @@ extends AbstractBasicGUI
 
 	@Override
 	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return false;
+		boolean selected = false;
+		int i;
+		for(i=1;i<this.lastColumnUse + 1;i++){
+			if((boolean)this.model.getValueAt(2, i) == true){
+				selected = true;
+			}
+		}
+
+		if(this.lastColumnUse==0 || selected == false){
+			this.talk(new Response(false,"Aucun attribut selectionné"));
+			return false;
+		}else{
+			return true;
+		}
 	}
 
 	@Override
@@ -159,33 +172,35 @@ extends AbstractBasicGUI
 
 
 	}
-	
-	
+
+
 	private void execRequestButtonAction() {
-		int i, a;
-		List<ColumnQBE> attributes = new ArrayList<ColumnQBE>();
-		
-		for(i=1; i<lastColumnUse+1; i++){
-			String tableName = (String) this.model.getValueAt(0, i);
-			String attributeName = (String) this.model.getValueAt(1, i);
-			boolean selected = (boolean) this.model.getValueAt(2, i);
-			List<String> where = new ArrayList<String>();
-			for(a = 3; a<20;a++){
-				if(this.model.getValueAt(a, i) == null){
-					where.add("");
-				}else{
-					where.add((String)this.model.getValueAt(a, i));	
+		if(this.isComplete()){
+			int i, a;
+			List<ColumnQBE> attributes = new ArrayList<ColumnQBE>();
+
+			for(i=1; i<lastColumnUse+1; i++){
+				String tableName = (String) this.model.getValueAt(0, i);
+				String attributeName = (String) this.model.getValueAt(1, i);
+				boolean selected = (boolean) this.model.getValueAt(2, i);
+				List<String> where = new ArrayList<String>();
+				for(a = 3; a<20;a++){
+					if(this.model.getValueAt(a, i) == null){
+						where.add("");
+					}else{
+						where.add((String)this.model.getValueAt(a, i));	
+					}
 				}
+				ColumnQBE attribute = new ColumnQBE(tableName,attributeName,selected,where);
+				attributes.add(attribute);
 			}
-			ColumnQBE attribute = new ColumnQBE(tableName,attributeName,selected,where);
-			attributes.add(attribute);
+			TableQBE table = new TableQBE(attributes);
+
+			table.getQuery(); //A passer au controleur, puis à la facade 
 		}
-		TableQBE table = new TableQBE(attributes);
-		
-		table.getQuery(); //A passer au controleur, puis à la facade 
 	}
 
-	
+
 	/**
 	 * Remet à 0 la vue des requètes.
 	 */
@@ -206,13 +221,17 @@ extends AbstractBasicGUI
 	 *Ajoute un attribut à la table des requètes.
 	 */
 	private void addAttributeButtonAction() {
-		this.lastColumnUse++;
-		this.model.setValueAt(this.tableNameComboBox.getSelectedItem().toString(), 0, this.lastColumnUse);
-		this.model.setValueAt(this.attributeNameComboBox.getSelectedItem().toString(), 1, this.lastColumnUse);
-		this.model.setValueAt(true, 2, this.lastColumnUse);
-		this.model.fireTableCellUpdated(0, lastColumnUse);
-		this.model.fireTableCellUpdated(1, lastColumnUse);
-		this.model.fireTableCellUpdated(2, lastColumnUse);
+		if(this.lastColumnUse == 19){
+			this.talk(new Response(false,"Nombre maximum d'attributs ajoutés."));
+		}else{
+			this.lastColumnUse++;
+			this.model.setValueAt(this.tableNameComboBox.getSelectedItem().toString(), 0, this.lastColumnUse);
+			this.model.setValueAt(this.attributeNameComboBox.getSelectedItem().toString(), 1, this.lastColumnUse);
+			this.model.setValueAt(true, 2, this.lastColumnUse);
+			this.model.fireTableCellUpdated(0, lastColumnUse);
+			this.model.fireTableCellUpdated(1, lastColumnUse);
+			this.model.fireTableCellUpdated(2, lastColumnUse);
+		}
 
 	}
 
