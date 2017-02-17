@@ -204,7 +204,7 @@ extends AbstractBasicGUI
 	 * Remet à 0 la vue des requètes.
 	 */
 	private void resetButtonAction() {
-		int i;
+		int i,a;
 		for(i=1; i<lastColumnUse+1; i++){
 			this.model.setValueAt("", 0, i);
 			this.model.setValueAt("", 1, i);
@@ -212,8 +212,13 @@ extends AbstractBasicGUI
 			this.model.fireTableCellUpdated(0, i);
 			this.model.fireTableCellUpdated(1, i);
 			this.model.fireTableCellUpdated(2, i);
+			for(a = 3; a<20;a++){
+				this.model.setValueAt("", a, i);
+				this.model.fireTableCellUpdated(a, i);
+			}
 		}
 		this.lastColumnUse=0;
+
 
 	}
 	/**
