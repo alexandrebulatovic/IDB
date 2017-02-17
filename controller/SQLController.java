@@ -1,88 +1,106 @@
 package controller;
 
-import facade.CRUD_SQL_Facade;
-import gui.SQLGUI;
-
-import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
-import javax.swing.JTable;
 
-import useful.Response;
+import facade.SQLFacade;
+import gui.SQLGUI;
 import manager.sql.SQLManager;
+import useful.DialogBox;
 
-/** Effectue la communication entre la vue et le manager du SGBD.
- * 
- * @see SQLManager
- * @see SQLGUI
+/**
+ * Un objet qui effectue la communication avec le {@link SQLManager}.
+ * <P>
+ * L'envoi d'une requête s'effectue via la méthode {@code sendQuery}. Le résultat est affiché
+ * automatiquement sous la forme d'une boîte de dialogue.
  */
 public class SQLController {
 
 	/* ATTRIBUTS */
 
-	/** IHM pour taper des requetes SQL. */
 	private SQLGUI sql_view;
 
-	private CRUD_SQL_Facade crud_facade;
+	private SQLFacade crudFacade;
+
+	/* ------------------------------------------------------------------------ */
 
 	/* CONSTRUCTEUR */
 
-	/** Instancie le {@code SQLManager}.
-	 * @param conn : l'objet Connection résultant de la connexion à la base de données. 
-	 * @param facade : null interdit.
-	 * */
-	public SQLController(Connection conn, CRUD_SQL_Facade facade)
+	/**
+	 * Construit un objet {@code SQLController} avec un {@code ResultSet} fixe (= son curseur est 
+	 * seulement séquentiel) mais optimisé par défaut pour exécuter les requêtes SQL.
+	 * @param facade : un objet {@code CRUD_SQL_Facade} permettant d'utiliser le {@link SQLManager}.
+	 */
+	public SQLController(SQLFacade facade)
 	{
-		this.crud_facade = facade;
-		this.crud_facade.setStatement(SQLManager.TYPE_PLAIN_RESULTSET);
+		this.crudFacade = facade;
+
+		try 
+		{
+			this.crudFacade.setStatementType(SQLManager.TYPE_PLAIN_RESULTSET);
+		} 
+		catch (IllegalArgumentException exception) 
+		{
+			System.err.println(exception.getMessage());
+			exception.printStackTrace();
+		}
+		catch (SQLException exception)
+		{
+			String msgException = this.crudFacade.generateErrorMessage(exception);
+			DialogBox.showError(msgException);
+		}
 	}
 
+	/* ------------------------------------------------------------------------ */
 
 	/* METHODES*/
-	/** Affiche au premier plan l'IHM pour taper du code SQL,
-	 *  la créée si elle n'existe pas. */
-	public void openSQL()
+
+	/**
+	 * Affiche à l'utilisateur l'objet {@code SQLGUI}.
+	 * @see SQLGUI
+	 */
+	public void openSQLGUI()
 	{
-		if (this.sql_view == null) {
+		if (this.sql_view == null)
 			this.sql_view = new SQLGUI(this);
-		} else {
+
+		else 
 			showGUI(this.sql_view);
-		}
 	}
 
-	/** Demande au {@code SQLManager} d'exécuter la requête SQL.
-	 * @param qry : requête sous forme de {@code String} à transmettre au SGBD. */
-	public void transmitQuery(String qry)
+	/**
+	 * Exécute une requête SQL et affiche le résultat 
+	 * de cette requête dans une boîte de dialogue.
+	 * @param query : une requête SQL à exécuter.
+	 */
+	public void sendQuery(String query)
 	{
-
-		Object reply = this.crud_facade.transmitQuery(qry);
-		transmitReply(reply);
-	}
-
-	/** Demande à {@code SQLView} d'afficher un message d'information ou 
-	 * une {@code JTable} en fonction de la réponse du serveur.
-	 * @param reply : la réponse du serveur, un {@code String} ou un {@code JTable}. */
-	private void transmitReply(Object reply) 
-	{
-		Object replyParsed = this.crud_facade.transmitReply(reply);
-
-		if (replyParsed instanceof JTable)
-			this.sql_view.showTable((JTable) reply); // on affiche la JTable retournée
-
-		else if (replyParsed instanceof Response) 
+		boolean isJTable;
+		try 
 		{
-			if (!((Response) replyParsed).hasSuccess())  // si c'est une erreur
-				this.sql_view.showError(((Response) replyParsed).getMessage()); // on affiche le message d'erreur
+			isJTable = this.crudFacade.sendQuery(query);
+
+			if (isJTable)
+				DialogBox.showTable(this.crudFacade.getGeneratedJTable(), "Résultat");
 			else
-				this.sql_view.showReply(((Response) replyParsed).getMessage()); // on affiche une notification à l'utilisateur
+				DialogBox.showMessage(this.crudFacade.getGeneratedReply(), "Résultat");
+		}
+		catch (IllegalArgumentException | NullPointerException exception)
+		{
+			System.err.println(exception.getMessage());
+			exception.printStackTrace();
+		}
+		catch (SQLException exception)
+		{
+			String msgException = this.crudFacade.generateErrorMessage(exception);
+			DialogBox.showError(msgException);
 		}
 	}
-
 
 	/**
 	 * Affiche une fenêtre au premier plan.
-	 * 
-	 * @param gui : une IHM, null interdit.
+	 * @param gui : une IHM, {@code null} interdit.
 	 */
 	private static void showGUI(JFrame gui)
 	{

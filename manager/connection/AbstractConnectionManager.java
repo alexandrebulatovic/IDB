@@ -83,7 +83,7 @@ implements I_ConnectionManager
 			result = new Response(true, "Connexion réussie.");
 		}
 		catch(SQLException e){
-			result = new Response(false, this.errorMessage(e));
+			result = new Response(false, this.generateErrorMessage(e));
 		}
 		catch(Exception e){
 			result = new Response(false, "problème de pilote.");

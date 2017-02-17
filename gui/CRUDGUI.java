@@ -133,7 +133,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 			int new_row_index = this.tableModel.getRowCount()-1;
 			String table_name = (String)this.tableComboBox.getSelectedItem();
 
-			Response reply = this.crud_controller.addRow(new_row_index, table_name);
+			Response reply = this.crud_controller.addTuple(new_row_index, table_name);
 
 			if (!reply.hasSuccess()) // en cas d'echec d'insertion
 			{
@@ -185,7 +185,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 	private void deleteButtonAction() 
 	{
 		// on essaie de l'effacer de la base de données
-		Response reply = this.crud_controller.deleteRow(this.currentIndex);
+		Response reply = this.crud_controller.deleteTuple(this.currentIndex);
 
 		if (reply.hasSuccess())
 		{
@@ -393,7 +393,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 				if (CRUDGUI.this.ALLOW_EDITS) // si le mode "modification" est actif
 				{
-					Response reply = CRUDGUI.this.crud_controller.updateRow(row, column, (String)aValue);
+					Response reply = CRUDGUI.this.crud_controller.updateTuple(row, column, (String)aValue);
 
 					if (!reply.hasSuccess())
 						CRUDGUI.this.showError(reply.getMessage());

@@ -21,7 +21,8 @@ import javax.swing.table.TableCellRenderer;
 
 import controller.DDLController;
 import gui.abstrct.AbstractBasicGUI;
-import gui.ddl.tools.AttributeQBE;
+import gui.ddl.tools.ColumnQBE;
+import gui.ddl.tools.TableQBE;
 import useful.ResponseData;
 
 @SuppressWarnings("serial")
@@ -151,14 +152,18 @@ public class QbeGUI extends AbstractBasicGUI{
 			this.addAttributeButtonAction();
 		if(o == this.resetButton)
 			this.resetButtonAction();
+<<<<<<< HEAD
 		if(o == this.execRequestButton)
 			this.execRequestButtonAction();
 
 
 	}
+	
+	
 	private void execRequestButtonAction() {
-		int i,a;
-		List<AttributeQBE> attributes = new ArrayList<AttributeQBE>();
+		int i, a;
+		List<ColumnQBE> attributes = new ArrayList<ColumnQBE>();
+		
 		for(i=1; i<lastColumnUse+1; i++){
 			String tableName = (String) this.model.getValueAt(0, i);
 			String attributeName = (String) this.model.getValueAt(1, i);
@@ -171,13 +176,20 @@ public class QbeGUI extends AbstractBasicGUI{
 					where.add((String)this.model.getValueAt(a, i));	
 				}
 			}
-			AttributeQBE attribute = new AttributeQBE(tableName,attributeName,selected,where);
-			System.out.println(attribute);
+			ColumnQBE attribute = new ColumnQBE(tableName,attributeName,selected,where);
 			attributes.add(attribute);
 		}
+		TableQBE tabe = new TableQBE(attributes);
+		System.out.println(tabe.getQuery());
+		System.out.println(tabe.countWhereRows());
 		//TODO Ajouter lappel au controller pour creer les requetes a partir de la liste D'attributeQBE 'attributes'
 	}
 
+	
+=======
+	}
+
+>>>>>>> [REFACTORING] Part1 (gestion des exceptions, deplacement des responsabilites de la CRUD_SQL_Facade vers CrudController et SQLController, amelioration javadoc...
 	/**
 	 * Remet à 0 la vue des requètes.
 	 */

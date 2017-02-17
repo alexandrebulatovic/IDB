@@ -128,7 +128,7 @@ public class HomeController
 	public void openSQLGUI()
 	{
 		this.createOrNotSQLController();
-		this.sqlControl.openSQL();
+		this.sqlControl.openSQLGUI();
 	}
 
 
@@ -138,12 +138,12 @@ public class HomeController
 	 */
 	public void openCreateGUI()
 	{
-		this.createOrNotDDLControl();
+		this.createOrNotDDLController();
 		this.ddlControl.openCreateGUI();
 	}
 	
 	public void openModifyGui() {
-		this.createOrNotDDLControl();
+		this.createOrNotDDLController();
 		this.ddlControl.openModifyGUI();
 		
 	}
@@ -154,32 +154,31 @@ public class HomeController
 	 */
 	public void openDropGUI()
 	{
-		this.createOrNotDDLControl();
+		this.createOrNotDDLController();
 		this.ddlControl.openDropGUI();
 	}
 	
 	public void openConstraintsGUI() {
-		this.createOrNotDDLControl();
+		this.createOrNotDDLController();
 		this.ddlControl.openConstraintsGUI();
 		
 	}
 
 
 	public void openQbeGUI() {
-		this.createOrNotDDLControl();
+		this.createOrNotDDLController();
 		this.ddlControl.openQbeGUI();
 		
 	}
-
 
 	/**
 	 *  Ouvre l'IHM pour les opérations {@code Create - Read - Update - Delete. }
 	 */
 	public void openCRUDGUI() 
 	{
-		this.createOrNotDDLControl();
+		this.createOrNotDDLController();
 		this.createOrNotSQLController();
-		this.createOrNotCRUDControl();
+		this.createOrNotCRUDController();
 		this.crudControl.openCRUDGUI();
 	}
 	
@@ -188,7 +187,7 @@ public class HomeController
 	/**
 	 * Définit le controleur de LDD pour $this si besoin.
 	 */
-	private void createOrNotDDLControl()
+	private void createOrNotDDLController()
 	{
 		if (this.ddlControl == null) {
 			this.ddlControl = new DDLController(this.facade.getDDLFacade());
@@ -199,7 +198,7 @@ public class HomeController
 	/**
 	 * Définit le controleur du CRUD pour $this si besoin.
 	 */
-	private void createOrNotCRUDControl()
+	private void createOrNotCRUDController()
 	{
 		if (this.crudControl == null) {
 			this.crudControl = new CRUDController(this.facade.getCRUDFacade());
@@ -213,7 +212,7 @@ public class HomeController
 	private void createOrNotSQLController()
 	{
 		if (this.sqlControl == null) {
-			this.sqlControl = new SQLController(this.facade.getConnection(), this.facade.getCRUDFacade());
+			this.sqlControl = new SQLController(this.facade.getCRUDFacade());
 		}
 	}
 }

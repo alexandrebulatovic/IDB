@@ -46,5 +46,5 @@ implements I_ConnectionManager
 
 
 	@Override
-	public String errorMessage(SQLException e) {return "";}
+	public String generateErrorMessage(SQLException e) {return "";}
 }

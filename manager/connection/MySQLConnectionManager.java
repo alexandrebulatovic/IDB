@@ -23,7 +23,7 @@ extends AbstractConnectionManager
 
 	//Protected
 	@Override
-	public String errorMessage(SQLException e)
+	public String generateErrorMessage(SQLException e)
 	{
 		switch (e.getErrorCode()) {
 		case 0 		: 

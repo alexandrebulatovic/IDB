@@ -6,6 +6,10 @@ import java.sql.SQLException;
 import useful.ConnectionStrings;
 import useful.Response;
 
+/**
+ * Fournit des méthodes pour se connecter ou se déconnecter à une base de 
+ * données puis récupérer des informations sur cette connexion.
+ */
 public interface I_ConnectionManager {
 
 	//Accesseurs
@@ -53,10 +57,10 @@ public interface I_ConnectionManager {
 	public abstract void disconnect();
 
 	/**
-	 * Interprète les erreurs retournées par le SGBD.
-	 * @param e {@code SQLException} levée par le SGBD
+	 * Interprète une {@code SQLException} issue d'une action sur un SGBD.
+	 * @param exception : un objet {@code SQLException}.
 	 * @return un {@code String} expliquant l'erreur.
 	 */
-	public abstract String errorMessage(SQLException e);
+	public abstract String generateErrorMessage(SQLException exception);
 
 }

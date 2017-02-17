@@ -1,16 +1,16 @@
 package controller;
 
-import facade.CRUD_SQL_Facade;
-import gui.CRUDGUI;
-import manager.sql.SQLManager;
-
 import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
+import facade.AbstractDDLCRUDFacade;
+import facade.SQLFacade;
+import gui.CRUDGUI;
+import manager.sql.SQLManager;
+import useful.DialogBox;
 import useful.Response;
 import useful.ResponseData;
 
@@ -26,18 +26,33 @@ public class CRUDController
 	private CRUDGUI crudView;
 
 	/** Facade permettant l'accès au manager.*/
-	private CRUD_SQL_Facade crudFacade;
+	private SQLFacade crudFacade;
 
 	/**
 	 * Constructeur associant une facade au {@code CRUDController}.
 	 * @param facade : null interdit.
 	 */
-	public CRUDController(CRUD_SQL_Facade facade)
+	public CRUDController(SQLFacade facade)
 	{
 		this.crudFacade = facade;
-		this.crudFacade.setStatement(SQLManager.TYPE_UPDATABLE_RESULTSET);
+
+		try 
+		{
+			this.crudFacade.setStatementType(SQLManager.TYPE_UPDATABLE_RESULTSET);
+		} 
+		catch (IllegalArgumentException exception) 
+		{
+			System.err.println(exception.getMessage());
+			exception.printStackTrace();
+		}
+		catch (SQLException exception)
+		{
+			String msgException = this.crudFacade.generateErrorMessage(exception);
+			DialogBox.showError(msgException);
+		}
 	}
 
+	/* ---------------------------------------------------------------------------- */
 
 	/* METHODES */
 
@@ -65,9 +80,7 @@ public class CRUDController
 		gui.toFront();
 	}
 
-	/**
-	 * @return la liste des tables disponibles.
-	 */
+	/** @see AbstractDDLCRUDFacade#getTables() */
 	public ResponseData<String> getTables()
 	{
 		return this.crudFacade.getTables();
@@ -76,22 +89,54 @@ public class CRUDController
 	/**
 	 * Permet de récupérer un objet {@code JTable} à partir du nom d'une table stockée dans la base de données.
 	 * @param tableName : nom de la table à récupérer.
-	 * @return un objet {@code ResponseData} contenant une {@code JTable} ou un message d'erreur.
+	 * @return un objet {@code ResponseData} contenant soit une {@code JTable}, soit un message d'erreur en cas d'échec.
 	 * @see ResponseData
 	 */
 	public ResponseData<JTable> getJTableFromTableName(String tableName)
 	{
-		return this.crudFacade.getJTableFromTableName(tableName);
+		JTable jTable;
+		ResponseData<JTable> responseData;
+
+		try 
+		{
+			jTable = this.crudFacade.getJTableFromTableName(tableName);
+		} 
+		catch (SQLException exception) 
+		{
+			String msgException = this.crudFacade.generateErrorMessage(exception);
+
+			responseData = new ResponseData<JTable>(false, msgException);
+			return responseData;
+		}
+
+		responseData = new ResponseData<JTable>(true);
+		responseData.add(jTable);
+
+		return responseData;
 	}
 
 	/**
-	 * Supprime le tuple situé à {@code index} de la base de données.
-	 * @param index : position du tuple à supprimer.
-	 * @return un objet {@code Response}.
+	 * Supprime un tuple de la table affichée actuellement.
+	 * @param index : index du tuple à supprimer tel que affiché dans la {@code JTable} (commence à 0).
+	 * @return un objet {@code Response} positif ou négatif.
 	 * @see Response
 	 */
-	public Response deleteRow(int index) {
-		return this.crudFacade.deleteRow(index);
+	public Response deleteTuple(int index) 
+	{
+		Response response;
+
+		try 
+		{
+			this.crudFacade.deleteTuple(index);
+
+			response = new Response(true);
+		} 
+		catch (SQLException exception) 
+		{
+			response = this.generateErrorResponse(exception);
+		}
+
+		return response;
 	}
 
 	/**
@@ -102,13 +147,33 @@ public class CRUDController
 	 * @see Response
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Response addRow(int index, String tableName) 
+	public Response addTuple(int index, String tableName) 
 	{
 		Vector<Vector> dataVector = this.crudView.getTableModel().getDataVector();
 
 		Vector<String> row_to_add =  (Vector<String>) dataVector.elementAt(index); // on récupere la ligne concernée
 
-		return this.crudFacade.addTuple(row_to_add);
+		Response response;
+
+		try 
+		{
+			this.crudFacade.addTuple(row_to_add);
+
+			response = new Response(true);
+			return response;
+		} 
+		catch (UnsupportedOperationException | IllegalArgumentException exception) 
+		{
+			System.err.println(exception.getMessage());
+			exception.printStackTrace();
+			response = new Response(false);
+		}
+		catch (SQLException exception)
+		{
+			response = this.generateErrorResponse(exception);
+		}
+
+		return response;
 	}
 
 	/** Met à jour une valeur d'un tuple dans la base de données.
@@ -118,8 +183,57 @@ public class CRUDController
 	 * @return un objet {@code Response}.
 	 * @see Response
 	 */
-	public Response updateRow(int index, int column, String updateBuffer)
+	public Response updateTuple(int index, int column, String updateBuffer)
 	{
-		return this.crudFacade.updateRow(index, column, updateBuffer);
+		Response response;
+
+		try 
+		{
+			this.crudFacade.updateTuple(index, column, updateBuffer);
+
+			response = new Response(true);
+			return response;
+		} 
+		catch (UnsupportedOperationException | IllegalArgumentException exception) 
+		{
+			System.err.println(exception.getMessage());
+			exception.printStackTrace();
+			response = new Response(false);
+		}
+		catch (SQLException exception)
+		{
+			response = this.generateErrorResponse(exception);
+		}
+
+		return response;
+	}
+	
+	/**
+	 *  Analyse une {@code Exception} pour en faire un message d'erreur.
+	 * @param exception : un objet {@code Exception} à parser. 
+	 * @return un message explicite de l'erreur.
+	 */
+	public String generateErrorMessage(Exception exception) 
+	{
+		if (exception instanceof SQLException)
+			return this.crudFacade.generateErrorMessage((SQLException)exception);
+
+		else if (exception instanceof NumberFormatException)
+			return "La valeur entrée est incompatible avec le type de l'attribut.";
+
+		else
+			return exception.getMessage();
+	}
+	
+	/**
+	 * Parse une {@code Exception} pour en faire un objet {@code Response} indiquant une erreur.
+	 * @param exception : un objet {@code Exception} à parser.
+	 * @return un objet {@code Response} négatif.
+	 */
+	public Response generateErrorResponse(Exception exception) 
+	{
+		String msgException = this.generateErrorMessage(exception);
+
+		return new Response(false, msgException);
 	}
 }
