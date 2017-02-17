@@ -70,7 +70,6 @@ public class SQLManager {
 	 * @throws NullPointerException si aucune {@code Connection} n'est renseignée.
 	 */
 	public SQLManager(Connection conn, int requiredStatementType) 
-			throws SQLException
 	{
 			this.conn = conn;
 			this.initStatement(requiredStatementType);
@@ -408,18 +407,20 @@ public class SQLManager {
 	 * @throws IllegalArgumentException si le type de {@code Statement} renseigné n'existe pas.
 	 */
 	private void initStatement(int requiredStatementType) 
-			throws SQLException
 	{
-		conn.setAutoCommit(false);
-		if (requiredStatementType != TYPE_UPDATABLE_RESULTSET) {
-			this.stat = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			this.stat.setFetchSize(100);
-			this.statementType = TYPE_PLAIN_RESULTSET;
+		try {
+			conn.setAutoCommit(false);
+			if (requiredStatementType != TYPE_UPDATABLE_RESULTSET) {
+				this.stat = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+				this.stat.setFetchSize(100);
+				this.statementType = TYPE_PLAIN_RESULTSET;
+			}
+			else {
+				this.stat = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				this.statementType = TYPE_UPDATABLE_RESULTSET;
+			}
+		} 
+		catch (Exception e) {
 		}
-		else {
-			this.stat = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			this.statementType = TYPE_UPDATABLE_RESULTSET;
-		}
-		
 	}
 }

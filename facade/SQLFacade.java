@@ -15,7 +15,8 @@ import manager.sql.SQLManager;
  * Un objet permettant d'accéder aux fonctionnalités du {@link SQLManager} sans
  * le manipuler directement. 
  */
-public class SQLFacade extends AbstractDDLCRUDFacade
+public class SQLFacade 
+extends AbstractDDLCRUDFacade
 {
 
 	/** Structure représentant une connexion à un SGBD. */
