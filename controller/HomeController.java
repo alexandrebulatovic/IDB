@@ -201,7 +201,7 @@ public class HomeController
 	private void createOrNotCRUDController()
 	{
 		if (this.crudControl == null) {
-			this.crudControl = new CRUDController(this.facade.getCRUDFacade());
+			this.crudControl = new CRUDController(this.facade.getSQLFacade());
 		}
 	}
 
@@ -212,7 +212,7 @@ public class HomeController
 	private void createOrNotSQLController()
 	{
 		if (this.sqlControl == null) {
-			this.sqlControl = new SQLController(this.facade.getCRUDFacade());
+			this.sqlControl = new SQLController(this.facade.getSQLFacade());
 		}
 	}
 }

@@ -178,7 +178,7 @@ public class HomeFacade
 	 * 
 	 * @return une facade pour le CRUD des données.
 	 */
-	public SQLFacade getCRUDFacade()
+	public SQLFacade getSQLFacade()
 	{
 		return new SQLFacade(this.factory.getDDLManager(this.getConnection()), connector, tables);
 	}
