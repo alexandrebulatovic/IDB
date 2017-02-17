@@ -1,7 +1,6 @@
 package facade;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import business.TableSet;
 import manager.connection.I_ConnectionManager;
@@ -182,14 +181,11 @@ public class HomeFacade
 	 */
 	public SQLFacade getSQLFacade()
 	{
-		try {
-			return new SQLFacade
-					(this.factory.getDDLManager(this.getConnection()), 
-							connector, 
-							tables, 
-							new SQLManager(this.getConnection(), SQLManager.TYPE_PLAIN_RESULTSET));
-		} catch (SQLException e) {
-			return null;
-		}
+		return new SQLFacade
+				(this.factory.getDDLManager(this.getConnection()), 
+						connector, 
+						tables, 
+						new SQLManager(this.getConnection(), SQLManager.TYPE_PLAIN_RESULTSET));
+
 	}
 }
