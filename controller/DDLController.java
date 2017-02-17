@@ -321,10 +321,7 @@ public class DDLController
 				DialogBox.showMessage(this.facade.getGeneratedReply(), "Résultat");
 		}
 		catch (Exception exception)
-		{
-			System.err.println(exception.getMessage());
-			exception.printStackTrace();
-		}
+		{}
 	}
 	
 	/**
