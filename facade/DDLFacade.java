@@ -2,6 +2,8 @@ package facade;
 
 import java.util.List;
 
+import javax.swing.JTable;
+
 import business.TableSet;
 import useful.Response;
 import useful.ResponseData;
@@ -9,6 +11,7 @@ import factory.MainFactory;
 import gui.ddl.tools.I_AttributeModel;
 import gui.ddl.tools.I_TableModel;
 import manager.ddl.I_DDLManager;
+import manager.sql.SQLManager;
 
 public class DDLFacade 
 extends AbstractDDLCRUDFacade
@@ -16,6 +19,8 @@ extends AbstractDDLCRUDFacade
 	/** Fabrique principale.*/
 	private MainFactory factory;
 
+	/** Gestionnaire de requêtes SQL.*/
+	private SQLManager sql;
 	
 	//Constructeur
 	/**
@@ -23,11 +28,14 @@ extends AbstractDDLCRUDFacade
 	 * 
 	 * @param manager : null interdit.
 	 * @param factory : null interdit.
+	 * @param sql : null interdit.
 	 */
-	public DDLFacade(I_DDLManager manager, MainFactory factory,TableSet tables)
+	public DDLFacade
+	(I_DDLManager manager, MainFactory factory, TableSet tables, SQLManager sql)
 	{
 		super(manager,tables);
-		this.factory = factory;
+		this.factory = factory; 
+		this.sql = sql;
 	}
 
 
@@ -317,7 +325,22 @@ extends AbstractDDLCRUDFacade
 	 */
 	public void closeDDL(){this.dbms.closeStatement();}
 
-
+	
+	/** @see SQLManager#sendQuery(String) */
+	public boolean sendQuery(String query) 
+			throws Exception{
+		return this.sql.sendQuery(query);
+	}
+	
+	
+	public JTable getGeneratedJTable() {
+		return this.sql.getGeneratedJTable();
+	}
+	
+	public String getGeneratedReply() {
+		return this.sql.getGeneratedReply();
+	}
+	
 	//TODO : trompeur
 	public Response addUniqueDBMS(String tableSourceName, String[] attributesSourcesNames, String contrainte) {
 		String sql = this.business.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], contrainte);

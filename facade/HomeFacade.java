@@ -4,7 +4,6 @@ import java.sql.Connection;
 
 import business.TableSet;
 import manager.connection.I_ConnectionManager;
-import manager.sql.SQLManager;
 import manager.xml.DefaultValueManager;
 import useful.ConnectionStrings;
 import useful.Response;
@@ -170,7 +169,7 @@ public class HomeFacade
 	{
 		return new DDLFacade
 				(this.factory.getDDLManager(this.getConnection()), 
-				 this.factory, this.tables);
+				 this.factory, this.tables, this.factory.getSQLManager(this.getConnection()));
 	}
 	
 	
@@ -185,7 +184,7 @@ public class HomeFacade
 				(this.factory.getDDLManager(this.getConnection()), 
 						connector, 
 						tables, 
-						new SQLManager(this.getConnection(), SQLManager.TYPE_PLAIN_RESULTSET));
+						this.factory.getSQLManager(this.getConnection()));
 
 	}
 }

@@ -195,8 +195,7 @@ extends AbstractBasicGUI
 				attributes.add(attribute);
 			}
 			TableQBE table = new TableQBE(attributes);
-
-			table.getQuery(); //A passer au controleur, puis à la facade 
+			this.control.sendQuery(table.getQuery()); //A passer au controleur, puis à la facade 
 		}
 	}
 

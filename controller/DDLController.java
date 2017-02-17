@@ -15,6 +15,7 @@ import gui.ddl.tools.I_TableModel;
 
 import javax.swing.JFrame;
 
+import useful.DialogBox;
 import useful.Response;
 import useful.ResponseData;
 
@@ -302,6 +303,29 @@ public class DDLController
 		
 	}
 
+	/**
+	 * Exécute une requête SQL et affiche le résultat 
+	 * de cette requête dans une boîte de dialogue.
+	 * @param query : une requête SQL à exécuter.
+	 */
+	public void sendQuery(String query)
+	{
+		boolean isJTable;
+		try 
+		{
+			isJTable = this.facade.sendQuery(query);
+
+			if (isJTable)
+				DialogBox.showTable(this.facade.getGeneratedJTable(), "Résultat");
+			else
+				DialogBox.showMessage(this.facade.getGeneratedReply(), "Résultat");
+		}
+		catch (Exception exception)
+		{
+			System.err.println(exception.getMessage());
+			exception.printStackTrace();
+		}
+	}
 	
 	/**
 	 * Interroge le SGBD pour récupérer les attributs sous contraintes UNIQUE.<br/>
@@ -497,4 +521,7 @@ public class DDLController
 	public Response alterTable(String oldTable, String newTable, List<Object[]> attributes) {
 		return facade.modifyTable( oldTable,  newTable, attributes);
 	}
+	
+	
+	
 }
