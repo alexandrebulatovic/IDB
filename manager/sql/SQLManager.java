@@ -69,16 +69,11 @@ public class SQLManager {
 	 * @throws IllegalArgumentException si le type de {@code Statement} renseigné n'existe pas.
 	 * @throws NullPointerException si aucune {@code Connection} n'est renseignée.
 	 */
-	public SQLManager(Connection conn, int requiredStatementType) throws SQLException, IllegalArgumentException, NullPointerException
+	public SQLManager(Connection conn, int requiredStatementType) 
+			throws SQLException
 	{
-		if (conn == null)
-			throw new NullPointerException("Aucun objet Connection n'a été fourni");
-
-		else 
-		{
 			this.conn = conn;
 			this.initStatement(requiredStatementType);
-		}
 	}
 
 	/*-----------------------------------------------------------------*/
@@ -412,23 +407,19 @@ public class SQLManager {
 	 * pas le type de {@code Statement} demandé.
 	 * @throws IllegalArgumentException si le type de {@code Statement} renseigné n'existe pas.
 	 */
-	private void initStatement(int requiredStatementType) throws SQLException, IllegalArgumentException
+	private void initStatement(int requiredStatementType) 
+			throws SQLException
 	{
 		conn.setAutoCommit(false);
-
-		if (requiredStatementType == TYPE_UPDATABLE_RESULTSET)
-		{
-			this.stat = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			this.statementType = TYPE_UPDATABLE_RESULTSET;
-		}
-
-		else if (requiredStatementType == TYPE_PLAIN_RESULTSET)
-		{
+		if (requiredStatementType != TYPE_UPDATABLE_RESULTSET) {
 			this.stat = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			this.stat.setFetchSize(100);
 			this.statementType = TYPE_PLAIN_RESULTSET;
 		}
-		else
-			throw new IllegalArgumentException("Le type de Statement choisi n'est pas correct");
+		else {
+			this.stat = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			this.statementType = TYPE_UPDATABLE_RESULTSET;
+		}
+		
 	}
 }
