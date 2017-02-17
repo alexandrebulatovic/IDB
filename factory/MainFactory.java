@@ -7,6 +7,7 @@ import java.sql.Connection;
 
 import manager.connection.I_ConnectionManager;
 import manager.ddl.I_DDLManager;
+import manager.sql.SQLManager;
 
 /**
  * Fabrique concrète de fabriques de SGBD.<br/>
@@ -92,6 +93,16 @@ public class MainFactory
 	public I_TableModel getTableModel()
 	{
 		return this.factory.getTableModel();
+	}
+	
+	
+	/**
+	 * @param connection : une connexion active vers un SGBD, null interdit.
+	 * @return un gestionnaire de requête SQL.
+	 */
+	public SQLManager getSQLManager(Connection connection)
+	{
+		return new SQLManager(connection, SQLManager.TYPE_PLAIN_RESULTSET);
 	}
 	
 	
