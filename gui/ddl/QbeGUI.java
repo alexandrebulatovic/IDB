@@ -2,11 +2,13 @@ package gui.ddl;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -36,12 +38,16 @@ extends AbstractBasicGUI
 	private JLabel tableNameLabel;
 
 	private JLabel attributeNameLabel;
+	
+	private JLabel requestLabel;
 
 	private JComboBox<String> tableNameComboBox;
 
 	private JComboBox<String> attributeNameComboBox;
 
 	private JButton addAttributeButton;
+	
+	private JCheckBox disctinctCheckBox;
 
 	private JButton execRequestButton;
 
@@ -53,9 +59,11 @@ extends AbstractBasicGUI
 
 	private JButton resetButton;
 
+	private JLabel distinctLabel;
+
 
 	public QbeGUI(DDLController ddlController) {
-		super("Requètes", null, 600, 400, 25);
+		super("Requètes", null, 600, 450, 25);
 		this.control = ddlController;
 		this.handleComponents();
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
@@ -85,8 +93,16 @@ extends AbstractBasicGUI
 
 		this.bindAndAdd(new JSeparator(SwingConstants.HORIZONTAL));
 
+		this.increaseTop(-20);
 		this.model = new DefaultTableModel(20,20);
 
+		this.requestLabel = new JLabel("Requête :");
+		this.requestLabel.setFont(new Font(null, Font.BOLD, 18));
+		this.bindAndAdd(this.requestLabel);
+		
+		this.disctinctCheckBox = new JCheckBox("Distinct");
+		this.bindAndAdd(this.disctinctCheckBox);
+		
 		this.requestTable = new JTable(model){
 
 			public TableCellRenderer getCellRenderer(int row, int column) {
@@ -194,7 +210,8 @@ extends AbstractBasicGUI
 				ColumnQBE attribute = new ColumnQBE(tableName,attributeName,selected,where);
 				attributes.add(attribute);
 			}
-			TableQBE table = new TableQBE(attributes);
+			boolean distinct = this.disctinctCheckBox.isSelected();
+			TableQBE table = new TableQBE(attributes,distinct);
 			this.control.sendQuery(table.getQuery()); //A passer au controleur, puis à la facade 
 		}
 	}

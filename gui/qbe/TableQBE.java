@@ -8,14 +8,17 @@ public class TableQBE
 {
 	//Attributs
 	private List<ColumnQBE> columns;
+	
+	private boolean distinct;
 
 
 	//Constructeurs
 	public TableQBE() {this.columns = new ArrayList<ColumnQBE>();}
 
-	public TableQBE(List<ColumnQBE> columns)
+	public TableQBE(List<ColumnQBE> columns, boolean distinct)
 	{
 		this.columns = columns;
+		this.distinct = distinct;
 	}
 
 
