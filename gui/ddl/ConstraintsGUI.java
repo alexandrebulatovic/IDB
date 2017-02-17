@@ -357,7 +357,7 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 			// [1] : nom attribut
 			for (String[] s : rep.getCollection()){
 
-				if (i != 0){
+				if (i != 0 && (!(s[0].startsWith("PK")) || !(s[0].startsWith("pk")) )){
 					Vector<String> v = new Vector<String>();
 					v.addElement(s[0]);
 					v.addElement("UNIQUE");
