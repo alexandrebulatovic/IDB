@@ -31,7 +31,7 @@ extends AbstractDDLCRUDFacade
 	/* CONSTRUCTEUR */
 
 	public CRUDFacade
-	(I_DDLManager manager, 
+			(I_DDLManager manager, 
 			I_ConnectionManager connector, 
 			TableSet tables, 
 			SQLManager sqlManager) 
