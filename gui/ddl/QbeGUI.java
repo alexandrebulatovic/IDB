@@ -59,7 +59,7 @@ extends AbstractBasicGUI
 
 	private JButton resetButton;
 
-	private JLabel distinctLabel;
+//	private JLabel distinctLabel;
 
 
 	public QbeGUI(DDLController ddlController) {
