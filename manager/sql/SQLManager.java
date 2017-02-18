@@ -332,6 +332,7 @@ public class SQLManager {
 
 		else
 		{
+			System.out.println(this.rsmd.getColumnClassName(column));
 			switch (this.rsmd.getColumnClassName(column)) // sinon on récupère le mapping (classe Java utilisée) de la colonne
 			{
 			case "java.lang.String": // CHAR, VARCHAR, VARCHAR2, TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT, CHARACTER, LONG, STRING
@@ -356,6 +357,7 @@ public class SQLManager {
 				rs.updateBigDecimal(column, new BigDecimal(value));
 				break;
 			case "[Bjava.lang.Byte": // BIT, BINARY, VARBINARY, TINYBLOB, BLOB, MEDIUMBLOB, LONGBLOB, RAW, LONG RAW
+			case "[B":
 				rs.updateBytes(column, value.getBytes());
 				break;
 			case "java.sql.Date": // DATE
@@ -365,6 +367,7 @@ public class SQLManager {
 				rs.updateTime(column, java.sql.Time.valueOf(value));
 				break;
 			case "java.sql.Timestamp": // DATETIME, TIMESTAMP, DATE
+			case "oracle.sql.TIMESTAMP":
 				rs.updateTimestamp(column, java.sql.Timestamp.valueOf(value));
 				break;
 			case "java.sql.Clob": // CLOB
