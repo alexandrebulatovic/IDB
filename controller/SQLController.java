@@ -10,7 +10,8 @@ import manager.sql.SQLManager;
 import useful.DialogBox;
 
 /**
- * Un objet qui effectue la communication avec le {@link SQLManager}.
+ * Un objet qui effectue la communication avec le {@link SQLManager} à partir d'opérations
+ * effectuées sur un objet IHM {@code SQLGUI}.
  * <P>
  * L'envoi d'une requête s'effectue via la méthode {@code sendQuery}. Le résultat est affiché
  * automatiquement sous la forme d'une boîte de dialogue.

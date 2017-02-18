@@ -3,6 +3,10 @@ package business;
 import java.util.ArrayList;
 import java.util.List;
 
+/** 
+ * Un objet représentant un attribut d'une table d'une base de données
+ * avec son nom, son type de données, sa taille et le nom de sa table.
+ */
 public class Attribute 
 {
 
@@ -17,13 +21,13 @@ public class Attribute
 
 	/** Nom de la table où se situe $this.*/
 	private String tableName;
-	
-	
+
+
 	private List<Constraint> constraints;
-	
+
 	private boolean notNull = false;
-	
-	
+
+
 	/**
 	 * attention, la taille des types ne doit exéder 38 octets pour des 
 	 * types numériques
@@ -44,16 +48,16 @@ public class Attribute
 
 
 		this.notNull = isNotNull;
-		
+
 		if (constraints == null)
 			this.constraints = new ArrayList<Constraint>();
 		else
 			this.constraints = constraints;	
-		
-		
+
+
 		this.tableName = tableName;
 	}
-	
+
 	/**
 	 * Constructeur par recopie.
 	 * 
@@ -65,14 +69,14 @@ public class Attribute
 		this.type = copy.type;
 		this.size = copy.size;
 		this.tableName = copy.tableName;
-		
+
 		this.constraints = new ArrayList<Constraint>();
 		for (Constraint c : copy.constraints){
 			this.constraints.add(c);
 		}
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * Par défaut,
@@ -86,7 +90,7 @@ public class Attribute
 		this(name,type,size,new ArrayList<Constraint>(),null,isNotNull);
 	}
 
-	
+
 	/**
 	 * Par défaut, l'attribut peut être null et ne possede pas de contraintes.
 	 * La suppression ne se fait pas en DELETE CASCADE
@@ -102,7 +106,7 @@ public class Attribute
 	public boolean isNotNull(){
 		return this.notNull;
 	}
-	
+
 	public boolean isUnique(){
 		for (Constraint constraint : constraints){
 			if (constraint instanceof UniqueConstraint){
@@ -111,13 +115,13 @@ public class Attribute
 					return true;
 				}
 
-				
+
 			}
 		}
 		return false;
 	}
-	
-	
+
+
 	public boolean isPk(){
 		for (Constraint constraint : constraints){
 			if (constraint instanceof PrimaryKeyConstraint){
@@ -130,7 +134,7 @@ public class Attribute
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Retourne vrai si l'attribut est clé étrangère
 	 * @return
@@ -148,7 +152,7 @@ public class Attribute
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 
 	 * @return ForeignKeyConstraint ou null
@@ -165,14 +169,14 @@ public class Attribute
 		return null;
 
 	}
-	
-	
+
+
 	/** 
 	 * Définit le nom de la table de $this comme étant $name.
 	 */
 	public void setTableName(String name){this.tableName = name;}
 
-	
+
 	/**
 	 * Ajoute une contrainte si elle n'existe pas
 	 * 
@@ -181,7 +185,7 @@ public class Attribute
 	 */
 	public boolean addConstraint(Constraint constraint){		
 		if (!this.constraints.contains(constraint)){
-			
+
 			return this.constraints.add(constraint);
 		}
 		return false;
@@ -194,8 +198,8 @@ public class Attribute
 		Attribute a = (Attribute) o;
 		return this.name.equals(a.name);
 	}
-	
-	
+
+
 	/**
 	 * Retourne une représentation de l'attribut
 	 * @Exemple att1 NUMBER(8)
@@ -205,8 +209,8 @@ public class Attribute
 	{
 		return this.toSQL();
 	}
-	
-	
+
+
 	/**
 	 * Retourne une chaîne de caractères correspondant à un message 
 	 * d'erreur concernant la taille du type de $this en fonction de $i.
@@ -216,10 +220,10 @@ public class Attribute
 	 */
 	public String attributeSizeError(int i){
 		switch (i){
-			case -1 : return "1 <= taille VARCHAR <= 255";
-			case -2 : return "1 <= taille NUMBER <= 38";
-			case -3 : return "1 <= taille CHAR <= 255";
-			default : return "";
+		case -1 : return "1 <= taille VARCHAR <= 255";
+		case -2 : return "1 <= taille NUMBER <= 38";
+		case -3 : return "1 <= taille CHAR <= 255";
+		default : return "";
 		}
 	}
 
@@ -237,8 +241,8 @@ public class Attribute
 		}
 		return sqls;
 	}
-	
-	
+
+
 	/**
 	 * Retourne un nombre négatif spécifique si et seulement si la taille
 	 * de $this n'est pas cohérente avec son type, retourne
@@ -265,7 +269,7 @@ public class Attribute
 			}else{
 				return 3;
 			}
-	
+
 		}else{
 			return 0;
 		}
@@ -285,8 +289,8 @@ public class Attribute
 		}
 		return this.name+" "+this.type+" ("+this.size+")"+nn;
 	}
-	
-	
+
+
 	/**
 	 * @Exemple ALTER TABLE $nomTable ADD $nomAttribut $type $taill
 	 * @return
@@ -306,7 +310,7 @@ public class Attribute
 	public String toDROPSQL() {
 		return "ALTER TABLE "+this.tableName+"\nDROP "+this.name;
 	}
-	
+
 	public String toDROPSQL(String tableName) {
 		return "ALTER TABLE "+tableName+"\nDROP "+this.name;
 	}
@@ -327,19 +331,19 @@ public class Attribute
 		}
 		return null;
 	}
-	
+
 	public List<Constraint> getConstraints(){
 		return this.constraints;
 	}
 
-	
+
 	/**
 	 * Supprime toutes les contraintes
 	 * @return une liste des contraintes qui ont été totalement supprimés	
 	 */
 	public ArrayList<Constraint> cleanAll() {
 		ArrayList<Constraint> tmp = new ArrayList<Constraint>(this.constraints);
-		
+
 		for (Constraint c : this.constraints){
 			c.cleanAll();
 		}
@@ -350,7 +354,7 @@ public class Attribute
 	public String getName() {
 		return this.name;
 	}
-	
+
 }
 
 
