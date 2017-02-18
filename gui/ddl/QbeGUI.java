@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,89 +72,10 @@ extends AbstractBasicGUI
 		this.fillAttributeComboBox();
 	}
 
-	private void handleComponents(){
-		this.tableNameLabel = new JLabel("Table :");
-		this.bindAndAdd(tableNameLabel, 10, true);
-
-		this.tableNameComboBox = new JComboBox<String>();
-		this.tableNameComboBox.addActionListener(this);
-		this.bindAndAdd(tableNameComboBox, 5, true);
-
-		this.attributeNameLabel = new JLabel("Attribut :");
-		this.bindAndAdd(attributeNameLabel, 9, true);
-
-		this.attributeNameComboBox = new JComboBox<String>();
-		this.bindAndAdd(attributeNameComboBox, 5, true);
-
-		this.addAttributeButton = new JButton("Ajouter attribut");
-		this.addAttributeButton.addActionListener(this);
-		this.bindAndAdd(addAttributeButton, 3, false);
-
-		this.increaseTop(20);
-
-		this.bindAndAdd(new JSeparator(SwingConstants.HORIZONTAL));
-
-		this.increaseTop(-20);
-		this.model = new DefaultTableModel(20,20);
-
-		this.requestLabel = new JLabel("Requête :");
-		this.requestLabel.setFont(new Font(null, Font.BOLD, 18));
-		this.bindAndAdd(this.requestLabel);
-		
-		this.disctinctCheckBox = new JCheckBox("Distinct");
-		this.bindAndAdd(this.disctinctCheckBox);
-		
-		this.requestTable = new JTable(model){
-
-			public TableCellRenderer getCellRenderer(int row, int column) {
-				if(getValueAt(row, column) instanceof Boolean) {
-					return super.getDefaultRenderer(Boolean.class);
-				} else {
-					return super.getCellRenderer(row, column);
-				}
-			}
-			@Override
-			public TableCellEditor getCellEditor(int row, int column) {
-				if(getValueAt(row, column) instanceof Boolean) {
-					return super.getDefaultEditor(Boolean.class);
-				} else {
-					return super.getCellEditor(row, column);
-				}
-			}
-
-			public boolean isCellEditable(int row, int col) {
-				if(col <1 || col > lastColumnUse || row == 0 || row == 1){
-					return false;
-				}else{
-					return true;
-				}
-			}
-		};
-		int i;
-		for(i = 1 ; i<this.model.getRowCount();i++){
-			this.requestTable.getColumnModel().getColumn(i).setPreferredWidth(100);
-		}
-		this.requestTable.setTableHeader(null);
-		this.model.setValueAt("Table", 0, 0);
-		this.model.setValueAt("Attribut", 1, 0);
-		this.model.setValueAt("Selectionné", 2, 0);
-		this.model.setValueAt("WHERE", 3, 0);
-		this.model.setValueAt("OR", 4, 0);
-		this.requestTable.getColumnModel().getColumn(0).setCellRenderer(new MyCellRenderer());
-		requestTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		JScrollPane requestScrollPane = new JScrollPane(requestTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		this.bindAndAdd(requestScrollPane,200);
-		requestScrollPane.setVisible(true);
-
-		this.increaseTop(5);
-
-		this.execRequestButton = new JButton("Executer la requête");
-		this.execRequestButton.addActionListener(this);
-		this.bindAndAdd(execRequestButton,3,true);
-		this.increaseLeft(225);
-		this.resetButton = new JButton("Reset");
-		this.resetButton.addActionListener(this);
-		this.bindAndAdd(resetButton,5,false);
+	@Override
+	public void windowActivated(WindowEvent e)
+	{
+		this.resetView();
 	}
 
 	@Override
@@ -189,11 +111,112 @@ extends AbstractBasicGUI
 	}
 
 
+	private void handleComponents(){
+		this.tableNameLabel = new JLabel("Table :");
+		this.bindAndAdd(tableNameLabel, 10, true);
+	
+		this.tableNameComboBox = new JComboBox<String>();
+		this.tableNameComboBox.addActionListener(this);
+		this.bindAndAdd(tableNameComboBox, 5, true);
+	
+		this.attributeNameLabel = new JLabel("Attribut :");
+		this.bindAndAdd(attributeNameLabel, 9, true);
+	
+		this.attributeNameComboBox = new JComboBox<String>();
+		this.bindAndAdd(attributeNameComboBox, 5, true);
+	
+		this.addAttributeButton = new JButton("Ajouter attribut");
+		this.addAttributeButton.addActionListener(this);
+		this.bindAndAdd(addAttributeButton, 3, false);
+	
+		this.increaseTop(20);
+	
+		this.bindAndAdd(new JSeparator(SwingConstants.HORIZONTAL));
+	
+		this.increaseTop(-20);
+		this.model = new DefaultTableModel(20,20);
+	
+		this.requestLabel = new JLabel("Requête :");
+		this.requestLabel.setFont(new Font(null, Font.BOLD, 18));
+		this.bindAndAdd(this.requestLabel);
+		
+		this.disctinctCheckBox = new JCheckBox("Distinct");
+		this.bindAndAdd(this.disctinctCheckBox);
+		
+		this.requestTable = new JTable(model){
+	
+			public TableCellRenderer getCellRenderer(int row, int column) {
+				if(getValueAt(row, column) instanceof Boolean) {
+					return super.getDefaultRenderer(Boolean.class);
+				} else {
+					return super.getCellRenderer(row, column);
+				}
+			}
+			@Override
+			public TableCellEditor getCellEditor(int row, int column) {
+				if(getValueAt(row, column) instanceof Boolean) {
+					return super.getDefaultEditor(Boolean.class);
+				} else {
+					return super.getCellEditor(row, column);
+				}
+			}
+	
+			public boolean isCellEditable(int row, int col) {
+				if(col <1 || col > lastColumnUse || row == 0 || row == 1){
+					return false;
+				}else{
+					return true;
+				}
+			}
+		};
+		int i;
+		for(i = 1 ; i<this.model.getRowCount();i++){
+			this.requestTable.getColumnModel().getColumn(i).setPreferredWidth(100);
+		}
+		this.requestTable.setTableHeader(null);
+		this.model.setValueAt("Table", 0, 0);
+		this.model.setValueAt("Attribut", 1, 0);
+		this.model.setValueAt("Selectionné", 2, 0);
+		this.model.setValueAt("WHERE", 3, 0);
+		this.model.setValueAt("OR", 4, 0);
+		this.requestTable.getColumnModel().getColumn(0).setCellRenderer(new MyCellRenderer());
+		requestTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		JScrollPane requestScrollPane = new JScrollPane(requestTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		this.bindAndAdd(requestScrollPane,200);
+		requestScrollPane.setVisible(true);
+	
+		this.increaseTop(5);
+	
+		this.execRequestButton = new JButton("Executer la requête");
+		this.execRequestButton.addActionListener(this);
+		this.bindAndAdd(execRequestButton,3,true);
+		this.increaseLeft(225);
+		this.resetButton = new JButton("Reset");
+		this.resetButton.addActionListener(this);
+		this.bindAndAdd(resetButton,5,false);
+	}
+
+	private void resetView() {
+		int i,a;
+		for(i=1; i<lastColumnUse+1; i++){
+			this.model.setValueAt("", 0, i);
+			this.model.setValueAt("", 1, i);
+			this.model.setValueAt("", 2, i);
+			this.model.fireTableCellUpdated(0, i);
+			this.model.fireTableCellUpdated(1, i);
+			this.model.fireTableCellUpdated(2, i);
+			for(a=3;a<20;a++){
+				this.model.setValueAt("", a, i);
+				this.model.fireTableCellUpdated(a, i);
+			}
+		}
+		this.lastColumnUse=0;
+	}
 	private void execRequestButtonAction() {
 		if(this.isComplete()){
 			int i, a;
 			List<ColumnQBE> attributes = new ArrayList<ColumnQBE>();
-
+	
 			for(i=1; i<lastColumnUse+1; i++){
 				String tableName = (String) this.model.getValueAt(0, i);
 				String attributeName = (String) this.model.getValueAt(1, i);
@@ -215,27 +238,14 @@ extends AbstractBasicGUI
 		}
 	}
 
-
 	/**
 	 * Remet à 0 la vue des requètes.
 	 */
 	private void resetButtonAction() {
-		int i,a;
-		for(i=1; i<lastColumnUse+1; i++){
-			this.model.setValueAt("", 0, i);
-			this.model.setValueAt("", 1, i);
-			this.model.setValueAt("", 2, i);
-			this.model.fireTableCellUpdated(0, i);
-			this.model.fireTableCellUpdated(1, i);
-			this.model.fireTableCellUpdated(2, i);
-			for(a=3;a<20;a++){
-				this.model.setValueAt("", a, i);
-				this.model.fireTableCellUpdated(a, i);
-			}
-		}
-		this.lastColumnUse=0;
-
+		resetView();
+	
 	}
+
 	/**
 	 *Ajoute un attribut à la table des requètes.
 	 */

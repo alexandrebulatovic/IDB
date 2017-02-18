@@ -99,7 +99,11 @@ implements ItemListener
 			this.cancelUpdateAttributeButtonAction();
 		}
 	}
-
+	@Override
+	public void windowActivated(WindowEvent e)
+	{
+		this.resetView();
+	}
 
 	@Override
 	public void itemStateChanged(ItemEvent item)

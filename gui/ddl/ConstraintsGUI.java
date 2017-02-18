@@ -6,6 +6,7 @@ import useful.ResponseData;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -78,11 +79,16 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		this.setProperties(WindowConstants.DISPOSE_ON_CLOSE);
 		this.handleComponents();
 		this.enableFkComponents(false);
-		this.fillComponents();
 		this.addListener();
 	}
 
-
+	@Override
+	public void windowActivated(WindowEvent e)
+	{
+		this.removeListener();
+		this.fillComponents();
+		this.addListener();
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
@@ -273,6 +279,12 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 		this.deleteButton.addActionListener(this);
 	}
 
+	private void removeListener() {
+		this.tableNameComboBox.removeActionListener(this);
+		this.fkTableNameComboBox.removeActionListener(this);
+		this.addButton.removeActionListener(this);
+		this.deleteButton.removeActionListener(this);
+	}
 	/**
 	 * Remplit les listes déroulantes avec le nom des 
 	 * tables de données disponibles pour l'utilisateur
