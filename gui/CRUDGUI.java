@@ -55,6 +55,9 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 	/** Bouton pour déclencher l'action d'insérer des données.*/
 	private JButton insertButton;
+	
+	/** Bouton pour rafraichir la liste des tables.*/
+	private JButton refreshButton;
 
 	/** {@code JScrollpane} contenant la la {@code JTable} et permettant de scroller si la taille dépasse. */
 	private JScrollPane tableScrollPane;
@@ -112,6 +115,13 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 
 		else if (pressedButton == this.insertButton)
 			insertButtonAction();
+		
+		else if (pressedButton == this.refreshButton)
+			refreshButtonAction();
+	}
+
+	private void refreshButtonAction() {
+		this.crudController.refreshCRUDGUI();
 	}
 
 	private void insertButtonAction() 
@@ -245,7 +255,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 	private void handleComponents()	
 	{
 		this.tableComboBox = new JComboBox<String>();
-		this.bindAndAdd(this.tableComboBox);
+		this.bindAndAdd(this.tableComboBox, 2, true);
 		this.tableComboBox.addActionListener(new ActionListener(){ 
 			// choix volontaire par rapport à un ItemListener pour permettre d'actualiser la JTable
 			// car ItemListener ne déclenche pas d'action si on re-sélectionne la même table dans la combobox
@@ -269,6 +279,10 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 				}
 			}
 		});
+		
+		this.refreshButton = new JButton("Refresh");
+		this.bindAndAdd(this.refreshButton, 7, false);
+		this.refreshButton.addActionListener(this);
 
 		this.tableScrollPane = new JScrollPane();
 		this.bindAndAdd(this.tableScrollPane, 320);
@@ -287,8 +301,7 @@ public class CRUDGUI extends AbstractBasicGUI implements ActionListener {
 		this.deleteButton = new JButton("Supprimer");
 		this.bindAndAdd(this.deleteButton);
 		this.deleteButton.addActionListener(this);
-
-
+		
 		this.hideJButtons();
 	}
 

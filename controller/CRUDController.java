@@ -72,6 +72,15 @@ public class CRUDController {
 			showGUI(this.crudView);
 	}
 
+	/**
+	 * Relance l'objet {@code CRUDGUI}.
+	 */
+	public void refreshCRUDGUI() {
+		this.crudView.dispose();
+		this.crudView = null;
+		this.crudView = new CRUDGUI(this);
+	}
+
 	/** @see AbstractDDLCRUDFacade#getTables() */
 	public ResponseData<String> getTables()
 	{
