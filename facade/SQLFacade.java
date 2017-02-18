@@ -35,7 +35,7 @@ extends AbstractDDLCRUDFacade
 			TableSet tables, 
 			SQLManager sqlManager) 
 	{
-		super(manager, tables);
+		super(manager, tables, null);
 		this.connector = connector;
 		this.sqlManager = sqlManager;
 	}

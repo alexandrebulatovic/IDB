@@ -2,6 +2,7 @@ package facade;
 
 import useful.ResponseData;
 import manager.ddl.I_DDLManager;
+import manager.sql.SQLManager;
 import business.TableSet;
 
 public class AbstractDDLCRUDFacade 
@@ -13,14 +14,18 @@ public class AbstractDDLCRUDFacade
 	/** Gestionnaire de définition des données.*/
 	protected I_DDLManager dbms;
 
-
+	/** Gestionnaire de requêtes SQL.*/
+	protected SQLManager sql;
+	
+	
 	//Constructeur
 	/**
 	 * Constructeur communb.
 	 * @param ddlmanager : null interdit.
 	 * @param tables : null interdit.
+	 * @param sql : null interdit.
 	 */
-	protected AbstractDDLCRUDFacade(I_DDLManager ddlmanager, TableSet tables)
+	protected AbstractDDLCRUDFacade(I_DDLManager ddlmanager, TableSet tables, SQLManager sql)
 	{
 		this.business = tables;
 		this.dbms = ddlmanager;

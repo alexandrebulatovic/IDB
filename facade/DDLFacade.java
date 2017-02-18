@@ -19,8 +19,6 @@ extends AbstractDDLCRUDFacade
 	/** Fabrique principale.*/
 	private MainFactory factory;
 
-	/** Gestionnaire de requêtes SQL.*/
-	private SQLManager sql;
 	
 	//Constructeur
 	/**
@@ -33,9 +31,8 @@ extends AbstractDDLCRUDFacade
 	public DDLFacade
 	(I_DDLManager manager, MainFactory factory, TableSet tables, SQLManager sql)
 	{
-		super(manager,tables);
+		super(manager,tables, sql);
 		this.factory = factory; 
-		this.sql = sql;
 	}
 
 

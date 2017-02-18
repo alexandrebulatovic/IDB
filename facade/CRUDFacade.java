@@ -23,8 +23,6 @@ extends AbstractDDLCRUDFacade
 	/** Structure représentant une connexion à un SGBD. */
 	private I_ConnectionManager connector;
 
-	private SQLManager sqlManager;
-
 
 	/* ----------------------------------------------------------------- */
 
@@ -36,9 +34,9 @@ extends AbstractDDLCRUDFacade
 			TableSet tables, 
 			SQLManager sqlManager) 
 	{
-		super(manager, tables);
+		super(manager, tables, sqlManager);
 		this.connector = connector;
-		this.sqlManager = sqlManager;
+
 	}
 
 	/* ----------------------------------------------------------------- */
@@ -47,24 +45,24 @@ extends AbstractDDLCRUDFacade
 
 	/** @see SQLManager#getJTableFromTableName(String) */
 	public JTable getJTableFromTableName(String tableName) throws SQLException {
-		return this.sqlManager.getJTableFromTableName(tableName);
+		return this.sql.getJTableFromTableName(tableName);
 	}
 
 	/** @see SQLManager#deleteTuple(int) */
 	public void deleteTuple(int index) throws SQLException {
-		this.sqlManager.deleteTuple(index);
+		this.sql.deleteTuple(index);
 	}
 
 	/** @see SQLManager#updateTuple(int, int, String) */
 	public void updateTuple(int index, int column, String value) 
 			throws UnsupportedOperationException, IllegalArgumentException, SQLException {
-		this.sqlManager.updateTuple(index, column, value);
+		this.sql.updateTuple(index, column, value);
 	}
 
 	/** @see SQLManager#addTuple(Vector) */
 	public void addTuple(Vector<String> newRow) 
 			throws UnsupportedOperationException, IllegalArgumentException, SQLException {
-		this.sqlManager.addTuple(newRow);
+		this.sql.addTuple(newRow);
 	}
 
 	/** @see SQLManager#setStatementType(int) */
