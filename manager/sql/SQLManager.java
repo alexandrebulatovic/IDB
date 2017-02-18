@@ -332,7 +332,6 @@ public class SQLManager {
 
 		else
 		{
-			System.out.println(this.rsmd.getColumnClassName(column));
 			switch (this.rsmd.getColumnClassName(column)) // sinon on récupère le mapping (classe Java utilisée) de la colonne
 			{
 			case "java.lang.String": // CHAR, VARCHAR, VARCHAR2, TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT, CHARACTER, LONG, STRING
