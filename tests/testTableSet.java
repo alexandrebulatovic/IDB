@@ -126,7 +126,23 @@ public class testTableSet {
 		//et on ne met pas le dernier attribute attASupprimer
 		System.out.println();
 		System.out.println();
-		System.out.println(ensembleTable.getSQLTableToModify("table1", "table1", attributes));
+		assertEquals("[ALTER TABLE table1\nADD att4 NUMERIC (33), ALTER TABLE table1\nDROP attASupprimer, ALTER TABLE table1\nMODIFY att3 VARCHAR2 (2) NOT NULL, ALTER TABLE table1\nDROP CONSTRAINT pk_table1, ALTER TABLE table1\nADD CONSTRAINT pk_table1 PRIMARY KEY(att1,att2)]",ensembleTable.getSQLTableToModify("table1", "table1", attributes).toString());
+	}
+	
+	
+	/**
+	 * Verifie qu'on ne peut pas ajouter une contrainte unique dont l'attribut à déjà une pk
+	 * et vis versa lorsque l'on souhaite ajouter une contrainte pk dont l'attribut est déjà unique
+	 */
+	@Test
+	public void testAddPkUnOrUnPk(){
+		System.out.println("testAddPkUnOrUnPk");
+		//att1 est pk
+		ensembleTable.addAttribute("table1", "att2", "VARCHAR2", 20, false, false);
+		ensembleTable.addUnique("table1", new String[]{"att1"});
+		List<String> modifyStrings = ensembleTable.getSQLTableToCreate("table1");
+		assertEquals("[CREATE TABLE table1\n(\natt1 VARCHAR2 (20),\natt2 VARCHAR2 (20)\n), ALTER TABLE table1\nADD CONSTRAINT pk_table1 PRIMARY KEY(att1)]",modifyStrings.toString());
+		
 	}
 
 	
