@@ -23,8 +23,6 @@ extends AbstractDDLCRUDFacade
 	/** Structure représentant une connexion à un SGBD. */
 	private I_ConnectionManager connector;
 
-	private SQLManager sqlManager;
-
 	/* ----------------------------------------------------------------- */
 
 	/* CONSTRUCTEUR */
@@ -35,9 +33,8 @@ extends AbstractDDLCRUDFacade
 			TableSet tables, 
 			SQLManager sqlManager) 
 	{
-		super(manager, tables, null);
+		super(manager, tables, sqlManager);
 		this.connector = connector;
-		this.sqlManager = sqlManager;
 	}
 
 	/* ----------------------------------------------------------------- */
@@ -53,15 +50,15 @@ extends AbstractDDLCRUDFacade
 	/** @see SQLManager#sendQuery(String) */
 	public boolean sendQuery(String query) 
 			throws IllegalArgumentException, NullPointerException, SQLException {
-		return this.sqlManager.sendQuery(query);
+		return this.sql.sendQuery(query);
 	}
 
 	public JTable getGeneratedJTable() {
-		return this.sqlManager.getGeneratedJTable();
+		return this.sql.getGeneratedJTable();
 	}
 
 	public String getGeneratedReply() {
-		return this.sqlManager.getGeneratedReply();
+		return this.sql.getGeneratedReply();
 	}
 
 	/** @see I_ConnectionManager#generateErrorMessage(SQLException) */

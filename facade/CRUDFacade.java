@@ -36,7 +36,6 @@ extends AbstractDDLCRUDFacade
 	{
 		super(manager, tables, sqlManager);
 		this.connector = connector;
-
 	}
 
 	/* ----------------------------------------------------------------- */
