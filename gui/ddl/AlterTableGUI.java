@@ -50,10 +50,6 @@ extends CreateTableGUI
 	@Override
 	protected void createTableButtonAction()
 	{
-		
-//		this.control.alterTable();
-		//TODO : ne verras jamais le jour
-//		this.createTable("TEMPORARY");
 		String oldTable = this.tablesCombo.getSelectedItem().toString();
 		String newTable = this.tableNameField.getText();
 		

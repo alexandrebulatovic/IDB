@@ -302,7 +302,12 @@ public class TableSet
 		
 		PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
 		pk.setTable(tmpTable);
-		pk.setName(oldTable.getPk().getName());
+		
+		PrimaryKeyConstraint oldPk = oldTable.getPk();
+		if (oldPk != null){
+			pk.setName(oldPk.getName());
+		}
+		
 		for (Attribute a : attributesPk){
 			pk.addAttribute(a);
 			a.addConstraint(pk);
