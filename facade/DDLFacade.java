@@ -80,7 +80,7 @@ extends AbstractDDLCRUDFacade
 	 * @param attributes
 	 */
 	public Response modifyTable(String oldTable, String newTable, List<Object[]> attributes) {
-		List<String> sqls = this.business.getSQLTableToModify(oldTable, newTable, attributes);
+		List<String> sqls = this.business.getSQLTableToModify(oldTable, attributes);
 		Response rep = null;
 		for (String sql : sqls){
 			rep = this.dbms.alterTable(sql);
@@ -88,6 +88,12 @@ extends AbstractDDLCRUDFacade
 				return rep;
 			}
 		}
+		if (rep.hasSuccess()){//si la DERNIERE response est un succès
+			//alors on ajoute le résultat dans les tables métiers
+			this.business.replace(oldTable, newTable, attributes);
+		}
+		
+		
 		return rep;
 
 

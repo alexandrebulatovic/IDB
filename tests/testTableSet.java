@@ -126,7 +126,7 @@ public class testTableSet {
 		//et on ne met pas le dernier attribute attASupprimer
 		System.out.println();
 		System.out.println();
-		assertEquals("[ALTER TABLE table1\nADD att4 NUMERIC (33), ALTER TABLE table1\nDROP attASupprimer, ALTER TABLE table1\nMODIFY att3 VARCHAR2 (2) NOT NULL, ALTER TABLE table1\nDROP CONSTRAINT pk_table1, ALTER TABLE table1\nADD CONSTRAINT pk_table1 PRIMARY KEY(att1,att2)]",ensembleTable.getSQLTableToModify("table1", "table1", attributes).toString());
+		assertEquals("[ALTER TABLE table1\nADD att4 NUMERIC (33), ALTER TABLE table1\nDROP attASupprimer, ALTER TABLE table1\nMODIFY att3 VARCHAR2 (2) NOT NULL, ALTER TABLE table1\nDROP CONSTRAINT pk_table1, ALTER TABLE table1\nADD CONSTRAINT pk_table1 PRIMARY KEY(att1,att2)]",ensembleTable.getSQLTableToModify("table1", attributes).toString());
 	}
 	
 	
