@@ -19,7 +19,7 @@ extends AbstractDDLCRUDFacade
 	/** Fabrique principale.*/
 	private MainFactory factory;
 
-	
+
 	//Constructeur
 	/**
 	 * Constructeur commun.
@@ -48,7 +48,7 @@ extends AbstractDDLCRUDFacade
 		return this.business.getSQLTableToCreate(table);
 	}
 
-	
+
 	/**
 	 * Tente de créer une table en base à partir de la requête $sql.
 	 * 
@@ -60,7 +60,7 @@ extends AbstractDDLCRUDFacade
 		return this.dbms.createTable(sql);
 	}
 
-	
+
 	/**
 	 * Tente de créer une table en RAM à partir de la requête $sql.
 	 * 
@@ -71,8 +71,8 @@ extends AbstractDDLCRUDFacade
 	{
 		return this.business.addTable(table);
 	}
-	
-	
+
+
 	/**
 	 * Modifie une table dans la bdd
 	 * @param oldTable
@@ -84,11 +84,10 @@ extends AbstractDDLCRUDFacade
 		Response rep = null;
 		for (String sql : sqls){
 			rep = this.dbms.alterTable(sql);
-			if (!rep.hasSuccess()){
-				return rep;
-			}
 		}
-		return rep;
+		return rep;//on retourne la derniere réponse
+
+
 	}
 
 
@@ -111,8 +110,8 @@ extends AbstractDDLCRUDFacade
 	{
 		return this.business.isLoaded(table);
 	}
-	
-	
+
+
 	/**
 	 * Ajoute $attribute à $table en RAM, si c'est possible.
 	 * 
@@ -125,12 +124,12 @@ extends AbstractDDLCRUDFacade
 	 * @return vrai ssi $attribute a été ajouté à $table, faux sinon.
 	 */
 	public boolean addAttributeToBusiness
-		(String table, String attribute, String type, int size, boolean notNull, boolean primaryKey)
+	(String table, String attribute, String type, int size, boolean notNull, boolean primaryKey)
 	{
 		return this.business.addAttribute(table, attribute, type, size, notNull, primaryKey);
 	}
-	
-	
+
+
 	/**
 	 * Ajoute une $constraint UNIQUE sur le groupe d' $attributes de $table 
 	 * en RAM, si c'est possible.
@@ -144,8 +143,8 @@ extends AbstractDDLCRUDFacade
 	{
 		return this.business.addUnique(constraint, table, attributes);
 	}
-	
-	
+
+
 	/**
 	 * Ajoute une clée étrangère dans les classes métiers.
 	 * 
@@ -161,8 +160,8 @@ extends AbstractDDLCRUDFacade
 		return this.business.addForeignKey(
 				constraintName, foreignTable, foreignAttributes, primaryTable, primaryAttributes);
 	}
-	
-	
+
+
 	/**
 	 * @return la liste des types de données disponibles pour le SGBD.
 	 */
@@ -171,7 +170,7 @@ extends AbstractDDLCRUDFacade
 		return this.dbms.getDataTypes();
 	}
 
-	
+
 	/**
 	 * Supprime $table du SGBD, si c'est possible.
 	 * 
@@ -183,8 +182,8 @@ extends AbstractDDLCRUDFacade
 	{
 		return this.dbms.dropTable(table, cascade);
 	}
-	
-	
+
+
 	/**
 	 * Supprime $table des classes métiers.
 	 * 
@@ -195,8 +194,8 @@ extends AbstractDDLCRUDFacade
 	{
 		return this.business.removeTable(table);
 	}
-	
-	
+
+
 	/**
 	 * Supprime $table et toutes les tables de la bases qui utilisent la clée primaire
 	 * de $table.
@@ -209,8 +208,8 @@ extends AbstractDDLCRUDFacade
 	{
 		return this.dbms.dropTableDomino(table);
 	}	
-	
-	
+
+
 	/**
 	 * @param table : nom de la table où récupérer les attributs, null interdit.
 	 * @return une réponse personnalisée.<br/>
@@ -226,8 +225,8 @@ extends AbstractDDLCRUDFacade
 	{
 		return this.dbms.getAttributes(table);
 	}
-	
-	
+
+
 	/**
 	 * @param tableName : nom de la table, null interdit.
 	 * @return tous les attributs de $tables, avec :<br/>
@@ -241,8 +240,8 @@ extends AbstractDDLCRUDFacade
 	{
 		return this.business.getAttributes(table);
 	}
-	
-	
+
+
 	/**
 	 * @param table : nom de la table où chercher la clée, null interdit.
 	 * @return Une réponse personnalisée contenant les attributs membres
@@ -254,7 +253,7 @@ extends AbstractDDLCRUDFacade
 		return this.dbms.getPrimaryKey(table);
 	}
 
-	
+
 	/**
 	 * @param table : table où se les membres de la clée primaire, null interdit.
 	 * @return une réponse personnalisée.<br/>
@@ -285,7 +284,7 @@ extends AbstractDDLCRUDFacade
 	public ResponseData<String[]> getUniquesFromDBMS(String table) 
 	{
 		return this.dbms.getUniques(table);
-		
+
 	}
 
 	/**
@@ -307,8 +306,8 @@ extends AbstractDDLCRUDFacade
 	{
 		return this.dbms.getPrimaryFromForeign(table);
 	}
-	
-	
+
+
 	/**
 	 * @return un modèle de table vide pour l'IHM de création des tables.
 	 */
@@ -323,22 +322,22 @@ extends AbstractDDLCRUDFacade
 	 */
 	public void closeDDL(){this.dbms.closeStatement();}
 
-	
+
 	/** @see SQLManager#sendQuery(String) */
 	public boolean sendQuery(String query) 
 			throws Exception{
 		return this.sql.sendQuery(query);
 	}
-	
-	
+
+
 	public JTable getGeneratedJTable() {
 		return this.sql.getGeneratedJTable();
 	}
-	
+
 	public String getGeneratedReply() {
 		return this.sql.getGeneratedReply();
 	}
-	
+
 	//TODO : trompeur
 	public Response addUniqueDBMS(String tableSourceName, String[] attributesSourcesNames, String contrainte) {
 		String sql = this.business.getSQLADDConstraint(tableSourceName, attributesSourcesNames[0], contrainte);
@@ -369,12 +368,26 @@ extends AbstractDDLCRUDFacade
 
 
 	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
-		String sql = this.business.getSQLDropConstraint(tableSourceName,attribute, constraint);
-		this.business.removeConstraint(tableSourceName, attribute, constraint);
-		System.out.println(sql);
-		Response result = this.dbms.dropConstraint(sql);
-		return result;
-		
+		Response result;
+		String sql = this.business.getSQLDropConstraint(tableSourceName,attribute,constraint);
+		if("null".equals(sql)){
+			constraint = constraint.substring(0, 2).toLowerCase() + constraint.substring(2);
+			sql = this.business.getSQLDropConstraint(tableSourceName,attribute,constraint);
+			if("null".equals(sql)){
+				return new Response(false,"Erreur lors de la supression de la contrainte");
+			}else{
+				this.business.removeConstraint(tableSourceName, attribute, constraint);
+				System.out.println(sql);
+				result = this.dbms.dropConstraint(sql);
+				return result;
+			}
+		}else{
+			this.business.removeConstraint(tableSourceName, attribute, constraint);
+			System.out.println(sql);
+			result = this.dbms.dropConstraint(sql);
+			return result;
+		}
+
 	}
 
 
