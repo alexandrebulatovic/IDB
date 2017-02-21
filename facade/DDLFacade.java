@@ -84,8 +84,11 @@ extends AbstractDDLCRUDFacade
 		Response rep = null;
 		for (String sql : sqls){
 			rep = this.dbms.alterTable(sql);
+			if (!rep.hasSuccess()){
+				return rep;
+			}
 		}
-		return rep;//on retourne la derniere réponse
+		return rep;
 
 
 	}
