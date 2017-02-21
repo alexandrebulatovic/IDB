@@ -308,11 +308,11 @@ public class Attribute
 	 * @return
 	 */
 	public String toDROPSQL() {
-		return "ALTER TABLE "+this.tableName+"\nDROP "+this.name;
+		return "ALTER TABLE "+this.tableName+"\nDROP COLUMN "+this.name;
 	}
 
 	public String toDROPSQL(String tableName) {
-		return "ALTER TABLE "+tableName+"\nDROP "+this.name;
+		return "ALTER TABLE "+tableName+"\nDROP COLUMN "+this.name;
 	}
 
 	public String toModify(){
