@@ -29,6 +29,7 @@ public class AbstractDDLCRUDFacade
 	{
 		this.business = tables;
 		this.dbms = ddlmanager;
+		this.sql = sql;
 	}
 
 
