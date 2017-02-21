@@ -124,6 +124,7 @@ public class TableSet
 				if (primaryKey){
 					addPrimaryKey(table, newAttribute);
 				}
+//				System.out.println("att : "+newAttribute.getName()+" is pk ?  : "+newAttribute.isPk());
 				
 				return table.addAttribute(newAttribute);
 			}
@@ -194,35 +195,40 @@ public class TableSet
 	 * @param uniqueName
 	 * @param tableName
 	 * @param attributesNames
-	 * @return nom de la contrainte généré ou non
+	 * @return nom de la contrainte généré ou null en cas d'échec
 	 */
 	public String addUnique(String uniqueName, String tableName, String[] attributesNames){
 		Table table = this.getTableByName(tableName);
 		UniqueConstraint un = new UniqueConstraint();
 		un.setTable(table);
-		for (Attribute att : table.getAttributes()){
-			for (String attributeName : attributesNames){
-				if (att.getName().equals(attributeName)){
-					if (uniqueName==null){
-						un.createAndSetName();
-					}
-					else{
-						un.setName(uniqueName);
-					}
-					un.addAttribute(att);
-					for (Constraint c : att.getConstraints()){
-						if (c.getName().equals(un.getName())){
-							
-							return null;
-						}
-					}
-					this.getAttributeWithName(tableName, attributeName).addConstraint(un);
-					
+		
+		for (String attributeName : attributesNames){//controle de l'intégrité de la contrainte
+			Attribute attribute = this.getAttributeWithName(tableName, attributeName);
+			if (attribute.getPk()!= null){
+				return null;
+			}
+			for (Constraint c : attribute.getConstraints()){
+				if (c.getName().equals(un.getName())){
+					return null;
 				}
 			}
-			
 		}
+		
+		for (String attributeName : attributesNames){//controle de l'intégrité de la contrainte
+			Attribute attribute = this.getAttributeWithName(tableName, attributeName);
+			un.addAttribute(attribute);
+			attribute.addConstraint(un);
+		}
+		
+		
 		this.getTableByName(tableName).addConstraint(un);
+		
+		if (uniqueName==null){
+			un.createAndSetName();
+		}
+		else{
+			un.setName(uniqueName);
+		}
 
 		return un.getName();
 	}
@@ -569,8 +575,10 @@ public class TableSet
 				havePk = true;
 				PrimaryKeyConstraint pk = attributeActual.getPk();
 				pk.addAttribute(att);
+				att.addConstraint(pk);
 			}
 		}
+		
 		if (!havePk){
 			PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
 			pk.addAttribute(att);

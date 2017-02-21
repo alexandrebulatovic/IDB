@@ -93,18 +93,18 @@ public class testTableSet {
 	
 	@Test
 	public void testAccesseurs(){
-		ensembleTable.addAttribute("table1", "att1", "VARCHAR2", 2, false, false);
-		String name = ensembleTable.addUnique("table1", new String[] {"att1"});
-		assertEquals("ALTER TABLE table1\nADD CONSTRAINT un_table1_att1 UNIQUE(att1)",ensembleTable.getSQLADDConstraint("table1", "att1", name));
+		ensembleTable.addAttribute("table1", "att2", "VARCHAR2", 2, false, false);
+		String name = ensembleTable.addUnique("table1", new String[] {"att2"});
+		assertEquals("ALTER TABLE table1\nADD CONSTRAINT un_table1_att2 UNIQUE(att2)",ensembleTable.getSQLADDConstraint("table1", "att2", name));
 		
 	}
 	
 	
 	@Test
 	public void testDropConstraint(){
-		ensembleTable.addAttribute("table1", "att1", "VARCHAR2", 2, false, false);
-		String name = ensembleTable.addUnique("table1", new String[] {"att1"});
-		assertEquals("ALTER TABLE table1\nDROP CONSTRAINT un_table1_att1",ensembleTable.getSQLDropConstraint("table1", "att1", name));
+		ensembleTable.addAttribute("table1", "att2", "VARCHAR2", 2, false, false);
+		String name = ensembleTable.addUnique("table1", new String[] {"att2"});
+		assertEquals("ALTER TABLE table1\nDROP CONSTRAINT un_table1_att2",ensembleTable.getSQLDropConstraint("table1", "att2", name));
 	}
 	
 	
@@ -132,10 +132,9 @@ public class testTableSet {
 	
 	/**
 	 * Verifie qu'on ne peut pas ajouter une contrainte unique dont l'attribut à déjà une pk
-	 * et vis versa lorsque l'on souhaite ajouter une contrainte pk dont l'attribut est déjà unique
 	 */
 	@Test
-	public void testAddPkUnOrUnPk(){
+	public void testAddUnPk(){
 		System.out.println("testAddPkUnOrUnPk");
 		//att1 est pk
 		ensembleTable.addAttribute("table1", "att2", "VARCHAR2", 20, false, false);
@@ -144,6 +143,19 @@ public class testTableSet {
 		assertEquals("[CREATE TABLE table1\n(\natt1 VARCHAR2 (20),\natt2 VARCHAR2 (20)\n), ALTER TABLE table1\nADD CONSTRAINT pk_table1 PRIMARY KEY(att1)]",modifyStrings.toString());
 		
 	}
+	
+	@Test
+	public void testGetMultiPk(){
+		//att1 pk
+		List<String> pks = new ArrayList<String>();
+		System.out.println(ensembleTable.addAttribute("table1", "att2", "VARCHAR2", 20, false, true));
+		for (String[] att : ensembleTable.getAttributes("table1")){
+			pks.add(att[4]);		
+		}
+		assertEquals("[PRIMARY, PRIMARY]",pks.toString());	
+		
+	}
+	
 
 	
 	

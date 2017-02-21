@@ -323,6 +323,11 @@ public class Attribute
 		return "ALTER TABLE "+tableName+"\nMODIFY "+this.toSQL();
 	}
 
+	/**
+	 * 
+	 * @return <b>PrimaryKeyConstraint</b> pk<br>
+	 * <b>null</b> si l'attribut n'est pas pk
+	 */
 	public PrimaryKeyConstraint getPk() {
 		for (Constraint c : this.constraints){
 			if (c instanceof PrimaryKeyConstraint){

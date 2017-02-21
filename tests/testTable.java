@@ -58,13 +58,11 @@ public class testTable {
 		
 		
 		
-		table2 = new Table(this.table);
-		
 		
 		
 		att_a = new Attribute("id","NUMBER",10);
 			pk_a = new PrimaryKeyConstraint();
-			table2.addConstraint(pk_a);
+			tableRecupere.addConstraint(pk_a);
 			pk_a.addAttribute(att_a);
 			pk_a.setTable(tableRecupere);
 			pk_a.setName(this.pk1.getName());
@@ -86,10 +84,6 @@ public class testTable {
 		tableRecupere.addAttribute(att_c);//volontairement, le prénom à changé de taille & de nom
 		tableRecupere.addAttribute(att_d);
 		
-			
-		
-		
-		
 	}
 	
 	@Test
@@ -108,6 +102,8 @@ public class testTable {
 		}
 
 		assertEquals(attendu,total);
+		
+		System.out.println(this.tableRecupere.toCreate());
 	}
 	
 	
@@ -118,13 +114,16 @@ public class testTable {
 					   + "ALTER TABLE PROFILS\n"
 					   + "DROP nom;\n"
 					   + "ALTER TABLE PROFILS\n"
-					   + "MODIFY prenom VARCHAR2 (27);\n";
+					   + "MODIFY prenom VARCHAR2 (27);\n"
+					   + "ALTER TABLE PROFILS\nDROP CONSTRAINT pk_PROFILS;\n"
+					   + "ALTER TABLE PROFILS\n"
+					   + "ADD CONSTRAINT pk_PROFILS PRIMARY KEY(id);\n";
 		String actual = "";
-//		System.out.println(this.tableRecupere);
+		
 		for (String sql : this.table.toModify(this.tableRecupere)){
 			actual+=sql+";\n";
 		}
-//		System.out.println(actual);
+		
 		assertEquals(attendu,actual);
 	}
 	
