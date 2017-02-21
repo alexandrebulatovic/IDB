@@ -272,6 +272,8 @@ public class TableSet
 	
 	
 	/**
+	 * Retourne une liste de SQL pouvant modifier la table en fonction des paramètres suivant
+	 * @see business.TableSet#modify(String, String, List)
 	 * @param oldTableName : ancien nom de la table, null interdit.
 	 * @param newTableName : nouveau nom de la table, null interdit.
 	 * @param attributes : liste décrivant les attributes : 
@@ -282,12 +284,87 @@ public class TableSet
 	 * 		-isPrimaryKey boolean
 	 * @return une liste de requêtes SQL pour altérer la table $oldname.
 	 */
-	public List<String> getSQLTableToModify(String oldTableName, String newTableName, List<Object[]> attributes)
+	public List<String> getSQLTableToModify(String oldTableName, List<Object[]> attributes)
 	{
-		Table tmpTable = new Table(oldTableName);
 		Table oldTable = this.getTableByName(oldTableName);
+		Table tmpTable = getCopyOf(attributes, oldTable);
+		List<String> toModifySQL = oldTable.toModify(tmpTable);
+		
+
+		return toModifySQL;
+	}
+
+
+	/**
+	 * Retourne une copie d'après les arguments
+	 * @param attributes : liste décrivant les attributes : 
+	 * 		-le nom String
+	 * 		-type String
+	 * 		-taille int
+	 * 		-isNotNull boolean
+	 * 		-isPrimaryKey boolean
+	 * @param tableToCopy
+	 * @return
+	 */
+	private Table getCopyOf(List<Object[]> attributes, Table tableToCopy) {
+		PrimaryKeyConstraint oldPk = tableToCopy.getPk();
+		Table copyTable = getCopyTable(
+				attributes, 
+				tableToCopy.getName(),
+				(String)((oldPk == null) ? null : oldPk.getName())
+						);
+		return copyTable;
+	}
+
+
+	/**
+	 * remplace une table par la "table" passé en paramètres
+	 * @see business.TableSet#getSQLTableToModify(String, String, List)
+	 * @param oldTableName : ancien nom de la table, null interdit.
+	 * @param newTableName : nouveau nom de la table, null interdit.
+	 * @param attributes : liste décrivant les attributes : 
+	 * 		-le nom String
+	 * 		-type String
+	 * 		-taille int
+	 * 		-isNotNull boolean
+	 * 		-isPrimaryKey boolean
+	 * @return une liste de requêtes SQL pour altérer la table $oldname.
+	 */
+	public void replace(String oldTableName, String newTableName, List<Object[]> attributes){
+		boolean haveNoError = true;
+		
+		Table oldTable = this.getTableByName(oldTableName);
+		Table tmpTable = getCopyOf(attributes, oldTable);
+	
+		
+		oldTable.setName(newTableName);
+		this.tables.remove(oldTable);
+		this.tables.add(tmpTable);
+	}
+
+
+	/**
+	 * Créée une nouvelle table en copiant les attributes et le nom de la table 
+	 * ainsi que le nom de clé primare passé en paramètres
+	 * si la clé n'exite pas, passer <b>null</b> en paramètres
+	 * 
+	 * 
+	 * @param attributes : liste décrivant les attributes : 
+	 * 		-le nom String
+	 * 		-type String
+	 * 		-taille int
+	 * 		-isNotNull boolean
+	 * 		-isPrimaryKey boolean
+	 * @param tableName le nom de la table null interdit
+	 * @param pkName le nom pk de la table (pour une copie, la pk à forcément un nom ou n'existe pas)<br>
+	 * 			<b>null</b> si elle n'existe pas
+	 * @return
+	 */
+	private Table getCopyTable(List<Object[]> attributes, String tableName, String pkName) {
+		Table newTable = new Table(tableName);
 		
 		List<Attribute> attributesPk = new ArrayList<Attribute>();
+		boolean havePk = false;
 		
 		for (Object[] att : attributes){
 			String name = (String) att[0];
@@ -299,45 +376,37 @@ public class TableSet
 			Attribute a = new Attribute(name, type, size, null, type, isNotNull);
 			
 			
-			if ((boolean) att[4]){//if is pk
+			if ((boolean) att[4]){//if att is pk
+				havePk = true;
 				attributesPk.add(a);
 			}
 			
-			tmpTable.addAttribute(a);
+			newTable.addAttribute(a);
 		}
 		
-		PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
-		pk.setTable(tmpTable);
 		
-		PrimaryKeyConstraint oldPk = oldTable.getPk();
-		if (oldPk != null){
-			pk.setName(oldPk.getName());
+		if (havePk){
+			PrimaryKeyConstraint pk = new PrimaryKeyConstraint();
+			pk.setTable(newTable);
+			
+			if (pkName != null){
+				pk.setName(pkName);
+			}
+			else{
+				pk.createAndSetName();
+			}
+			for (Attribute a : attributesPk){
+				pk.addAttribute(a);
+				a.addConstraint(pk);
+			}
+			newTable.addConstraint(pk);
 		}
 		
-		for (Attribute a : attributesPk){
-			pk.addAttribute(a);
-			a.addConstraint(pk);
-		}
-		tmpTable.addConstraint(pk);
 		
-		
-		
-		tmpTable.setName(oldTableName);
-		
-//		List<String> toModifySQL = tmpTable.toModify(this.getTableByName(oldTable));
-		
-		
-		
-		
-		List<String> toModifySQL = oldTable.toModify(tmpTable);
-		oldTable.setName(newTableName);
-		this.tables.remove(oldTable);
-		this.tables.add(tmpTable);
-		return toModifySQL;
+
+		return newTable;
 	}
 	
-	
-
 	/**
 	 * Supprime une table s'après son nom
 	 * et s'occupe de supprimer les sous attributs
