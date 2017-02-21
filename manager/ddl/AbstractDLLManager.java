@@ -120,7 +120,7 @@ extends AbstractSuccesDDLManager
 	public Response alterTable(String sql) 
 	{
 		System.out.println(sql);
-		return this.executeUpdate(sql, CREATE_TABLE);
+		return this.executeUpdate(sql, AbstractSuccesDDLManager.ALTER_TABLE);
 	}
 
 
