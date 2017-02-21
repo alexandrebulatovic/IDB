@@ -272,6 +272,8 @@ public class TableSet
 	
 	
 	/**
+	 * Retourne une liste de SQL pouvant modifier la table en fonction des paramètres suivant
+	 * @see business.TableSet#modify(String, String, List)
 	 * @param oldTableName : ancien nom de la table, null interdit.
 	 * @param newTableName : nouveau nom de la table, null interdit.
 	 * @param attributes : liste décrivant les attributes : 
@@ -284,6 +286,8 @@ public class TableSet
 	 */
 	public List<String> getSQLTableToModify(String oldTableName, String newTableName, List<Object[]> attributes)
 	{
+		
+		this.createTable(oldTableName,attributes);
 		Table tmpTable = new Table(oldTableName);
 		Table oldTable = this.getTableByName(oldTableName);
 		
@@ -334,6 +338,23 @@ public class TableSet
 		this.tables.remove(oldTable);
 		this.tables.add(tmpTable);
 		return toModifySQL;
+	}
+	
+	/**
+	 * Modifie en fonction des paramètres.
+	 * @see business.TableSet#getSQLTableToModify(String, String, List)
+	 * @param oldTableName : ancien nom de la table, null interdit.
+	 * @param newTableName : nouveau nom de la table, null interdit.
+	 * @param attributes : liste décrivant les attributes : 
+	 * 		-le nom String
+	 * 		-type String
+	 * 		-taille int
+	 * 		-isNotNull boolean
+	 * 		-isPrimaryKey boolean
+	 * @return une liste de requêtes SQL pour altérer la table $oldname.
+	 */
+	public List<String> modify(String oldTableName, String newTableName, List<Object[]> attributes){
+		return null;
 	}
 	
 	
