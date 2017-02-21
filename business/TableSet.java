@@ -522,10 +522,11 @@ public class TableSet
 	}
 	
 	public String getSQLDropConstraint(String tableName, String attributeName, String ConstraintName){
-		if(this.getConstraintWithName(tableName, ConstraintName) == null){
-			return "null";
+		Constraint c = this.getConstraintWithName(tableName, ConstraintName);
+		if(c == null){
+			return null;
 		}else{
-		return this.getConstraintWithName(tableName, ConstraintName).toDropConstraintSQL();
+			return c.toDropConstraintSQL();
 		}
 	}
 	

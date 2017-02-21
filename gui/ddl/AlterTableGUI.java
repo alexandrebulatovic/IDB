@@ -113,6 +113,13 @@ extends CreateTableGUI
 	{
 		this.setTitle("Modifier une table");
 		this.createTableButton.setText("Modifier");
+		
+		
+		this.upPositionAttributeButton.setVisible(false);
+		this.upPositionAttributeButton.setEnabled(false);
+		
+		this.downPositionAttributeButton.setVisible(false);
+		this.downPositionAttributeButton.setEnabled(false);
 	}
 
 
