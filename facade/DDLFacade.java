@@ -84,8 +84,11 @@ extends AbstractDDLCRUDFacade
 		Response rep = null;
 		for (String sql : sqls){
 			rep = this.dbms.alterTable(sql);
+			if (!rep.hasSuccess()){
+				return rep;
+			}
 		}
-		return rep;//on retourne la derniere réponse
+		return rep;
 
 
 	}
@@ -370,10 +373,10 @@ extends AbstractDDLCRUDFacade
 	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
 		Response result;
 		String sql = this.business.getSQLDropConstraint(tableSourceName,attribute,constraint);
-		if("null".equals(sql)){
+		if(sql == null){
 			constraint = constraint.substring(0, 2).toLowerCase() + constraint.substring(2);
 			sql = this.business.getSQLDropConstraint(tableSourceName,attribute,constraint);
-			if("null".equals(sql)){
+			if(sql == null){
 				return new Response(false,"Erreur lors de la supression de la contrainte");
 			}else{
 				this.business.removeConstraint(tableSourceName, attribute, constraint);
