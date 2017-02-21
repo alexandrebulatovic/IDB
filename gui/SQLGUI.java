@@ -9,6 +9,7 @@ import javax.swing.WindowConstants;
 
 import controller.SQLController;
 import gui.abstrct.AbstractBasicGUI;
+import useful.DialogBox;
 
 /**
  * Un objet servant d'IHM pour pouvoir écrire des requêtes SQL et les envoyer à 
@@ -89,13 +90,15 @@ extends AbstractBasicGUI implements ActionListener
 	{
 		if (!this.isComplete())
 			this.talk("Syntaxe attendue : ma_requête;");
-
 		else 
 		{
-			this.talk("Requête envoyée.");
+			String query = this.sqlArea.getText().split(";")[0]; // on ne prend que ce qu'il y a avant le ";"
 
-			String query = this.sqlArea.getText();
-			this.transmitSQL(query);
+			if (this.regulateQuery(query))
+			{
+				this.talk("Requête envoyée.");
+				this.transmitSQL(query);
+			}
 		}
 	}
 
@@ -106,6 +109,25 @@ extends AbstractBasicGUI implements ActionListener
 	private void transmitSQL(String query) 
 	{
 		this.sqlController.sendQuery(query);
+	}
+
+	/**
+	 * Contrôle si une requête est autorisée à être exécutée par le {@code SQLManager}.
+	 * @param query : requête à contrôler.
+	 * @return Vrai si la requête est exécutable, faux sinon.
+	 */
+	private boolean regulateQuery(String query)
+	{
+		if (query.contains("SELECT") || 
+				query.contains("UPDATE") || 
+				query.contains("DELETE") ||
+				query.contains("INSERT"))
+			return true;
+		else
+		{
+			DialogBox.showError("Cette requête n'est pas autorisée à être exécutée.");
+			return false;
+		}
 	}
 
 	@Override
