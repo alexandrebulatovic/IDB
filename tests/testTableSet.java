@@ -126,7 +126,7 @@ public class testTableSet {
 		//et on ne met pas le dernier attribute attASupprimer
 		System.out.println();
 		System.out.println();
-		assertEquals("[ALTER TABLE table1\nADD att4 NUMERIC (33), ALTER TABLE table1\nDROP attASupprimer, ALTER TABLE table1\nMODIFY att3 VARCHAR2 (2) NOT NULL, ALTER TABLE table1\nDROP CONSTRAINT pk_table1, ALTER TABLE table1\nADD CONSTRAINT pk_table1 PRIMARY KEY(att1,att2)]",ensembleTable.getSQLTableToModify("table1", attributes).toString());
+		assertEquals("[ALTER TABLE table1\nADD att4 NUMERIC (33), ALTER TABLE table1\nDROP COLUMN attASupprimer, ALTER TABLE table1\nMODIFY att3 VARCHAR2 (2) NOT NULL, ALTER TABLE table1\nDROP CONSTRAINT pk_table1, ALTER TABLE table1\nADD CONSTRAINT pk_table1 PRIMARY KEY(att1,att2)]",ensembleTable.getSQLTableToModify("table1", attributes).toString());
 	}
 	
 	
@@ -154,6 +154,21 @@ public class testTableSet {
 		}
 		assertEquals("[PRIMARY, PRIMARY]",pks.toString());	
 		
+	}
+	
+	@Test
+	public void testBugModif(){
+		ensembleTable.addAttribute("table2", "att1", "VARCHAR2", 20, false, false);
+		ensembleTable.addAttribute("table2", "att2", "VARCHAR2", 2, false, false);
+		
+		ensembleTable.addAttribute("table2", "att3", "VARCHAR2", 2, false, false);
+		
+		List<Object[]> attributes = new ArrayList<Object[]>();
+		
+		attributes.add(new Object[]{"att1","VARCHAR2",20,false,false});
+		attributes.add(new Object[]{"att2","VARCHAR2",2,false,false});//on ajjoute cette pk
+		attributes.add(new Object[]{"att3","VARCHAR2",2,false,false});
+		System.out.println(ensembleTable.getSQLTableToModify("table2", attributes));
 	}
 	
 

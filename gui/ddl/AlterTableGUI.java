@@ -139,7 +139,6 @@ extends CreateTableGUI
 	}
 
 
-	//TODO : nom de merde
 	private void fillGuiWithAttribute(String table)
 	{
 		ResponseData<String[]> attributesData = 

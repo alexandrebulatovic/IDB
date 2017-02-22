@@ -112,7 +112,7 @@ public class testTable {
 		String attendu = "ALTER TABLE PROFILS\n"
 					   + "ADD dateNaissance DATE;\n"
 					   + "ALTER TABLE PROFILS\n"
-					   + "DROP nom;\n"
+					   + "DROP COLUMN nom;\n"
 					   + "ALTER TABLE PROFILS\n"
 					   + "MODIFY prenom VARCHAR2 (27);\n"
 					   + "ALTER TABLE PROFILS\nDROP CONSTRAINT pk_PROFILS;\n"
