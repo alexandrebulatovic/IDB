@@ -118,10 +118,12 @@ extends AbstractBasicGUI implements ActionListener
 	 */
 	private boolean regulateQuery(String query)
 	{
-		if (query.contains("SELECT") || 
-				query.contains("UPDATE") || 
-				query.contains("DELETE") ||
-				query.contains("INSERT"))
+		query = query.toLowerCase();
+		
+		if (query.contains("select") || 
+				query.contains("update") || 
+				query.contains("delete") ||
+				query.contains("insert"))
 			return true;
 		else
 		{

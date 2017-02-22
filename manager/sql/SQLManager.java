@@ -391,16 +391,17 @@ public class SQLManager {
 	private String generateReply(String query) throws SQLException
 	{
 		String generatedReply;
+		query = query.toLowerCase();
 
-		if (query.contains("INSERT")){
+		if (query.contains("insert")){
 			generatedReply = stat.getUpdateCount()+ " ligne ajoutée.";
-		} else if (query.contains("DELETE")){
+		} else if (query.contains("delete")){
 			generatedReply = stat.getUpdateCount()+" ligne supprimée.";
-		} else if (query.contains("UPDATE")){
+		} else if (query.contains("update")){
 			generatedReply = stat.getUpdateCount()+" ligne mis à jour.";
-		} else if (query.contains("CREATE")) {
+		} else if (query.contains("create")) {
 			generatedReply = "Table créée.";
-		} else if (query.contains("DROP")) {
+		} else if (query.contains("drop")) {
 			generatedReply = "Table supprimée.";
 		} else {
 			generatedReply = "Aucune ligne retournée.";
