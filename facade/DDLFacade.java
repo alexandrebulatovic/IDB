@@ -92,8 +92,8 @@ extends AbstractDDLCRUDFacade
 			//alors on ajoute le résultat dans les tables métiers
 			this.business.replace(oldTable, newTable, attributes);
 		}
-		
-		
+
+
 		return rep;
 
 
@@ -376,7 +376,7 @@ extends AbstractDDLCRUDFacade
 	}
 
 
-	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
+	public Response removeConstraint(String tableSourceName, String attribute, String constraint, String type) {
 		Response result;
 		String sql = this.business.getSQLDropConstraint(tableSourceName,attribute,constraint);
 		if(sql == null){
@@ -384,19 +384,16 @@ extends AbstractDDLCRUDFacade
 			sql = this.business.getSQLDropConstraint(tableSourceName,attribute,constraint);
 			if(sql == null){
 				return new Response(false,"Erreur lors de la supression de la contrainte");
-			}else{
-				this.business.removeConstraint(tableSourceName, attribute, constraint);
-				System.out.println(sql);
-				result = this.dbms.dropConstraint(sql);
-				return result;
 			}
-		}else{
-			this.business.removeConstraint(tableSourceName, attribute, constraint);
-			System.out.println(sql);
-			result = this.dbms.dropConstraint(sql);
-			return result;
 		}
-
+		this.business.removeConstraint(tableSourceName, attribute, constraint);
+			
+		if("UNIQUE".equals(type)){
+			result = this.dbms.dropConstraint(sql);
+		}else{
+			result = this.dbms.dropForeignKey(tableSourceName, constraint);
+		}
+		return result;
 	}
 
 

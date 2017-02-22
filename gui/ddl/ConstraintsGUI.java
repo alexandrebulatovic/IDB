@@ -114,9 +114,10 @@ public class ConstraintsGUI extends AbstractBasicGUI{
 	private void dropConstraintButtonAction() {
 		if(this.constraintsTable.getSelectedRowCount() != 0){
 			String constraint = this.constraintsListModel.getValueAt(this.constraintsTable.getSelectedRow(),0).toString();
+			String type = this.constraintsListModel.getValueAt(this.constraintsTable.getSelectedRow(),1).toString();
 			String tableSourceName = this.constraintsListModel.getValueAt(this.constraintsTable.getSelectedRow(),2).toString();
 			String attribute = this.constraintsListModel.getValueAt(this.constraintsTable.getSelectedRow(),3).toString();
-			Response response = this.control.removeConstraint(tableSourceName,attribute,constraint);
+			Response response = this.control.removeConstraint(tableSourceName,attribute,constraint,type);
 			this.talk(response);
 			if(response.hasSuccess()){
 				this.fillTableConstraints();

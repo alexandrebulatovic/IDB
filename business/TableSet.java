@@ -331,12 +331,8 @@ public class TableSet
 	 * @return une liste de requêtes SQL pour altérer la table $oldname.
 	 */
 	public void replace(String oldTableName, String newTableName, List<Object[]> attributes){
-		boolean haveNoError = true;
-		
 		Table oldTable = this.getTableByName(oldTableName);
 		Table tmpTable = getCopyOf(attributes, oldTable);
-	
-		
 		oldTable.setName(newTableName);
 		this.tables.remove(oldTable);
 		this.tables.add(tmpTable);

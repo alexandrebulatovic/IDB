@@ -2,13 +2,9 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.junit.*;
 
 import business.Attribute;
-import business.Constraint;
 import business.ForeignKeyConstraint;
 import business.PrimaryKeyConstraint;
 import business.Table;
@@ -20,11 +16,9 @@ public class testTable {
 	private Attribute att2;
 	private Attribute att0;
 	private PrimaryKeyConstraint pk1;
-	private ArrayList<Constraint> constraints;
 	private Table table2;
 	private Table tableRecupere;
 	private Attribute att_a;
-	private ArrayList<Constraint> constraints2;
 	private PrimaryKeyConstraint pk_a;
 	private Attribute att_b;
 	private Attribute att_c;

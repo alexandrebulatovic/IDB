@@ -257,7 +257,7 @@ public class Table {
 			System.out.println("to modify :"+attribute[0]+"<========>"+attribute[1]);
 			Attribute attDest = attribute[0];
 
-			Attribute attsrc = attribute[1];
+			//Attribute attsrc = attribute[1];
 			results.add(attDest.toModify(this.name));
 		}
 		
@@ -357,6 +357,7 @@ public class Table {
 	 * @param tableSource
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private List<Constraint[]> constraintsToChange(Table tableSource) {
 		ArrayList<Constraint[]> constraintToModify = new ArrayList<Constraint[]>();
 		

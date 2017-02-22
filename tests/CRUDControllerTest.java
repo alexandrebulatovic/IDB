@@ -56,7 +56,7 @@ public class CRUDControllerTest {
 	
 	@Test
 	public void testAppelAddTupleCRUDFacade() throws UnsupportedOperationException, IllegalArgumentException, SQLException {
-		Vector vector = new Vector<>();
+		Vector<String> vector = new Vector<String>();
 		vector.addElement("5");
 		
 		crudFacade.addTuple(vector);

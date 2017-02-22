@@ -53,7 +53,6 @@ public class TestsConnecte
 	private static HomeFacade homeFacade;
 	private static DDLFacade ddlFacade;
 	private static TableSet business;
-	private static DDLController ddlControl;
 	private static String dbms;
 	
 	
@@ -71,7 +70,7 @@ public class TestsConnecte
 		homeControl.connect(parameters);
 		connection = homeFacade.getConnection();
 		ddlFacade = homeFacade.getDDLFacade();
-		ddlControl = new DDLController(ddlFacade);
+		new DDLController(ddlFacade);
 	}
 	
 	

@@ -298,8 +298,8 @@ public class DDLController
 	}
 
 
-	public Response removeConstraint(String tableSourceName, String attribute, String constraint) {
-		return this.facade.removeConstraint(tableSourceName,attribute,constraint);
+	public Response removeConstraint(String tableSourceName, String attribute, String constraint, String type) {
+		return this.facade.removeConstraint(tableSourceName,attribute,constraint,type);
 		
 	}
 

@@ -7,9 +7,7 @@ import java.util.List;
 
 import org.junit.*;
 
-import business.Attribute;
-import business.Constraint;
-import business.Table;
+
 import business.TableSet;
 
 public class testTableSet {

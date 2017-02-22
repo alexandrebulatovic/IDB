@@ -1,18 +1,5 @@
 package tests;
 
-import static org.junit.Assert.*;
-
-import gui.ddl.AlterTableGUI;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import manager.xml.DefaultValueManager;
-
 //public class TestModifyTableGUI {
 //
 //	ModifyTableGUI gui;
